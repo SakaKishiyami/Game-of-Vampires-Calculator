@@ -20,16 +20,26 @@ export default function AuthCallback() {
         const code = urlParams.get('code')
         const next = urlParams.get('next') ?? '/'
 
+        console.log('Auth callback - code:', code, 'next:', next)
+
         if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(code)
-          if (!error) {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+          console.log('Exchange result:', { data, error })
+          
+          if (!error && data.session) {
+            console.log('Authentication successful, redirecting to:', next)
             // Successful authentication, redirect to the next page
             router.push(next)
             return
+          } else {
+            console.error('Exchange error:', error)
           }
+        } else {
+          console.log('No auth code found in URL')
         }
 
         // If we get here, there was an error or no code
+        console.log('Redirecting to error page')
         router.push('/auth/auth-code-error')
       } catch (error) {
         console.error('Auth callback error:', error)

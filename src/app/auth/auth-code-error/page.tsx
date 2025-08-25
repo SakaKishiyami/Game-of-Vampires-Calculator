@@ -21,7 +21,11 @@ export default function AuthCodeError() {
             <li>• The authentication link has expired</li>
             <li>• The authentication was cancelled</li>
             <li>• There was a network error</li>
+            <li>• Supabase configuration issue</li>
           </ul>
+          <div className="text-xs text-gray-500 mt-4 p-2 bg-gray-700/50 rounded">
+            Check the browser console for detailed error information
+          </div>
           <div className="pt-4">
             <Button 
               onClick={() => router.push('/')}
