@@ -1897,49 +1897,48 @@ export default function GameCalculator() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black text-white p-4">
       <div className="max-w-7xl mx-auto">
-        {/* Top Bar with User Menu */}
-        <div className="flex justify-between items-start mb-8">
-          <div></div> {/* Spacer */}
-          <UserMenu 
-            user={user} 
-            onUserChange={setUser}
-            currentData={getCurrentData()}
-            onLoadCloudData={loadCloudData}
-            onSaveData={saveData}
-            onLoadLocalData={loadData}
-            onExportData={exportData}
-            onImportData={importData}
-          />
-        </div>
-
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-red-400">Game of Vampires Calculator</h1>
-          <div className="mb-4">
+        {/* Header with User Menu */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex-1"></div> {/* Left spacer */}
+          <div className="text-center">
+            <h1 className="text-4xl font-bold mb-2 text-red-400">Game of Vampires Calculator</h1>
             <p className="text-sm text-gray-400">
               Created by <span className="text-purple-400 font-semibold">@saka_kishiyami</span> on Discord
             </p>
           </div>
+          <div className="flex-1 flex justify-end">
+            <UserMenu 
+              user={user} 
+              onUserChange={setUser}
+              currentData={getCurrentData()}
+              onLoadCloudData={loadCloudData}
+              onSaveData={saveData}
+              onLoadLocalData={loadData}
+              onExportData={exportData}
+              onImportData={importData}
+            />
+          </div>
+        </div>
 
-          {/* VIP and Lord Level */}
-          <div className="flex justify-center gap-8 mb-6">
-            <div>
-              <Label className="text-white">VIP Level (0-12)</Label>
+        {/* VIP and Lord Level */}
+        <div className="flex justify-center gap-8 mb-8">
+            <div className="flex items-center gap-2">
+              <Label className="text-white whitespace-nowrap">VIP Level:</Label>
               <Input
                 type="number"
                 min="0"
                 max="12"
                 value={vipLevel}
                 onChange={(e) => setVipLevel(Number.parseInt(e.target.value) || 0)}
-                className="w-24 bg-gray-800 border-gray-600 text-white"
+                className="w-20 bg-gray-800 border-gray-600 text-white"
               />
             </div>
-            <div>
-              <Label className="text-white">Lord Level</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-white whitespace-nowrap">Lord Level:</Label>
               <select
                 value={lordLevel}
                 onChange={(e) => setLordLevel(e.target.value)}
-                className="w-48 p-2 bg-gray-800 border border-gray-600 rounded text-white"
+                className="bg-gray-800 border border-gray-600 rounded text-white p-2"
               >
                 {[
                   "Fledgling Lord 1",
