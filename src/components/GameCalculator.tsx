@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import { User } from '@supabase/supabase-js'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,6 +18,11 @@ import { courtyardLevels } from "@/data/courtyard"
 import { conclaveLevels } from "@/data/conclave"
 import { domIncreasePerStarData } from "@/data/talent_stars"
 
+// Auth components
+import AuthComponent from "@/components/AuthComponent"
+import CloudSaveManager from "@/components/CloudSaveManager"
+import { getCurrentUser } from "@/lib/supabase"
+
 export default function GameCalculator() {
   // Base attributes
   const [baseAttributes, setBaseAttributes] = useState({
@@ -27,7 +33,7 @@ export default function GameCalculator() {
   })
 
   // VIP and Lord Level
-  const [vipLevel, setVipLevel] = useState(1)
+  const [vipLevel, setVipLevel] = useState(0)
   const [lordLevel, setLordLevel] = useState("Fledgling 1")
 
   const [books, setBooks] = useState<BooksState>(initialBooks);
@@ -144,6 +150,9 @@ export default function GameCalculator() {
   const [hasAgneyi, setHasAgneyi] = useState(false)
   const [hasCulann, setHasCulann] = useState(false)
   const [hasHela, setHasHela] = useState(false)
+
+  // Authentication state
+  const [user, setUser] = useState<User | null>(null)
 
   // Auras - Comprehensive warden data structure (imported from @/data/auras)
   const [auras, setAuras] = useState(initialAuras)
@@ -307,6 +316,70 @@ export default function GameCalculator() {
     
     // Reset the input
     event.target.value = ''
+  }
+
+  // Check for existing authentication on component mount
+  useEffect(() => {
+    const checkUser = async () => {
+      const { user } = await getCurrentUser()
+      setUser(user)
+    }
+    checkUser()
+  }, [])
+
+  // Gather all current calculator data
+  const getCurrentData = () => {
+    return {
+      baseAttributes,
+      vipLevel,
+      lordLevel,
+      books,
+      conclave,
+      conclaveUpgrade,
+      domIncreasePerStar,
+      courtyard,
+      wardenCounts,
+      selectedWardens,
+      hasNyx,
+      hasDracula,
+      hasVictor,
+      hasFrederick,
+      auras,
+      wardenStats,
+      scarletBond,
+      scarletBondAffinity,
+      optimizedBondLevels,
+      hasAgneyi,
+      hasCulann,
+      hasHela,
+      timestamp: new Date().toISOString(),
+    }
+  }
+
+  // Load data from cloud save
+  const loadCloudData = (data: any) => {
+    if (data.baseAttributes) setBaseAttributes(data.baseAttributes)
+    if (data.vipLevel !== undefined) setVipLevel(data.vipLevel)
+    if (data.lordLevel) setLordLevel(data.lordLevel)
+    if (data.books) setBooks(data.books)
+    if (data.conclave) setConclave(data.conclave)
+    if (data.conclaveUpgrade) setConclaveUpgrade(data.conclaveUpgrade)
+    if (data.domIncreasePerStar) setDomIncreasePerStar(data.domIncreasePerStar)
+    if (data.courtyard) setCourtyard(data.courtyard)
+    if (data.wardenCounts) setWardenCounts(data.wardenCounts)
+    if (data.selectedWardens) setSelectedWardens(data.selectedWardens)
+    if (data.hasNyx !== undefined) setHasNyx(data.hasNyx)
+    if (data.hasDracula !== undefined) setHasDracula(data.hasDracula)
+    if (data.hasVictor !== undefined) setHasVictor(data.hasVictor)
+    if (data.hasFrederick !== undefined) setHasFrederick(data.hasFrederick)
+    if (data.auras) setAuras(data.auras)
+    if (data.wardenStats) setWardenStats(data.wardenStats)
+    if (data.scarletBond) setScarletBond(data.scarletBond)
+    if (data.scarletBondAffinity) setScarletBondAffinity(data.scarletBondAffinity)
+    if (data.optimizedBondLevels) setOptimizedBondLevels(data.optimizedBondLevels)
+    if (data.hasAgneyi !== undefined) setHasAgneyi(data.hasAgneyi)
+    if (data.hasCulann !== undefined) setHasCulann(data.hasCulann)
+    if (data.hasHela !== undefined) setHasHela(data.hasHela)
   }
 
   // Auto-save functionality (save every 30 seconds if data has changed)
@@ -1827,18 +1900,28 @@ export default function GameCalculator() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4 text-red-400">Game of Vampires Calculator</h1>
+          <h1 className="text-4xl font-bold mb-2 text-red-400">Game of Vampires Calculator</h1>
+          <div className="mb-4">
+            <p className="text-sm text-gray-400">
+              Created by <span className="text-purple-400 font-semibold">@saka_kishiyami</span> on Discord
+            </p>
+          </div>
+
+          {/* Authentication */}
+          <div className="mb-6">
+            <AuthComponent user={user} onUserChange={setUser} />
+          </div>
 
           {/* VIP and Lord Level */}
           <div className="flex justify-center gap-8 mb-6">
             <div>
-              <Label className="text-white">VIP Level (1-12)</Label>
+              <Label className="text-white">VIP Level (0-12)</Label>
               <Input
                 type="number"
-                min="1"
+                min="0"
                 max="12"
                 value={vipLevel}
-                onChange={(e) => setVipLevel(Number.parseInt(e.target.value) || 1)}
+                onChange={(e) => setVipLevel(Number.parseInt(e.target.value) || 0)}
                 className="w-24 bg-gray-800 border-gray-600 text-white"
               />
             </div>
@@ -1977,7 +2060,7 @@ export default function GameCalculator() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="aura-bonuses" className="w-full">
-          <TabsList className="grid w-full grid-cols-7 bg-gray-800 mb-6">
+          <TabsList className="grid w-full grid-cols-8 bg-gray-800 mb-6">
             <TabsTrigger value="aura-bonuses" className="data-[state=active]:bg-red-600">
               Aura Bonuses
             </TabsTrigger>
@@ -1995,6 +2078,9 @@ export default function GameCalculator() {
             </TabsTrigger>
             <TabsTrigger value="scarlet-bond" className="data-[state=active]:bg-red-600">
               Scarlet Bond
+            </TabsTrigger>
+            <TabsTrigger value="cloud-saves" className="data-[state=active]:bg-red-600">
+              ☁️ Cloud Saves
             </TabsTrigger>
             <TabsTrigger value="data" className="data-[state=active]:bg-red-600">
               Data
@@ -3466,6 +3552,17 @@ export default function GameCalculator() {
             </Card>
           </TabsContent>
 
+          {/* Cloud Saves Tab */}
+          <TabsContent value="cloud-saves">
+            <div className="space-y-6">
+              <CloudSaveManager 
+                user={user} 
+                currentData={getCurrentData()} 
+                onLoadData={loadCloudData} 
+              />
+            </div>
+          </TabsContent>
+
           {/* Data Tab */}
           <TabsContent value="data">
             <div className="space-y-6">
@@ -3590,6 +3687,43 @@ export default function GameCalculator() {
             </div>
           </TabsContent>
         </Tabs>
+        
+        {/* Footer */}
+        <footer className="mt-16 border-t border-gray-700 pt-8">
+          <div className="text-center space-y-4">
+            <div className="flex justify-center items-center gap-6 text-sm text-gray-400">
+              <span>Need help? Reach out on Discord: <span className="text-purple-400">@saka_kishiyami</span></span>
+            </div>
+            
+            <div className="flex justify-center items-center gap-6 text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                Built using 
+                <a href="https://nextjs.org" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                  Next.js
+                </a>
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                Hosted on 
+                <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                  Vercel
+                </a>
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                Source on 
+                <a href="https://github.com/SakaKishiyami/Game-of-Vampires-Calculator" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                  GitHub
+                </a>
+              </span>
+            </div>
+            
+            <div className="text-xs text-gray-600">
+              <p>Fan-made tool for Game of Vampires players</p>
+              <p className="mt-1">Not affiliated with the official Game of Vampires team</p>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   )
