@@ -19,8 +19,7 @@ import { conclaveLevels } from "@/data/conclave"
 import { domIncreasePerStarData } from "@/data/talent_stars"
 
 // Auth components
-import AuthComponent from "@/components/AuthComponent"
-import CloudSaveManager from "@/components/CloudSaveManager"
+import UserMenu from "@/components/UserMenu"
 import { getCurrentUser } from "@/lib/supabase"
 
 export default function GameCalculator() {
@@ -1898,6 +1897,21 @@ export default function GameCalculator() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black text-white p-4">
       <div className="max-w-7xl mx-auto">
+        {/* Top Bar with User Menu */}
+        <div className="flex justify-between items-start mb-8">
+          <div></div> {/* Spacer */}
+          <UserMenu 
+            user={user} 
+            onUserChange={setUser}
+            currentData={getCurrentData()}
+            onLoadCloudData={loadCloudData}
+            onSaveData={saveData}
+            onLoadLocalData={loadData}
+            onExportData={exportData}
+            onImportData={importData}
+          />
+        </div>
+
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2 text-red-400">Game of Vampires Calculator</h1>
@@ -1905,11 +1919,6 @@ export default function GameCalculator() {
             <p className="text-sm text-gray-400">
               Created by <span className="text-purple-400 font-semibold">@saka_kishiyami</span> on Discord
             </p>
-          </div>
-
-          {/* Authentication */}
-          <div className="mb-6">
-            <AuthComponent user={user} onUserChange={setUser} />
           </div>
 
           {/* VIP and Lord Level */}
@@ -1992,29 +2001,7 @@ export default function GameCalculator() {
             </Card>
           </div>
 
-          {/* Save/Load Controls */}
-          <div className="flex justify-center gap-4 mb-8">
-            <Button onClick={saveData} className="bg-green-600 hover:bg-green-700">
-              💾 Save Data
-            </Button>
-            <Button onClick={loadData} className="bg-blue-600 hover:bg-blue-700">
-              📁 Load Data
-            </Button>
-            <Button onClick={exportData} className="bg-purple-600 hover:bg-purple-700">
-              📤 Export to File
-            </Button>
-            <label className="inline-block">
-              <input
-                type="file"
-                accept=".json"
-                onChange={importData}
-                className="hidden"
-              />
-              <div className="bg-orange-600 hover:bg-orange-700 cursor-pointer px-4 py-2 rounded text-white font-medium transition-colors">
-                📥 Import from File
-              </div>
-            </label>
-          </div>
+
 
           {/* Base Attributes */}
           <div className="grid grid-cols-4 gap-4 mb-8">
@@ -2060,7 +2047,7 @@ export default function GameCalculator() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="aura-bonuses" className="w-full">
-          <TabsList className="grid w-full grid-cols-8 bg-gray-800 mb-6">
+          <TabsList className="grid w-full grid-cols-7 bg-gray-800 mb-6">
             <TabsTrigger value="aura-bonuses" className="data-[state=active]:bg-red-600">
               Aura Bonuses
             </TabsTrigger>
@@ -2078,9 +2065,6 @@ export default function GameCalculator() {
             </TabsTrigger>
             <TabsTrigger value="scarlet-bond" className="data-[state=active]:bg-red-600">
               Scarlet Bond
-            </TabsTrigger>
-            <TabsTrigger value="cloud-saves" className="data-[state=active]:bg-red-600">
-              ☁️ Cloud Saves
             </TabsTrigger>
             <TabsTrigger value="data" className="data-[state=active]:bg-red-600">
               Data
@@ -3550,17 +3534,6 @@ export default function GameCalculator() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          {/* Cloud Saves Tab */}
-          <TabsContent value="cloud-saves">
-            <div className="space-y-6">
-              <CloudSaveManager 
-                user={user} 
-                currentData={getCurrentData()} 
-                onLoadData={loadCloudData} 
-              />
-            </div>
           </TabsContent>
 
           {/* Data Tab */}
