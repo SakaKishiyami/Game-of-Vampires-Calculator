@@ -469,6 +469,64 @@ export default function GameCalculator() {
   // Warden attributes mapping for scarlet bonds (imported from @/data/wardens)
   // const wardenAttributes is imported
 
+  // Calculate individual scarlet bond attribute contributions
+  const calculateScarletBondContribution = (bondKey: string, attribute: string) => {
+    const currentBond = scarletBond[bondKey] || {}
+    const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+    
+    if (!bondData) return { flatBonus: 0, percentBonus: 0, totalBonus: 0 }
+    
+    // Use optimized levels if available, otherwise use manual input levels
+    const optimizedBond = optimizedBondLevels[bondKey] || currentBond
+    
+    let flatBonus = 0
+    let percentBonus = 0
+    
+    // Calculate flat bonus
+    const flatLevel = optimizedBond[`${attribute}Level`] || 0
+    if (flatLevel > 0) {
+      const levelData = scarletBondLevels.find(l => l.level === flatLevel)
+      if (levelData) {
+        if (bondData.type === 'All') {
+          flatBonus = levelData.all || 0
+        } else if (bondData.type === 'Dual') {
+          flatBonus = levelData.dual || 0
+        } else {
+          flatBonus = levelData.single || 0
+        }
+      }
+    }
+    
+    // Calculate percentage bonus (applied to the flat bonus amount)
+    const percentLevel = optimizedBond[`${attribute}Percent`] || 0
+    if (percentLevel > 0 && flatBonus > 0) {
+      const percentageValue = percentLevel / 100
+      percentBonus = percentageValue * flatBonus
+    }
+    
+    // Apply lover aura bonuses
+    let loverMultiplier = 1
+    if (attribute === 'strength' && hasAgneyi) {
+      const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+      loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
+    } else if (attribute === 'intellect' && hasCulann) {
+      const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+      loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
+    } else if (attribute === 'spirit' && hasHela) {
+      const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+      loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
+    }
+    
+    const totalBonus = (flatBonus + percentBonus) * loverMultiplier
+    
+    return { 
+      flatBonus: Math.round(flatBonus), 
+      percentBonus: Math.round(percentBonus * 100) / 100, 
+      totalBonus: Math.round(totalBonus), 
+      loverMultiplier: Math.round((loverMultiplier - 1) * 100) 
+    }
+  }
+
   // Calculate courtyard projected level
   const calculateMaxCourtyardLevel = () => {
     // Courtyard level data (imported from @/data/courtyard)
@@ -3458,8 +3516,21 @@ export default function GameCalculator() {
                                 const flatSuggestion = isMainStat ? suggestedUpgrades[`${attr}Level`] : null
                                 const percentSuggestion = isMainStat ? suggestedUpgrades[`${attr}Percent`] : null
                                 
+                                // Calculate the contribution for this attribute from this bond
+                                const contribution = calculateScarletBondContribution(bondKey, attr)
+                                
                                 return (
                                   <div key={attr} className="col-span-2">
+                                    {/* Total Current Amount - Above inputs */}
+                                    <div className="text-center mb-1">
+                                      <div className={`text-sm font-bold ${getAttributeColor(attr)}`}>
+                                        {contribution.totalBonus}
+                                      </div>
+                                      <div className="text-xs text-gray-400 capitalize">
+                                        {attr}
+                                      </div>
+                                    </div>
+                                    
                                     <div>
                                       <Label className={`capitalize text-xs ${getAttributeColor(attr)}`}>
                                         {attr} Flat
@@ -3520,6 +3591,15 @@ export default function GameCalculator() {
                                         )}
                                       </div>
                                     </div>
+                                    
+                                    {/* Bonus Amount - Below inputs */}
+                                    {contribution.loverMultiplier > 0 && (
+                                      <div className="text-center mt-1">
+                                        <div className="text-xs text-orange-400">
+                                          +{contribution.loverMultiplier}% lover bonus
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                 )
                               })}
