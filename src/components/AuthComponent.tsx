@@ -37,7 +37,7 @@ export default function AuthComponent({ user, onUserChange }: AuthComponentProps
     return (
       <div className="flex items-center gap-4 text-sm">
         <span className="text-green-400">
-          ✓ Signed in as {user.email}
+          ✓ Signed in as {user.user_metadata?.full_name || user.email}
         </span>
         <Button 
           onClick={handleSignOut}
@@ -55,7 +55,7 @@ export default function AuthComponent({ user, onUserChange }: AuthComponentProps
     return (
       <Card className="bg-gray-800/50 border-gray-600 max-w-md mx-auto">
         <CardHeader>
-          <CardTitle className="text-white text-center">Sign In for Cloud Saves</CardTitle>
+          <CardTitle className="text-white text-center">🎮 Sign In with Discord</CardTitle>
           <p className="text-gray-400 text-sm text-center">
             Save your calculator data to the cloud and access it from any device!
           </p>
@@ -80,7 +80,7 @@ export default function AuthComponent({ user, onUserChange }: AuthComponentProps
                 }
               }
             }}
-            providers={['google']}
+            providers={['discord']}
             redirectTo={`${window.location.origin}/auth/callback`}
           />
           <Button 
@@ -102,7 +102,7 @@ export default function AuthComponent({ user, onUserChange }: AuthComponentProps
         onClick={() => setShowAuth(true)}
         className="bg-purple-600 hover:bg-purple-700 text-white"
       >
-        🔒 Sign In for Cloud Saves
+🎮 Sign In with Discord
       </Button>
       <span className="text-xs text-gray-500">
         Save your data to the cloud!
