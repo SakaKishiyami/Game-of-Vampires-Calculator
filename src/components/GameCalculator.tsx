@@ -1,0 +1,3596 @@
+"use client"
+
+import React, { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+
+// Data imports
+import { initialBooks, bookBonuses, type BooksState, type BookCollection } from "@/data/books"
+import { initialAuras } from "@/data/auras"
+import { wardenGroups, wardenAttributes } from "@/data/wardens"
+import { scarletBondData, scarletBondLevels } from "@/data/scarletBonds"
+import { courtyardLevels } from "@/data/courtyard"
+import { conclaveLevels } from "@/data/conclave"
+import { domIncreasePerStarData } from "@/data/talent_stars"
+
+export default function GameCalculator() {
+  // Base attributes
+  const [baseAttributes, setBaseAttributes] = useState({
+    strength: 0,
+    allure: 0,
+    intellect: 0,
+    spirit: 0,
+  })
+
+  // VIP and Lord Level
+  const [vipLevel, setVipLevel] = useState(1)
+  const [lordLevel, setLordLevel] = useState("Fledgling 1")
+
+  const [books, setBooks] = useState<BooksState>(initialBooks);
+
+  // Book bonus values are now imported from @/data/books
+
+  // Conclave
+  const [conclave, setConclave] = useState({
+    "Seal of Strength": 0,
+    "Seal of Allure": 0,
+    "Seal of Intellect": 0,
+    "Seal of Spirit": 0,
+  })
+
+  // Conclave seal upgrade settings
+  const [conclaveUpgrade, setConclaveUpgrade] = useState({
+    savedSeals: 0,
+    upgradeSeals: {
+      "Seal of Strength": true,
+      "Seal of Allure": true,
+      "Seal of Intellect": true,
+      "Seal of Spirit": true,
+    }
+  })
+
+  // Dom increase per star data
+  const [domIncreasePerStar, setDomIncreasePerStar] = useState({
+    domIncreasePerStarData,
+    currentStrengthStars: 0,
+    currentAllureStars: 0,
+    currentIntellectStars: 0,
+    currentSpiritStars: 0,
+    currentTotalStars: 0,
+    currentTotalDomGain: 0,
+    currentTotalStrengthDomGain: 0,
+    currentTotalAllureDomGain: 0,
+    currentTotalIntellectDomGain: 0,
+    currentTotalSpiritDomGain: 0,
+    newStrengthStars: 0,
+    newAllureStars: 0,
+    newIntellectStars: 0,
+    newSpiritStars: 0,
+    newTotalStars: 0,
+    newTotalDomGain: 0,
+    newTotalStrengthDomGain: 0,
+    newTotalAllureDomGain: 0,
+    newTotalIntellectDomGain: 0,
+    newTotalSpiritDomGain: 0,
+  })
+
+  // Courtyard
+  const [courtyard, setCourtyard] = useState({
+    currentLevel: 1,
+    currentPoints: 0,
+  })
+
+  // Warden collections
+  const [wardenCounts, setWardenCounts] = useState({
+    circus: 0,
+    tyrants: 0,
+    noir: 0,
+    hunt: 0,
+  })
+
+  // Selected wardens
+  const [selectedWardens, setSelectedWardens] = useState({
+    circus: [],
+    tyrants: [],
+    noir: [],
+    hunt: [],
+  })
+
+  // Special wardens
+  const [hasNyx, setHasNyx] = useState(false)
+  const [hasDracula, setHasDracula] = useState(false)
+
+  // Warden stats
+  const [wardenStats, setWardenStats] = useState({})
+
+  // Scarlet bond - per attribute inputs
+  const [scarletBond, setScarletBond] = useState<{
+    [key: string]: {
+      strengthLevel?: number
+      strengthPercent?: number
+      allureLevel?: number
+      allurePercent?: number
+      intellectLevel?: number
+      intellectPercent?: number
+      spiritLevel?: number
+      spiritPercent?: number
+    }
+  }>({})
+  const [scarletBondAffinity, setScarletBondAffinity] = useState({})
+
+  // Optimized bond levels (for DOM calculation)
+  const [optimizedBondLevels, setOptimizedBondLevels] = useState<{
+    [key: string]: {
+      strengthLevel?: number
+      strengthPercent?: number
+      allureLevel?: number
+      allurePercent?: number
+      intellectLevel?: number
+      intellectPercent?: number
+      spiritLevel?: number
+      spiritPercent?: number
+    }
+  }>({})
+
+  // Additional Special Wardens (extending existing Nyx/Dracula)
+  const [hasVictor, setHasVictor] = useState(false)
+  const [hasFrederick, setHasFrederick] = useState(false)
+
+  // Lovers (need to be summoned)
+  const [hasAgneyi, setHasAgneyi] = useState(false)
+  const [hasCulann, setHasCulann] = useState(false)
+  const [hasHela, setHasHela] = useState(false)
+
+  // Auras - Comprehensive warden data structure (imported from @/data/auras)
+  const [auras, setAuras] = useState(initialAuras)
+
+  // Save/Load functionality
+  const saveData = () => {
+    const saveState = {
+      baseAttributes,
+      vipLevel,
+      lordLevel,
+      books,
+      conclave,
+      conclaveUpgrade,
+      domIncreasePerStar,
+      courtyard,
+      wardenCounts,
+      selectedWardens,
+      hasNyx,
+      hasDracula,
+      hasVictor,
+      hasFrederick,
+      hasAgneyi,
+      hasCulann,
+      hasHela,
+      auras,
+      wardenStats,
+      scarletBond,
+      scarletBondAffinity,
+      optimizedBondLevels,
+      timestamp: new Date().toISOString()
+    }
+    
+    try {
+      localStorage.setItem('gameCalculatorData', JSON.stringify(saveState))
+      alert('Data saved successfully!')
+    } catch (error) {
+      console.error('Failed to save data:', error)
+      alert('Failed to save data. Please try again.')
+    }
+  }
+
+  const loadData = () => {
+    try {
+      const savedData = localStorage.getItem('gameCalculatorData')
+      if (savedData) {
+        const parsedData = JSON.parse(savedData)
+        
+        // Load all the state
+        setBaseAttributes(parsedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
+        setVipLevel(parsedData.vipLevel || 1)
+        setLordLevel(parsedData.lordLevel || "Fledgling 1")
+        setBooks(parsedData.books || initialBooks)
+        setConclave(parsedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
+        setConclaveUpgrade(parsedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })
+        setDomIncreasePerStar(parsedData.domIncreasePerStar || domIncreasePerStarData)
+        setCourtyard(parsedData.courtyard || { currentLevel: 1, currentPoints: 0 })
+        setWardenCounts(parsedData.wardenCounts || { circus: 0, tyrants: 0, noir: 0, hunt: 0 })
+        setSelectedWardens(parsedData.selectedWardens || { circus: [], tyrants: [], noir: [], hunt: [] })
+        setHasNyx(parsedData.hasNyx || false)
+        setHasDracula(parsedData.hasDracula || false)
+        setHasVictor(parsedData.hasVictor || false)
+        setHasFrederick(parsedData.hasFrederick || false)
+        setHasAgneyi(parsedData.hasAgneyi || false)
+        setHasCulann(parsedData.hasCulann || false)
+        setHasHela(parsedData.hasHela || false)
+        setAuras(parsedData.auras || initialAuras)
+        setWardenStats(parsedData.wardenStats || {})
+        setScarletBond(parsedData.scarletBond || {})
+        setScarletBondAffinity(parsedData.scarletBondAffinity || {})
+        setOptimizedBondLevels(parsedData.optimizedBondLevels || {})
+        
+        alert(`Data loaded successfully! (Saved: ${new Date(parsedData.timestamp).toLocaleString()})`)
+      } else {
+        alert('No saved data found.')
+      }
+    } catch (error) {
+      console.error('Failed to load data:', error)
+      alert('Failed to load data. The saved data might be corrupted.')
+    }
+  }
+
+  const exportData = () => {
+    const saveState = {
+      baseAttributes,
+      vipLevel,
+      lordLevel,
+      books,
+      conclave,
+      conclaveUpgrade,
+      domIncreasePerStar,
+      courtyard,
+      wardenCounts,
+      selectedWardens,
+      hasNyx,
+      hasDracula,
+      hasVictor,
+      hasFrederick,
+      auras,
+      wardenStats,
+      scarletBond,
+      scarletBondAffinity,
+      optimizedBondLevels,
+      timestamp: new Date().toISOString()
+    }
+    
+    try {
+      const dataStr = JSON.stringify(saveState, null, 2)
+      const dataBlob = new Blob([dataStr], { type: 'application/json' })
+      const url = URL.createObjectURL(dataBlob)
+      
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `game-calculator-backup-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Failed to export data:', error)
+      alert('Failed to export data.')
+    }
+  }
+
+  const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const importedData = JSON.parse(e.target?.result as string)
+        
+        // Load all the state
+        setBaseAttributes(importedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
+        setVipLevel(importedData.vipLevel || 1)
+        setLordLevel(importedData.lordLevel || "Fledgling 1")
+        setBooks(importedData.books || initialBooks)
+        setConclave(importedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
+        setConclaveUpgrade(importedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })
+        setDomIncreasePerStar(importedData.domIncreasePerStar || domIncreasePerStarData)
+        setCourtyard(importedData.courtyard || { currentLevel: 1, currentPoints: 0 })
+        setWardenCounts(importedData.wardenCounts || { circus: 0, tyrants: 0, noir: 0, hunt: 0 })
+        setSelectedWardens(importedData.selectedWardens || { circus: [], tyrants: [], noir: [], hunt: [] })
+        setHasNyx(importedData.hasNyx || false)
+        setHasDracula(importedData.hasDracula || false)
+        setHasVictor(importedData.hasVictor || false)
+        setHasFrederick(importedData.hasFrederick || false)
+        setAuras(importedData.auras || initialAuras)
+        setWardenStats(importedData.wardenStats || {})
+        setScarletBond(importedData.scarletBond || {})
+        setScarletBondAffinity(importedData.scarletBondAffinity || {})
+        setOptimizedBondLevels(importedData.optimizedBondLevels || {})
+        
+        alert(`Data imported successfully! (From: ${new Date(importedData.timestamp).toLocaleString()})`)
+      } catch (error) {
+        console.error('Failed to import data:', error)
+        alert('Failed to import data. Please check the file format.')
+      }
+    }
+    reader.readAsText(file)
+    
+    // Reset the input
+    event.target.value = ''
+  }
+
+  // Auto-save functionality (save every 30 seconds if data has changed)
+  React.useEffect(() => {
+    const autoSaveInterval = setInterval(() => {
+      try {
+        const currentState = {
+          baseAttributes,
+          vipLevel,
+          lordLevel,
+          books,
+          conclave,
+          conclaveUpgrade,
+          domIncreasePerStar,
+          courtyard,
+          wardenCounts,
+          selectedWardens,
+          hasNyx,
+          hasDracula,
+          hasVictor,
+          hasFrederick,
+          hasAgneyi,
+          hasCulann,
+          hasHela,
+          auras,
+          wardenStats,
+          scarletBond,
+          scarletBondAffinity,
+          optimizedBondLevels
+        }
+        localStorage.setItem('gameCalculatorAutoSave', JSON.stringify(currentState))
+      } catch (error) {
+        console.error('Auto-save failed:', error)
+      }
+    }, 30000) // Auto-save every 30 seconds
+
+    return () => clearInterval(autoSaveInterval)
+  }, [baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade, domIncreasePerStar, courtyard, wardenCounts, selectedWardens, hasNyx, hasDracula, hasVictor, hasFrederick, auras, wardenStats, scarletBond, scarletBondAffinity, optimizedBondLevels])
+
+  // Load auto-saved data on component mount
+  React.useEffect(() => {
+    try {
+      const autoSavedData = localStorage.getItem('gameCalculatorAutoSave')
+      if (autoSavedData) {
+        const parsedData = JSON.parse(autoSavedData)
+        
+        // Only load if it's recent (within last 24 hours)
+        const lastSave = localStorage.getItem('gameCalculatorData')
+        if (!lastSave) {
+          // Load auto-saved data if no manual save exists
+          setBaseAttributes(parsedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
+          setVipLevel(parsedData.vipLevel || 1)
+          setLordLevel(parsedData.lordLevel || "Fledgling 1")
+          setBooks(parsedData.books || initialBooks)
+          setConclave(parsedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
+          setConclaveUpgrade(parsedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })
+          setCourtyard(parsedData.courtyard || { currentLevel: 1, currentPoints: 0 })
+          setWardenCounts(parsedData.wardenCounts || { circus: 0, tyrants: 0, noir: 0, hunt: 0 })
+          setSelectedWardens(parsedData.selectedWardens || { circus: [], tyrants: [], noir: [], hunt: [] })
+          setHasNyx(parsedData.hasNyx || false)
+          setHasDracula(parsedData.hasDracula || false)
+          setHasVictor(parsedData.hasVictor || false)
+          setHasFrederick(parsedData.hasFrederick || false)
+          setAuras(parsedData.auras || initialAuras)
+          setWardenStats(parsedData.wardenStats || {})
+          setScarletBond(parsedData.scarletBond || {})
+          setScarletBondAffinity(parsedData.scarletBondAffinity || {})
+          setOptimizedBondLevels(parsedData.optimizedBondLevels || {})
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load auto-saved data:', error)
+    }
+  }, [])
+
+  // Active warden subtab
+  const [activeWardenTab, setActiveWardenTab] = useState("summons")
+
+  // Warden data (imported from @/data/wardens)
+  // const wardenGroups is imported
+
+  // Scarlet bond data (imported from @/data/scarletBonds)
+  // const scarletBondData is imported
+
+  // Scarlet bond level progression data (imported from @/data/scarletBonds)
+  // const scarletBondLevels is imported
+
+  // Warden attributes mapping for scarlet bonds (imported from @/data/wardens)
+  // const wardenAttributes is imported
+
+  // Calculate courtyard projected level
+  const calculateMaxCourtyardLevel = () => {
+    // Courtyard level data (imported from @/data/courtyard)
+    // const courtyardLevels is imported
+
+    let availablePoints = courtyard.currentPoints
+    let currentLevel = courtyard.currentLevel
+
+    for (let i = currentLevel - 1; i < courtyardLevels.length; i++) {
+      const nextLevel = courtyardLevels[i]
+      if (availablePoints >= nextLevel.cost) {
+        availablePoints -= nextLevel.cost
+        currentLevel = nextLevel.level
+      } else {
+        break
+      }
+    }
+
+    return currentLevel
+  }
+
+  const projectedLevel = calculateMaxCourtyardLevel()
+
+  // Calculate DOM gain per star
+  const calculateDomGainPerStar = (level: number) => {
+    const data = domIncreasePerStarData.find(d => d.level === level)
+    if (!data) return 0
+    //calculate total dom gain per star
+    const totalStrength = data.constant * domIncreasePerStar.currentStrengthStars * auras.wildHunt.Rudra.baseValue
+    const totalAllure = data.constant * domIncreasePerStar.currentAllureStars * auras.wildHunt.Woden.baseValue
+    const totalIntellect = data.constant * domIncreasePerStar.currentIntellectStars * auras.wildHunt.Artemis.baseValue
+    const totalSpirit = data.constant * domIncreasePerStar.currentSpiritStars * auras.wildHunt.Finn.baseValue
+    const totalDomGain = totalStrength + totalAllure + totalIntellect + totalSpirit
+    return totalDomGain
+  }
+
+  // Calculate optimal bond upgrades for a given bond
+  const calculateOptimalBondUpgrades = (bondKey: string, availableAffinity: number) => {
+    const [lover, warden] = bondKey.split("-")
+    const wardenData = wardenAttributes[warden as keyof typeof wardenAttributes]
+    const currentBond = scarletBond[bondKey] || {}
+    const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+    
+    if (!wardenData || !bondData) {
+      return null
+    }
+    
+    // Get all possible bond types for this warden
+    const bondTypes = []
+    wardenData.forEach(attr => {
+      if (attr.toLowerCase() !== 'balance') {
+        bondTypes.push(`${attr.toLowerCase()}Level`)
+        bondTypes.push(`${attr.toLowerCase()}Percent`)
+      }
+    })
+    
+    // If warden has "All" type, add all attributes
+    if (wardenData.some(attr => attr === 'All')) {
+      bondTypes.push('strengthLevel', 'strengthPercent', 'allureLevel', 'allurePercent', 
+                    'intellectLevel', 'intellectPercent', 'spiritLevel', 'spiritPercent')
+    }
+    
+    // Calculate cost for each possible upgrade
+    const upgrades = []
+    bondTypes.forEach(bondType => {
+      const currentLevel = currentBond[bondType] || 0
+      if (currentLevel < 98) {
+        const nextLevel = currentLevel + 1
+        const levelData = scarletBondLevels.find(l => l.level === nextLevel)
+        if (levelData) {
+          let cost = 0
+          // Use the correct cost column based on bond type
+          if (bondData.type === 'All') {
+            cost = levelData.all_affinity || 0
+          } else if (bondData.type === 'Dual') {
+            cost = levelData.dual_affinity || 0
+          } else if (bondData.type === 'Single') {
+            cost = levelData.affinity || 0
+          } else {
+            cost = levelData.affinity || 0
+          }
+          
+          if (cost >= 0) { // Allow free upgrades (cost = 0)
+            upgrades.push({
+              bondType,
+              currentLevel,
+              newLevel: nextLevel,
+              cost,
+              domGain: calculateBondDomGain(bondType, currentLevel, nextLevel, bondKey)
+            })
+          }
+        }
+      }
+    })
+    
+    // Sort by DOM gain per cost (efficiency)
+    upgrades.sort((a, b) => {
+      if (a.cost === 0 && b.cost === 0) return b.domGain - a.domGain
+      if (a.cost === 0) return -1
+      if (b.cost === 0) return 1
+      return (b.domGain / b.cost) - (a.domGain / a.cost)
+    })
+    
+    // Apply upgrades within affinity budget
+    const appliedUpgrades = []
+    let remainingAffinity = availableAffinity
+    
+    for (const upgrade of upgrades) {
+      if (remainingAffinity >= upgrade.cost) {
+        appliedUpgrades.push(upgrade)
+        remainingAffinity -= upgrade.cost
+      }
+    }
+    
+    return appliedUpgrades
+  }
+
+  // Calculate suggested upgrades for display (doesn't apply them)
+  // ONLY suggests upgrades for main attributes, but all inputs are enabled
+  const calculateSuggestedUpgrades = (bondKey: string, availableAffinity: number) => {
+    const [lover, warden] = bondKey.split("-")
+    const wardenData = wardenAttributes[warden as keyof typeof wardenAttributes]
+    const currentBond = scarletBond[bondKey] || {}
+    const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+    
+    if (!wardenData || !bondData) {
+      return {}
+    }
+    
+    // Get bond types for optimization - ONLY MAIN ATTRIBUTES
+    const bondTypes = []
+    wardenData.forEach(attr => {
+      if (attr.toLowerCase() !== 'balance') {
+        bondTypes.push(`${attr.toLowerCase()}Level`)
+        bondTypes.push(`${attr.toLowerCase()}Percent`)
+      }
+    })
+    
+    // If warden has "All" type, add all attributes
+    if (wardenData.some(attr => attr === 'All')) {
+      bondTypes.push('strengthLevel', 'strengthPercent', 'allureLevel', 'allurePercent', 
+                    'intellectLevel', 'intellectPercent', 'spiritLevel', 'spiritPercent')
+    }
+    
+    // Calculate cost for each possible upgrade
+    const upgrades = []
+    bondTypes.forEach(bondType => {
+      const currentLevel = currentBond[bondType] || 0
+      if (currentLevel < 98) {
+        const nextLevel = currentLevel + 1
+        const levelData = scarletBondLevels.find(l => l.level === nextLevel)
+        if (levelData) {
+          let cost = 0
+          // Use the correct cost column based on bond type
+          if (bondData.type === 'All') {
+            cost = levelData.all_affinity || 0
+          } else if (bondData.type === 'Dual') {
+            cost = levelData.dual_affinity || 0
+          } else if (bondData.type === 'Single') {
+            cost = levelData.affinity || 0
+          } else {
+            cost = levelData.affinity || 0
+          }
+          
+          if (cost >= 0) { // Allow free upgrades (cost = 0)
+            upgrades.push({
+              bondType,
+              currentLevel,
+              newLevel: nextLevel,
+              cost,
+              domGain: calculateBondDomGain(bondType, currentLevel, nextLevel, bondKey)
+            })
+          }
+        }
+      }
+    })
+    
+    // Sort by DOM gain per cost (efficiency)
+    upgrades.sort((a, b) => {
+      if (a.cost === 0 && b.cost === 0) return b.domGain - a.domGain
+      if (a.cost === 0) return -1
+      if (b.cost === 0) return 1
+      return (b.domGain / b.cost) - (a.domGain / a.cost)
+    })
+    
+    // Find optimal upgrades within affinity budget - allow multiple levels per attribute
+    const suggestedUpgrades = {}
+    let remainingAffinity = availableAffinity
+    
+    // Create a map to track current levels for each bond type
+    const tempCurrentLevels = {}
+    bondTypes.forEach(bondType => {
+      tempCurrentLevels[bondType] = currentBond[bondType] || 0
+    })
+    
+    // Keep upgrading until we run out of affinity
+    let canAffordMore = true
+    while (canAffordMore && remainingAffinity > 0) {
+      canAffordMore = false
+      
+      // Recalculate upgrades based on current temp levels
+      const availableUpgrades = []
+      bondTypes.forEach(bondType => {
+        const tempCurrentLevel = tempCurrentLevels[bondType]
+        if (tempCurrentLevel < 98) {
+          const nextLevel = tempCurrentLevel + 1
+          const levelData = scarletBondLevels.find(l => l.level === nextLevel)
+          if (levelData) {
+            let cost = 0
+            if (bondData.type === 'All') {
+              cost = levelData.all_affinity || 0
+            } else if (bondData.type === 'Dual') {
+              cost = levelData.dual_affinity || 0
+            } else if (bondData.type === 'Single') {
+              cost = levelData.affinity || 0
+            } else {
+              cost = levelData.affinity || 0
+            }
+            
+            if (cost >= 0 && remainingAffinity >= cost) {
+              const domGain = calculateBondDomGain(bondType, tempCurrentLevel, nextLevel, bondKey)
+              availableUpgrades.push({
+                bondType,
+                currentLevel: tempCurrentLevel,
+                newLevel: nextLevel,
+                cost,
+                domGain,
+                efficiency: cost === 0 ? Infinity : domGain / cost
+              })
+            }
+          }
+        }
+      })
+      
+      // Sort by efficiency (DOM gain per cost)
+      availableUpgrades.sort((a, b) => {
+        if (a.cost === 0 && b.cost === 0) return b.domGain - a.domGain
+        if (a.cost === 0) return -1
+        if (b.cost === 0) return 1
+        return b.efficiency - a.efficiency
+      })
+      
+      // Apply the best upgrade if we can afford it
+      if (availableUpgrades.length > 0 && remainingAffinity >= availableUpgrades[0].cost) {
+        const bestUpgrade = availableUpgrades[0]
+        
+        // Update or create the suggested upgrade entry
+        if (!suggestedUpgrades[bestUpgrade.bondType]) {
+          suggestedUpgrades[bestUpgrade.bondType] = {
+            increase: 0,
+            newLevel: currentBond[bestUpgrade.bondType] || 0,
+            cost: 0,
+            domGain: 0
+          }
+        }
+        
+        // Add this upgrade to the suggestion
+        suggestedUpgrades[bestUpgrade.bondType].increase += 1
+        suggestedUpgrades[bestUpgrade.bondType].newLevel = bestUpgrade.newLevel
+        suggestedUpgrades[bestUpgrade.bondType].cost += bestUpgrade.cost
+        suggestedUpgrades[bestUpgrade.bondType].domGain += bestUpgrade.domGain
+        
+        // Update temp levels and remaining affinity
+        tempCurrentLevels[bestUpgrade.bondType] = bestUpgrade.newLevel
+        remainingAffinity -= bestUpgrade.cost
+        canAffordMore = true
+      }
+    }
+    
+    return suggestedUpgrades
+  }
+  
+  // Calculate DOM gain for a bond upgrade
+  const calculateBondDomGain = (bondType: string, currentLevel: number, newLevel: number, bondKey: string) => {
+    const attr = bondType.replace('Level', '').replace('Percent', '')
+    const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+    
+    if (bondType.endsWith('Level')) {
+      // Flat bonus - use correct bonus column based on bond type
+      const currentData = scarletBondLevels.find(l => l.level === currentLevel)
+      const newData = scarletBondLevels.find(l => l.level === newLevel)
+      
+      let currentBonus = 0
+      let newBonus = 0
+      
+      if (bondData?.type === 'All') {
+        currentBonus = currentData?.all || 0
+        newBonus = newData?.all || 0
+      } else if (bondData?.type === 'Dual') {
+        currentBonus = currentData?.dual || 0
+        newBonus = newData?.dual || 0
+      } else if (bondData?.type === 'Single') {
+        currentBonus = currentData?.single || 0
+        newBonus = newData?.single || 0
+      } else {
+        currentBonus = currentData?.single || 0
+        newBonus = newData?.single || 0
+      }
+      
+      return newBonus - currentBonus
+    } else if (bondType.endsWith('Percent')) {
+      // Percentage bonus - calculate based on the flat bonus amount
+      const currentBond = scarletBond[bondKey] || {}
+      const flatLevel = currentBond[`${attr}Level`] || 0
+      const flatData = scarletBondLevels.find(l => l.level === flatLevel)
+      
+      let flatBonus = 0
+      if (bondData?.type === 'All') {
+        flatBonus = flatData?.all || 0
+      } else if (bondData?.type === 'Dual') {
+        flatBonus = flatData?.dual || 0
+      } else {
+        flatBonus = flatData?.single || 0
+      }
+      
+      const currentPercentBonus = currentLevel * (flatBonus / 100)
+      const newPercentBonus = newLevel * (flatBonus / 100)
+      return newPercentBonus - currentPercentBonus
+    }
+    
+    return 0
+  }
+  
+  // Apply optimal upgrades to a bond
+  const applyOptimalUpgrades = (bondKey: string) => {
+    const availableAffinity = scarletBondAffinity[bondKey] || 0
+    
+    const optimalUpgrades = calculateOptimalBondUpgrades(bondKey, availableAffinity)
+    
+    if (!optimalUpgrades || optimalUpgrades.length === 0) {
+      return
+    }
+    
+    // Only update the optimized levels, not the manual input
+    const newOptimizedBond = { ...optimizedBondLevels[bondKey] }
+    let totalCost = 0
+    
+    optimalUpgrades.forEach(upgrade => {
+      newOptimizedBond[upgrade.bondType] = upgrade.newLevel
+      totalCost += upgrade.cost
+    })
+    
+    setOptimizedBondLevels(prev => ({
+      ...prev,
+      [bondKey]: newOptimizedBond
+    }))
+    
+    setScarletBondAffinity(prev => ({
+      ...prev,
+      [bondKey]: Math.max(0, (prev[bondKey] || 0) - totalCost)
+    }))
+  }
+
+  // Calculate courtyard DOM contribution
+  const calculateCourtyardDom = () => {
+    let strength = 0
+    let allure = 0
+    let intellect = 0
+    let spirit = 0
+
+    // Calculate DOM from current level to projected level
+    for (let level = courtyard.currentLevel; level < projectedLevel; level++) {
+      // Determine level type and attribute distribution based on level number
+      let levelType = "single"
+      let targetAttributes: string[] = []
+      
+      if (level % 7 === 0) {
+        // All levels (7, 14, 21, etc.)
+        levelType = "all"
+        targetAttributes = ["strength", "allure", "intellect", "spirit"]
+      } else if (level % 7 === 5 || level % 7 === 6) {
+        // Dual levels (5, 6, 12, 13, 19, 20, etc.)
+        levelType = "dual"
+        if (level % 7 === 5) {
+          targetAttributes = ["strength", "intellect"]
+        } else {
+          targetAttributes = ["allure", "spirit"]
+        }
+      } else {
+        // Single levels (1, 2, 3, 4, 8, 9, 10, 11, etc.)
+        levelType = "single"
+        const singleLevel = level % 7
+        if (singleLevel === 1) targetAttributes = ["strength"]
+        else if (singleLevel === 2) targetAttributes = ["allure"]
+        else if (singleLevel === 3) targetAttributes = ["intellect"]
+        else if (singleLevel === 4) targetAttributes = ["spirit"]
+      }
+
+      // Get points for this level (simplified - you'll need the full array)
+      let points = 500 // Base points for single levels
+      if (levelType === "dual") points = 1000 // x2 for dual
+      if (levelType === "all") points = 4000 // x4 for all
+
+      // Apply points to target attributes
+      targetAttributes.forEach(attr => {
+        if (attr === "strength") strength += points
+        if (attr === "allure") allure += points
+        if (attr === "intellect") intellect += points
+        if (attr === "spirit") spirit += points
+      })
+    }
+
+    return { strength, allure, intellect, spirit }
+  }
+
+  // Calculate conclave seal upgrade bonuses with optimal allocation
+  const calculateConclaveUpgrades = () => {
+    const sealTypes = ["Seal of Strength", "Seal of Allure", "Seal of Intellect", "Seal of Spirit"] as const
+    const availableSeals = conclaveUpgrade.savedSeals
+    
+    // Get all selected seals
+    const selectedSeals = sealTypes.filter(sealType => conclaveUpgrade.upgradeSeals[sealType])
+    
+    if (selectedSeals.length === 0 || availableSeals === 0) {
+      return {
+        totalCost: 0,
+        wardenBonuses: { strength: 0, allure: 0, intellect: 0, spirit: 0 },
+        bookMultipliers: { strength: 1, allure: 1, intellect: 1, spirit: 1 },
+        upgrades: [] as any[]
+      }
+    }
+
+    // Calculate warden counts for DOM efficiency calculation
+    const allWardens = [
+      ...wardenGroups.circus,
+      ...wardenGroups.tyrants,
+      ...wardenGroups.noir,
+      ...wardenGroups.hunt
+    ]
+    
+    const wardenCounts = { strength: 0, allure: 0, intellect: 0, spirit: 0 }
+    allWardens.forEach(warden => {
+      if (warden.attributes.includes("Strength")) wardenCounts.strength++
+      if (warden.attributes.includes("Allure")) wardenCounts.allure++
+      if (warden.attributes.includes("Intellect")) wardenCounts.intellect++
+      if (warden.attributes.includes("Spirit")) wardenCounts.spirit++
+      if (warden.attributes.includes("Balance")) {
+        wardenCounts.strength++
+        wardenCounts.allure++
+        wardenCounts.intellect++
+        wardenCounts.spirit++
+      }
+    })
+
+    // Calculate book values for DOM efficiency calculation
+    const bookValues = { strength: 0, allure: 0, intellect: 0, spirit: 0 }
+    Object.entries(books).forEach(([category, bookCollection]) => {
+      Object.entries(bookCollection).forEach(([bookName, count]) => {
+        const categoryBonuses = bookBonuses[category as keyof typeof bookBonuses]
+        const bookBonus = categoryBonuses ? categoryBonuses[bookName as keyof typeof categoryBonuses] || 0 : 0
+        const baseBonus = (count as number) * bookBonus
+        
+        if (category === "Strength" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
+          bookValues.strength += baseBonus
+        }
+        if (category === "Allure" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
+          bookValues.allure += baseBonus
+        }
+        if (category === "Intellect" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
+          bookValues.intellect += baseBonus
+        }
+        if (category === "Spirit" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
+          bookValues.spirit += baseBonus
+        }
+      })
+    })
+
+    // Create upgrade options for each seal
+    const upgradeOptions: any[] = []
+    
+    selectedSeals.forEach(sealType => {
+      const currentLevel = conclave[sealType]
+      const attribute = sealType.split(" ")[2].toLowerCase() as keyof typeof wardenCounts
+      
+      // Generate all possible upgrade levels for this seal
+      for (let targetLevel = currentLevel + 1; targetLevel <= conclaveLevels.length && targetLevel <= currentLevel + 20; targetLevel++) {
+        let totalCost = 0
+        let wardenBonus = 0
+        let bookMultiplier = 0
+        
+        // Calculate cost and bonuses for this upgrade
+        for (let level = currentLevel + 1; level <= targetLevel; level++) {
+          const levelData = conclaveLevels[level - 1]
+          if (!levelData) break
+          
+          totalCost += levelData.cost
+          wardenBonus += levelData.warden
+          bookMultiplier += levelData.books
+        }
+        
+        if (totalCost <= availableSeals) {
+          // Calculate DOM efficiency (DOM gained per seal spent)
+          const wardenDomGain = wardenBonus * wardenCounts[attribute]
+          const bookDomGain = bookValues[attribute] * bookMultiplier
+          const totalDomGain = wardenDomGain + bookDomGain
+          const efficiency = totalCost > 0 ? totalDomGain / totalCost : 0
+          
+          upgradeOptions.push({
+            sealType,
+            attribute,
+            currentLevel,
+            targetLevel,
+            cost: totalCost,
+            wardenBonus,
+            bookMultiplier,
+            domGain: totalDomGain,
+            efficiency
+          })
+        }
+      }
+    })
+
+    // Sort by efficiency (DOM per seal) descending
+    upgradeOptions.sort((a, b) => b.efficiency - a.efficiency)
+
+    // Greedily select the most efficient upgrades
+    const selectedUpgrades: any[] = []
+    let remainingSeals = availableSeals
+    const usedSeals = new Set<string>()
+
+    for (const option of upgradeOptions) {
+      // Skip if we already upgraded this seal or don't have enough seals
+      if (usedSeals.has(option.sealType) || option.cost > remainingSeals) continue
+      
+      selectedUpgrades.push(option)
+      remainingSeals -= option.cost
+      usedSeals.add(option.sealType)
+    }
+
+    // Compile results
+    const results = {
+      totalCost: availableSeals - remainingSeals,
+      wardenBonuses: { strength: 0, allure: 0, intellect: 0, spirit: 0 },
+      bookMultipliers: { strength: 1, allure: 1, intellect: 1, spirit: 1 },
+      upgrades: selectedUpgrades.map(upgrade => ({
+        sealType: upgrade.sealType,
+        currentLevel: upgrade.currentLevel,
+        targetLevel: upgrade.targetLevel,
+        cost: upgrade.cost,
+        wardenBonus: upgrade.wardenBonus,
+        bookMultiplier: upgrade.bookMultiplier * 100, // convert to percentage
+        domGain: upgrade.domGain,
+        efficiency: upgrade.efficiency
+      }))
+    }
+
+          // Calculate total bonuses
+    selectedUpgrades.forEach(upgrade => {
+      results.wardenBonuses[upgrade.attribute] = upgrade.wardenBonus
+      results.bookMultipliers[upgrade.attribute] = 1 + (upgrade.bookMultiplier / 100)
+    })
+
+    return results
+  }
+
+  // Calculate total conclave bonuses (current + potential upgrades)
+  const calculateTotalConclaveBonus = () => {
+    const sealTypes = ["Seal of Strength", "Seal of Allure", "Seal of Intellect", "Seal of Spirit"] as const
+    const currentBonuses = {
+      wardenBonuses: { strength: 0, allure: 0, intellect: 0, spirit: 0 },
+      bookMultipliers: { strength: 1, allure: 1, intellect: 1, spirit: 1 }
+    }
+
+    // Calculate current bonuses from existing seal levels
+    sealTypes.forEach(sealType => {
+      const currentLevel = conclave[sealType]
+      const attribute = sealType.split(" ")[2].toLowerCase() as keyof typeof currentBonuses.wardenBonuses
+      
+      let wardenBonus = 0
+      let bookMultiplier = 0
+
+      // Sum all bonuses from level 1 to current level
+      for (let level = 1; level <= currentLevel; level++) {
+        const levelData = conclaveLevels[level - 1] // levels are 1-indexed in data
+        if (levelData) {
+          wardenBonus += levelData.warden
+          bookMultiplier += levelData.books
+        }
+      }
+
+      currentBonuses.wardenBonuses[attribute] = wardenBonus
+      currentBonuses.bookMultipliers[attribute] = 1 + (bookMultiplier / 100)
+    })
+
+    return currentBonuses
+  }
+
+  // Calculate dynamic lover aura levels
+  const calculateLoverAuraLevels = () => {
+    const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+    const loverAuras = JSON.parse(JSON.stringify(auras.lovers))
+    
+    Object.entries(loverAuras).forEach(([loverName, loverData]) => {
+      let shouldHave = false
+      switch (loverName) {
+        case "Agneyi":
+          shouldHave = hasAgneyi
+          break
+        case "Culann":
+          shouldHave = hasCulann
+          break
+        case "Hela":
+          shouldHave = hasHela
+          break
+      }
+      
+      if (shouldHave && loverCount > 0) {
+        // Base 20% + 5% for each additional lover beyond the first
+        if (loverCount === 1) {
+          loverAuras[loverName].current = 20
+        } else if (loverCount === 2) {
+          loverAuras[loverName].current = 25
+        } else if (loverCount === 3) {
+          loverAuras[loverName].current = 30
+        }
+      } else {
+        loverAuras[loverName].current = 0
+      }
+    })
+    
+    return loverAuras
+  }
+
+  // Calculate dynamic aura levels based on selected wardens
+  const calculateDynamicAuraLevels = () => {
+    const dynamicAuras = JSON.parse(JSON.stringify(auras)) // Deep clone
+    
+    // Add lover auras
+    dynamicAuras.lovers = calculateLoverAuraLevels()
+    
+    // Wild Hunt Wardens - start at 9, add 1 for each additional warden
+    const selectedWildHunt = selectedWardens.hunt || []
+    const wildHuntCount = selectedWildHunt.length
+    const wildHuntBaseLevel = wildHuntCount > 0 ? 9 : 0
+    const wildHuntBonus = Math.max(0, wildHuntCount - 1)
+    
+    const wildHuntNames = ["Rudra", "Woden", "Artemis", "Finn"]
+    wildHuntNames.forEach(name => {
+      if (selectedWildHunt.includes(name)) {
+        dynamicAuras.wildHunt[name].current = wildHuntBaseLevel + wildHuntBonus
+      } else {
+        dynamicAuras.wildHunt[name].current = 0
+      }
+    })
+    
+    // Monster Noir Wardens - start at 9, add 1 for each additional warden
+    const selectedMonsterNoir = selectedWardens.noir || []
+    const monsterNoirCount = selectedMonsterNoir.length
+    const monsterNoirBaseLevel = monsterNoirCount > 0 ? 9 : 0
+    const monsterNoirBonus = Math.max(0, monsterNoirCount - 1)
+    
+    const monsterNoirNames = ["Eddie", "Scarlet", "Sam", "Grendel"]
+    monsterNoirNames.forEach(name => {
+      if (selectedMonsterNoir.includes(name)) {
+        dynamicAuras.monsterNoir[name].current = monsterNoirBaseLevel + monsterNoirBonus
+      } else {
+        dynamicAuras.monsterNoir[name].current = 0
+      }
+    })
+    
+    // Bloody Tyrants Wardens - start at 10, add 1 for each additional warden
+    const selectedBloodyTyrants = selectedWardens.tyrants || []
+    const bloodyTyrantsCount = selectedBloodyTyrants.length
+    const bloodyTyrantsBaseLevel = bloodyTyrantsCount > 0 ? 10 : 0
+    const bloodyTyrantsBonus = Math.max(0, bloodyTyrantsCount - 1)
+    
+    const bloodyTyrantsNames = ["Cesare", "Max", "Erzsebet", "Ivan", "Maria"]
+    bloodyTyrantsNames.forEach(name => {
+      if (selectedBloodyTyrants.includes(name)) {
+        if (name === "Maria") {
+          // Maria starts at 5, adds 0.5 for each additional warden
+          dynamicAuras.bloodyTyrants[name].current = bloodyTyrantsCount > 0 ? 5 + (bloodyTyrantsBonus * 0.5) : 0
+        } else {
+          dynamicAuras.bloodyTyrants[name].current = bloodyTyrantsBaseLevel + bloodyTyrantsBonus
+        }
+      } else {
+        dynamicAuras.bloodyTyrants[name].current = 0
+      }
+    })
+    
+    // Cirque du Macabre Wardens - start at 10, add 1 for each additional warden
+    const selectedCircus = selectedWardens.circus || []
+    const circusCount = selectedCircus.length
+    const circusBaseLevel = circusCount > 0 ? 10 : 0
+    const circusBonus = Math.max(0, circusCount - 1)
+    
+    const circusNames = ["Thorgrim", "Naja", "Diavolo", "Jester", "Dominique"]
+    circusNames.forEach(name => {
+      if (selectedCircus.includes(name)) {
+        if (name === "Dominique") {
+          // Dominique starts at 5, adds 0.5 for each additional warden
+          dynamicAuras.cirque[name].current = circusCount > 0 ? 5 + (circusBonus * 0.5) : 0
+        } else {
+          dynamicAuras.cirque[name].current = circusBaseLevel + circusBonus
+        }
+      } else {
+        dynamicAuras.cirque[name].current = 0
+      }
+    })
+    
+    return dynamicAuras
+  }
+
+  // Calculate aura bonuses
+  const calculateAuraBonuses = () => {
+    const dynamicAuras = calculateDynamicAuraLevels()
+    const bonuses = {
+      talents: {
+        strength: 100, // Base 100%
+        allure: 100,
+        intellect: 100,
+        spirit: 100,
+        all: 100
+      },
+      books: {
+        strength: 100, // Base 100%
+        allure: 100,
+        intellect: 100,
+        spirit: 100,
+        all: 100
+      }
+    }
+
+    // Wild Hunt Wardens - Talent bonuses
+    const wildHuntWardens = dynamicAuras.wildHunt
+    Object.entries(wildHuntWardens).forEach(([wardenName, wardenData]) => {
+      const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
+      
+      switch (wardenName) {
+        case "Rudra":
+          bonuses.talents.strength += currentBonus
+          break
+        case "Woden":
+          bonuses.talents.allure += currentBonus
+          break
+        case "Artemis":
+          bonuses.talents.intellect += currentBonus
+          break
+        case "Finn":
+          bonuses.talents.spirit += currentBonus
+          break
+      }
+    })
+
+    // Monster Noir Wardens - Book bonuses
+    const monsterNoirWardens = dynamicAuras.monsterNoir
+    Object.entries(monsterNoirWardens).forEach(([wardenName, wardenData]) => {
+      const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
+      
+      switch (wardenName) {
+        case "Eddie":
+          bonuses.books.strength += currentBonus
+          break
+        case "Scarlet":
+          bonuses.books.allure += currentBonus
+          break
+        case "Sam":
+          bonuses.books.intellect += currentBonus
+          break
+        case "Grendel":
+          bonuses.books.spirit += currentBonus
+          break
+      }
+    })
+
+    // Bloody Tyrants Wardens - Dual book bonuses
+    const bloodyTyrantsWardens = dynamicAuras.bloodyTyrants
+    Object.entries(bloodyTyrantsWardens).forEach(([wardenName, wardenData]) => {
+      const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
+      
+      switch (wardenName) {
+        case "Cesare": // Strength/Intellect Books
+          bonuses.books.strength += currentBonus
+          bonuses.books.intellect += currentBonus
+          break
+        case "Max": // Strength/Spirit Books
+          bonuses.books.strength += currentBonus
+          bonuses.books.spirit += currentBonus
+          break
+        case "Erzsebet": // Allure/Intellect Books
+          bonuses.books.allure += currentBonus
+          bonuses.books.intellect += currentBonus
+          break
+        case "Ivan": // Allure/Spirit Books
+          bonuses.books.allure += currentBonus
+          bonuses.books.spirit += currentBonus
+          break
+        case "Maria": // All Talent
+          bonuses.talents.all += currentBonus
+          break
+      }
+    })
+
+    // Cirque du Macabre Wardens - Dual book bonuses
+    const cirqueWardens = dynamicAuras.cirque
+    Object.entries(cirqueWardens).forEach(([wardenName, wardenData]) => {
+      const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
+      
+      switch (wardenName) {
+        case "Thorgrim": // Strength/Intellect Books
+          bonuses.books.strength += currentBonus
+          bonuses.books.intellect += currentBonus
+          break
+        case "Naja": // Allure/Spirit Books
+          bonuses.books.allure += currentBonus
+          bonuses.books.spirit += currentBonus
+          break
+        case "Diavolo": // Strength/Spirit Books
+          bonuses.books.strength += currentBonus
+          bonuses.books.spirit += currentBonus
+          break
+        case "Jester": // Allure/Intellect Books
+          bonuses.books.allure += currentBonus
+          bonuses.books.intellect += currentBonus
+          break
+        case "Dominique": // All Books
+          bonuses.books.all += currentBonus
+          break
+      }
+    })
+
+    // Secondary Auras - upgradeable skills (0-20 levels, 1% per level)
+    if (auras.secondaryAuras) {
+      // Wild Hunt Secondary Auras - Talent bonuses
+      Object.entries(auras.secondaryAuras.wildHunt).forEach(([wardenName, wardenData]) => {
+        const currentBonus = wardenData.baseValue + wardenData.current * wardenData.increment
+        
+        switch (wardenName) {
+          case "Rudra":
+            bonuses.talents.strength += currentBonus
+            break
+          case "Woden":
+            bonuses.talents.allure += currentBonus
+            break
+          case "Artemis":
+            bonuses.talents.intellect += currentBonus
+            break
+          case "Finn":
+            bonuses.talents.spirit += currentBonus
+            break
+        }
+      })
+
+      // Monster Noir Secondary Auras - Book bonuses
+      Object.entries(auras.secondaryAuras.monsterNoir).forEach(([wardenName, wardenData]) => {
+        const currentBonus = wardenData.baseValue + wardenData.current * wardenData.increment
+        
+        switch (wardenName) {
+          case "Eddie":
+            bonuses.books.strength += currentBonus
+            break
+          case "Scarlet":
+            bonuses.books.allure += currentBonus
+            break
+          case "Sam":
+            bonuses.books.intellect += currentBonus
+            break
+          case "Grendel":
+            bonuses.books.spirit += currentBonus
+            break
+        }
+      })
+
+      // Bloody Tyrants Secondary Auras - Dual book bonuses
+      Object.entries(auras.secondaryAuras.bloodyTyrants).forEach(([wardenName, wardenData]) => {
+        const currentBonus = wardenData.baseValue + wardenData.current * wardenData.increment
+        
+        switch (wardenName) {
+          case "Cesare": // Strength/Intellect Books
+            bonuses.books.strength += currentBonus
+            bonuses.books.intellect += currentBonus
+            break
+          case "Max": // Strength/Spirit Books
+            bonuses.books.strength += currentBonus
+            bonuses.books.spirit += currentBonus
+            break
+          case "Erzsebet": // Allure/Intellect Books
+            bonuses.books.allure += currentBonus
+            bonuses.books.intellect += currentBonus
+            break
+          case "Ivan": // Allure/Spirit Books
+            bonuses.books.allure += currentBonus
+            bonuses.books.spirit += currentBonus
+            break
+          case "Maria": // All Talent
+            bonuses.talents.all += currentBonus
+            break
+        }
+      })
+
+      // Cirque Secondary Auras - Dual book bonuses
+      Object.entries(auras.secondaryAuras.cirque).forEach(([wardenName, wardenData]) => {
+        const currentBonus = wardenData.baseValue + wardenData.current * wardenData.increment
+        
+        switch (wardenName) {
+          case "Thorgrim": // Strength/Intellect Books
+            bonuses.books.strength += currentBonus
+            bonuses.books.intellect += currentBonus
+            break
+          case "Naja": // Allure/Spirit Books
+            bonuses.books.allure += currentBonus
+            bonuses.books.spirit += currentBonus
+            break
+          case "Diavolo": // Strength/Spirit Books
+            bonuses.books.strength += currentBonus
+            bonuses.books.spirit += currentBonus
+            break
+          case "Jester": // Allure/Intellect Books
+            bonuses.books.allure += currentBonus
+            bonuses.books.intellect += currentBonus
+            break
+          case "Dominique": // All Books
+            bonuses.books.all += currentBonus
+            break
+        }
+      })
+    }
+
+
+
+    // VIP Wardens
+    const vipWardens = auras.vip
+    Object.entries(vipWardens).forEach(([wardenName, wardenData]) => {
+      if (vipLevel >= wardenData.vipRequired) {
+        if (wardenData.talents && wardenData.books) {
+          // Multi-bonus wardens (Poe, Damian, Vance, Diana)
+          switch (wardenName) {
+            case "Poe":
+              bonuses.talents.all += wardenData.talents.current
+              bonuses.books.all += wardenData.books.current
+              break
+            case "Damian":
+              bonuses.talents.all += wardenData.talents.current
+              bonuses.books.all += wardenData.books.current
+              break
+            case "Vance":
+              bonuses.talents.all += wardenData.talents.current
+              bonuses.books.all += wardenData.books.current
+              break
+            case "Diana":
+              bonuses.talents.all += wardenData.talents.current
+              bonuses.books.all += wardenData.books.current
+              break
+          }
+        } else {
+          // Single bonus wardens
+          switch (wardenName) {
+            case "Tomas": // Strength/Intellect Talent
+              bonuses.talents.strength += wardenData.current
+              bonuses.talents.intellect += wardenData.current
+              break
+            case "Cleo": // Allure/Spirit Talent
+              bonuses.talents.allure += wardenData.current
+              bonuses.talents.spirit += wardenData.current
+              break
+            case "Aurelia": // Strength/Spirit Talent
+              bonuses.talents.strength += wardenData.current
+              bonuses.talents.spirit += wardenData.current
+              break
+            case "William": // Allure/Intellect Talent
+              bonuses.talents.allure += wardenData.current
+              bonuses.talents.intellect += wardenData.current
+              break
+          }
+        }
+      }
+    })
+
+    // Paid Pack Wardens
+    if (hasVictor) {
+      bonuses.talents.strength += auras.paidPacks.Victor.current
+    }
+    if (hasFrederick) {
+      bonuses.talents.allure += auras.paidPacks.Frederick.talents.current
+      const frederickBooksBonus = auras.paidPacks.Frederick.books.baseValue + 
+        (auras.paidPacks.Frederick.books.current - 1) * auras.paidPacks.Frederick.books.increment
+      bonuses.books.allure += frederickBooksBonus
+    }
+
+    // Special Wardens
+    if (hasDracula) {
+      bonuses.talents.all += auras.special.Dracula.talents.current
+      bonuses.books.all += auras.special.Dracula.books.current
+    }
+    if (hasNyx) {
+      bonuses.talents.all += auras.special.Nyx.talents.current
+      bonuses.books.all += auras.special.Nyx.books.current
+    }
+
+    // Apply "All" bonuses to individual attributes
+    const finalBonuses = {
+      talents: {
+        strength: bonuses.talents.strength + bonuses.talents.all - 100, // Subtract 100 since we already added it to base
+        allure: bonuses.talents.allure + bonuses.talents.all - 100,
+        intellect: bonuses.talents.intellect + bonuses.talents.all - 100,
+        spirit: bonuses.talents.spirit + bonuses.talents.all - 100
+      },
+      books: {
+        strength: bonuses.books.strength + bonuses.books.all - 100,
+        allure: bonuses.books.allure + bonuses.books.all - 100,
+        intellect: bonuses.books.intellect + bonuses.books.all - 100,
+        spirit: bonuses.books.spirit + bonuses.books.all - 100
+      }
+    }
+
+    return finalBonuses
+  }
+
+  // Calculate totals
+  const calculateTotals = () => {
+    let totalStrength = baseAttributes.strength
+    let totalAllure = baseAttributes.allure
+    let totalIntellect = baseAttributes.intellect
+    let totalSpirit = baseAttributes.spirit
+
+    // Get current conclave bonuses
+    const conclaveBonus = calculateTotalConclaveBonus()
+
+    // Add book bonuses with conclave multipliers
+    Object.entries(books).forEach(([category, bookCollection]) => {
+      Object.entries(bookCollection).forEach(([bookName, count]) => {
+        const categoryBonuses = bookBonuses[category as keyof typeof bookBonuses]
+        const bookBonus = categoryBonuses ? categoryBonuses[bookName as keyof typeof categoryBonuses] || 0 : 0
+        const baseBonus = (count as number) * bookBonus
+        
+        if (category === "Strength" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
+          const multiplier = bookName.includes("Encyclopedia") || bookName.includes("Arcana") 
+            ? Math.max(conclaveBonus.bookMultipliers.strength, conclaveBonus.bookMultipliers.allure, conclaveBonus.bookMultipliers.intellect, conclaveBonus.bookMultipliers.spirit)
+            : conclaveBonus.bookMultipliers.strength
+          totalStrength += baseBonus * multiplier
+        }
+        if (category === "Allure" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
+          const multiplier = bookName.includes("Encyclopedia") || bookName.includes("Arcana")
+            ? Math.max(conclaveBonus.bookMultipliers.strength, conclaveBonus.bookMultipliers.allure, conclaveBonus.bookMultipliers.intellect, conclaveBonus.bookMultipliers.spirit)
+            : conclaveBonus.bookMultipliers.allure
+          totalAllure += baseBonus * multiplier
+        }
+        if (category === "Intellect" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
+          const multiplier = bookName.includes("Encyclopedia") || bookName.includes("Arcana")
+            ? Math.max(conclaveBonus.bookMultipliers.strength, conclaveBonus.bookMultipliers.allure, conclaveBonus.bookMultipliers.intellect, conclaveBonus.bookMultipliers.spirit)
+            : conclaveBonus.bookMultipliers.intellect
+          totalIntellect += baseBonus * multiplier
+        }
+        if (category === "Spirit" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
+          const multiplier = bookName.includes("Encyclopedia") || bookName.includes("Arcana")
+            ? Math.max(conclaveBonus.bookMultipliers.strength, conclaveBonus.bookMultipliers.allure, conclaveBonus.bookMultipliers.intellect, conclaveBonus.bookMultipliers.spirit)
+            : conclaveBonus.bookMultipliers.spirit
+          totalSpirit += baseBonus * multiplier
+        }
+      })
+    })
+
+    // Add conclave bonuses
+    totalStrength += conclave["Seal of Strength"]
+    totalAllure += conclave["Seal of Allure"]
+    totalIntellect += conclave["Seal of Intellect"]
+    totalSpirit += conclave["Seal of Spirit"]
+
+    // Add conclave warden bonuses
+    const allWardens = [
+      ...wardenGroups.circus,
+      ...wardenGroups.tyrants,
+      ...wardenGroups.noir,
+      ...wardenGroups.hunt
+    ]
+    
+    // Count wardens by attribute and multiply by conclave bonus
+    const wardenCounts = { strength: 0, allure: 0, intellect: 0, spirit: 0 }
+    allWardens.forEach(warden => {
+      if (warden.attributes.includes("Strength")) wardenCounts.strength++
+      if (warden.attributes.includes("Allure")) wardenCounts.allure++
+      if (warden.attributes.includes("Intellect")) wardenCounts.intellect++
+      if (warden.attributes.includes("Spirit")) wardenCounts.spirit++
+    })
+
+    totalStrength += wardenCounts.strength * conclaveBonus.wardenBonuses.strength
+    totalAllure += wardenCounts.allure * conclaveBonus.wardenBonuses.allure
+    totalIntellect += wardenCounts.intellect * conclaveBonus.wardenBonuses.intellect
+    totalSpirit += wardenCounts.spirit * conclaveBonus.wardenBonuses.spirit
+
+    // Add warden stat bonuses
+    Object.values(wardenStats).forEach((stats: any) => {
+      if (stats) {
+        totalStrength += stats.strength || 0
+        totalAllure += stats.allure || 0
+        totalIntellect += stats.intellect || 0
+        totalSpirit += stats.spirit || 0
+      }
+    })
+
+    // Add scarlet bond bonuses
+    Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
+      if (bond) {
+        // Find the warden for this bond
+        const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+        if (bondData) {
+          const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
+          
+          // Use optimized levels if available, otherwise use manual input levels
+          const optimizedBond = optimizedBondLevels[bondKey] || bond
+          
+          // Calculate flat bonuses for each attribute
+          if (optimizedBond.strengthLevel && optimizedBond.strengthLevel > 0) {
+            const levelData = scarletBondLevels.find(l => l.level === optimizedBond.strengthLevel)
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              totalStrength += flatBonus
+            }
+          }
+          
+          if (optimizedBond.strengthPercent && optimizedBond.strengthPercent > 0) {
+            // Calculate percentage bonus based on the flat bonus amount
+            const flatLevelData = scarletBondLevels.find(l => l.level === (optimizedBond.strengthLevel || 0))
+            if (flatLevelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = flatLevelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = flatLevelData.dual || 0
+              } else {
+                flatBonus = flatLevelData.single || 0
+              }
+              const percentBonus = 1 + ((optimizedBond.strengthPercent || 0)/100) * flatBonus
+              totalStrength += percentBonus
+            }
+          }
+          
+          if (optimizedBond.allureLevel && optimizedBond.allureLevel > 0) {
+            const levelData = scarletBondLevels.find(l => l.level === optimizedBond.allureLevel)
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              totalAllure += flatBonus
+            }
+          }
+          
+          if (optimizedBond.allurePercent && optimizedBond.allurePercent > 0) {
+            // Calculate percentage bonus based on the flat bonus amount
+            const levelData = scarletBondLevels.find(l => l.level === (optimizedBond.allureLevel || 0))
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              const percentBonus = 1 + ((optimizedBond.allurePercent || 0)/100) * flatBonus
+              totalAllure += percentBonus
+            }
+          }
+          
+          if (optimizedBond.intellectLevel && optimizedBond.intellectLevel > 0) {
+            const levelData = scarletBondLevels.find(l => l.level === optimizedBond.intellectLevel)
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              totalIntellect += flatBonus
+            }
+          }
+          
+          if (optimizedBond.intellectPercent && optimizedBond.intellectPercent > 0) {
+            // Calculate percentage bonus based on the flat bonus amount
+            const levelData = scarletBondLevels.find(l => l.level === (optimizedBond.intellectLevel || 0))
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              const percentBonus = 1 + ((optimizedBond.intellectPercent || 0)/100) * flatBonus
+              totalIntellect += percentBonus
+            }
+          }
+          
+          if (optimizedBond.spiritLevel && optimizedBond.spiritLevel > 0) {
+            const levelData = scarletBondLevels.find(l => l.level === optimizedBond.spiritLevel)
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              totalSpirit += flatBonus
+            }
+          }
+          
+          if (optimizedBond.spiritPercent && optimizedBond.spiritPercent > 0) {
+            // Calculate percentage bonus based on the flat bonus amount
+            const levelData = scarletBondLevels.find(l => l.level === (optimizedBond.spiritLevel || 0))
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              const percentBonus = 1 + ((optimizedBond.spiritPercent || 0)/100) * flatBonus
+              totalSpirit += percentBonus
+            }
+          }
+        }
+      }
+    })
+
+    // Apply lover aura bonuses to scarlet bond bonuses
+    const dynamicAuras = calculateDynamicAuraLevels()
+    if (dynamicAuras.lovers) {
+      Object.entries(dynamicAuras.lovers).forEach(([loverName, loverData]) => {
+        const multiplier = loverData.current / 100
+        
+        if (multiplier > 0) {
+          // Apply lover aura bonuses to ALL scarlet bond bonuses for that attribute
+          switch (loverName) {
+            case "Agneyi": // Strength
+              // Find all strength bonuses from scarlet bonds and multiply by aura
+              Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
+                if (bond) {
+                  const optimizedBond = optimizedBondLevels[bondKey] || bond
+                  const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+                  if (bondData && optimizedBond.strengthLevel) {
+                    const levelData = scarletBondLevels.find(l => l.level === optimizedBond.strengthLevel)
+                    if (levelData) {
+                      let flatBonus = 0
+                      if (bondData.type === 'All') {
+                        flatBonus = levelData.all || 0
+                      } else if (bondData.type === 'Dual') {
+                        flatBonus = levelData.dual || 0
+                      } else {
+                        flatBonus = levelData.single || 0
+                      }
+                      totalStrength += flatBonus * multiplier
+                    }
+                  }
+                }
+              })
+              break
+            case "Culann": // Intellect
+              Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
+                if (bond) {
+                  const optimizedBond = optimizedBondLevels[bondKey] || bond
+                  const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+                  if (bondData && optimizedBond.intellectLevel) {
+                    const levelData = scarletBondLevels.find(l => l.level === optimizedBond.intellectLevel)
+                    if (levelData) {
+                      let flatBonus = 0
+                      if (bondData.type === 'All') {
+                        flatBonus = levelData.all || 0
+                      } else if (bondData.type === 'Dual') {
+                        flatBonus = levelData.dual || 0
+                      } else {
+                        flatBonus = levelData.single || 0
+                      }
+                      totalIntellect += flatBonus * multiplier
+                    }
+                  }
+                }
+              })
+              break
+            case "Hela": // Spirit
+              Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
+                if (bond) {
+                  const optimizedBond = optimizedBondLevels[bondKey] || bond
+                  const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+                  if (bondData && optimizedBond.spiritLevel) {
+                    const levelData = scarletBondLevels.find(l => l.level === optimizedBond.spiritLevel)
+                    if (levelData) {
+                      let flatBonus = 0
+                      if (bondData.type === 'All') {
+                        flatBonus = levelData.all || 0
+                      } else if (bondData.type === 'Dual') {
+                        flatBonus = levelData.dual || 0
+                      } else {
+                        flatBonus = levelData.single || 0
+                      }
+                      totalSpirit += flatBonus * multiplier
+                    }
+                  }
+                }
+              })
+              break
+          }
+        }
+      })
+    }
+
+    // Add courtyard DOM contribution
+    const courtyardDom = calculateCourtyardDom()
+    totalStrength += courtyardDom.strength
+    totalAllure += courtyardDom.allure
+    totalIntellect += courtyardDom.intellect
+    totalSpirit += courtyardDom.spirit
+
+    const totalDom = totalStrength + totalAllure + totalIntellect + totalSpirit
+    const baseDom = baseAttributes.strength + baseAttributes.allure + baseAttributes.intellect + baseAttributes.spirit
+    const domIncrease = totalDom - baseDom
+
+    return {
+      totalStrength,
+      totalAllure,
+      totalIntellect,
+      totalSpirit,
+      totalDom,
+      baseDom,
+      domIncrease,
+    }
+  }
+
+  const totals = calculateTotals()
+  const dynamicAuras = calculateDynamicAuraLevels()
+  const auraBonuses = calculateAuraBonuses()
+
+  // Get attribute colors
+  const getAttributeColor = (attribute: string) => {
+    switch (attribute.toLowerCase()) {
+      case "strength":
+        return "text-red-400"
+      case "allure":
+        return "text-purple-400"
+      case "intellect":
+        return "text-green-400"
+      case "spirit":
+        return "text-blue-400"
+      case "balance":
+        return "text-yellow-400"
+      default:
+        return "text-gray-400"
+    }
+  }
+
+  const getAttributeBg = (attribute: string) => {
+    switch (attribute.toLowerCase()) {
+      case "strength":
+        return "bg-red-500/20 border-red-500/30"
+      case "allure":
+        return "bg-purple-500/20 border-purple-500/30"
+      case "intellect":
+        return "bg-green-500/20 border-green-500/30"
+      case "spirit":
+        return "bg-blue-500/20 border-blue-500/30"
+      case "balance":
+        return "bg-yellow-500/20 border-yellow-500/30"
+      default:
+        return "bg-gray-500/20 border-gray-500/30"
+    }
+  }
+
+  // Render stars
+  const renderStars = (tier: number) => {
+    return (
+      <div className="flex">
+        {[...Array(5)].map((_, i) => (
+          <span key={i} className={`text-lg ${i < tier ? "text-yellow-400" : "text-gray-600"}`}>
+            ★
+          </span>
+        ))}
+      </div>
+    )
+  }
+
+  // Handle warden selection
+  const handleWardenSelection = (group: string, warden: string) => {
+    setSelectedWardens((prev: any) => {
+      const currentSelected = prev[group] || []
+      const isSelected = currentSelected.includes(warden)
+
+      if (isSelected) {
+        return {
+          ...prev,
+          [group]: currentSelected.filter((w: string) => w !== warden),
+        }
+      } else if (currentSelected.length < wardenCounts[group as keyof typeof wardenCounts]) {
+        return {
+          ...prev,
+          [group]: [...currentSelected, warden],
+        }
+      }
+      return prev
+    })
+  }
+
+  // Get all selected wardens flattened
+  const getAllSelectedWardens = () => {
+    const allSelected: any[] = []
+    Object.entries(selectedWardens).forEach(([group, wardens]) => {
+      wardens.forEach((wardenName: string) => {
+        const wardenData = wardenGroups[group as keyof typeof wardenGroups]?.find((w) => w.name === wardenName)
+        if (wardenData) {
+          allSelected.push({ ...wardenData, group })
+        }
+      })
+    })
+    if (hasNyx) allSelected.push({ name: "Nyx", attributes: ["Balance"], tier: 5, group: "special" })
+    if (hasDracula) allSelected.push({ name: "Dracula", attributes: ["Balance"], tier: 5, group: "special" })
+    return allSelected
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black text-white p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-4 text-red-400">Game of Vampires Calculator</h1>
+
+          {/* VIP and Lord Level */}
+          <div className="flex justify-center gap-8 mb-6">
+            <div>
+              <Label className="text-white">VIP Level (1-12)</Label>
+              <Input
+                type="number"
+                min="1"
+                max="12"
+                value={vipLevel}
+                onChange={(e) => setVipLevel(Number.parseInt(e.target.value) || 1)}
+                className="w-24 bg-gray-800 border-gray-600 text-white"
+              />
+            </div>
+            <div>
+              <Label className="text-white">Lord Level</Label>
+              <select
+                value={lordLevel}
+                onChange={(e) => setLordLevel(e.target.value)}
+                className="w-48 p-2 bg-gray-800 border border-gray-600 rounded text-white"
+              >
+                {[
+                  "Fledgling Lord 1",
+                  "Fledgling Lord 2",
+                  "Fledgling Lord 3",
+                  "Fledgling Lord 4",
+                  "Fledgling Lord 5",
+                  "Young Lord 1",
+                  "Young Lord 2",
+                  "Young Lord 3",
+                  "Young Lord 4",
+                  "Young Lord 5",
+                  "Elevated Lord 1",
+                  "Elevated Lord 2",
+                  "Elevated Lord 3",
+                  "Elevated Lord 4",
+                  "Elevated Lord 5",
+                  "Venerable Lord 1",
+                  "Venerable Lord 2",
+                  "Venerable Lord 3",
+                  "Venerable Lord 4",
+                  "Venerable Lord 5",
+                  "Elder Lord 1",
+                  "Elder Lord 2",
+                  "Elder Lord 3",
+                  "Elder Lord 4",
+                  "Elder Lord 5",
+                  "Ancient Lord 1",
+                  "Ancient Lord 2",
+                  "Ancient Lord 3",
+                ].map((level) => (
+                  <option key={level} value={level}>
+                    {level}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* DOM Display */}
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <Card className="bg-gray-800/50 border-gray-600">
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold text-blue-400">{totals.baseDom.toLocaleString()}</div>
+                <div className="text-sm text-gray-300">Current DOM</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gray-800/50 border-gray-600">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-red-400">{totals.totalDom.toLocaleString()}</div>
+                <div className="text-sm text-gray-300">Total DOM</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gray-800/50 border-gray-600">
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold text-green-400">+{totals.domIncrease.toLocaleString()}</div>
+                <div className="text-sm text-gray-300">DOM Increase</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Save/Load Controls */}
+          <div className="flex justify-center gap-4 mb-8">
+            <Button onClick={saveData} className="bg-green-600 hover:bg-green-700">
+              💾 Save Data
+            </Button>
+            <Button onClick={loadData} className="bg-blue-600 hover:bg-blue-700">
+              📁 Load Data
+            </Button>
+            <Button onClick={exportData} className="bg-purple-600 hover:bg-purple-700">
+              📤 Export to File
+            </Button>
+            <label className="inline-block">
+              <input
+                type="file"
+                accept=".json"
+                onChange={importData}
+                className="hidden"
+              />
+              <div className="bg-orange-600 hover:bg-orange-700 cursor-pointer px-4 py-2 rounded text-white font-medium transition-colors">
+                📥 Import from File
+              </div>
+            </label>
+          </div>
+
+          {/* Base Attributes */}
+          <div className="grid grid-cols-4 gap-4 mb-8">
+            {Object.entries(baseAttributes).map(([attr, value]) => (
+              <Card key={attr} className="bg-gray-800/50 border-gray-600">
+                <CardContent className="p-4">
+                  <Label className={`capitalize ${getAttributeColor(attr)}`}>{attr}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) =>
+                      setBaseAttributes((prev) => ({
+                        ...prev,
+                        [attr]: Number.parseInt(e.target.value) || 0,
+                      }))
+                    }
+                    className="mt-2 bg-gray-700 border-gray-600 text-white"
+                  />
+                  <div className="text-sm text-gray-400 mt-1">
+                    Total: {totals[`total${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof totals]?.toLocaleString() || 0}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Attribute Boosts */}
+          <div className="grid grid-cols-4 gap-4 mb-8">
+            {Object.entries(baseAttributes).map(([attr, baseValue]) => {
+              const totalValue = totals[`total${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof totals] as number || 0
+              const boost = baseValue > 0 ? ((totalValue - baseValue) / baseValue) * 100 : 0
+              return (
+                <Card key={attr} className="bg-gray-800/50 border-gray-600">
+                  <CardContent className="p-4 text-center">
+                    <div className={`text-2xl font-bold ${getAttributeColor(attr)}`}>+{boost.toFixed(1)}%</div>
+                    <div className="text-sm text-gray-300 capitalize">{attr} Boost</div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Main Tabs */}
+        <Tabs defaultValue="aura-bonuses" className="w-full">
+          <TabsList className="grid w-full grid-cols-7 bg-gray-800 mb-6">
+            <TabsTrigger value="aura-bonuses" className="data-[state=active]:bg-red-600">
+              Aura Bonuses
+            </TabsTrigger>
+            <TabsTrigger value="conclave" className="data-[state=active]:bg-red-600">
+              Conclave
+            </TabsTrigger>
+            <TabsTrigger value="courtyard" className="data-[state=active]:bg-red-600">
+              Courtyard
+            </TabsTrigger>
+            <TabsTrigger value="books" className="data-[state=active]:bg-red-600">
+              Books
+            </TabsTrigger>
+            <TabsTrigger value="wardens" className="data-[state=active]:bg-red-600">
+              Wardens
+            </TabsTrigger>
+            <TabsTrigger value="scarlet-bond" className="data-[state=active]:bg-red-600">
+              Scarlet Bond
+            </TabsTrigger>
+            <TabsTrigger value="data" className="data-[state=active]:bg-red-600">
+              Data
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Aura Bonuses Tab */}
+          <TabsContent value="aura-bonuses">
+            <div className="space-y-6">
+              {/* Current Aura Bonuses Display */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-red-400">Current Aura Bonuses</CardTitle>
+                  <div className="text-sm text-gray-300">
+                    Showing current percentage bonuses from all aura sources (base 100% + aura bonuses)
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6">
+                    {/* Talent Bonuses */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-yellow-400">Talent Bonuses</h3>
+                      <div className="space-y-3">
+                        {Object.entries(auraBonuses.talents).map(([attribute, bonus]) => (
+                          <div key={attribute} className="flex justify-between items-center p-3 rounded bg-gray-700/50">
+                            <span className={`capitalize font-medium ${getAttributeColor(attribute)}`}>
+                              {attribute} Talents
+                            </span>
+                            <span className="text-xl font-bold text-white">
+                              {bonus.toFixed(1)}%
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Book Bonuses */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-blue-400">Book Bonuses</h3>
+                      <div className="space-y-3">
+                        {Object.entries(auraBonuses.books).map(([attribute, bonus]) => (
+                          <div key={attribute} className="flex justify-between items-center p-3 rounded bg-gray-700/50">
+                            <span className={`capitalize font-medium ${getAttributeColor(attribute)}`}>
+                              {attribute} Books
+                            </span>
+                            <span className="text-xl font-bold text-white">
+                              {bonus.toFixed(1)}%
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Aura Breakdown by Source */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-red-400">Aura Sources Breakdown</CardTitle>
+                  <div className="text-sm text-gray-300">
+                    Detailed breakdown of bonuses from each aura source
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {/* Wild Hunt */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-green-400 mb-3">Wild Hunt Wardens (Talent Bonuses)</h3>
+                      <div className="text-sm text-gray-300 mb-3">
+                        Selected: {(selectedWardens.hunt || []).length}/4 | 
+                        Base Level: {(selectedWardens.hunt || []).length > 0 ? 9 + Math.max(0, (selectedWardens.hunt || []).length - 1) : 0}
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        {Object.entries(dynamicAuras.wildHunt).map(([wardenName, wardenData]) => {
+                          const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
+                          const isSelected = (selectedWardens.hunt || []).includes(wardenName)
+                          const secondaryAura = auras.secondaryAuras?.wildHunt[wardenName]
+                          const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
+                          return (
+                            <div key={wardenName} className={`p-3 rounded ${isSelected ? 'bg-green-500/20 border border-green-500/30' : 'bg-gray-700/30'}`}>
+                              <div className="flex justify-between items-center mb-2">
+                                <div>
+                                  <span className={`font-medium ${isSelected ? 'text-green-300' : 'text-gray-500'}`}>{wardenName}</span>
+                                  <div className="text-xs text-gray-400">{wardenData.type}</div>
+                                  <div className="text-xs text-gray-400">Primary: Level {wardenData.current}/{wardenData.max}</div>
+                                </div>
+                                <span className={`text-lg font-bold ${isSelected ? 'text-green-400' : 'text-gray-500'}`}>
+                                  +{currentBonus}%
+                                </span>
+                              </div>
+                              {secondaryAura && (
+                                <div className="border-t border-gray-600 pt-2">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Label className="text-xs text-gray-300">Secondary Aura:</Label>
+                                      <Input
+                                        type="number"
+                                        min="0"
+                                        max="20"
+                                        value={secondaryAura.current}
+                                        onChange={(e) =>
+                                          setAuras((prev) => ({
+                                            ...prev,
+                                            secondaryAuras: {
+                                              ...prev.secondaryAuras,
+                                              wildHunt: {
+                                                ...prev.secondaryAuras.wildHunt,
+                                                [wardenName]: {
+                                                  ...prev.secondaryAuras.wildHunt[wardenName],
+                                                  current: Number.parseInt(e.target.value) || 0,
+                                                },
+                                              },
+                                            },
+                                          }))
+                                        }
+                                        className="w-16 h-6 text-xs bg-gray-600 border-gray-500 text-white"
+                                      />
+                                      <span className="text-xs text-gray-400">/20</span>
+                                    </div>
+                                    <span className="text-sm font-semibold text-yellow-400">
+                                      +{secondaryBonus}%
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Monster Noir */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-purple-400 mb-3">Monster Noir Wardens (Book Bonuses)</h3>
+                      <div className="text-sm text-gray-300 mb-3">
+                        Selected: {(selectedWardens.noir || []).length}/4 | 
+                        Base Level: {(selectedWardens.noir || []).length > 0 ? 9 + Math.max(0, (selectedWardens.noir || []).length - 1) : 0}
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        {Object.entries(dynamicAuras.monsterNoir).map(([wardenName, wardenData]) => {
+                          const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
+                          const isSelected = (selectedWardens.noir || []).includes(wardenName)
+                          const secondaryAura = auras.secondaryAuras?.monsterNoir[wardenName]
+                          const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
+                          return (
+                            <div key={wardenName} className={`p-3 rounded ${isSelected ? 'bg-purple-500/20 border border-purple-500/30' : 'bg-gray-700/30'}`}>
+                              <div className="flex justify-between items-center mb-2">
+                                <div>
+                                  <span className={`font-medium ${isSelected ? 'text-purple-300' : 'text-gray-500'}`}>{wardenName}</span>
+                                  <div className="text-xs text-gray-400">{wardenData.type}</div>
+                                  <div className="text-xs text-gray-400">Primary: Level {wardenData.current}/{wardenData.max}</div>
+                                </div>
+                                <span className={`text-lg font-bold ${isSelected ? 'text-purple-400' : 'text-gray-500'}`}>
+                                  +{currentBonus}%
+                                </span>
+                              </div>
+                              {secondaryAura && (
+                                <div className="border-t border-gray-600 pt-2">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Label className="text-xs text-gray-300">Secondary Aura:</Label>
+                                      <Input
+                                        type="number"
+                                        min="0"
+                                        max="20"
+                                        value={secondaryAura.current}
+                                        onChange={(e) =>
+                                          setAuras((prev) => ({
+                                            ...prev,
+                                            secondaryAuras: {
+                                              ...prev.secondaryAuras,
+                                              monsterNoir: {
+                                                ...prev.secondaryAuras.monsterNoir,
+                                                [wardenName]: {
+                                                  ...prev.secondaryAuras.monsterNoir[wardenName],
+                                                  current: Number.parseInt(e.target.value) || 0,
+                                                },
+                                              },
+                                            },
+                                          }))
+                                        }
+                                        className="w-16 h-6 text-xs bg-gray-600 border-gray-500 text-white"
+                                      />
+                                      <span className="text-xs text-gray-400">/20</span>
+                                    </div>
+                                    <span className="text-sm font-semibold text-yellow-400">
+                                      +{secondaryBonus}%
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Bloody Tyrants */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-red-400 mb-3">Bloody Tyrants Wardens (Book Bonuses)</h3>
+                      <div className="text-sm text-gray-300 mb-3">
+                        Selected: {(selectedWardens.tyrants || []).length}/5 | 
+                        Base Level: {(selectedWardens.tyrants || []).length > 0 ? 10 + Math.max(0, (selectedWardens.tyrants || []).length - 1) : 0}
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        {Object.entries(dynamicAuras.bloodyTyrants).map(([wardenName, wardenData]) => {
+                          const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
+                          const isSelected = (selectedWardens.tyrants || []).includes(wardenName)
+                          const secondaryAura = auras.secondaryAuras?.bloodyTyrants[wardenName]
+                          const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
+                          return (
+                            <div key={wardenName} className={`p-3 rounded ${isSelected ? 'bg-red-500/20 border border-red-500/30' : 'bg-gray-700/30'}`}>
+                              <div className="flex justify-between items-center mb-2">
+                                <div>
+                                  <span className={`font-medium ${isSelected ? 'text-red-300' : 'text-gray-500'}`}>{wardenName}</span>
+                                  <div className="text-xs text-gray-400">{wardenData.type}</div>
+                                  <div className="text-xs text-gray-400">Primary: Level {wardenData.current}/{wardenData.max}</div>
+                                </div>
+                                <span className={`text-lg font-bold ${isSelected ? 'text-red-400' : 'text-gray-500'}`}>
+                                  +{currentBonus}%
+                                </span>
+                              </div>
+                              {secondaryAura && (
+                                <div className="border-t border-gray-600 pt-2">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Label className="text-xs text-gray-300">Secondary Aura:</Label>
+                                      <Input
+                                        type="number"
+                                        min="0"
+                                        max="20"
+                                        value={secondaryAura.current}
+                                        onChange={(e) =>
+                                          setAuras((prev) => ({
+                                            ...prev,
+                                            secondaryAuras: {
+                                              ...prev.secondaryAuras,
+                                              bloodyTyrants: {
+                                                ...prev.secondaryAuras.bloodyTyrants,
+                                                [wardenName]: {
+                                                  ...prev.secondaryAuras.bloodyTyrants[wardenName],
+                                                  current: Number.parseInt(e.target.value) || 0,
+                                                },
+                                              },
+                                            },
+                                          }))
+                                        }
+                                        className="w-16 h-6 text-xs bg-gray-600 border-gray-500 text-white"
+                                      />
+                                      <span className="text-xs text-gray-400">/20</span>
+                                    </div>
+                                    <span className="text-sm font-semibold text-yellow-400">
+                                      +{secondaryBonus}%
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Cirque du Macabre */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-orange-400 mb-3">Cirque du Macabre Wardens (Book Bonuses)</h3>
+                      <div className="text-sm text-gray-300 mb-3">
+                        Selected: {(selectedWardens.circus || []).length}/5 | 
+                        Base Level: {(selectedWardens.circus || []).length > 0 ? 10 + Math.max(0, (selectedWardens.circus || []).length - 1) : 0}
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        {Object.entries(dynamicAuras.cirque).map(([wardenName, wardenData]) => {
+                          const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
+                          const isSelected = (selectedWardens.circus || []).includes(wardenName)
+                          const secondaryAura = auras.secondaryAuras?.cirque[wardenName]
+                          const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
+                          return (
+                            <div key={wardenName} className={`p-3 rounded ${isSelected ? 'bg-orange-500/20 border border-orange-500/30' : 'bg-gray-700/30'}`}>
+                              <div className="flex justify-between items-center mb-2">
+                                <div>
+                                  <span className={`font-medium ${isSelected ? 'text-orange-300' : 'text-gray-500'}`}>{wardenName}</span>
+                                  <div className="text-xs text-gray-400">{wardenData.type}</div>
+                                  <div className="text-xs text-gray-400">Primary: Level {wardenData.current}/{wardenData.max}</div>
+                                </div>
+                                <span className={`text-lg font-bold ${isSelected ? 'text-orange-400' : 'text-gray-500'}`}>
+                                  +{currentBonus}%
+                                </span>
+                              </div>
+                              {secondaryAura && (
+                                <div className="border-t border-gray-600 pt-2">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Label className="text-xs text-gray-300">Secondary Aura:</Label>
+                                      <Input
+                                        type="number"
+                                        min="0"
+                                        max="20"
+                                        value={secondaryAura.current}
+                                        onChange={(e) =>
+                                          setAuras((prev) => ({
+                                            ...prev,
+                                            secondaryAuras: {
+                                              ...prev.secondaryAuras,
+                                              cirque: {
+                                                ...prev.secondaryAuras.cirque,
+                                                [wardenName]: {
+                                                  ...prev.secondaryAuras.cirque[wardenName],
+                                                  current: Number.parseInt(e.target.value) || 0,
+                                                },
+                                              },
+                                            },
+                                          }))
+                                        }
+                                        className="w-16 h-6 text-xs bg-gray-600 border-gray-500 text-white"
+                                      />
+                                      <span className="text-xs text-gray-400">/20</span>
+                                    </div>
+                                    <span className="text-sm font-semibold text-yellow-400">
+                                      +{secondaryBonus}%
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Lovers (if any are active) */}
+                    {(hasAgneyi || hasCulann || hasHela) && (
+                      <div>
+                        <h3 className="text-lg font-semibold text-pink-400 mb-3">Lovers (Scarlet Bond Bonuses)</h3>
+                        <div className="text-sm text-gray-300 mb-3">
+                          Summoned: {[hasAgneyi, hasCulann, hasHela].filter(Boolean).length}/3 | 
+                          Bonus Level: {(() => {
+                            const count = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                            if (count === 0) return "0%"
+                            if (count === 1) return "20%"
+                            if (count === 2) return "25%"
+                            return "30%"
+                          })()}
+                        </div>
+                        <div className="grid grid-cols-3 gap-4">
+                          {Object.entries(dynamicAuras.lovers || {}).map(([loverName, loverData]) => {
+                            const isSelected = (loverName === "Agneyi" && hasAgneyi) || 
+                                             (loverName === "Culann" && hasCulann) || 
+                                             (loverName === "Hela" && hasHela)
+                            const currentBonus = loverData.current
+                            return (
+                              <div key={loverName} className={`p-3 rounded ${isSelected ? 'bg-pink-500/20 border border-pink-500/30' : 'bg-gray-700/30'}`}>
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <span className={`font-medium ${isSelected ? 'text-pink-300' : 'text-gray-500'}`}>{loverName}</span>
+                                    <div className="text-xs text-gray-400">{loverData.type}</div>
+                                    <div className="text-xs text-gray-400">{isSelected ? 'Summoned' : 'Not Summoned'}</div>
+                                  </div>
+                                  <span className={`text-lg font-bold ${isSelected ? 'text-pink-400' : 'text-gray-500'}`}>
+                                    +{currentBonus}%
+                                  </span>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* VIP Wardens (if any are active) */}
+                    {vipLevel > 0 && (
+                      <div>
+                        <h3 className="text-lg font-semibold text-yellow-400 mb-3">VIP Wardens (VIP {vipLevel})</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          {Object.entries(auras.vip)
+                            .filter(([_, wardenData]) => vipLevel >= wardenData.vipRequired)
+                            .map(([wardenName, wardenData]) => (
+                              <div key={wardenName} className="flex justify-between items-center p-3 rounded bg-gray-700/30">
+                                <div>
+                                  <span className="text-white font-medium">{wardenName}</span>
+                                  <div className="text-xs text-gray-400">VIP {wardenData.vipRequired} Required</div>
+                                  {wardenData.talents ? (
+                                    <div className="text-xs text-gray-400">
+                                      Talents: {wardenData.talents.current}% | Books: {wardenData.books.current}%
+                                    </div>
+                                  ) : (
+                                    <div className="text-xs text-gray-400">{wardenData.type}: {wardenData.current}%</div>
+                                  )}
+                                </div>
+                                <div className="text-right">
+                                  {wardenData.talents ? (
+                                    <>
+                                      <div className="text-sm font-bold text-yellow-400">T: +{wardenData.talents.current}%</div>
+                                      <div className="text-sm font-bold text-blue-400">B: +{wardenData.books.current}%</div>
+                                    </>
+                                  ) : (
+                                    <span className="text-lg font-bold text-yellow-400">
+                                      +{wardenData.current}%
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Special Wardens (if any are active) */}
+                    {(hasNyx || hasDracula) && (
+                      <div>
+                        <h3 className="text-lg font-semibold text-purple-400 mb-3">Special Wardens</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          {hasNyx && (
+                            <div className="flex justify-between items-center p-3 rounded bg-gray-700/30">
+                              <div>
+                                <span className="text-white font-medium">Nyx</span>
+                                <div className="text-xs text-gray-400">
+                                  Talents: {auras.special.Nyx.talents.current}% | Books: {auras.special.Nyx.books.current}%
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-sm font-bold text-yellow-400">T: +{auras.special.Nyx.talents.current}%</div>
+                                <div className="text-sm font-bold text-blue-400">B: +{auras.special.Nyx.books.current}%</div>
+                              </div>
+                            </div>
+                          )}
+                          {hasDracula && (
+                            <div className="flex justify-between items-center p-3 rounded bg-gray-700/30">
+                              <div>
+                                <span className="text-white font-medium">Dracula</span>
+                                <div className="text-xs text-gray-400">
+                                  Talents: {auras.special.Dracula.talents.current}% | Books: {auras.special.Dracula.books.current}%
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-sm font-bold text-yellow-400">T: +{auras.special.Dracula.talents.current}%</div>
+                                <div className="text-sm font-bold text-blue-400">B: +{auras.special.Dracula.books.current}%</div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Conclave Tab */}
+          <TabsContent value="conclave">
+            <div className="space-y-6">
+              {/* Current Seal Levels */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-red-400">Current Seal Levels</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    {Object.entries(conclave)
+                      .filter(([seal]) => seal !== "Conclave Points")
+                      .map(([seal, level]) => (
+                        <div key={seal}>
+                          <Label className="text-white">{seal}</Label>
+                          <Input
+                            type="number"
+                            value={level}
+                            onChange={(e) =>
+                              setConclave((prev) => ({
+                                ...prev,
+                                [seal]: Number.parseInt(e.target.value) || 0,
+                              }))
+                            }
+                            className="mt-2 bg-gray-700 border-gray-600 text-white"
+                          />
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Seal Upgrade Planning */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-red-400">Seal Upgrade Planning</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {/* Saved Seals Input */}
+                    <div>
+                      <Label className="text-white">Saved Conclave Seals</Label>
+                      <Input
+                        type="number"
+                        value={conclaveUpgrade.savedSeals}
+                        onChange={(e) =>
+                          setConclaveUpgrade((prev) => ({
+                            ...prev,
+                            savedSeals: Number.parseInt(e.target.value) || 0,
+                          }))
+                        }
+                        className="mt-2 bg-gray-700 border-gray-600 text-white"
+                      />
+                    </div>
+
+                    {/* Seal Selection Checkboxes */}
+                    <div>
+                      <Label className="text-white text-lg block mb-3">Select Seals to Upgrade:</Label>
+                      <div className="grid grid-cols-2 gap-4">
+                        {Object.entries(conclaveUpgrade.upgradeSeals).map(([seal, checked]) => (
+                          <div key={seal} className="flex items-center space-x-2">
+                            <Checkbox
+                              checked={checked}
+                              onCheckedChange={(checked) =>
+                                setConclaveUpgrade((prev) => ({
+                                  ...prev,
+                                  upgradeSeals: {
+                                    ...prev.upgradeSeals,
+                                    [seal]: checked as boolean,
+                                  }
+                                }))
+                              }
+                              className="border-gray-400"
+                            />
+                            <Label className="text-white">{seal}</Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Upgrade Preview */}
+                    {conclaveUpgrade.savedSeals > 0 && (() => {
+                      const upgradePreview = calculateConclaveUpgrades()
+                      return upgradePreview.upgrades.length > 0 ? (
+                        <div className="border border-gray-600 rounded p-4 bg-gray-900/50">
+                          <h3 className="text-yellow-400 font-semibold mb-3">Optimal Upgrade Strategy</h3>
+                          <div className="space-y-3 text-sm">
+                            <div className="grid grid-cols-2 gap-4 mb-3">
+                              <p className="text-white">
+                                <span className="text-blue-400">Total Cost:</span> {upgradePreview.totalCost.toLocaleString()} seals
+                              </p>
+                              <p className="text-white">
+                                <span className="text-green-400">Total DOM Gain:</span> {upgradePreview.upgrades.reduce((sum, u) => sum + u.domGain, 0).toLocaleString()}
+                              </p>
+                            </div>
+                            {upgradePreview.upgrades
+                              .sort((a, b) => b.efficiency - a.efficiency)
+                              .map((upgrade, index) => (
+                                <div key={index} className="border-l-2 border-blue-500 pl-3">
+                                  <div className="flex justify-between items-start mb-1">
+                                    <p className="text-green-400 font-medium">{upgrade.sealType}</p>
+                                    <p className="text-yellow-400 text-xs">
+                                      {upgrade.efficiency.toFixed(1)} DOM/seal
+                                    </p>
+                                  </div>
+                                  <p className="text-gray-300">
+                                    Level {upgrade.currentLevel} → {upgrade.targetLevel} 
+                                    (Cost: {upgrade.cost.toLocaleString()})
+                                  </p>
+                                  <p className="text-gray-300">
+                                    +{upgrade.wardenBonus.toLocaleString()} warden DOM, 
+                                    +{(upgrade.bookMultiplier * 100).toFixed(1)}% book multiplier
+                                  </p>
+                                  <p className="text-blue-300 text-xs">
+                                    Total DOM gain: {upgrade.domGain.toLocaleString()}
+                                  </p>
+                                </div>
+                              ))}
+                            <div className="border-t border-gray-600 pt-2 mt-3">
+                              <p className="text-gray-400 text-xs">
+                                ✨ Upgrades are ordered by efficiency (DOM gained per seal spent)
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="border border-gray-600 rounded p-4 bg-gray-900/50">
+                          <p className="text-gray-400">No upgrades possible with current seal count</p>
+                        </div>
+                      )
+                    })()}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Courtyard Tab */}
+          <TabsContent value="courtyard">
+            <Card className="bg-gray-800/50 border-gray-600">
+              <CardHeader>
+                <CardTitle className="text-red-400">Courtyard</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label className="text-white">Current Level</Label>
+                    <Input
+                      type="number"
+                      value={courtyard.currentLevel}
+                      onChange={(e) =>
+                        setCourtyard((prev) => ({
+                          ...prev,
+                          currentLevel: Number.parseInt(e.target.value) || 1,
+                        }))
+                      }
+                      className="mt-2 bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">Current Points</Label>
+                    <Input
+                      type="number"
+                      value={courtyard.currentPoints}
+                      onChange={(e) =>
+                        setCourtyard((prev) => ({
+                          ...prev,
+                          currentPoints: Number.parseInt(e.target.value) || 0,
+                        }))
+                      }
+                      className="mt-2 bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                </div>
+                <div className="text-center p-4 bg-gray-700 rounded">
+                  <div className="text-xl font-bold text-green-400">Projected Level: {projectedLevel}</div>
+                  <div className="text-sm text-gray-300 mt-2">Based on current points and selected wardens</div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Books Tab */}
+          <TabsContent value="books">
+            <Card className="bg-gray-800/50 border-gray-600">
+              <CardHeader>
+                <CardTitle className="text-red-400">Books</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {Object.entries(books).map(([category, bookCollection]) => (
+                    <Card key={category} className={`${getAttributeBg(category)} border`}>
+                      <CardHeader>
+                        <CardTitle className={`${getAttributeColor(category)} font-semibold`}>{category} Books</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {Object.entries(bookCollection).map(([bookName, count]) => (
+                            <div key={bookName}>
+                              <Label className="text-white text-sm">{bookName}</Label>
+                              <Input
+                                type="number"
+                                value={count}
+                                onChange={(e) =>
+                                  setBooks((prev) => ({
+                                    ...prev,
+                                    [category]: {
+                                      ...prev[category as keyof BooksState],
+                                      [bookName]: Number.parseInt(e.target.value) || 0,
+                                    },
+                                  }))
+                                }
+                                className="mt-1 bg-gray-700 border-gray-600 text-white"
+                              />
+                              <div className="text-xs text-gray-400 mt-1">
+                                Bonus: +{(count as number) * (bookBonuses[category as keyof typeof bookBonuses]?.[bookName as keyof typeof bookBonuses[typeof category]] || 0)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Wardens Tab */}
+          <TabsContent value="wardens">
+            <Card className="bg-gray-800/50 border-gray-600">
+              <CardHeader>
+                <CardTitle className="text-red-400">Wardens</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Special Wardens */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-white mb-3">Special Wardens</h3>
+                  <div className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="nyx" checked={hasNyx} onCheckedChange={setHasNyx} />
+                      <Label htmlFor="nyx" className="text-yellow-400">
+                        Nyx
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="dracula" checked={hasDracula} onCheckedChange={setHasDracula} />
+                      <Label htmlFor="dracula" className="text-yellow-400">
+                        Dracula
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Warden Subtabs */}
+                <div className="mb-4">
+                  <div className="flex gap-2 mb-4">
+                    <Button
+                      variant={activeWardenTab === "summons" ? "default" : "outline"}
+                      onClick={() => setActiveWardenTab("summons")}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      Summons/Acquired
+                    </Button>
+                    <Button
+                      variant={activeWardenTab === "auras" ? "default" : "outline"}
+                      onClick={() => setActiveWardenTab("auras")}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      Auras
+                    </Button>
+                    <Button
+                      variant={activeWardenTab === "stats" ? "default" : "outline"}
+                      onClick={() => setActiveWardenTab("stats")}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      Warden Stats
+                    </Button>
+                  </div>
+
+                  {/* Summons/Acquired Tab */}
+                  {activeWardenTab === "summons" && (
+                    <div className="space-y-6">
+                      {Object.entries(wardenGroups).map(([groupKey, wardens]) => (
+                        <Card key={groupKey} className="bg-gray-700/50 border-gray-600">
+                          <CardHeader>
+                            <CardTitle className="text-white capitalize">
+                              {groupKey === "circus"
+                                ? "Circus Wardens"
+                                : groupKey === "tyrants"
+                                  ? "Bloody Tyrants"
+                                  : groupKey === "noir"
+                                    ? "Monster Noir"
+                                    : "Wild Hunt"}{" "}
+                              ({wardenCounts[groupKey as keyof typeof wardenCounts]}/{groupKey === "noir" || groupKey === "hunt" ? 4 : 5})
+                            </CardTitle>
+                            <div>
+                              <Label className="text-white">Number of {groupKey} wardens:</Label>
+                              <Input
+                                type="number"
+                                min="0"
+                                max={groupKey === "noir" || groupKey === "hunt" ? 4 : 5}
+                                value={wardenCounts[groupKey as keyof typeof wardenCounts]}
+                                onChange={(e) =>
+                                  setWardenCounts((prev) => ({
+                                    ...prev,
+                                    [groupKey]: Number.parseInt(e.target.value) || 0,
+                                  }))
+                                }
+                                className="w-20 mt-1 bg-gray-600 border-gray-500 text-white"
+                              />
+                            </div>
+                          </CardHeader>
+                          {wardenCounts[groupKey as keyof typeof wardenCounts] > 0 && (
+                            <CardContent>
+                              <div className="grid grid-cols-2 gap-3">
+                                {wardens.map((warden) => (
+                                  <Button
+                                    key={warden.name}
+                                    variant={selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) ? "default" : "outline"}
+                                    onClick={() => handleWardenSelection(groupKey, warden.name)}
+                                    disabled={
+                                      !selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) &&
+                                      selectedWardens[groupKey as keyof typeof selectedWardens]?.length >= wardenCounts[groupKey as keyof typeof wardenCounts]
+                                    }
+                                    className={`p-4 h-auto flex flex-col items-start ${
+                                      selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name)
+                                        ? "bg-red-600 hover:bg-red-700"
+                                        : "bg-gray-600 hover:bg-gray-500"
+                                    }`}
+                                  >
+                                    <div className="font-semibold text-white">{warden.name}</div>
+                                    <div className="flex gap-1 mt-1">
+                                      {warden.attributes.map((attr) => (
+                                        <span
+                                          key={attr}
+                                          className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
+                                        >
+                                          {attr}
+                                        </span>
+                                      ))}
+                                    </div>
+                                    {renderStars(warden.tier)}
+                                  </Button>
+                                ))}
+                              </div>
+                            </CardContent>
+                          )}
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Auras Tab */}
+                  {activeWardenTab === "auras" && (
+                    <div className="space-y-6">
+                      {/* VIP Level Control */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-yellow-400">VIP Level Control</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center gap-4">
+                            <Label className="text-white">Current VIP Level:</Label>
+                            <Input
+                              type="number"
+                              min="0"
+                              max="12"
+                              value={vipLevel}
+                              onChange={(e) => setVipLevel(Number.parseInt(e.target.value) || 0)}
+                              className="w-20 bg-gray-600 border-gray-500 text-white"
+                            />
+                            <span className="text-gray-300 text-sm">
+                              (Controls which VIP wardens are visible)
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Special Wardens & Paid Packs */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-purple-400">Special Wardens & Paid Packs</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="flex items-center space-x-2">
+                              <Checkbox id="nyx-aura" checked={hasNyx} onCheckedChange={setHasNyx} />
+                              <Label htmlFor="nyx-aura" className="text-yellow-400">Nyx</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox id="dracula-aura" checked={hasDracula} onCheckedChange={setHasDracula} />
+                              <Label htmlFor="dracula-aura" className="text-red-400">Dracula</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox id="victor-aura" checked={hasVictor} onCheckedChange={setHasVictor} />
+                              <Label htmlFor="victor-aura" className="text-green-400">Victor (Paid Pack)</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox id="frederick-aura" checked={hasFrederick} onCheckedChange={setHasFrederick} />
+                              <Label htmlFor="frederick-aura" className="text-blue-400">Frederick (Paid Pack)</Label>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Wild Hunt Wardens */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-green-400">Wild Hunt Wardens (Macabrian Coins)</CardTitle>
+                          <div className="text-sm text-gray-300">Cost: 490 coins per warden to max (Level 20)</div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 gap-4">
+                            {Object.entries(auras.wildHunt).map(([wardenName, wardenData]) => (
+                              <div key={wardenName} className="space-y-2">
+                                <Label className="text-white font-semibold">{wardenName}</Label>
+                                <div className="text-sm text-gray-300">{wardenData.type}</div>
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm text-gray-300">Level:</Label>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    max="20"
+                                    value={wardenData.current}
+                                    onChange={(e) =>
+                                      setAuras((prev) => ({
+                                        ...prev,
+                                        wildHunt: {
+                                          ...prev.wildHunt,
+                                          [wardenName]: {
+                                            ...prev.wildHunt[wardenName],
+                                            current: Number.parseInt(e.target.value) || 1,
+                                          },
+                                        },
+                                      }))
+                                    }
+                                    className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
+                                  />
+                                  <span className="text-sm text-gray-400">
+                                    ({wardenData.baseValue + (wardenData.current - 1) * wardenData.increment}%)
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Monster Noir Wardens */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-purple-400">Monster Noir Wardens (City Badges)</CardTitle>
+                          <div className="text-sm text-gray-300">Cost: 500 badges per warden to max (Level 20)</div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 gap-4">
+                            {Object.entries(auras.monsterNoir).map(([wardenName, wardenData]) => (
+                              <div key={wardenName} className="space-y-2">
+                                <Label className="text-white font-semibold">{wardenName}</Label>
+                                <div className="text-sm text-gray-300">{wardenData.type}</div>
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm text-gray-300">Level:</Label>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    max="20"
+                                    value={wardenData.current}
+                                    onChange={(e) =>
+                                      setAuras((prev) => ({
+                                        ...prev,
+                                        monsterNoir: {
+                                          ...prev.monsterNoir,
+                                          [wardenName]: {
+                                            ...prev.monsterNoir[wardenName],
+                                            current: Number.parseInt(e.target.value) || 1,
+                                          },
+                                        },
+                                      }))
+                                    }
+                                    className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
+                                  />
+                                  <span className="text-sm text-gray-400">
+                                    ({wardenData.baseValue + (wardenData.current - 1) * wardenData.increment}%)
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Bloody Tyrants Wardens */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-red-400">Bloody Tyrants Wardens (Supremacy Badges)</CardTitle>
+                          <div className="text-sm text-gray-300">Cost: 500 badges per warden to max (Level 20)</div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 gap-4">
+                            {Object.entries(auras.bloodyTyrants).map(([wardenName, wardenData]) => (
+                              <div key={wardenName} className="space-y-2">
+                                <Label className="text-white font-semibold">{wardenName}</Label>
+                                <div className="text-sm text-gray-300">{wardenData.type}</div>
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm text-gray-300">Level:</Label>
+                                  <Input
+                                    type="number"
+                                    min={wardenName === "Maria" ? "1" : "1"}
+                                    max="20"
+                                    value={wardenData.current}
+                                    onChange={(e) =>
+                                      setAuras((prev) => ({
+                                        ...prev,
+                                        bloodyTyrants: {
+                                          ...prev.bloodyTyrants,
+                                          [wardenName]: {
+                                            ...prev.bloodyTyrants[wardenName],
+                                            current: Number.parseInt(e.target.value) || 1,
+                                          },
+                                        },
+                                      }))
+                                    }
+                                    className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
+                                  />
+                                  <span className="text-sm text-gray-400">
+                                    ({wardenData.baseValue + (wardenData.current - 1) * wardenData.increment}%)
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Cirque du Macabre Wardens */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-orange-400">Cirque du Macabre Wardens (Circus Tickets)</CardTitle>
+                          <div className="text-sm text-gray-300">Cost: 500 tickets per warden to max (Level 20)</div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 gap-4">
+                            {Object.entries(auras.cirque).map(([wardenName, wardenData]) => (
+                              <div key={wardenName} className="space-y-2">
+                                <Label className="text-white font-semibold">{wardenName}</Label>
+                                <div className="text-sm text-gray-300">{wardenData.type}</div>
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-sm text-gray-300">Level:</Label>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    max="20"
+                                    value={wardenData.current}
+                                    onChange={(e) =>
+                                      setAuras((prev) => ({
+                                        ...prev,
+                                        cirque: {
+                                          ...prev.cirque,
+                                          [wardenName]: {
+                                            ...prev.cirque[wardenName],
+                                            current: Number.parseInt(e.target.value) || 1,
+                                          },
+                                        },
+                                      }))
+                                    }
+                                    className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
+                                  />
+                                  <span className="text-sm text-gray-400">
+                                    ({wardenData.baseValue + (wardenData.current - 1) * wardenData.increment}%)
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* VIP Wardens */}
+                      {vipLevel > 0 && (
+                        <Card className="bg-gray-700/50 border-yellow-500">
+                          <CardHeader>
+                            <CardTitle className="text-yellow-400">VIP Wardens</CardTitle>
+                            <div className="text-sm text-gray-300">Available based on your VIP level: {vipLevel}</div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-2 gap-4">
+                              {Object.entries(auras.vip)
+                                .filter(([_, wardenData]) => vipLevel >= wardenData.vipRequired)
+                                .map(([wardenName, wardenData]) => (
+                                <div key={wardenName} className="space-y-2">
+                                  <Label className="text-white font-semibold">{wardenName} (VIP {wardenData.vipRequired})</Label>
+                                  {wardenData.talents ? (
+                                    <>
+                                      <div className="text-sm text-gray-300">{wardenData.talents.type}</div>
+                                      <div className="text-sm text-yellow-400">Talents: {wardenData.talents.current}%</div>
+                                      <div className="text-sm text-gray-300">{wardenData.books.type}</div>
+                                      <div className="text-sm text-yellow-400">Books: {wardenData.books.current}%</div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div className="text-sm text-gray-300">{wardenData.type}</div>
+                                      <div className="text-sm text-yellow-400">Value: {wardenData.current}%</div>
+                                    </>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Paid Pack Wardens */}
+                      {(hasVictor || hasFrederick) && (
+                        <Card className="bg-gray-700/50 border-green-500">
+                          <CardHeader>
+                            <CardTitle className="text-green-400">Paid Pack Wardens</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-2 gap-4">
+                              {hasVictor && (
+                                <div className="space-y-2">
+                                  <Label className="text-white font-semibold">Victor</Label>
+                                  <div className="text-sm text-gray-300">{auras.paidPacks.Victor.type}</div>
+                                  <div className="text-sm text-green-400">Value: {auras.paidPacks.Victor.current}%</div>
+                                </div>
+                              )}
+                              {hasFrederick && (
+                                <div className="space-y-2">
+                                  <Label className="text-white font-semibold">Frederick</Label>
+                                  <div className="text-sm text-gray-300">{auras.paidPacks.Frederick.talents.type}</div>
+                                  <div className="text-sm text-blue-400">Talents: {auras.paidPacks.Frederick.talents.current}%</div>
+                                  <div className="text-sm text-gray-300">{auras.paidPacks.Frederick.books.type}</div>
+                                  <div className="flex items-center gap-2">
+                                    <Label className="text-sm text-gray-300">Books Level:</Label>
+                                    <Input
+                                      type="number"
+                                      min="1"
+                                      max="20"
+                                      value={auras.paidPacks.Frederick.books.current}
+                                      onChange={(e) =>
+                                        setAuras((prev) => ({
+                                          ...prev,
+                                          paidPacks: {
+                                            ...prev.paidPacks,
+                                            Frederick: {
+                                              ...prev.paidPacks.Frederick,
+                                              books: {
+                                                ...prev.paidPacks.Frederick.books,
+                                                current: Number.parseInt(e.target.value) || 1,
+                                              },
+                                            },
+                                          },
+                                        }))
+                                      }
+                                      className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
+                                    />
+                                    <span className="text-sm text-gray-400">
+                                      ({auras.paidPacks.Frederick.books.baseValue + (auras.paidPacks.Frederick.books.current - 1) * auras.paidPacks.Frederick.books.increment}%)
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Special Wardens */}
+                      {(hasNyx || hasDracula) && (
+                        <Card className="bg-gray-700/50 border-purple-500">
+                          <CardHeader>
+                            <CardTitle className="text-purple-400">Special Wardens</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-2 gap-4">
+                              {hasDracula && (
+                                <div className="space-y-2">
+                                  <Label className="text-white font-semibold">Dracula</Label>
+                                  <div className="text-sm text-gray-300">{auras.special.Dracula.talents.type}</div>
+                                  <div className="text-sm text-red-400">Talents: {auras.special.Dracula.talents.current}%</div>
+                                  <div className="text-sm text-gray-300">{auras.special.Dracula.books.type}</div>
+                                  <div className="text-sm text-red-400">Books: {auras.special.Dracula.books.current}%</div>
+                                  <div className="text-xs text-gray-400">Cost: ~1530 Blood Origin Necklaces</div>
+                                </div>
+                              )}
+                              {hasNyx && (
+                                <div className="space-y-2">
+                                  <Label className="text-white font-semibold">Nyx</Label>
+                                  <div className="text-sm text-gray-300">{auras.special.Nyx.talents.type}</div>
+                                  <div className="text-sm text-yellow-400">Talents: {auras.special.Nyx.talents.current}%</div>
+                                  <div className="text-sm text-gray-300">{auras.special.Nyx.books.type}</div>
+                                  <div className="text-sm text-yellow-400">Books: {auras.special.Nyx.books.current}%</div>
+                                  <div className="text-xs text-gray-400">Cost: ~720 Arena Trophies</div>
+                                </div>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Warden Stats Tab */}
+                  {activeWardenTab === "stats" && (
+                    <div className="space-y-4">
+                      {getAllSelectedWardens().map((warden) => (
+                        <Card key={`${warden.group}-${warden.name}`} className="bg-gray-700/50 border-gray-600">
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-3">
+                              <span className="text-white">{warden.name}</span>
+                              <div className="flex gap-1">
+                                {warden.attributes.map((attr) => (
+                                  <span
+                                    key={attr}
+                                    className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
+                                  >
+                                    {attr}
+                                  </span>
+                                ))}
+                              </div>
+                              {renderStars(warden.tier)}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-4 gap-3">
+                              {["strength", "allure", "intellect", "spirit"].map((attr) => (
+                                <div key={attr}>
+                                  <Label className={`capitalize ${getAttributeColor(attr)}`}>{attr}</Label>
+                                  <Input
+                                    type="number"
+                                    value={wardenStats[`${warden.group}-${warden.name}`]?.[attr] || 0}
+                                    onChange={(e) =>
+                                      setWardenStats((prev) => ({
+                                        ...prev,
+                                        [`${warden.group}-${warden.name}`]: {
+                                          ...prev[`${warden.group}-${warden.name}`],
+                                          [attr]: Number.parseInt(e.target.value) || 0,
+                                        },
+                                      }))
+                                    }
+                                    className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Scarlet Bond Tab */}
+          <TabsContent value="scarlet-bond">
+            <Card className="bg-gray-800/50 border-gray-600">
+              <CardHeader>
+                <CardTitle className="text-red-400">Scarlet Bond</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Lovers Section */}
+                  <Card className="bg-gray-700/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-pink-400">Lovers (Need to be Summoned)</CardTitle>
+                      <div className="text-sm text-gray-300">
+                        Select which lovers you have summoned. Each increases ALL lover scarlet bond bonuses for their attribute.
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="agneyi" 
+                            checked={hasAgneyi} 
+                            onCheckedChange={setHasAgneyi}
+                            className="border-gray-400"
+                          />
+                          <Label htmlFor="agneyi" className="text-red-400 font-medium">
+                            Agneyi (Strength Scarlet Bond Aura)
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="culann" 
+                            checked={hasCulann} 
+                            onCheckedChange={setHasCulann}
+                            className="border-gray-400"
+                          />
+                          <Label htmlFor="culann" className="text-green-400 font-medium">
+                            Culann (Intellect Scarlet Bond Aura)
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="hela" 
+                            checked={hasHela} 
+                            onCheckedChange={setHasHela}
+                            className="border-gray-400"
+                          />
+                          <Label htmlFor="hela" className="text-blue-400 font-medium">
+                            Hela (Spirit Scarlet Bond Aura)
+                          </Label>
+                        </div>
+                      </div>
+                      <div className="mt-4 p-3 bg-gray-600/50 rounded">
+                        <div className="text-sm text-gray-300">
+                          <strong>Lover Aura System:</strong>
+                          <ul className="list-disc list-inside mt-1 space-y-1">
+                            <li>1 Lover: +20% to ALL lover scarlet bond bonuses for their attribute</li>
+                            <li>2 Lovers: +25% to ALL lover scarlet bond bonuses for their attributes</li>
+                            <li>3 Lovers: +30% to ALL lover scarlet bond bonuses for their attributes</li>
+                          </ul>
+                        </div>
+                        <div className="text-sm text-yellow-400 mt-2">
+                          Currently: {[hasAgneyi, hasCulann, hasHela].filter(Boolean).length}/3 lovers summoned
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  {scarletBondData
+                    .filter((bond) => {
+                      if (bond.vip > vipLevel) return false
+                      return true // Show all bonds that meet VIP requirement
+                    })
+                    .map((bond) => {
+                      const wardenData = wardenAttributes[bond.warden as keyof typeof wardenAttributes]
+                      const bondKey = `${bond.lover}-${bond.warden}`
+
+                      return (
+                        <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
+                          <div className="flex">
+                            {/* Lover Image - Left Side */}
+                            <div className="w-32 flex-shrink-0 relative overflow-hidden rounded-l-lg">
+                              <img 
+                                src={(() => {
+                                  // Handle lovers with slashes (different genders)
+                                  if (bond.lover.includes('/')) {
+                                    const names = bond.lover.split('/');
+                                    // Try first name, then second name as fallback
+                                    return `/Gov/Lovers/${names[0].trim()}.jpg`;
+                                  }
+                                  return `/Gov/Lovers/${bond.lover}.jpg`;
+                                })()}
+                                alt={bond.lover}
+                                className="w-full h-auto min-h-full object-contain"
+                                onError={(e) => {
+                                  // Fallback to second name if lover has a slash
+                                  const img = e.target as HTMLImageElement;
+                                  if (bond.lover.includes('/') && !img.src.includes('fallback-attempted')) {
+                                    const names = bond.lover.split('/');
+                                    img.src = `/Gov/Lovers/${names[1].trim()}.jpg?fallback-attempted=true`;
+                                  } else {
+                                    // Hide image if both names fail
+                                    img.style.display = 'none';
+                                  }
+                                }}
+                              />
+                            </div>
+                            
+                            {/* Content - Right Side */}
+                            <div className="flex-1">
+                              <CardHeader>
+                                <CardTitle className="flex items-center gap-3 flex-wrap">
+                                  <div className="flex items-center gap-3">
+                                    <div className="flex flex-col gap-2">
+                                      <span className="text-white text-lg font-bold">
+                                        {bond.lover}
+                                      </span>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-gray-300">with</span>
+                                        <span className="text-white font-semibold">
+                                          {bond.warden}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    {/* Warden Image - Inline with both names */}
+                                    <img 
+                                      src={`/Gov/Wardens/${bond.warden}.jpg`}
+                                      alt={bond.warden}
+                                      className="w-20 h-20 object-contain flex-shrink-0"
+                                      onError={(e) => {
+                                        // Fallback if image doesn't exist
+                                        (e.target as HTMLImageElement).style.display = 'none';
+                                      }}
+                                    />
+                                  </div>
+                                  <span
+                                    className={`text-xs px-2 py-1 rounded ${
+                                      bond.type === "All"
+                                        ? "bg-yellow-500/20 text-yellow-400"
+                                        : bond.type === "Dual"
+                                          ? "bg-purple-500/20 text-purple-400"
+                                          : "bg-blue-500/20 text-blue-400"
+                                    }`}
+                                  >
+                                    {bond.type}
+                                  </span>
+                                  {wardenData && (
+                                    <div className="flex gap-1">
+                                      {wardenData.map((attr) => (
+                                        <span
+                                          key={attr}
+                                          className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
+                                        >
+                                          {attr}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
+                                  <div className="ml-auto flex flex-col gap-2">
+                                    <Label className="text-white text-sm">Affinity Points</Label>
+                                    <Input
+                                      type="number"
+                                      value={scarletBondAffinity[bondKey] || 0}
+                                      onChange={(e) =>
+                                        setScarletBondAffinity((prev) => ({
+                                          ...prev,
+                                          [bondKey]: Number.parseInt(e.target.value) || 0,
+                                        }))
+                                      }
+                                      className="w-24 bg-gray-600 border-gray-500 text-white text-sm"
+                                      placeholder="0"
+                                    />
+                                    <div className="text-xs text-gray-400">
+                                      Suggestions shown automatically
+                                    </div>
+                                  </div>
+                                </CardTitle>
+                              </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-8 gap-2">
+                              {["strength", "allure", "intellect", "spirit"].map((attr) => {
+                                const isMainStat = wardenData?.some(
+                                  (a) => a.toLowerCase() === attr || a === "Balance",
+                                )
+                                
+                                // Calculate suggested upgrades for this bond (only for main attributes)
+                                const suggestedUpgrades = calculateSuggestedUpgrades(bondKey, scarletBondAffinity[bondKey] || 0)
+                                const flatSuggestion = isMainStat ? suggestedUpgrades[`${attr}Level`] : null
+                                const percentSuggestion = isMainStat ? suggestedUpgrades[`${attr}Percent`] : null
+                                
+                                return (
+                                  <div key={attr} className="col-span-2">
+                                    <div>
+                                      <Label className={`capitalize text-xs ${getAttributeColor(attr)}`}>
+                                        {attr} Flat
+                                      </Label>
+                                      <div className="flex items-center gap-1">
+                                        <Input
+                                          type="number"
+                                          min="0"
+                                          max="98"
+                                          value={(scarletBond[bondKey] as any)?.[`${attr}Level`] || 0}
+                                          onChange={(e) =>
+                                            setScarletBond((prev) => ({
+                                              ...prev,
+                                              [bondKey]: {
+                                                ...prev[bondKey],
+                                                [`${attr}Level`]: Number.parseInt(e.target.value) || 0,
+                                              },
+                                            }))
+                                          }
+                                          className="w-full bg-gray-600 border-gray-500 text-white text-xs"
+                                          placeholder="Level"
+                                          disabled={false}
+                                        />
+                                        {flatSuggestion && (
+                                          <div className="text-xs text-green-400">
+                                            +{flatSuggestion.increase} ({flatSuggestion.newLevel})
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <Label className={`capitalize text-xs ${getAttributeColor(attr)}`}>
+                                        {attr} %
+                                      </Label>
+                                      <div className="flex items-center gap-1">
+                                        <Input
+                                          type="number"
+                                          min="0"
+                                          max="98"
+                                          value={(scarletBond[bondKey] as any)?.[`${attr}Percent`] || 0}
+                                          onChange={(e) =>
+                                            setScarletBond((prev) => ({
+                                              ...prev,
+                                              [bondKey]: {
+                                                ...prev[bondKey],
+                                                [`${attr}Percent`]: Number.parseInt(e.target.value) || 0,
+                                              },
+                                            }))
+                                          }
+                                          className="w-full bg-gray-600 border-gray-500 text-white text-xs"
+                                          placeholder="%"
+                                          disabled={false}
+                                        />
+                                        {percentSuggestion && (
+                                          <div className="text-xs text-green-400">
+                                            +{percentSuggestion.increase} ({percentSuggestion.newLevel})
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </CardContent>
+                            </div>
+                          </div>
+                        </Card>
+                      )
+                    })}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Data Tab */}
+          <TabsContent value="data">
+            <div className="space-y-6">
+              {/* Current Modifiers */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-red-400">Current Modifiers & Multipliers</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {(() => {
+                    const conclaveBonus = calculateTotalConclaveBonus()
+                    return (
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-yellow-400 font-semibold mb-3">Book Multipliers</h3>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <p className="text-white">
+                              <span className="text-blue-400">Strength Books:</span>{" "}
+                              {(conclaveBonus.bookMultipliers.strength * 100).toFixed(1)}%
+                            </p>
+                            <p className="text-white">
+                              <span className="text-blue-400">Allure Books:</span>{" "}
+                              {(conclaveBonus.bookMultipliers.allure * 100).toFixed(1)}%
+                            </p>
+                            <p className="text-white">
+                              <span className="text-blue-400">Intellect Books:</span>{" "}
+                              {(conclaveBonus.bookMultipliers.intellect * 100).toFixed(1)}%
+                            </p>
+                            <p className="text-white">
+                              <span className="text-blue-400">Spirit Books:</span>{" "}
+                              {(conclaveBonus.bookMultipliers.spirit * 100).toFixed(1)}%
+                            </p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 className="text-yellow-400 font-semibold mb-3">Warden Bonuses (per warden)</h3>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <p className="text-white">
+                              <span className="text-green-400">Strength Wardens:</span>{" "}
+                              +{conclaveBonus.wardenBonuses.strength.toLocaleString()} DOM each
+                            </p>
+                            <p className="text-white">
+                              <span className="text-green-400">Allure Wardens:</span>{" "}
+                              +{conclaveBonus.wardenBonuses.allure.toLocaleString()} DOM each
+                            </p>
+                            <p className="text-white">
+                              <span className="text-green-400">Intellect Wardens:</span>{" "}
+                              +{conclaveBonus.wardenBonuses.intellect.toLocaleString()} DOM each
+                            </p>
+                            <p className="text-white">
+                              <span className="text-green-400">Spirit Wardens:</span>{" "}
+                              +{conclaveBonus.wardenBonuses.spirit.toLocaleString()} DOM each
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="border-t border-gray-600 pt-4">
+                          <h3 className="text-yellow-400 font-semibold mb-3">How Conclave Bonuses Work</h3>
+                          <div className="text-sm text-gray-300 space-y-2">
+                            <p>
+                              <span className="text-blue-400 font-medium">Book Multipliers:</span> All book DOM 
+                              is multiplied by the percentage shown. For balanced books (Encyclopedia/Arcana), 
+                              the highest multiplier of all attributes is used.
+                            </p>
+                            <p>
+                              <span className="text-green-400 font-medium">Warden Bonuses:</span> Each warden 
+                              you own adds the shown DOM amount for each matching attribute. Balance wardens 
+                              get bonuses for all four attributes.
+                            </p>
+                            <p>
+                              <span className="text-yellow-400 font-medium">Note:</span> These bonuses are 
+                              automatically included in your total DOM calculation above.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })()}
+                </CardContent>
+              </Card>
+
+              {/* Upgrade Impact Preview */}
+              {conclaveUpgrade.savedSeals > 0 && (() => {
+                const upgradePreview = calculateConclaveUpgrades()
+                if (upgradePreview.upgrades.length > 0) {
+                  return (
+                    <Card className="bg-gray-800/50 border-gray-600">
+                      <CardHeader>
+                        <CardTitle className="text-red-400">Potential Upgrade Impact</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div>
+                            <h3 className="text-yellow-400 font-semibold mb-3">After Upgrades</h3>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <p className="text-white">
+                                <span className="text-blue-400">Strength Books:</span>{" "}
+                                {(upgradePreview.bookMultipliers.strength * 100).toFixed(1)}%
+                              </p>
+                              <p className="text-white">
+                                <span className="text-blue-400">Allure Books:</span>{" "}
+                                {(upgradePreview.bookMultipliers.allure * 100).toFixed(1)}%
+                              </p>
+                              <p className="text-white">
+                                <span className="text-blue-400">Intellect Books:</span>{" "}
+                                {(upgradePreview.bookMultipliers.intellect * 100).toFixed(1)}%
+                              </p>
+                              <p className="text-white">
+                                <span className="text-blue-400">Spirit Books:</span>{" "}
+                                {(upgradePreview.bookMultipliers.spirit * 100).toFixed(1)}%
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                }
+                return null
+              })()}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  )
+} 
