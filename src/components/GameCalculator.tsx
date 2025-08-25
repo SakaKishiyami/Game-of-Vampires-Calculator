@@ -3544,118 +3544,107 @@ export default function GameCalculator() {
                   <CardTitle className="text-red-400">Current Modifiers & Multipliers</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {(() => {
-                    const conclaveBonus = calculateTotalConclaveBonus()
-                    return (
-                      <div className="space-y-4">
-                        <div>
-                          <h3 className="text-yellow-400 font-semibold mb-3">Book Multipliers</h3>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <p className="text-white">
-                              <span className="text-blue-400">Strength Books:</span>{" "}
-                              {(conclaveBonus.bookMultipliers.strength * 100).toFixed(1)}%
-                            </p>
-                            <p className="text-white">
-                              <span className="text-blue-400">Allure Books:</span>{" "}
-                              {(conclaveBonus.bookMultipliers.allure * 100).toFixed(1)}%
-                            </p>
-                            <p className="text-white">
-                              <span className="text-blue-400">Intellect Books:</span>{" "}
-                              {(conclaveBonus.bookMultipliers.intellect * 100).toFixed(1)}%
-                            </p>
-                            <p className="text-white">
-                              <span className="text-blue-400">Spirit Books:</span>{" "}
-                              {(conclaveBonus.bookMultipliers.spirit * 100).toFixed(1)}%
-                            </p>
-                          </div>
-                        </div>
-
-                        <div>
-                          <h3 className="text-yellow-400 font-semibold mb-3">Warden Bonuses (per warden)</h3>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <p className="text-white">
-                              <span className="text-green-400">Strength Wardens:</span>{" "}
-                              +{conclaveBonus.wardenBonuses.strength.toLocaleString()} DOM each
-                            </p>
-                            <p className="text-white">
-                              <span className="text-green-400">Allure Wardens:</span>{" "}
-                              +{conclaveBonus.wardenBonuses.allure.toLocaleString()} DOM each
-                            </p>
-                            <p className="text-white">
-                              <span className="text-green-400">Intellect Wardens:</span>{" "}
-                              +{conclaveBonus.wardenBonuses.intellect.toLocaleString()} DOM each
-                            </p>
-                            <p className="text-white">
-                              <span className="text-green-400">Spirit Wardens:</span>{" "}
-                              +{conclaveBonus.wardenBonuses.spirit.toLocaleString()} DOM each
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="border-t border-gray-600 pt-4">
-                          <h3 className="text-yellow-400 font-semibold mb-3">How Conclave Bonuses Work</h3>
-                          <div className="text-sm text-gray-300 space-y-2">
-                            <p>
-                              <span className="text-blue-400 font-medium">Book Multipliers:</span> All book DOM 
-                              is multiplied by the percentage shown. For balanced books (Encyclopedia/Arcana), 
-                              the highest multiplier of all attributes is used.
-                            </p>
-                            <p>
-                              <span className="text-green-400 font-medium">Warden Bonuses:</span> Each warden 
-                              you own adds the shown DOM amount for each matching attribute. Balance wardens 
-                              get bonuses for all four attributes.
-                            </p>
-                            <p>
-                              <span className="text-yellow-400 font-medium">Note:</span> These bonuses are 
-                              automatically included in your total DOM calculation above.
-                            </p>
-                          </div>
-                        </div>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-yellow-400 font-semibold mb-3">Book Multipliers</h3>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <p className="text-white">
+                          <span className="text-blue-400">Strength Books:</span>{" "}
+                          {(calculateTotalConclaveBonus().bookMultipliers.strength * 100).toFixed(1)}%
+                        </p>
+                        <p className="text-white">
+                          <span className="text-blue-400">Allure Books:</span>{" "}
+                          {(calculateTotalConclaveBonus().bookMultipliers.allure * 100).toFixed(1)}%
+                        </p>
+                        <p className="text-white">
+                          <span className="text-blue-400">Intellect Books:</span>{" "}
+                          {(calculateTotalConclaveBonus().bookMultipliers.intellect * 100).toFixed(1)}%
+                        </p>
+                        <p className="text-white">
+                          <span className="text-blue-400">Spirit Books:</span>{" "}
+                          {(calculateTotalConclaveBonus().bookMultipliers.spirit * 100).toFixed(1)}%
+                        </p>
                       </div>
-                    )
-                  })()}
+                    </div>
+
+                    <div>
+                      <h3 className="text-yellow-400 font-semibold mb-3">Warden Bonuses (per warden)</h3>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <p className="text-white">
+                          <span className="text-green-400">Strength Wardens:</span>{" "}
+                          +{calculateTotalConclaveBonus().wardenBonuses.strength.toLocaleString()} DOM each
+                        </p>
+                        <p className="text-white">
+                          <span className="text-green-400">Allure Wardens:</span>{" "}
+                          +{calculateTotalConclaveBonus().wardenBonuses.allure.toLocaleString()} DOM each
+                        </p>
+                        <p className="text-white">
+                          <span className="text-green-400">Intellect Wardens:</span>{" "}
+                          +{calculateTotalConclaveBonus().wardenBonuses.intellect.toLocaleString()} DOM each
+                        </p>
+                        <p className="text-white">
+                          <span className="text-green-400">Spirit Wardens:</span>{" "}
+                          +{calculateTotalConclaveBonus().wardenBonuses.spirit.toLocaleString()} DOM each
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-gray-600 pt-4">
+                      <h3 className="text-yellow-400 font-semibold mb-3">How Conclave Bonuses Work</h3>
+                      <div className="text-sm text-gray-300 space-y-2">
+                        <p>
+                          <span className="text-blue-400 font-medium">Book Multipliers:</span> All book DOM 
+                          is multiplied by the percentage shown. For balanced books (Encyclopedia/Arcana), 
+                          the highest multiplier of all attributes is used.
+                        </p>
+                        <p>
+                          <span className="text-green-400 font-medium">Warden Bonuses:</span> Each warden 
+                          you own adds the shown DOM amount for each matching attribute. Balance wardens 
+                          get bonuses for all four attributes.
+                        </p>
+                        <p>
+                          <span className="text-yellow-400 font-medium">Note:</span> These bonuses are 
+                          automatically included in your total DOM calculation above.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
               {/* Upgrade Impact Preview */}
-              {conclaveUpgrade.savedSeals > 0 && (() => {
-                const upgradePreview = calculateConclaveUpgrades()
-                if (upgradePreview.upgrades.length > 0) {
-                  return (
-                    <Card className="bg-gray-800/50 border-gray-600">
-                      <CardHeader>
-                        <CardTitle className="text-red-400">Potential Upgrade Impact</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div>
-                            <h3 className="text-yellow-400 font-semibold mb-3">After Upgrades</h3>
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                              <p className="text-white">
-                                <span className="text-blue-400">Strength Books:</span>{" "}
-                                {(upgradePreview.bookMultipliers.strength * 100).toFixed(1)}%
-                              </p>
-                              <p className="text-white">
-                                <span className="text-blue-400">Allure Books:</span>{" "}
-                                {(upgradePreview.bookMultipliers.allure * 100).toFixed(1)}%
-                              </p>
-                              <p className="text-white">
-                                <span className="text-blue-400">Intellect Books:</span>{" "}
-                                {(upgradePreview.bookMultipliers.intellect * 100).toFixed(1)}%
-                              </p>
-                              <p className="text-white">
-                                <span className="text-blue-400">Spirit Books:</span>{" "}
-                                {(upgradePreview.bookMultipliers.spirit * 100).toFixed(1)}%
-                              </p>
-                            </div>
-                          </div>
+              {conclaveUpgrade.savedSeals > 0 && (
+                <Card className="bg-gray-800/50 border-gray-600">
+                  <CardHeader>
+                    <CardTitle className="text-red-400">Potential Upgrade Impact</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-yellow-400 font-semibold mb-3">After Upgrades</h3>
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <p className="text-white">
+                            <span className="text-blue-400">Strength Books:</span>{" "}
+                            {(calculateConclaveUpgrades().bookMultipliers.strength * 100).toFixed(1)}%
+                          </p>
+                          <p className="text-white">
+                            <span className="text-blue-400">Allure Books:</span>{" "}
+                            {(calculateConclaveUpgrades().bookMultipliers.allure * 100).toFixed(1)}%
+                          </p>
+                          <p className="text-white">
+                            <span className="text-blue-400">Intellect Books:</span>{" "}
+                            {(calculateConclaveUpgrades().bookMultipliers.intellect * 100).toFixed(1)}%
+                          </p>
+                          <p className="text-white">
+                            <span className="text-blue-400">Spirit Books:</span>{" "}
+                            {(calculateConclaveUpgrades().bookMultipliers.spirit * 100).toFixed(1)}%
+                          </p>
                         </div>
-                      </CardContent>
-                    </Card>
-                  )
-                }
-                return null
-              })()}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </TabsContent>
         </Tabs>
@@ -3697,6 +3686,5 @@ export default function GameCalculator() {
           </div>
         </footer>
       </div>
-    </div>
   )
 } 
