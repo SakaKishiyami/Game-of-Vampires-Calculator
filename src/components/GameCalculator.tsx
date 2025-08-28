@@ -318,6 +318,14 @@ export default function GameCalculator() {
     event.target.value = ''
   }
 
+  // Load auto-load preference from localStorage first
+  useEffect(() => {
+    const savedPreference = localStorage.getItem('autoLoadCloudSaves')
+    if (savedPreference !== null) {
+      setAutoLoadCloudSaves(JSON.parse(savedPreference))
+    }
+  }, [])
+
   // Check for existing authentication on component mount and auto-load cloud save
   useEffect(() => {
     const checkUserAndAutoLoad = async () => {
@@ -327,6 +335,10 @@ export default function GameCalculator() {
       // If user is authenticated, try to auto-load their most recent cloud save
       if (user) {
         try {
+          // Get the current preference value from localStorage directly to avoid race condition
+          const savedPreference = localStorage.getItem('autoLoadCloudSaves')
+          const shouldAutoLoad = savedPreference !== null ? JSON.parse(savedPreference) : true
+          
           const { data, error } = await supabase
             .from('user_saves')
             .select('save_data')
@@ -340,26 +352,35 @@ export default function GameCalculator() {
             const localData = localStorage.getItem('gameCalculatorData')
             const autoSavedData = localStorage.getItem('gameCalculatorAutoSave')
             
+            console.log('Auto-load debug:', {
+              shouldAutoLoad,
+              hasLocalData: !!localData,
+              hasAutoSavedData: !!autoSavedData,
+              hasCloudSave: !!data?.save_data
+            })
+            
             // Only auto-load if preference is enabled and no recent local data exists
-            if (autoLoadCloudSaves && !localData && !autoSavedData) {
+            if (shouldAutoLoad && !localData && !autoSavedData) {
               loadCloudData(data.save_data)
-              console.log('Auto-loaded most recent cloud save')
+              console.log('Auto-loaded most recent cloud save successfully!')
+            } else {
+              console.log('Auto-load skipped:', {
+                reason: !shouldAutoLoad ? 'preference disabled' : 
+                       localData ? 'has local data' :
+                       autoSavedData ? 'has auto-saved data' : 'unknown'
+              })
             }
+          } else {
+            console.log('No cloud save data found:', { error, hasData: !!data?.save_data })
           }
         } catch (error) {
-          console.log('No cloud saves found or error loading:', error)
+          console.log('Error during auto-load:', error)
         }
+      } else {
+        console.log('No authenticated user found')
       }
     }
     checkUserAndAutoLoad()
-  }, [autoLoadCloudSaves])
-
-  // Load auto-load preference from localStorage
-  useEffect(() => {
-    const savedPreference = localStorage.getItem('autoLoadCloudSaves')
-    if (savedPreference !== null) {
-      setAutoLoadCloudSaves(JSON.parse(savedPreference))
-    }
   }, [])
 
   // Gather all current calculator data
