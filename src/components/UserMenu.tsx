@@ -8,6 +8,7 @@ import { supabase, getCurrentUser, signOut, UserSave } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface UserMenuProps {
@@ -19,6 +20,8 @@ interface UserMenuProps {
   onLoadLocalData: () => void
   onExportData: () => void
   onImportData: (event: React.ChangeEvent<HTMLInputElement>) => void
+  autoLoadCloudSaves: boolean
+  onToggleAutoLoadCloudSaves: () => void
 }
 
 export default function UserMenu({ 
@@ -29,7 +32,9 @@ export default function UserMenu({
   onSaveData,
   onLoadLocalData,
   onExportData,
-  onImportData 
+  onImportData,
+  autoLoadCloudSaves,
+  onToggleAutoLoadCloudSaves
 }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showAuth, setShowAuth] = useState(false)
@@ -214,6 +219,19 @@ export default function UserMenu({
               {/* Cloud Saves Section */}
               <div className="space-y-3">
                 <h3 className="text-white font-medium">☁️ Cloud Saves</h3>
+                
+                {/* Auto-load preference */}
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="auto-load-cloud-saves"
+                    checked={autoLoadCloudSaves}
+                    onCheckedChange={onToggleAutoLoadCloudSaves}
+                    className="border-gray-600 data-[state=checked]:bg-green-600"
+                  />
+                  <Label htmlFor="auto-load-cloud-saves" className="text-xs text-gray-300">
+                    Auto-load latest save on page refresh
+                  </Label>
+                </div>
                 
                 {/* Save Current Data */}
                 <div className="space-y-2">

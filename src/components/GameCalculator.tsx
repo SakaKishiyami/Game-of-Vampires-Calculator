@@ -20,7 +20,7 @@ import { domIncreasePerStarData } from "@/data/talent_stars"
 
 // Auth components
 import UserMenu from "@/components/UserMenu"
-import { getCurrentUser } from "@/lib/supabase"
+import { getCurrentUser, supabase } from "@/lib/supabase"
 
 export default function GameCalculator() {
   // Base attributes
@@ -152,6 +152,7 @@ export default function GameCalculator() {
 
   // Authentication state
   const [user, setUser] = useState<User | null>(null)
+  const [autoLoadCloudSaves, setAutoLoadCloudSaves] = useState(true)
 
   // Auras - Comprehensive warden data structure (imported from @/data/auras)
   const [auras, setAuras] = useState(initialAuras)
@@ -317,13 +318,48 @@ export default function GameCalculator() {
     event.target.value = ''
   }
 
-  // Check for existing authentication on component mount
+  // Check for existing authentication on component mount and auto-load cloud save
   useEffect(() => {
-    const checkUser = async () => {
+    const checkUserAndAutoLoad = async () => {
       const { user } = await getCurrentUser()
       setUser(user)
+      
+      // If user is authenticated, try to auto-load their most recent cloud save
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from('user_saves')
+            .select('save_data')
+            .eq('user_id', user.id)
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .single()
+
+          if (!error && data?.save_data) {
+            // Check if user has any local data that might be newer
+            const localData = localStorage.getItem('gameCalculatorData')
+            const autoSavedData = localStorage.getItem('gameCalculatorAutoSave')
+            
+            // Only auto-load if preference is enabled and no recent local data exists
+            if (autoLoadCloudSaves && !localData && !autoSavedData) {
+              loadCloudData(data.save_data)
+              console.log('Auto-loaded most recent cloud save')
+            }
+          }
+        } catch (error) {
+          console.log('No cloud saves found or error loading:', error)
+        }
+      }
     }
-    checkUser()
+    checkUserAndAutoLoad()
+  }, [autoLoadCloudSaves])
+
+  // Load auto-load preference from localStorage
+  useEffect(() => {
+    const savedPreference = localStorage.getItem('autoLoadCloudSaves')
+    if (savedPreference !== null) {
+      setAutoLoadCloudSaves(JSON.parse(savedPreference))
+    }
   }, [])
 
   // Gather all current calculator data
@@ -379,6 +415,13 @@ export default function GameCalculator() {
     if (data.hasAgneyi !== undefined) setHasAgneyi(data.hasAgneyi)
     if (data.hasCulann !== undefined) setHasCulann(data.hasCulann)
     if (data.hasHela !== undefined) setHasHela(data.hasHela)
+  }
+
+  // Toggle auto-load cloud saves preference
+  const toggleAutoLoadCloudSaves = () => {
+    const newValue = !autoLoadCloudSaves
+    setAutoLoadCloudSaves(newValue)
+    localStorage.setItem('autoLoadCloudSaves', JSON.stringify(newValue))
   }
 
   // Auto-save functionality (save every 30 seconds if data has changed)
@@ -1974,6 +2017,8 @@ export default function GameCalculator() {
               onLoadLocalData={loadData}
               onExportData={exportData}
               onImportData={importData}
+              autoLoadCloudSaves={autoLoadCloudSaves}
+              onToggleAutoLoadCloudSaves={toggleAutoLoadCloudSaves}
             />
           </div>
         </div>
