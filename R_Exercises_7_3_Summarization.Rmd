@@ -1,0 +1,153 @@
+---
+title: "R Exercises 7.3 - Data Summarization"
+author: "Student Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+**Note:** These exercises use the Bike Lanes.csv dataset. Since the actual file is not available in this workspace, the code is provided but will need the actual dataset to run.
+
+## Exercise 1
+How many bike lanes are in Baltimore? (Each row = one lane.)
+
+```{r eval=FALSE}
+# Read the dataset
+bike_lanes <- read.csv("Bike Lanes.csv")
+
+# Count the number of rows (bike lanes)
+nrow(bike_lanes)
+```
+
+## Exercise 2
+How much total bike lane length is in Baltimore in (a) feet and (b) miles? (length is given in feet.)
+
+```{r eval=FALSE}
+# (a) Total length in feet
+total_feet <- sum(bike_lanes$length, na.rm = TRUE)
+total_feet
+
+# (b) Total length in miles (1 mile = 5280 feet)
+total_miles <- total_feet / 5280
+total_miles
+```
+
+## Exercise 3
+How many bike lane types (type) are there? Which type is (a) most common and (b) longest on average?
+
+```{r eval=FALSE}
+# Number of bike lane types
+length(unique(bike_lanes$type))
+
+# Count of each type
+type_counts <- table(bike_lanes$type)
+type_counts
+
+# (a) Most common type
+names(which.max(type_counts))
+
+# (b) Average length by type
+library(dplyr)
+type_summary <- bike_lanes %>%
+  group_by(type) %>%
+  summarise(avg_length = mean(length, na.rm = TRUE)) %>%
+  arrange(desc(avg_length))
+
+type_summary
+# Longest on average
+type_summary$type[1]
+```
+
+## Exercise 4
+How many projects (project) are there, and which one has the longest average bike lane length?
+
+```{r eval=FALSE}
+# Number of projects
+length(unique(bike_lanes$project))
+
+# Average length by project
+project_summary <- bike_lanes %>%
+  group_by(project) %>%
+  summarise(avg_length = mean(length, na.rm = TRUE)) %>%
+  arrange(desc(avg_length))
+
+project_summary
+# Project with longest average length
+project_summary$project[1]
+```
+
+## Exercise 5
+What is the average bike lane length per year of installation? (Set dateInstalled = NA if it is 0.)
+
+```{r eval=FALSE}
+# Set dateInstalled = NA if it is 0
+bike_lanes$dateInstalled[bike_lanes$dateInstalled == 0] <- NA
+
+# Average length by year of installation
+year_summary <- bike_lanes %>%
+  filter(!is.na(dateInstalled)) %>%
+  group_by(dateInstalled) %>%
+  summarise(avg_length = mean(length, na.rm = TRUE)) %>%
+  arrange(dateInstalled)
+
+year_summary
+```
+
+## Exercise 6
+Describe bike lane lengths (a) with numbers and (b) with a plot.
+
+```{r eval=FALSE}
+# (a) Numerical summary
+summary(bike_lanes$length)
+mean(bike_lanes$length, na.rm = TRUE)
+sd(bike_lanes$length, na.rm = TRUE)
+median(bike_lanes$length, na.rm = TRUE)
+quantile(bike_lanes$length, na.rm = TRUE)
+
+# (b) Plot
+hist(bike_lanes$length, 
+     main = "Distribution of Bike Lane Lengths",
+     xlab = "Length (feet)",
+     breaks = 20)
+
+boxplot(bike_lanes$length,
+        main = "Boxplot of Bike Lane Lengths",
+        ylab = "Length (feet)")
+```
+
+## Exercise 7
+Describe lane lengths again, but grouped by (a) type and (b) number of lanes (numLanes).
+
+```{r eval=FALSE}
+# (a) By type
+library(dplyr)
+bike_lanes %>%
+  group_by(type) %>%
+  summarise(
+    count = n(),
+    mean_length = mean(length, na.rm = TRUE),
+    median_length = median(length, na.rm = TRUE),
+    sd_length = sd(length, na.rm = TRUE)
+  )
+
+# Boxplot by type
+boxplot(length ~ type, data = bike_lanes,
+        main = "Bike Lane Lengths by Type",
+        xlab = "Type",
+        ylab = "Length (feet)")
+
+# (b) By number of lanes
+bike_lanes %>%
+  group_by(numLanes) %>%
+  summarise(
+    count = n(),
+    mean_length = mean(length, na.rm = TRUE),
+    median_length = median(length, na.rm = TRUE),
+    sd_length = sd(length, na.rm = TRUE)
+  )
+
+# Boxplot by number of lanes
+boxplot(length ~ numLanes, data = bike_lanes,
+        main = "Bike Lane Lengths by Number of Lanes",
+        xlab = "Number of Lanes",
+        ylab = "Length (feet)")
+```

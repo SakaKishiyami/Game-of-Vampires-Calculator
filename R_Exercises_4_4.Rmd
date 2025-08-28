@@ -1,0 +1,87 @@
+---
+title: "R Exercises 4.4 - Data Import/Export"
+author: "Student Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Exercise 1
+Read in the Youth Tobacco study data and name it youth
+
+```{r}
+# Method 1: Try with UTF-8 encoding
+youth <- read.csv("Youth_Tobacco_Survey__YTS__Data.csv", 
+                  header = TRUE, 
+                  encoding = "UTF-8")
+
+# Alternative methods if above doesn't work:
+# Method 2: Try with latin1 encoding
+# youth <- read.csv("Youth_Tobacco_Survey__YTS__Data.csv", 
+#                   header = TRUE, 
+#                   encoding = "latin1")
+
+# Method 3: Use readr package
+# library(readr)
+# youth <- read_csv("Youth_Tobacco_Survey__YTS__Data.csv", 
+#                   locale = locale(encoding = "UTF-8"))
+
+head(youth, 3)
+class(youth)
+dim(youth)
+```
+
+## Exercise 2
+Install and invoke the readxl package
+
+```{r}
+install.packages("readxl")
+library(readxl)
+```
+
+## Exercise 3
+Download an Excel version of the Superstore dataset from Blackboard. Use the read_excel() function in the readxl package to read in the dataset and call the output super.
+
+```{r}
+super <- read_excel("Superstore.xlsx")
+```
+
+### 3a. What types of variables are in the dataset? (numeric, text, yes/no)
+
+```{r}
+str(super)
+sapply(super, class)
+```
+
+### 3b. How many rows and columns are there?
+
+```{r}
+nrow(super)
+ncol(super)
+dim(super)
+```
+
+### 3c. What are the basic statistics for each variable? (mean, min, max, counts)
+
+```{r}
+summary(super)
+```
+
+### 3d. Are there any missing values?
+
+```{r}
+sum(is.na(super))
+colSums(is.na(super))
+```
+
+### 3e. How many unique values are in each variable?
+
+```{r}
+sapply(super, function(x) length(unique(x)))
+```
+
+## Exercise 4
+Write out the super R object as a CSV file using write.csv() and call the file "superstore.csv"
+
+```{r}
+write.csv(super, file = "superstore.csv", row.names = FALSE)
+```

@@ -1,0 +1,93 @@
+---
+title: "R Exercises 6.8 - Subsetting Data"
+author: "Student Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Exercise 1
+Check if the mtcars dataset is available by typing mtcars.
+
+```{r}
+mtcars
+```
+
+## Exercise 2
+What is the class of mtcars?
+
+```{r}
+class(mtcars)
+```
+
+## Exercise 3
+How many rows (observations) and columns (variables) does it have?
+
+```{r}
+nrow(mtcars)
+ncol(mtcars)
+dim(mtcars)
+```
+
+## Exercise 4
+Make a copy of mtcars called cars, then rename the column mpg to MPG.
+
+```{r}
+cars <- mtcars
+colnames(cars)[1] <- "MPG"
+head(cars)
+```
+
+## Exercise 5
+Make a new dataset carsSub containing just the columns wt, qsec, and hp, then check its dimensions with dim().
+
+```{r}
+carsSub <- cars[, c("wt", "qsec", "hp")]
+dim(carsSub)
+head(carsSub)
+```
+
+## Exercise 6
+Filter the rows of cars where mpg > 20. How many rows are returned?
+
+```{r}
+# Note: using MPG since we renamed the column
+filtered_cars <- cars[cars$MPG > 20, ]
+nrow(filtered_cars)
+filtered_cars
+```
+
+## Exercise 7
+Filter the rows where mpg < 16 and hp > 100. How many rows are returned?
+
+```{r}
+# Note: using MPG since we renamed the column
+filtered_cars2 <- cars[cars$MPG < 16 & cars$hp > 100, ]
+nrow(filtered_cars2)
+filtered_cars2
+```
+
+## Exercise 8
+Create a new carsSub that contains only the columns wt, qsec, and hp for cars with 8 cylinders (cyl). What are its dimensions?
+
+```{r}
+carsSub <- cars[cars$cyl == 8, c("wt", "qsec", "hp")]
+dim(carsSub)
+carsSub
+```
+
+## Exercise 9
+Reorder carsSub by wt in ascending order (use arrange()).
+
+```{r}
+library(dplyr)
+carsSub <- arrange(carsSub, wt)
+carsSub
+```
+
+## Exercise 10
+Add a new variable wt2 to carsSub equal to wt^2.
+
+```{r}
+carsSub$wt2 <- carsSub$wt^2
+carsSub
+```

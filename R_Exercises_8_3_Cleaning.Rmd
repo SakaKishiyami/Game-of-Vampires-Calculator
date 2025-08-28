@@ -1,0 +1,151 @@
+---
+title: "R Exercises 8.3 - Data Cleaning"
+author: "Student Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Setup: Create the students dataset
+
+```{r}
+# Create dataset
+students <- data.frame(
+  Name = c("Alice", "Bob", "Charlie", "Diana", "Ethan", "Fiona", "George", "Hannah"),
+  Gender = c("F", "M", "M", "F", "M", "F", "M", "F"),
+  Score = c(95, 82, 67, 50, 88, 73, 60, 99),
+  GradeLevel = factor(c("Freshman", "Sophomore", "Junior", "Senior", 
+                       "Freshman", "Junior", "Senior", "Sophomore"))
+)
+students
+```
+
+## Exercise 1
+Create a new column called Message that combines Name and Score into a string like: "Alice scored 95"
+
+```{r}
+students$Message <- paste(students$Name, "scored", students$Score)
+students$Message
+```
+
+## Exercise 2
+Convert all student names to uppercase in a new column NameUpper.
+
+```{r}
+students$NameUpper <- toupper(students$Name)
+students$NameUpper
+```
+
+## Exercise 3
+Create a new categorical variable called Performance based on Score:
+- Score >= 90 → "Excellent"
+- Score 75–89 → "Good"  
+- Score 60–74 → "Average"
+- Score < 60 → "Poor"
+
+```{r}
+students$Performance <- ifelse(students$Score >= 90, "Excellent",
+                              ifelse(students$Score >= 75, "Good",
+                                    ifelse(students$Score >= 60, "Average", "Poor")))
+students$Performance
+```
+
+## Exercise 4
+Count how many students fall into each Performance category.
+
+```{r}
+table(students$Performance)
+```
+
+## Exercise 5
+Check levels of GradeLevel.
+
+```{r}
+levels(students$GradeLevel)
+```
+
+## Exercise 6
+Reorder so "Senior" is the first level.
+
+```{r}
+students$GradeLevel <- relevel(students$GradeLevel, ref = "Senior")
+levels(students$GradeLevel)
+```
+
+## Exercise 7
+Add a new level "Unknown" and assign it to any student with NA.
+
+```{r}
+# Add new level
+levels(students$GradeLevel) <- c(levels(students$GradeLevel), "Unknown")
+levels(students$GradeLevel)
+
+# Note: Currently no NAs in GradeLevel, but if there were:
+# students$GradeLevel[is.na(students$GradeLevel)] <- "Unknown"
+```
+
+## Exercise 8
+Display counts of students per GradeLevel using table().
+
+```{r}
+table(students$GradeLevel)
+```
+
+## Exercise 9
+Identify missing values in the dataset.
+
+```{r}
+# Check for missing values
+sum(is.na(students))
+colSums(is.na(students))
+anyNA(students)
+
+# Note: Let's introduce some missing values for demonstration
+students_with_na <- students
+students_with_na$Score[c(2, 5)] <- NA
+students_with_na$Gender[3] <- NA
+
+# Check missing values again
+sum(is.na(students_with_na))
+colSums(is.na(students_with_na))
+```
+
+## Exercise 10
+Remove rows with missing Score or Gender.
+
+```{r}
+# Using the dataset with missing values
+students_clean <- students_with_na[!is.na(students_with_na$Score) & 
+                                  !is.na(students_with_na$Gender), ]
+students_clean
+```
+
+## Exercise 11
+Replace missing Score values with the mean score (ignoring NAs).
+
+```{r}
+# Make a copy to work with
+students_imputed <- students_with_na
+
+# Replace missing Score values with mean
+students_imputed$Score[is.na(students_imputed$Score)] <- 
+  mean(students_imputed$Score, na.rm = TRUE)
+
+students_imputed$Score
+```
+
+## Exercise 12
+Replace missing Gender with "Unknown".
+
+```{r}
+# Replace missing Gender with "Unknown"
+students_imputed$Gender[is.na(students_imputed$Gender)] <- "Unknown"
+
+students_imputed$Gender
+table(students_imputed$Gender)
+```
+
+## Final cleaned dataset
+
+```{r}
+students_imputed
+```

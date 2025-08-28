@@ -1,0 +1,132 @@
+---
+title: "R Exercises 9.3 - Writing Functions"
+author: "Student Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Exercise 1
+Write a function, sqdif, that does the following:
+- takes two numbers x and y with default values of 2 and 3
+- takes the difference
+- squares this difference  
+- then returns the final value
+- checks that x and y are numeric and stops with an error message otherwise
+- Run your function using x = 4 and y = 6
+
+```{r}
+sqdif <- function(x = 2, y = 3) {
+  # Check if x and y are numeric
+  if (!is.numeric(x) || !is.numeric(y)) {
+    stop("Both x and y must be numeric values")
+  }
+  
+  # Calculate difference
+  difference <- x - y
+  
+  # Square the difference
+  squared_diff <- difference^2
+  
+  # Return the result
+  return(squared_diff)
+}
+
+# Test the function with default values
+sqdif()
+
+# Test with x = 4 and y = 6
+sqdif(x = 4, y = 6)
+
+# Test error handling
+# sqdif(x = "4", y = 6)  # This would produce an error
+```
+
+## Exercise 2
+Try to write a function called top() that takes a matrix or data.frame and a number n, and returns the first n rows and columns, with the default value of n=5. Use your function on the iris dataset with n = 6.
+
+```{r}
+top <- function(data, n = 5) {
+  # Get the first n rows and first n columns
+  result <- data[1:n, 1:n]
+  return(result)
+}
+
+# Test on iris dataset with n = 6
+top(iris, n = 6)
+
+# Test with default n = 5
+top(mtcars)
+```
+
+## Exercise 3
+Create a function that calculates a 95% one-sample t-confidence interval. The function should return a list containing the sample mean and the confidence interval. The input to the function is a numeric vector of data. Apply your function to the Sepal.Length column of the iris dataset.
+
+Formula: x̄ ± t_{α/2} * (s/√n)
+
+```{r}
+t_confidence_interval <- function(data, confidence_level = 0.95) {
+  # Remove missing values
+  data <- data[!is.na(data)]
+  
+  # Calculate sample statistics
+  n <- length(data)
+  sample_mean <- mean(data)
+  sample_sd <- sd(data)
+  
+  # Calculate degrees of freedom
+  df <- n - 1
+  
+  # Calculate alpha and t-critical value
+  alpha <- 1 - confidence_level
+  t_critical <- qt(1 - alpha/2, df)
+  
+  # Calculate margin of error
+  margin_error <- t_critical * (sample_sd / sqrt(n))
+  
+  # Calculate confidence interval
+  lower_bound <- sample_mean - margin_error
+  upper_bound <- sample_mean + margin_error
+  
+  # Return results as a list
+  result <- list(
+    sample_mean = sample_mean,
+    confidence_interval = c(lower_bound, upper_bound),
+    confidence_level = confidence_level,
+    sample_size = n
+  )
+  
+  return(result)
+}
+
+# Apply to Sepal.Length column of iris dataset
+sepal_length_ci <- t_confidence_interval(iris$Sepal.Length)
+sepal_length_ci
+
+# Display results nicely
+cat("Sample Mean:", sepal_length_ci$sample_mean, "\n")
+cat("95% Confidence Interval: [", 
+    sepal_length_ci$confidence_interval[1], ", ", 
+    sepal_length_ci$confidence_interval[2], "]\n")
+```
+
+## Bonus: Test all functions together
+
+```{r}
+# Test sqdif with different inputs
+cat("Testing sqdif function:\n")
+cat("sqdif(10, 5) =", sqdif(10, 5), "\n")
+cat("sqdif() =", sqdif(), "\n\n")
+
+# Test top with different datasets
+cat("Testing top function with mtcars (n=3):\n")
+print(top(mtcars, 3))
+
+cat("\nTesting confidence interval with different data:\n")
+# Create some sample data
+set.seed(123)
+sample_data <- rnorm(50, mean = 100, sd = 15)
+ci_result <- t_confidence_interval(sample_data)
+cat("Sample Mean:", ci_result$sample_mean, "\n")
+cat("95% CI: [", ci_result$confidence_interval[1], ", ", 
+    ci_result$confidence_interval[2], "]\n")
+```
