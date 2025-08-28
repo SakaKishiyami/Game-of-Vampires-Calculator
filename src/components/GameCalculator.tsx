@@ -498,17 +498,23 @@ export default function GameCalculator() {
       let localData = null
       if (localDataStr) {
         const parsed = JSON.parse(localDataStr)
+        const timestamp = parsed.timestamp 
+          ? new Date(parsed.timestamp).toLocaleString()
+          : 'Unknown'
         localData = {
           data: parsed,
           size: calculateDataSize(parsed),
-          timestamp: parsed.timestamp || 'Unknown'
+          timestamp: timestamp
         }
       } else if (autoSavedDataStr) {
         const parsed = JSON.parse(autoSavedDataStr)
+        const timestamp = parsed.timestamp 
+          ? new Date(parsed.timestamp).toLocaleString()
+          : 'Auto-saved'
         localData = {
           data: parsed,
           size: calculateDataSize(parsed),
-          timestamp: parsed.timestamp || 'Auto-saved'
+          timestamp: timestamp
         }
       }
 
