@@ -22,6 +22,9 @@ interface UserMenuProps {
   onImportData: (event: React.ChangeEvent<HTMLInputElement>) => void
   autoLoadCloudSaves: boolean
   onToggleAutoLoadCloudSaves: () => void
+  onCompareData: () => void
+  dataLoadPreference: 'local' | 'cloud' | 'ask' | null
+  onResetDataPreference: () => void
 }
 
 export default function UserMenu({ 
@@ -34,7 +37,10 @@ export default function UserMenu({
   onExportData,
   onImportData,
   autoLoadCloudSaves,
-  onToggleAutoLoadCloudSaves
+  onToggleAutoLoadCloudSaves,
+  onCompareData,
+  dataLoadPreference,
+  onResetDataPreference
 }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showAuth, setShowAuth] = useState(false)
@@ -232,6 +238,30 @@ export default function UserMenu({
                     Auto-load latest save on page refresh
                   </Label>
                 </div>
+
+                {/* Data preference display */}
+                {dataLoadPreference && (
+                  <div className="bg-gray-700/30 p-2 rounded text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">
+                        When both local & cloud data exist:
+                      </span>
+                      <span className={`font-medium ${
+                        dataLoadPreference === 'local' ? 'text-blue-400' : 'text-green-400'
+                      }`}>
+                        Always load {dataLoadPreference === 'local' ? '💾 Local' : '☁️ Cloud'}
+                      </span>
+                    </div>
+                    <Button 
+                      onClick={onResetDataPreference}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full mt-1 h-6 text-xs text-gray-500 hover:text-white"
+                    >
+                      Reset preference
+                    </Button>
+                  </div>
+                )}
                 
                 {/* Save Current Data */}
                 <div className="space-y-2">
@@ -249,6 +279,14 @@ export default function UserMenu({
                     💾 Save to Cloud
                   </Button>
                 </div>
+
+                {/* Compare Data Button */}
+                <Button 
+                  onClick={onCompareData}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-sm"
+                >
+                  ⚖️ Compare Local vs Cloud Data
+                </Button>
 
                 {/* Load Cloud Saves */}
                 {saves.length > 0 && (

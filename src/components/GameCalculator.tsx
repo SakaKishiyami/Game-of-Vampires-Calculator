@@ -153,6 +153,12 @@ export default function GameCalculator() {
   // Authentication state
   const [user, setUser] = useState<User | null>(null)
   const [autoLoadCloudSaves, setAutoLoadCloudSaves] = useState(true)
+  const [dataLoadPreference, setDataLoadPreference] = useState<'local' | 'cloud' | 'ask' | null>(null)
+  const [showDataComparison, setShowDataComparison] = useState(false)
+  const [dataComparison, setDataComparison] = useState<{
+    local: { data: any; size: number; timestamp?: string } | null;
+    cloud: { data: any; size: number; timestamp?: string } | null;
+  }>({ local: null, cloud: null })
 
   // Auras - Comprehensive warden data structure (imported from @/data/auras)
   const [auras, setAuras] = useState(initialAuras)
@@ -318,11 +324,16 @@ export default function GameCalculator() {
     event.target.value = ''
   }
 
-  // Load auto-load preference from localStorage first
+  // Load preferences from localStorage first
   useEffect(() => {
-    const savedPreference = localStorage.getItem('autoLoadCloudSaves')
-    if (savedPreference !== null) {
-      setAutoLoadCloudSaves(JSON.parse(savedPreference))
+    const savedAutoLoad = localStorage.getItem('autoLoadCloudSaves')
+    if (savedAutoLoad !== null) {
+      setAutoLoadCloudSaves(JSON.parse(savedAutoLoad))
+    }
+
+    const savedDataPreference = localStorage.getItem('dataLoadPreference')
+    if (savedDataPreference !== null) {
+      setDataLoadPreference(JSON.parse(savedDataPreference))
     }
   }, [])
 
@@ -359,8 +370,26 @@ export default function GameCalculator() {
               hasCloudSave: !!data?.save_data
             })
             
-            // Only auto-load if preference is enabled and no recent local data exists
-            if (shouldAutoLoad && !localData && !autoSavedData) {
+            // If we have both local and cloud data, use stored preference or ask
+            if ((localData || autoSavedData) && data?.save_data) {
+              const storedPreference = localStorage.getItem('dataLoadPreference')
+              const preference = storedPreference ? JSON.parse(storedPreference) : null
+              
+              if (preference === 'local') {
+                const localDataToLoad = localData || autoSavedData
+                if (localDataToLoad) {
+                  loadCloudData(JSON.parse(localDataToLoad))
+                  console.log('Auto-loaded local data based on stored preference')
+                }
+              } else if (preference === 'cloud') {
+                loadCloudData(data.save_data)
+                console.log('Auto-loaded cloud data based on stored preference')
+              } else {
+                // No preference set or preference is 'ask' - trigger comparison
+                console.log('Both local and cloud data found - triggering comparison for first-time choice')
+                setTimeout(() => compareData(), 1000) // Small delay to let UI settle
+              }
+            } else if (shouldAutoLoad && !localData && !autoSavedData) {
               loadCloudData(data.save_data)
               console.log('Auto-loaded most recent cloud save successfully!')
             } else {
@@ -443,6 +472,91 @@ export default function GameCalculator() {
     const newValue = !autoLoadCloudSaves
     setAutoLoadCloudSaves(newValue)
     localStorage.setItem('autoLoadCloudSaves', JSON.stringify(newValue))
+  }
+
+  // Calculate data size in bytes
+  const calculateDataSize = (data: any): number => {
+    return new Blob([JSON.stringify(data)]).size
+  }
+
+  // Format size for display
+  const formatSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
+  // Compare local and cloud data
+  const compareData = async () => {
+    if (!user) return
+
+    try {
+      // Get local data
+      const localDataStr = localStorage.getItem('gameCalculatorData')
+      const autoSavedDataStr = localStorage.getItem('gameCalculatorAutoSave')
+      
+      let localData = null
+      if (localDataStr) {
+        const parsed = JSON.parse(localDataStr)
+        localData = {
+          data: parsed,
+          size: calculateDataSize(parsed),
+          timestamp: parsed.timestamp || 'Unknown'
+        }
+      } else if (autoSavedDataStr) {
+        const parsed = JSON.parse(autoSavedDataStr)
+        localData = {
+          data: parsed,
+          size: calculateDataSize(parsed),
+          timestamp: parsed.timestamp || 'Auto-saved'
+        }
+      }
+
+      // Get cloud data
+      const { data: cloudSave, error } = await supabase
+        .from('user_saves')
+        .select('save_data, updated_at')
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single()
+
+      let cloudData = null
+      if (!error && cloudSave?.save_data) {
+        cloudData = {
+          data: cloudSave.save_data,
+          size: calculateDataSize(cloudSave.save_data),
+          timestamp: new Date(cloudSave.updated_at).toLocaleString()
+        }
+      }
+
+      setDataComparison({ local: localData, cloud: cloudData })
+      setShowDataComparison(true)
+    } catch (error) {
+      console.error('Error comparing data:', error)
+      alert('Error comparing data. Please try again.')
+    }
+  }
+
+  // Load from comparison and save preference
+  const loadFromComparison = (source: 'local' | 'cloud') => {
+    const data = source === 'local' ? dataComparison.local?.data : dataComparison.cloud?.data
+    if (data) {
+      // Save the user's choice as preference
+      setDataLoadPreference(source)
+      localStorage.setItem('dataLoadPreference', JSON.stringify(source))
+      
+      loadCloudData(data)
+      setShowDataComparison(false)
+      alert(`Data loaded from ${source} successfully! This preference will be remembered for future loads.`)
+    }
+  }
+
+  // Reset data preference (for settings)
+  const resetDataPreference = () => {
+    setDataLoadPreference(null)
+    localStorage.removeItem('dataLoadPreference')
+    alert('Data load preference reset. You will be asked to choose again next time.')
   }
 
   // Auto-save functionality (save every 30 seconds if data has changed)
@@ -2040,9 +2154,121 @@ export default function GameCalculator() {
               onImportData={importData}
               autoLoadCloudSaves={autoLoadCloudSaves}
               onToggleAutoLoadCloudSaves={toggleAutoLoadCloudSaves}
+              onCompareData={compareData}
+              dataLoadPreference={dataLoadPreference}
+              onResetDataPreference={resetDataPreference}
             />
           </div>
         </div>
+
+        {/* Data Comparison Modal */}
+        {showDataComparison && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="bg-gray-800 border-gray-600 max-w-2xl w-full">
+              <CardHeader>
+                <CardTitle className="text-white text-center">⚖️ Data Comparison</CardTitle>
+                <p className="text-gray-400 text-sm text-center">
+                  Choose which data to load. Your choice will be remembered for future automatic loading.
+                </p>
+                <p className="text-yellow-400 text-xs text-center font-medium">
+                  🔸 This preference can be reset later in the Cloud Saves menu
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Local Data */}
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-blue-400">💾 Local Data</h3>
+                    {dataComparison.local ? (
+                      <div className="bg-gray-700/50 p-4 rounded-lg space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-300">Size:</span>
+                          <span 
+                            className={`font-bold ${
+                              dataComparison.cloud && dataComparison.local.size > dataComparison.cloud.size 
+                                ? 'text-green-400' 
+                                : dataComparison.cloud 
+                                  ? 'text-red-400'
+                                  : 'text-white'
+                            }`}
+                          >
+                            {formatSize(dataComparison.local.size)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-300">Last Updated:</span>
+                          <span className="text-gray-400 text-sm">
+                            {dataComparison.local.timestamp}
+                          </span>
+                        </div>
+                        <Button 
+                          onClick={() => loadFromComparison('local')}
+                          className="w-full bg-blue-600 hover:bg-blue-700 mt-3"
+                        >
+                          Load Local Data
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-700/30 p-4 rounded-lg text-center text-gray-500">
+                        No local data found
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Cloud Data */}
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-green-400">☁️ Cloud Data</h3>
+                    {dataComparison.cloud ? (
+                      <div className="bg-gray-700/50 p-4 rounded-lg space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-300">Size:</span>
+                          <span 
+                            className={`font-bold ${
+                              dataComparison.local && dataComparison.cloud.size > dataComparison.local.size 
+                                ? 'text-green-400' 
+                                : dataComparison.local 
+                                  ? 'text-red-400'
+                                  : 'text-white'
+                            }`}
+                          >
+                            {formatSize(dataComparison.cloud.size)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-300">Last Updated:</span>
+                          <span className="text-gray-400 text-sm">
+                            {dataComparison.cloud.timestamp}
+                          </span>
+                        </div>
+                        <Button 
+                          onClick={() => loadFromComparison('cloud')}
+                          className="w-full bg-green-600 hover:bg-green-700 mt-3"
+                        >
+                          Load Cloud Data
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-700/30 p-4 rounded-lg text-center text-gray-500">
+                        No cloud data found
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Close Button */}
+                <div className="mt-6 text-center">
+                  <Button 
+                    onClick={() => setShowDataComparison(false)}
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* VIP and Lord Level */}
         <div className="flex justify-center gap-8 mb-8">
