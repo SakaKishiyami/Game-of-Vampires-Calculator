@@ -1306,12 +1306,36 @@ export default function GameCalculator() {
     let remainingSeals = availableSeals
 
     if (selectedSeals.length === 1) {
-      // For single seal, find the best level to upgrade to within available seals
-      const singleSealOptions = upgradeOptions.filter(opt => opt.sealType === selectedSeals[0])
-      const bestOption = singleSealOptions.find(opt => opt.cost <= remainingSeals)
-      if (bestOption) {
-        selectedUpgrades.push(bestOption)
-        remainingSeals -= bestOption.cost
+      // For single seal, keep upgrading until we run out of seals
+      const sealType = selectedSeals[0]
+      let currentLevel = conclave[sealType]
+      
+      // Keep upgrading one level at a time until we can't afford the next level
+      while (currentLevel < conclaveLevels.length) {
+        const nextLevel = currentLevel + 1
+        const levelData = conclaveLevels[nextLevel - 1]
+        if (!levelData || levelData.cost > remainingSeals) break
+        
+        const attribute = sealType.split(" ")[2].toLowerCase() as keyof typeof wardenCounts
+        const wardenDomGain = levelData.warden * wardenCounts[attribute]
+        const bookDomGain = bookValues[attribute] * levelData.books
+        const totalDomGain = wardenDomGain + bookDomGain
+        const efficiency = levelData.cost > 0 ? totalDomGain / levelData.cost : 0
+        
+        selectedUpgrades.push({
+          sealType,
+          attribute,
+          currentLevel,
+          targetLevel: nextLevel,
+          cost: levelData.cost,
+          wardenBonus: levelData.warden,
+          bookMultiplier: levelData.books,
+          domGain: totalDomGain,
+          efficiency
+        })
+        
+        remainingSeals -= levelData.cost
+        currentLevel = nextLevel
       }
     } else {
       // For multiple seals, use greedy approach but allow each seal to be upgraded once
@@ -2188,6 +2212,10 @@ export default function GameCalculator() {
   const totals = calculateTotals()
   const dynamicAuras = calculateDynamicAuraLevels()
   const auraBonuses = calculateAuraBonuses()
+  
+  // Define consistent attribute ordering
+  const attributeOrder = ['strength', 'allure', 'intellect', 'spirit'] as const
+  const bookCategoryOrder = ['Strength', 'Allure', 'Intellect', 'Spirit'] as const
 
   // Get attribute colors
   const getAttributeColor = (attribute: string) => {
@@ -2498,13 +2526,13 @@ export default function GameCalculator() {
 
           {/* Base Attributes */}
           <div className="grid grid-cols-4 gap-4 mb-8">
-            {Object.entries(baseAttributes).map(([attr, value]) => (
+            {attributeOrder.map((attr) => (
               <Card key={attr} className="bg-gray-800/50 border-gray-600">
                 <CardContent className="p-4">
                   <Label className={`capitalize ${getAttributeColor(attr)}`}>{attr}</Label>
                   <Input
                     type="number"
-                    value={value}
+                    value={baseAttributes[attr]}
                     onChange={(e) =>
                       setBaseAttributes((prev) => ({
                         ...prev,
@@ -2523,7 +2551,8 @@ export default function GameCalculator() {
 
           {/* Attribute Boosts */}
           <div className="grid grid-cols-4 gap-4 mb-8">
-            {Object.entries(baseAttributes).map(([attr, baseValue]) => {
+            {attributeOrder.map((attr) => {
+              const baseValue = baseAttributes[attr]
               const totalValue = totals[`total${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof totals] as number || 0
               const boost = baseValue > 0 ? ((totalValue - baseValue) / baseValue) * 100 : 0
               return (
@@ -2584,13 +2613,13 @@ export default function GameCalculator() {
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-yellow-400">Talent Bonuses</h3>
                       <div className="space-y-3">
-                        {Object.entries(auraBonuses.talents).map(([attribute, bonus]) => (
+                        {attributeOrder.map((attribute) => (
                           <div key={attribute} className="flex justify-between items-center p-3 rounded bg-gray-700/50">
                             <span className={`capitalize font-medium ${getAttributeColor(attribute)}`}>
                               {attribute} Talents
                             </span>
                             <span className="text-xl font-bold text-white">
-                              {bonus.toFixed(1)}%
+                              {auraBonuses.talents[attribute].toFixed(1)}%
                             </span>
                           </div>
                         ))}
@@ -2601,13 +2630,13 @@ export default function GameCalculator() {
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-blue-400">Book Bonuses</h3>
                       <div className="space-y-3">
-                        {Object.entries(auraBonuses.books).map(([attribute, bonus]) => (
+                        {attributeOrder.map((attribute) => (
                           <div key={attribute} className="flex justify-between items-center p-3 rounded bg-gray-700/50">
                             <span className={`capitalize font-medium ${getAttributeColor(attribute)}`}>
                               {attribute} Books
                             </span>
                             <span className="text-xl font-bold text-white">
-                              {bonus.toFixed(1)}%
+                              {auraBonuses.books[attribute].toFixed(1)}%
                             </span>
                           </div>
                         ))}
@@ -3106,7 +3135,14 @@ export default function GameCalculator() {
                               </p>
                             </div>
                             {upgradePreview.upgrades
-                              .sort((a, b) => b.efficiency - a.efficiency)
+                              .sort((a, b) => {
+                                // First sort by seal type (maintain attribute order)
+                                const aIndex = ["Seal of Strength", "Seal of Allure", "Seal of Intellect", "Seal of Spirit"].indexOf(a.sealType)
+                                const bIndex = ["Seal of Strength", "Seal of Allure", "Seal of Intellect", "Seal of Spirit"].indexOf(b.sealType)
+                                if (aIndex !== bIndex) return aIndex - bIndex
+                                // Then by target level (ascending)
+                                return a.targetLevel - b.targetLevel
+                              })
                               .map((upgrade, index) => (
                                 <div key={index} className="border-l-2 border-blue-500 pl-3">
                                   <div className="flex justify-between items-start mb-1">
@@ -3130,7 +3166,7 @@ export default function GameCalculator() {
                               ))}
                             <div className="border-t border-gray-600 pt-2 mt-3">
                               <p className="text-gray-400 text-xs">
-                                ✨ Upgrades are ordered by efficiency (DOM gained per seal spent)
+                                ✨ Upgrades are ordered by attribute (Strength → Allure → Intellect → Spirit) then by level
                               </p>
                             </div>
                           </div>
@@ -3200,14 +3236,25 @@ export default function GameCalculator() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  {Object.entries(books).map(([category, bookCollection]) => (
+                  {bookCategoryOrder.map((category) => {
+                    const bookCollection = books[category as keyof BooksState]
+                    return (
                     <Card key={category} className={`${getAttributeBg(category)} border`}>
                       <CardHeader>
                         <CardTitle className={`${getAttributeColor(category)} font-semibold`}>{category} Books</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
-                          {Object.entries(bookCollection).map(([bookName, count]) => (
+                          {Object.entries(bookCollection)
+                            .sort((a, b) => {
+                              // Extract numbers from book names for proper numerical sorting
+                              const getNumber = (name: string) => {
+                                const match = name.match(/(\d+)/)
+                                return match ? parseInt(match[1]) : 0
+                              }
+                              return getNumber(a[0]) - getNumber(b[0])
+                            })
+                            .map(([bookName, count]) => (
                             <div key={bookName}>
                               <Label className="text-white text-sm">{bookName}</Label>
                               <Input
@@ -3232,7 +3279,8 @@ export default function GameCalculator() {
                         </div>
                       </CardContent>
                     </Card>
-                  ))}
+                    )
+                  })}
                 </div>
               </CardContent>
             </Card>
