@@ -164,21 +164,25 @@ export default function GameCalculator() {
     fineTalentScroll: { count: 0, exp: 100 },
     superiorTalentScroll: { count: 0, exp: 200 },
     
-    // Attribute Scripts (each has 6 checkboxes for 1-6 stars)
+    // Attribute Scripts (select one star level and quantity)
     strengthScript: {
-      stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+      selectedStar: 0, // 0 means none selected, 1-6 for star levels
+      quantity: 0,
       wardenLevel: 1
     },
     allureScript: {
-      stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+      selectedStar: 0,
+      quantity: 0,
       wardenLevel: 1
     },
     intellectScript: {
-      stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+      selectedStar: 0,
+      quantity: 0,
       wardenLevel: 1
     },
     spiritScript: {
-      stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+      selectedStar: 0,
+      quantity: 0,
       wardenLevel: 1
     }
   })
@@ -273,19 +277,23 @@ export default function GameCalculator() {
           fineTalentScroll: { count: 0, exp: 100 },
           superiorTalentScroll: { count: 0, exp: 200 },
           strengthScript: {
-            stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+            selectedStar: 0,
+            quantity: 0,
             wardenLevel: 1
           },
           allureScript: {
-            stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+            selectedStar: 0,
+            quantity: 0,
             wardenLevel: 1
           },
           intellectScript: {
-            stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+            selectedStar: 0,
+            quantity: 0,
             wardenLevel: 1
           },
           spiritScript: {
-            stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+            selectedStar: 0,
+            quantity: 0,
             wardenLevel: 1
           }
         })
@@ -2091,17 +2099,13 @@ export default function GameCalculator() {
 
     // Add talent script bonuses
     const calculateScriptResults = (script) => {
+      if (script.selectedStar === 0 || script.quantity === 0) {
+        return 0;
+      }
+      
       const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
-      let expectedSuccess = 0;
-      
-      Object.entries(script.stars).forEach(([star, checked], index) => {
-        if (checked) {
-          const rate = successRates[index];
-          expectedSuccess += rate;
-        }
-      });
-      
-      return expectedSuccess;
+      const rate = successRates[script.selectedStar - 1];
+      return script.quantity * rate;
     };
     
     const getStarBonus = (wardenLevel, starCount) => {
@@ -3363,25 +3367,24 @@ export default function GameCalculator() {
                   {/* Script Success Rate Calculations */}
                   {(() => {
                     const calculateScriptResults = (script) => {
-                      const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
-                      let expectedSuccess = 0;
-                      let minSuccess = 0;
-                      let maxSuccess = 0;
+                      if (script.selectedStar === 0 || script.quantity === 0) {
+                        return {
+                          expected: 0,
+                          min: 0,
+                          max: 0,
+                          total: 0
+                        };
+                      }
                       
-                      Object.entries(script.stars).forEach(([star, checked], index) => {
-                        if (checked) {
-                          const rate = successRates[index];
-                          expectedSuccess += rate;
-                          minSuccess += Math.floor(rate);
-                          maxSuccess += Math.ceil(rate);
-                        }
-                      });
+                      const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
+                      const rate = successRates[script.selectedStar - 1];
+                      const expected = script.quantity * rate;
                       
                       return {
-                        expected: Math.round(expectedSuccess * 100) / 100,
-                        min: minSuccess,
-                        max: maxSuccess,
-                        total: Object.values(script.stars).filter(Boolean).length
+                        expected: Math.round(expected * 100) / 100,
+                        min: Math.floor(expected),
+                        max: Math.ceil(expected),
+                        total: script.quantity
                       };
                     };
                     
@@ -3444,30 +3447,67 @@ export default function GameCalculator() {
                                 </div>
                               </div>
                               
-                              {/* Star Checkboxes */}
-                              <div className="grid grid-cols-6 gap-4">
-                                {[1, 2, 3, 4, 5, 6].map(star => {
-                                  const successRate = [100, 83.3, 66.6, 50, 33.3, 16.6][star - 1];
-                                  return (
-                                    <div key={star} className="flex items-center space-x-2">
-                                      <Checkbox
-                                        id={`${scriptKey}-${star}`}
-                                        checked={script.stars[star]}
-                                        onCheckedChange={(checked) => setTalents(prev => ({
-                                          ...prev,
-                                          [scriptKey]: {
-                                            ...prev[scriptKey],
-                                            stars: { ...prev[scriptKey].stars, [star]: checked }
-                                          }
-                                        }))}
-                                      />
-                                      <Label htmlFor={`${scriptKey}-${star}`} className="text-gray-300">
-                                        {star}★ ({successRate}%)
-                                      </Label>
-                                    </div>
-                                  );
-                                })}
+                              {/* Star Selection (Radio Buttons) */}
+                              <div className="space-y-3">
+                                <Label className="text-gray-300">Select Script Star Level:</Label>
+                                <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id={`${scriptKey}-none`}
+                                      name={`${scriptKey}-star`}
+                                      checked={script.selectedStar === 0}
+                                      onChange={() => setTalents(prev => ({
+                                        ...prev,
+                                        [scriptKey]: { ...prev[scriptKey], selectedStar: 0, quantity: 0 }
+                                      }))}
+                                      className="text-red-600"
+                                    />
+                                    <Label htmlFor={`${scriptKey}-none`} className="text-gray-300">
+                                      None
+                                    </Label>
+                                  </div>
+                                  {[1, 2, 3, 4, 5, 6].map(star => {
+                                    const successRate = [100, 83.3, 66.6, 50, 33.3, 16.6][star - 1];
+                                    return (
+                                      <div key={star} className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`${scriptKey}-${star}`}
+                                          name={`${scriptKey}-star`}
+                                          checked={script.selectedStar === star}
+                                          onChange={() => setTalents(prev => ({
+                                            ...prev,
+                                            [scriptKey]: { ...prev[scriptKey], selectedStar: star }
+                                          }))}
+                                          className="text-red-600"
+                                        />
+                                        <Label htmlFor={`${scriptKey}-${star}`} className="text-gray-300">
+                                          {star}★ ({successRate}%)
+                                        </Label>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
+                              
+                              {/* Quantity Input */}
+                              {script.selectedStar > 0 && (
+                                <div className="flex items-center space-x-4">
+                                  <Label className="text-gray-300">Number of Scripts:</Label>
+                                  <Input
+                                    type="number"
+                                    value={script.quantity}
+                                    onChange={(e) => setTalents(prev => ({
+                                      ...prev,
+                                      [scriptKey]: { ...prev[scriptKey], quantity: parseInt(e.target.value) || 0 }
+                                    }))}
+                                    className="bg-gray-700 border-gray-600 text-white w-24"
+                                    min="0"
+                                    placeholder="0"
+                                  />
+                                </div>
+                              )}
                               
                               {/* Results Display */}
                               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-3 bg-gray-700/30 rounded">
