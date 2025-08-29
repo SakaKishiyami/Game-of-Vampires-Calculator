@@ -2105,6 +2105,7 @@ export default function GameCalculator() {
       
       const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
       const rate = successRates[script.selectedStar - 1];
+      // Calculate how many successful upgrades (stars gained) from the attempts
       return script.quantity * rate;
     };
     
@@ -3372,19 +3373,22 @@ export default function GameCalculator() {
                           expected: 0,
                           min: 0,
                           max: 0,
-                          total: 0
+                          total: 0,
+                          attempts: 0
                         };
                       }
                       
                       const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
                       const rate = successRates[script.selectedStar - 1];
+                      // Calculate expected successful upgrades from total attempts
                       const expected = script.quantity * rate;
                       
                       return {
                         expected: Math.round(expected * 100) / 100,
                         min: Math.floor(expected),
                         max: Math.ceil(expected),
-                        total: script.quantity
+                        total: Math.round(expected), // Total successful upgrades
+                        attempts: script.quantity // Total attempts made
                       };
                     };
                     
@@ -3494,7 +3498,7 @@ export default function GameCalculator() {
                               {/* Quantity Input */}
                               {script.selectedStar > 0 && (
                                 <div className="flex items-center space-x-4">
-                                  <Label className="text-gray-300">Number of Scripts:</Label>
+                                  <Label className="text-gray-300">Number of Attempts:</Label>
                                   <Input
                                     type="number"
                                     value={script.quantity}
@@ -3506,21 +3510,24 @@ export default function GameCalculator() {
                                     min="0"
                                     placeholder="0"
                                   />
+                                  <div className="text-gray-400 text-sm">
+                                    (How many {script.selectedStar}★ attempts)
+                                  </div>
                                 </div>
                               )}
                               
                               {/* Results Display */}
                               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-3 bg-gray-700/30 rounded">
                                 <div>
-                                  <div className="text-gray-400 text-xs">Scripts Used</div>
-                                  <div className="text-white">{results.total}</div>
+                                  <div className="text-gray-400 text-xs">Total Attempts</div>
+                                  <div className="text-white">{results.attempts}</div>
                                 </div>
                                 <div>
-                                  <div className="text-gray-400 text-xs">Expected Stars</div>
+                                  <div className="text-gray-400 text-xs">Expected Successes</div>
                                   <div className="text-white">{results.expected}</div>
                                 </div>
                                 <div>
-                                  <div className="text-gray-400 text-xs">Range</div>
+                                  <div className="text-gray-400 text-xs">Success Range</div>
                                   <div className="text-white">{results.min}-{results.max}</div>
                                 </div>
                                 <div>
