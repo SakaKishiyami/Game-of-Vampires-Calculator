@@ -1318,7 +1318,7 @@ export default function GameCalculator() {
         
         const attribute = sealType.split(" ")[2].toLowerCase() as keyof typeof wardenCounts
         const wardenDomGain = levelData.warden * wardenCounts[attribute]
-        const bookDomGain = bookValues[attribute] * levelData.books
+        const bookDomGain = (bookValues[attribute] * levelData.books) / 100
         const totalDomGain = wardenDomGain + bookDomGain
         const efficiency = levelData.cost > 0 ? totalDomGain / levelData.cost : 0
         
