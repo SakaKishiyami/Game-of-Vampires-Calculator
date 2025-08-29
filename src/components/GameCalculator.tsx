@@ -1270,6 +1270,7 @@ export default function GameCalculator() {
           const levelData = conclaveLevels[level - 1]
           if (!levelData) break
           
+          // Cost is cumulative from current to target level
           totalCost += levelData.cost
           wardenBonus += levelData.warden
           bookMultiplier += levelData.books
@@ -1837,11 +1838,8 @@ export default function GameCalculator() {
       })
     })
 
-    // Add conclave bonuses
-    totalStrength += conclave["Seal of Strength"]
-    totalAllure += conclave["Seal of Allure"]
-    totalIntellect += conclave["Seal of Intellect"]
-    totalSpirit += conclave["Seal of Spirit"]
+    // NOTE: Current conclave levels should already be included in base attributes
+    // We don't add them here to avoid double counting
 
     // Add conclave warden bonuses
     const allWardens = [
