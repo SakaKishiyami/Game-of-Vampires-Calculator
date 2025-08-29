@@ -879,7 +879,37 @@ export default function GameCalculator() {
               cost = levelData.affinity || 0
             }
             if (cost >= 0 && remainingAffinity >= cost) {
-              const domGain = calculateBondDomGain(bondType, tempLevel, nextLevel, bondKey)
+              // Compute DOM gain using temp levels so percent uses updated flat level
+              let domGain = 0
+              if (bondType.endsWith('Level')) {
+                const currentData = scarletBondLevels.find(l => l.level === tempLevel)
+                let currentBonus = 0
+                let newBonus = 0
+                if (bondData.type === 'All') {
+                  currentBonus = currentData?.all || 0
+                  newBonus = levelData.all || 0
+                } else if (bondData.type === 'Dual') {
+                  currentBonus = currentData?.dual || 0
+                  newBonus = levelData.dual || 0
+                } else {
+                  currentBonus = currentData?.single || 0
+                  newBonus = levelData.single || 0
+                }
+                domGain = newBonus - currentBonus
+              } else {
+                const attr = bondType.replace('Level', '').replace('Percent', '')
+                const flatLevel = tempCurrentLevels[`${attr}Level`]
+                const flatData = scarletBondLevels.find(l => l.level === flatLevel)
+                let flatBonus = 0
+                if (bondData.type === 'All') {
+                  flatBonus = flatData?.all || 0
+                } else if (bondData.type === 'Dual') {
+                  flatBonus = flatData?.dual || 0
+                } else {
+                  flatBonus = flatData?.single || 0
+                }
+                domGain = ((nextLevel - tempLevel) * flatBonus) / 100
+              }
               availableUpgrades.push({
                 bondType,
                 currentLevel: tempLevel,
