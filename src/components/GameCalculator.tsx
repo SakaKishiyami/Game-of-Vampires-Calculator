@@ -2105,8 +2105,9 @@ export default function GameCalculator() {
       
       const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
       const rate = successRates[script.selectedStar - 1];
-      // Calculate how many successful upgrades (stars gained) from the attempts
-      return script.quantity * rate;
+      const successfulUpgrades = script.quantity * rate;
+      // Each successful upgrade gives you stars equal to the star level
+      return successfulUpgrades * script.selectedStar;
     };
     
     const getStarBonus = (wardenLevel, starCount) => {
@@ -3370,25 +3371,25 @@ export default function GameCalculator() {
                     const calculateScriptResults = (script) => {
                       if (script.selectedStar === 0 || script.quantity === 0) {
                         return {
-                          expected: 0,
-                          min: 0,
-                          max: 0,
-                          total: 0,
+                          expectedUpgrades: 0,
+                          expectedStars: 0,
+                          minStars: 0,
+                          maxStars: 0,
                           attempts: 0
                         };
                       }
                       
                       const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
                       const rate = successRates[script.selectedStar - 1];
-                      // Calculate expected successful upgrades from total attempts
-                      const expected = script.quantity * rate;
+                      const expectedUpgrades = script.quantity * rate;
+                      const expectedStars = expectedUpgrades * script.selectedStar;
                       
                       return {
-                        expected: Math.round(expected * 100) / 100,
-                        min: Math.floor(expected),
-                        max: Math.ceil(expected),
-                        total: Math.round(expected), // Total successful upgrades
-                        attempts: script.quantity // Total attempts made
+                        expectedUpgrades: Math.round(expectedUpgrades * 100) / 100,
+                        expectedStars: Math.round(expectedStars * 100) / 100,
+                        minStars: Math.floor(expectedStars),
+                        maxStars: Math.ceil(expectedStars),
+                        attempts: script.quantity
                       };
                     };
                     
@@ -3406,12 +3407,12 @@ export default function GameCalculator() {
                             {['strengthScript', 'allureScript', 'intellectScript', 'spiritScript'].map(scriptKey => {
                               const script = talents[scriptKey];
                               const results = calculateScriptResults(script);
-                              const bonus = getStarBonus(script.wardenLevel, results.expected);
+                              const bonus = getStarBonus(script.wardenLevel, results.expectedStars);
                               return (
                                 <div key={scriptKey} className="text-center">
                                   <div className="text-gray-300 font-medium capitalize">{scriptKey.replace('Script', '')}</div>
-                                  <div className="text-white">{results.min}-{results.max} stars</div>
-                                  <div className="text-gray-400 text-xs">~{results.expected} expected</div>
+                                  <div className="text-white">{results.minStars}-{results.maxStars} stars</div>
+                                  <div className="text-gray-400 text-xs">~{results.expectedStars} expected</div>
                                   <div className="text-green-400 text-xs">+{bonus.toLocaleString()} dom</div>
                                 </div>
                               );
@@ -3523,16 +3524,16 @@ export default function GameCalculator() {
                                   <div className="text-white">{results.attempts}</div>
                                 </div>
                                 <div>
-                                  <div className="text-gray-400 text-xs">Expected Successes</div>
-                                  <div className="text-white">{results.expected}</div>
+                                  <div className="text-gray-400 text-xs">Expected Upgrades</div>
+                                  <div className="text-white">{results.expectedUpgrades}</div>
                                 </div>
                                 <div>
-                                  <div className="text-gray-400 text-xs">Success Range</div>
-                                  <div className="text-white">{results.min}-{results.max}</div>
+                                  <div className="text-gray-400 text-xs">Stars Gained</div>
+                                  <div className="text-white">{results.expectedStars}</div>
                                 </div>
                                 <div>
                                   <div className="text-gray-400 text-xs">Dom Bonus</div>
-                                  <div className="text-green-400">+{getStarBonus(script.wardenLevel, results.expected).toLocaleString()}</div>
+                                  <div className="text-green-400">+{getStarBonus(script.wardenLevel, results.expectedStars).toLocaleString()}</div>
                                 </div>
                               </div>
                             </div>
@@ -3546,13 +3547,13 @@ export default function GameCalculator() {
                             {['strengthScript', 'allureScript', 'intellectScript', 'spiritScript'].map(scriptKey => {
                               const script = talents[scriptKey];
                               const results = calculateScriptResults(script);
-                              const bonus = getStarBonus(script.wardenLevel, results.expected);
+                              const bonus = getStarBonus(script.wardenLevel, results.expectedStars);
                               const attributeName = scriptKey.replace('Script', '');
                               
                               return (
                                 <div key={scriptKey} className="text-center">
                                   <div className="text-gray-300 font-medium capitalize">{attributeName}</div>
-                                  <div className="text-white">{results.expected} stars</div>
+                                  <div className="text-white">{results.expectedStars} stars</div>
                                   <div className="text-green-400">+{bonus.toLocaleString()} dom</div>
                                 </div>
                               );
@@ -3567,7 +3568,7 @@ export default function GameCalculator() {
                                     .reduce((sum, scriptKey) => {
                                       const script = talents[scriptKey];
                                       const results = calculateScriptResults(script);
-                                      return sum + getStarBonus(script.wardenLevel, results.expected);
+                                      return sum + getStarBonus(script.wardenLevel, results.expectedStars);
                                     }, 0);
                                   return total.toLocaleString();
                                 })()} Dom
