@@ -821,7 +821,7 @@ export default function GameCalculator() {
     return totalDomGain
   }
 
-  // Calculate optimal bond upgrades for a given bond
+  // Calculate optimal bond upgrades for a given bond (allow multiple levels per attribute)
   const calculateOptimalBondUpgrades = (bondKey: string, availableAffinity: number) => {
     const [lover, warden] = bondKey.split("-")
     const wardenData = wardenAttributes[warden as keyof typeof wardenAttributes]
@@ -833,7 +833,7 @@ export default function GameCalculator() {
     }
     
     // Get all possible bond types for this warden
-    const bondTypes = []
+    const bondTypes: string[] = []
     wardenData.forEach(attr => {
       if (attr.toLowerCase() !== 'balance') {
         bondTypes.push(`${attr.toLowerCase()}Level`)
@@ -847,55 +847,66 @@ export default function GameCalculator() {
                     'intellectLevel', 'intellectPercent', 'spiritLevel', 'spiritPercent')
     }
     
-    // Calculate cost for each possible upgrade
-    const upgrades = []
+    // Track temp levels to allow multi-level upgrades in a single run
+    const tempCurrentLevels: Record<string, number> = {}
     bondTypes.forEach(bondType => {
-      const currentLevel = currentBond[bondType] || 0
-      if (currentLevel < 98) {
-        const nextLevel = currentLevel + 1
-        const levelData = scarletBondLevels.find(l => l.level === nextLevel)
-        if (levelData) {
-          let cost = 0
-          // Use the correct cost column based on bond type
-          if (bondData.type === 'All') {
-            cost = levelData.all_affinity || 0
-          } else if (bondData.type === 'Dual') {
-            cost = levelData.dual_affinity || 0
-          } else if (bondData.type === 'Single') {
-            cost = levelData.affinity || 0
-          } else {
-            cost = levelData.affinity || 0
-          }
-          
-          if (cost >= 0) { // Allow free upgrades (cost = 0)
-            upgrades.push({
-              bondType,
-              currentLevel,
-              newLevel: nextLevel,
-              cost,
-              domGain: calculateBondDomGain(bondType, currentLevel, nextLevel, bondKey)
-            })
-          }
-        }
-      }
+      tempCurrentLevels[bondType] = currentBond[bondType as keyof typeof currentBond] || 0
     })
     
-    // Sort by DOM gain per cost (efficiency)
-    upgrades.sort((a, b) => {
-      if (a.cost === 0 && b.cost === 0) return b.domGain - a.domGain
-      if (a.cost === 0) return -1
-      if (b.cost === 0) return 1
-      return (b.domGain / b.cost) - (a.domGain / a.cost)
-    })
-    
-    // Apply upgrades within affinity budget
-    const appliedUpgrades = []
+    const appliedUpgrades: { bondType: string; currentLevel: number; newLevel: number; cost: number; domGain: number }[] = []
     let remainingAffinity = availableAffinity
     
-    for (const upgrade of upgrades) {
-      if (remainingAffinity >= upgrade.cost) {
-        appliedUpgrades.push(upgrade)
-        remainingAffinity -= upgrade.cost
+    let canAffordMore = true
+    while (canAffordMore && remainingAffinity > 0) {
+      canAffordMore = false
+      const availableUpgrades: { bondType: string; currentLevel: number; newLevel: number; cost: number; domGain: number; efficiency: number }[] = []
+      
+      // Build one-step upgrades from current temp levels
+      bondTypes.forEach(bondType => {
+        const tempLevel = tempCurrentLevels[bondType]
+        if (tempLevel < 98) {
+          const nextLevel = tempLevel + 1
+          const levelData = scarletBondLevels.find(l => l.level === nextLevel)
+          if (levelData) {
+            let cost = 0
+            if (bondData.type === 'All') {
+              cost = levelData.all_affinity || 0
+            } else if (bondData.type === 'Dual') {
+              cost = levelData.dual_affinity || 0
+            } else if (bondData.type === 'Single') {
+              cost = levelData.affinity || 0
+            } else {
+              cost = levelData.affinity || 0
+            }
+            if (cost >= 0 && remainingAffinity >= cost) {
+              const domGain = calculateBondDomGain(bondType, tempLevel, nextLevel, bondKey)
+              availableUpgrades.push({
+                bondType,
+                currentLevel: tempLevel,
+                newLevel: nextLevel,
+                cost,
+                domGain,
+                efficiency: cost === 0 ? Infinity : domGain / cost
+              })
+            }
+          }
+        }
+      })
+      
+      // Pick the most efficient affordable upgrade
+      availableUpgrades.sort((a, b) => {
+        if (a.cost === 0 && b.cost === 0) return b.domGain - a.domGain
+        if (a.cost === 0) return -1
+        if (b.cost === 0) return 1
+        return b.efficiency - a.efficiency
+      })
+      
+      if (availableUpgrades.length > 0 && remainingAffinity >= availableUpgrades[0].cost) {
+        const best = availableUpgrades[0]
+        appliedUpgrades.push(best)
+        tempCurrentLevels[best.bondType] = best.newLevel
+        remainingAffinity -= best.cost
+        canAffordMore = true
       }
     }
     
