@@ -1371,7 +1371,7 @@ export default function GameCalculator() {
           // Calculate total bonuses
     selectedUpgrades.forEach(upgrade => {
       results.wardenBonuses[upgrade.attribute] = upgrade.wardenBonus
-      results.bookMultipliers[upgrade.attribute] = 1 + (upgrade.bookMultiplier / 100)
+              results.bookMultipliers[upgrade.attribute] = upgrade.bookMultiplier
     })
 
     return results
@@ -1403,7 +1403,7 @@ export default function GameCalculator() {
       }
 
       currentBonuses.wardenBonuses[attribute] = wardenBonus
-      currentBonuses.bookMultipliers[attribute] = 1 + (bookMultiplier / 100)
+      currentBonuses.bookMultipliers[attribute] = bookMultiplier
     })
 
     return currentBonuses
@@ -1948,7 +1948,7 @@ export default function GameCalculator() {
               } else {
                 flatBonus = flatLevelData.single || 0
               }
-              const percentBonus = 1 + ((optimizedBond.strengthPercent || 0)/100) * flatBonus
+              const percentBonus = ((optimizedBond.strengthPercent || 0)/100) * flatBonus
               totalStrength += percentBonus
             }
           }
@@ -1980,7 +1980,7 @@ export default function GameCalculator() {
               } else {
                 flatBonus = levelData.single || 0
               }
-              const percentBonus = 1 + ((optimizedBond.allurePercent || 0)/100) * flatBonus
+              const percentBonus = ((optimizedBond.allurePercent || 0)/100) * flatBonus
               totalAllure += percentBonus
             }
           }
@@ -2012,7 +2012,7 @@ export default function GameCalculator() {
               } else {
                 flatBonus = levelData.single || 0
               }
-              const percentBonus = 1 + ((optimizedBond.intellectPercent || 0)/100) * flatBonus
+              const percentBonus = ((optimizedBond.intellectPercent || 0)/100) * flatBonus
               totalIntellect += percentBonus
             }
           }
@@ -2044,7 +2044,7 @@ export default function GameCalculator() {
               } else {
                 flatBonus = levelData.single || 0
               }
-              const percentBonus = 1 + ((optimizedBond.spiritPercent || 0)/100) * flatBonus
+              const percentBonus = ((optimizedBond.spiritPercent || 0)/100) * flatBonus
               totalSpirit += percentBonus
             }
           }
@@ -4545,19 +4545,19 @@ export default function GameCalculator() {
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <p className="text-white">
                           <span className="text-blue-400">Strength Books:</span>{" "}
-                          {(calculateTotalConclaveBonus().bookMultipliers.strength * 100).toFixed(1)}%
+                                                          {calculateTotalConclaveBonus().bookMultipliers.strength.toFixed(1)}%
                         </p>
                         <p className="text-white">
                           <span className="text-blue-400">Allure Books:</span>{" "}
-                          {(calculateTotalConclaveBonus().bookMultipliers.allure * 100).toFixed(1)}%
+                                                          {calculateTotalConclaveBonus().bookMultipliers.allure.toFixed(1)}%
                         </p>
                         <p className="text-white">
                           <span className="text-blue-400">Intellect Books:</span>{" "}
-                          {(calculateTotalConclaveBonus().bookMultipliers.intellect * 100).toFixed(1)}%
+                                                          {calculateTotalConclaveBonus().bookMultipliers.intellect.toFixed(1)}%
                         </p>
                         <p className="text-white">
                           <span className="text-blue-400">Spirit Books:</span>{" "}
-                          {(calculateTotalConclaveBonus().bookMultipliers.spirit * 100).toFixed(1)}%
+                                                          {calculateTotalConclaveBonus().bookMultipliers.spirit.toFixed(1)}%
                         </p>
                       </div>
                     </div>
@@ -4620,19 +4620,19 @@ export default function GameCalculator() {
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <p className="text-white">
                             <span className="text-blue-400">Strength Books:</span>{" "}
-                            {(calculateConclaveUpgrades().bookMultipliers.strength * 100).toFixed(1)}%
+                                                            {calculateConclaveUpgrades().bookMultipliers.strength.toFixed(1)}%
                           </p>
                           <p className="text-white">
                             <span className="text-blue-400">Allure Books:</span>{" "}
-                            {(calculateConclaveUpgrades().bookMultipliers.allure * 100).toFixed(1)}%
+                                                            {calculateConclaveUpgrades().bookMultipliers.allure.toFixed(1)}%
                           </p>
                           <p className="text-white">
                             <span className="text-blue-400">Intellect Books:</span>{" "}
-                            {(calculateConclaveUpgrades().bookMultipliers.intellect * 100).toFixed(1)}%
+                                                            {calculateConclaveUpgrades().bookMultipliers.intellect.toFixed(1)}%
                           </p>
                           <p className="text-white">
                             <span className="text-blue-400">Spirit Books:</span>{" "}
-                            {(calculateConclaveUpgrades().bookMultipliers.spirit * 100).toFixed(1)}%
+                                                            {calculateConclaveUpgrades().bookMultipliers.spirit.toFixed(1)}%
                           </p>
                         </div>
                       </div>
