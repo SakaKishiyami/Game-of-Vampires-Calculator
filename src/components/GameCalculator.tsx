@@ -1301,18 +1301,30 @@ export default function GameCalculator() {
     // Sort by efficiency (DOM per seal) descending
     upgradeOptions.sort((a, b) => b.efficiency - a.efficiency)
 
-    // Greedily select the most efficient upgrades
+    // Select the most efficient upgrades
     const selectedUpgrades: any[] = []
     let remainingSeals = availableSeals
-    const usedSeals = new Set<string>()
 
-    for (const option of upgradeOptions) {
-      // Skip if we already upgraded this seal or don't have enough seals
-      if (usedSeals.has(option.sealType) || option.cost > remainingSeals) continue
+    if (selectedSeals.length === 1) {
+      // For single seal, find the best level to upgrade to within available seals
+      const singleSealOptions = upgradeOptions.filter(opt => opt.sealType === selectedSeals[0])
+      const bestOption = singleSealOptions.find(opt => opt.cost <= remainingSeals)
+      if (bestOption) {
+        selectedUpgrades.push(bestOption)
+        remainingSeals -= bestOption.cost
+      }
+    } else {
+      // For multiple seals, use greedy approach but allow each seal to be upgraded once
+      const usedSeals = new Set<string>()
       
-      selectedUpgrades.push(option)
-      remainingSeals -= option.cost
-      usedSeals.add(option.sealType)
+      for (const option of upgradeOptions) {
+        // Skip if we already upgraded this seal or don't have enough seals
+        if (usedSeals.has(option.sealType) || option.cost > remainingSeals) continue
+        
+        selectedUpgrades.push(option)
+        remainingSeals -= option.cost
+        usedSeals.add(option.sealType)
+      }
     }
 
     // Compile results
