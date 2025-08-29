@@ -2126,6 +2126,31 @@ export default function GameCalculator() {
     totalIntellect += getStarBonus(talents.intellectScript.wardenLevel, intellectScriptStars);
     totalSpirit += getStarBonus(talents.spiritScript.wardenLevel, spiritScriptStars);
 
+    // Add talent scroll experience bonuses (200 exp = 1 star, assume level 250 warden)
+    const calculateTalentScrollStars = () => {
+      const totalExp = 
+        (talents.randomTalentScroll.count * talents.randomTalentScroll.exp) +
+        (talents.talentScrollLvl4.count * talents.talentScrollLvl4.exp) +
+        (talents.talentScrollLvl3.count * talents.talentScrollLvl3.exp) +
+        (talents.talentScrollLvl2.count * talents.talentScrollLvl2.exp) +
+        (talents.talentScrollLvl1.count * talents.talentScrollLvl1.exp) +
+        (talents.basicTalentScroll.count * talents.basicTalentScroll.exp) +
+        (talents.fineTalentScroll.count * talents.fineTalentScroll.exp) +
+        (talents.superiorTalentScroll.count * talents.superiorTalentScroll.exp);
+      
+      return Math.floor(totalExp / 200); // Every 200 exp = 1 star
+    };
+    
+    const talentScrollStars = calculateTalentScrollStars();
+    const talentScrollDomBonus = getStarBonus(250, talentScrollStars); // Assume level 250 warden
+    
+    // Add talent scroll DOM bonus to all attributes (since they don't specify which attribute)
+    const talentScrollBonusPerAttribute = talentScrollDomBonus / 4;
+    totalStrength += talentScrollBonusPerAttribute;
+    totalAllure += talentScrollBonusPerAttribute;
+    totalIntellect += talentScrollBonusPerAttribute;
+    totalSpirit += talentScrollBonusPerAttribute;
+
     // Add courtyard DOM contribution
     const courtyardDom = calculateCourtyardDom()
     totalStrength += courtyardDom.strength
@@ -3341,20 +3366,65 @@ export default function GameCalculator() {
                   
                   {/* Total Experience Display */}
                   <div className="mt-6 p-4 bg-gray-700/50 rounded-lg">
-                    <h3 className="text-lg font-semibold text-white mb-2">Total Talent Experience</h3>
-                    <div className="text-gray-300">
-                      {(() => {
-                        const total = 
-                          (talents.randomTalentScroll.count * talents.randomTalentScroll.exp) +
-                          (talents.talentScrollLvl4.count * talents.talentScrollLvl4.exp) +
-                          (talents.talentScrollLvl3.count * talents.talentScrollLvl3.exp) +
-                          (talents.talentScrollLvl2.count * talents.talentScrollLvl2.exp) +
-                          (talents.talentScrollLvl1.count * talents.talentScrollLvl1.exp) +
-                          (talents.basicTalentScroll.count * talents.basicTalentScroll.exp) +
-                          (talents.fineTalentScroll.count * talents.fineTalentScroll.exp) +
-                          (talents.superiorTalentScroll.count * talents.superiorTalentScroll.exp);
-                        return `${total.toLocaleString()} Experience`;
-                      })()}
+                    <h3 className="text-lg font-semibold text-white mb-2">Total Talent Benefits</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="text-gray-400 text-xs">Total Experience</div>
+                        <div className="text-white">
+                          {(() => {
+                            const total = 
+                              (talents.randomTalentScroll.count * talents.randomTalentScroll.exp) +
+                              (talents.talentScrollLvl4.count * talents.talentScrollLvl4.exp) +
+                              (talents.talentScrollLvl3.count * talents.talentScrollLvl3.exp) +
+                              (talents.talentScrollLvl2.count * talents.talentScrollLvl2.exp) +
+                              (talents.talentScrollLvl1.count * talents.talentScrollLvl1.exp) +
+                              (talents.basicTalentScroll.count * talents.basicTalentScroll.exp) +
+                              (talents.fineTalentScroll.count * talents.fineTalentScroll.exp) +
+                              (talents.superiorTalentScroll.count * talents.superiorTalentScroll.exp);
+                            return total.toLocaleString();
+                          })()} Exp
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-gray-400 text-xs">Stars Gained</div>
+                        <div className="text-white">
+                          {(() => {
+                            const totalExp = 
+                              (talents.randomTalentScroll.count * talents.randomTalentScroll.exp) +
+                              (talents.talentScrollLvl4.count * talents.talentScrollLvl4.exp) +
+                              (talents.talentScrollLvl3.count * talents.talentScrollLvl3.exp) +
+                              (talents.talentScrollLvl2.count * talents.talentScrollLvl2.exp) +
+                              (talents.talentScrollLvl1.count * talents.talentScrollLvl1.exp) +
+                              (talents.basicTalentScroll.count * talents.basicTalentScroll.exp) +
+                              (talents.fineTalentScroll.count * talents.fineTalentScroll.exp) +
+                              (talents.superiorTalentScroll.count * talents.superiorTalentScroll.exp);
+                            const stars = Math.floor(totalExp / 200);
+                            return stars.toLocaleString();
+                          })()} Stars
+                        </div>
+                        <div className="text-gray-500 text-xs">(200 exp = 1 star)</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-gray-400 text-xs">DOM Bonus</div>
+                        <div className="text-green-400">
+                          {(() => {
+                            const totalExp = 
+                              (talents.randomTalentScroll.count * talents.randomTalentScroll.exp) +
+                              (talents.talentScrollLvl4.count * talents.talentScrollLvl4.exp) +
+                              (talents.talentScrollLvl3.count * talents.talentScrollLvl3.exp) +
+                              (talents.talentScrollLvl2.count * talents.talentScrollLvl2.exp) +
+                              (talents.talentScrollLvl1.count * talents.talentScrollLvl1.exp) +
+                              (talents.basicTalentScroll.count * talents.basicTalentScroll.exp) +
+                              (talents.fineTalentScroll.count * talents.fineTalentScroll.exp) +
+                              (talents.superiorTalentScroll.count * talents.superiorTalentScroll.exp);
+                            const stars = Math.floor(totalExp / 200);
+                            const levelData = domIncreasePerStarData.find(data => 250 >= data.level) || domIncreasePerStarData[domIncreasePerStarData.length - 1];
+                            const domBonus = levelData.constant * stars;
+                            return `+${domBonus.toLocaleString()}`;
+                          })()} DOM
+                        </div>
+                        <div className="text-gray-500 text-xs">(Split across attributes)</div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
