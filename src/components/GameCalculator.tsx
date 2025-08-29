@@ -150,6 +150,39 @@ export default function GameCalculator() {
   const [hasCulann, setHasCulann] = useState(false)
   const [hasHela, setHasHela] = useState(false)
 
+  // Talent Scrolls and Scripts
+  const [talents, setTalents] = useState({
+    // Random Talent Scrolls (with ranges)
+    randomTalentScroll: { count: 0, exp: 502.5 }, // Average of 5-1000 at ~40th percentile
+    talentScrollLvl4: { count: 0, exp: 60.5 }, // Average of 41-80 at ~40th percentile  
+    talentScrollLvl3: { count: 0, exp: 30.5 }, // Average of 21-40 at ~40th percentile
+    talentScrollLvl2: { count: 0, exp: 13 }, // Average of 6-20 at ~40th percentile
+    talentScrollLvl1: { count: 0, exp: 3 }, // Average of 1-5 at ~40th percentile
+    
+    // Fixed Talent Scrolls
+    basicTalentScroll: { count: 0, exp: 50 },
+    fineTalentScroll: { count: 0, exp: 100 },
+    superiorTalentScroll: { count: 0, exp: 200 },
+    
+    // Attribute Scripts (each has 6 checkboxes for 1-6 stars)
+    strengthScript: {
+      stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+      wardenLevel: 1
+    },
+    allureScript: {
+      stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+      wardenLevel: 1
+    },
+    intellectScript: {
+      stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+      wardenLevel: 1
+    },
+    spiritScript: {
+      stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+      wardenLevel: 1
+    }
+  })
+
   // Authentication state
   const [user, setUser] = useState<User | null>(null)
   const [autoLoadCloudSaves, setAutoLoadCloudSaves] = useState(true)
@@ -188,6 +221,7 @@ export default function GameCalculator() {
       scarletBond,
       scarletBondAffinity,
       optimizedBondLevels,
+      talents,
       timestamp: new Date().toISOString()
     }
     
@@ -229,6 +263,32 @@ export default function GameCalculator() {
         setScarletBond(parsedData.scarletBond || {})
         setScarletBondAffinity(parsedData.scarletBondAffinity || {})
         setOptimizedBondLevels(parsedData.optimizedBondLevels || {})
+        setTalents(parsedData.talents || {
+          randomTalentScroll: { count: 0, exp: 502.5 },
+          talentScrollLvl4: { count: 0, exp: 60.5 },
+          talentScrollLvl3: { count: 0, exp: 30.5 },
+          talentScrollLvl2: { count: 0, exp: 13 },
+          talentScrollLvl1: { count: 0, exp: 3 },
+          basicTalentScroll: { count: 0, exp: 50 },
+          fineTalentScroll: { count: 0, exp: 100 },
+          superiorTalentScroll: { count: 0, exp: 200 },
+          strengthScript: {
+            stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+            wardenLevel: 1
+          },
+          allureScript: {
+            stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+            wardenLevel: 1
+          },
+          intellectScript: {
+            stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+            wardenLevel: 1
+          },
+          spiritScript: {
+            stars: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false },
+            wardenLevel: 1
+          }
+        })
         
         alert(`Data loaded successfully! (Saved: ${new Date(parsedData.timestamp).toLocaleString()})`)
       } else {
@@ -256,11 +316,15 @@ export default function GameCalculator() {
       hasDracula,
       hasVictor,
       hasFrederick,
+      hasAgneyi,
+      hasCulann,
+      hasHela,
       auras,
       wardenStats,
       scarletBond,
       scarletBondAffinity,
       optimizedBondLevels,
+      talents,
       timestamp: new Date().toISOString()
     }
     
@@ -2025,6 +2089,37 @@ export default function GameCalculator() {
       })
     }
 
+    // Add talent script bonuses
+    const calculateScriptResults = (script) => {
+      const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
+      let expectedSuccess = 0;
+      
+      Object.entries(script.stars).forEach(([star, checked], index) => {
+        if (checked) {
+          const rate = successRates[index];
+          expectedSuccess += rate;
+        }
+      });
+      
+      return expectedSuccess;
+    };
+    
+    const getStarBonus = (wardenLevel, starCount) => {
+      const levelData = domIncreasePerStarData.find(data => wardenLevel >= data.level) || domIncreasePerStarData[domIncreasePerStarData.length - 1];
+      return levelData.constant * starCount;
+    };
+    
+    // Add script bonuses for each attribute
+    const strengthScriptStars = calculateScriptResults(talents.strengthScript);
+    const allureScriptStars = calculateScriptResults(talents.allureScript);
+    const intellectScriptStars = calculateScriptResults(talents.intellectScript);
+    const spiritScriptStars = calculateScriptResults(talents.spiritScript);
+    
+    totalStrength += getStarBonus(talents.strengthScript.wardenLevel, strengthScriptStars);
+    totalAllure += getStarBonus(talents.allureScript.wardenLevel, allureScriptStars);
+    totalIntellect += getStarBonus(talents.intellectScript.wardenLevel, intellectScriptStars);
+    totalSpirit += getStarBonus(talents.spiritScript.wardenLevel, spiritScriptStars);
+
     // Add courtyard DOM contribution
     const courtyardDom = calculateCourtyardDom()
     totalStrength += courtyardDom.strength
@@ -2402,7 +2497,7 @@ export default function GameCalculator() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="aura-bonuses" className="w-full">
-          <TabsList className="grid w-full grid-cols-7 bg-gray-800 mb-6">
+          <TabsList className="grid w-full grid-cols-8 bg-gray-800 mb-6">
             <TabsTrigger value="aura-bonuses" className="data-[state=active]:bg-red-600">
               Aura Bonuses
             </TabsTrigger>
@@ -2414,6 +2509,9 @@ export default function GameCalculator() {
             </TabsTrigger>
             <TabsTrigger value="books" className="data-[state=active]:bg-red-600">
               Books
+            </TabsTrigger>
+            <TabsTrigger value="talents" className="data-[state=active]:bg-red-600">
+              Talents
             </TabsTrigger>
             <TabsTrigger value="wardens" className="data-[state=active]:bg-red-600">
               Wardens
@@ -3095,6 +3193,347 @@ export default function GameCalculator() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Talents Tab */}
+          <TabsContent value="talents">
+            <div className="space-y-6">
+              {/* Talent Scrolls */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-white">Talent Scrolls</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Random Talent Scrolls */}
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-white">Random Talent Scrolls</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-gray-300">Random Talent Scroll (5-1000 exp)</Label>
+                        <Input
+                          type="number"
+                          value={talents.randomTalentScroll.count}
+                          onChange={(e) => setTalents(prev => ({
+                            ...prev,
+                            randomTalentScroll: { ...prev.randomTalentScroll, count: parseInt(e.target.value) || 0 }
+                          }))}
+                          className="bg-gray-700 border-gray-600 text-white"
+                          placeholder="0"
+                        />
+                        <p className="text-xs text-gray-400">Average: ~502.5 exp each</p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-gray-300">Talent Scroll Lvl 4 (41-80 exp)</Label>
+                        <Input
+                          type="number"
+                          value={talents.talentScrollLvl4.count}
+                          onChange={(e) => setTalents(prev => ({
+                            ...prev,
+                            talentScrollLvl4: { ...prev.talentScrollLvl4, count: parseInt(e.target.value) || 0 }
+                          }))}
+                          className="bg-gray-700 border-gray-600 text-white"
+                          placeholder="0"
+                        />
+                        <p className="text-xs text-gray-400">Average: ~60.5 exp each</p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-gray-300">Talent Scroll Lvl 3 (21-40 exp)</Label>
+                        <Input
+                          type="number"
+                          value={talents.talentScrollLvl3.count}
+                          onChange={(e) => setTalents(prev => ({
+                            ...prev,
+                            talentScrollLvl3: { ...prev.talentScrollLvl3, count: parseInt(e.target.value) || 0 }
+                          }))}
+                          className="bg-gray-700 border-gray-600 text-white"
+                          placeholder="0"
+                        />
+                        <p className="text-xs text-gray-400">Average: ~30.5 exp each</p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-gray-300">Talent Scroll Lvl 2 (6-20 exp)</Label>
+                        <Input
+                          type="number"
+                          value={talents.talentScrollLvl2.count}
+                          onChange={(e) => setTalents(prev => ({
+                            ...prev,
+                            talentScrollLvl2: { ...prev.talentScrollLvl2, count: parseInt(e.target.value) || 0 }
+                          }))}
+                          className="bg-gray-700 border-gray-600 text-white"
+                          placeholder="0"
+                        />
+                        <p className="text-xs text-gray-400">Average: ~13 exp each</p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-gray-300">Talent Scroll Lvl 1 (1-5 exp)</Label>
+                        <Input
+                          type="number"
+                          value={talents.talentScrollLvl1.count}
+                          onChange={(e) => setTalents(prev => ({
+                            ...prev,
+                            talentScrollLvl1: { ...prev.talentScrollLvl1, count: parseInt(e.target.value) || 0 }
+                          }))}
+                          className="bg-gray-700 border-gray-600 text-white"
+                          placeholder="0"
+                        />
+                        <p className="text-xs text-gray-400">Average: ~3 exp each</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Fixed Talent Scrolls */}
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-white">Fixed Talent Scrolls</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-gray-300">Basic Talent Scroll (50 exp)</Label>
+                        <Input
+                          type="number"
+                          value={talents.basicTalentScroll.count}
+                          onChange={(e) => setTalents(prev => ({
+                            ...prev,
+                            basicTalentScroll: { ...prev.basicTalentScroll, count: parseInt(e.target.value) || 0 }
+                          }))}
+                          className="bg-gray-700 border-gray-600 text-white"
+                          placeholder="0"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-gray-300">Fine Talent Scroll (100 exp)</Label>
+                        <Input
+                          type="number"
+                          value={talents.fineTalentScroll.count}
+                          onChange={(e) => setTalents(prev => ({
+                            ...prev,
+                            fineTalentScroll: { ...prev.fineTalentScroll, count: parseInt(e.target.value) || 0 }
+                          }))}
+                          className="bg-gray-700 border-gray-600 text-white"
+                          placeholder="0"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-gray-300">Superior Talent Scroll (200 exp)</Label>
+                        <Input
+                          type="number"
+                          value={talents.superiorTalentScroll.count}
+                          onChange={(e) => setTalents(prev => ({
+                            ...prev,
+                            superiorTalentScroll: { ...prev.superiorTalentScroll, count: parseInt(e.target.value) || 0 }
+                          }))}
+                          className="bg-gray-700 border-gray-600 text-white"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Total Experience Display */}
+                  <div className="mt-6 p-4 bg-gray-700/50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-white mb-2">Total Talent Experience</h3>
+                    <div className="text-gray-300">
+                      {(() => {
+                        const total = 
+                          (talents.randomTalentScroll.count * talents.randomTalentScroll.exp) +
+                          (talents.talentScrollLvl4.count * talents.talentScrollLvl4.exp) +
+                          (talents.talentScrollLvl3.count * talents.talentScrollLvl3.exp) +
+                          (talents.talentScrollLvl2.count * talents.talentScrollLvl2.exp) +
+                          (talents.talentScrollLvl1.count * talents.talentScrollLvl1.exp) +
+                          (talents.basicTalentScroll.count * talents.basicTalentScroll.exp) +
+                          (talents.fineTalentScroll.count * talents.fineTalentScroll.exp) +
+                          (talents.superiorTalentScroll.count * talents.superiorTalentScroll.exp);
+                        return `${total.toLocaleString()} Experience`;
+                      })()}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Attribute Scripts */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-white">Attribute Scripts</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Script Success Rate Calculations */}
+                  {(() => {
+                    const calculateScriptResults = (script) => {
+                      const successRates = [1.0, 0.833, 0.666, 0.5, 0.333, 0.166]; // 100% to 16.6%
+                      let expectedSuccess = 0;
+                      let minSuccess = 0;
+                      let maxSuccess = 0;
+                      
+                      Object.entries(script.stars).forEach(([star, checked], index) => {
+                        if (checked) {
+                          const rate = successRates[index];
+                          expectedSuccess += rate;
+                          minSuccess += Math.floor(rate);
+                          maxSuccess += Math.ceil(rate);
+                        }
+                      });
+                      
+                      return {
+                        expected: Math.round(expectedSuccess * 100) / 100,
+                        min: minSuccess,
+                        max: maxSuccess,
+                        total: Object.values(script.stars).filter(Boolean).length
+                      };
+                    };
+                    
+                    const getStarBonus = (wardenLevel, starCount) => {
+                      const levelData = domIncreasePerStarData.find(data => wardenLevel >= data.level) || domIncreasePerStarData[domIncreasePerStarData.length - 1];
+                      return levelData.constant * starCount;
+                    };
+                    
+                    return (
+                      <div className="space-y-6">
+                        {/* High/Low Range Summary */}
+                        <div className="p-4 bg-gray-700/50 rounded-lg">
+                          <h3 className="text-lg font-semibold text-white mb-2">Expected Script Results</h3>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            {['strengthScript', 'allureScript', 'intellectScript', 'spiritScript'].map(scriptKey => {
+                              const script = talents[scriptKey];
+                              const results = calculateScriptResults(script);
+                              const bonus = getStarBonus(script.wardenLevel, results.expected);
+                              return (
+                                <div key={scriptKey} className="text-center">
+                                  <div className="text-gray-300 font-medium capitalize">{scriptKey.replace('Script', '')}</div>
+                                  <div className="text-white">{results.min}-{results.max} stars</div>
+                                  <div className="text-gray-400 text-xs">~{results.expected} expected</div>
+                                  <div className="text-green-400 text-xs">+{bonus.toLocaleString()} dom</div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        
+                        {/* Individual Script Controls */}
+                        {['strengthScript', 'allureScript', 'intellectScript', 'spiritScript'].map(scriptKey => {
+                          const script = talents[scriptKey];
+                          const results = calculateScriptResults(script);
+                          const attributeName = scriptKey.replace('Script', '');
+                          
+                          return (
+                            <div key={scriptKey} className="space-y-4">
+                              <h3 className="text-lg font-semibold text-white capitalize">{attributeName} Script</h3>
+                              
+                              {/* Warden Level Input */}
+                              <div className="flex items-center space-x-4">
+                                <Label className="text-gray-300">Warden Level:</Label>
+                                <Input
+                                  type="number"
+                                  value={script.wardenLevel}
+                                  onChange={(e) => setTalents(prev => ({
+                                    ...prev,
+                                    [scriptKey]: { ...prev[scriptKey], wardenLevel: parseInt(e.target.value) || 1 }
+                                  }))}
+                                  className="bg-gray-700 border-gray-600 text-white w-24"
+                                  min="1"
+                                  max="500"
+                                />
+                                <div className="text-gray-400 text-sm">
+                                  Dom per star: {(() => {
+                                    const levelData = domIncreasePerStarData.find(data => script.wardenLevel >= data.level) || domIncreasePerStarData[domIncreasePerStarData.length - 1];
+                                    return levelData.constant.toLocaleString();
+                                  })()}
+                                </div>
+                              </div>
+                              
+                              {/* Star Checkboxes */}
+                              <div className="grid grid-cols-6 gap-4">
+                                {[1, 2, 3, 4, 5, 6].map(star => {
+                                  const successRate = [100, 83.3, 66.6, 50, 33.3, 16.6][star - 1];
+                                  return (
+                                    <div key={star} className="flex items-center space-x-2">
+                                      <Checkbox
+                                        id={`${scriptKey}-${star}`}
+                                        checked={script.stars[star]}
+                                        onCheckedChange={(checked) => setTalents(prev => ({
+                                          ...prev,
+                                          [scriptKey]: {
+                                            ...prev[scriptKey],
+                                            stars: { ...prev[scriptKey].stars, [star]: checked }
+                                          }
+                                        }))}
+                                      />
+                                      <Label htmlFor={`${scriptKey}-${star}`} className="text-gray-300">
+                                        {star}★ ({successRate}%)
+                                      </Label>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                              
+                              {/* Results Display */}
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-3 bg-gray-700/30 rounded">
+                                <div>
+                                  <div className="text-gray-400 text-xs">Scripts Used</div>
+                                  <div className="text-white">{results.total}</div>
+                                </div>
+                                <div>
+                                  <div className="text-gray-400 text-xs">Expected Stars</div>
+                                  <div className="text-white">{results.expected}</div>
+                                </div>
+                                <div>
+                                  <div className="text-gray-400 text-xs">Range</div>
+                                  <div className="text-white">{results.min}-{results.max}</div>
+                                </div>
+                                <div>
+                                  <div className="text-gray-400 text-xs">Dom Bonus</div>
+                                  <div className="text-green-400">+{getStarBonus(script.wardenLevel, results.expected).toLocaleString()}</div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        
+                        {/* Total Script Results */}
+                        <div className="mt-6 p-4 bg-gray-700/50 rounded-lg">
+                          <h3 className="text-lg font-semibold text-white mb-2">Total Script Benefits</h3>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {['strengthScript', 'allureScript', 'intellectScript', 'spiritScript'].map(scriptKey => {
+                              const script = talents[scriptKey];
+                              const results = calculateScriptResults(script);
+                              const bonus = getStarBonus(script.wardenLevel, results.expected);
+                              const attributeName = scriptKey.replace('Script', '');
+                              
+                              return (
+                                <div key={scriptKey} className="text-center">
+                                  <div className="text-gray-300 font-medium capitalize">{attributeName}</div>
+                                  <div className="text-white">{results.expected} stars</div>
+                                  <div className="text-green-400">+{bonus.toLocaleString()} dom</div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-gray-600">
+                            <div className="text-center">
+                              <div className="text-gray-300 font-medium">Total Expected Dom Gain</div>
+                              <div className="text-xl text-green-400">
+                                +{(() => {
+                                  const total = ['strengthScript', 'allureScript', 'intellectScript', 'spiritScript']
+                                    .reduce((sum, scriptKey) => {
+                                      const script = talents[scriptKey];
+                                      const results = calculateScriptResults(script);
+                                      return sum + getStarBonus(script.wardenLevel, results.expected);
+                                    }, 0);
+                                  return total.toLocaleString();
+                                })()} Dom
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Wardens Tab */}
