@@ -1279,7 +1279,7 @@ export default function GameCalculator() {
         if (totalCost <= availableSeals) {
           // Calculate DOM efficiency (DOM gained per seal spent)
           const wardenDomGain = wardenBonus * wardenCounts[attribute]
-          const bookDomGain = bookValues[attribute] * bookMultiplier
+          const bookDomGain = (bookValues[attribute] * bookMultiplier) / 100
           const totalDomGain = wardenDomGain + bookDomGain
           const efficiency = totalCost > 0 ? totalDomGain / totalCost : 0
           
@@ -1362,7 +1362,7 @@ export default function GameCalculator() {
         targetLevel: upgrade.targetLevel,
         cost: upgrade.cost,
         wardenBonus: upgrade.wardenBonus,
-        bookMultiplier: upgrade.bookMultiplier * 100, // convert to percentage
+        bookMultiplier: upgrade.bookMultiplier,
         domGain: upgrade.domGain,
         efficiency: upgrade.efficiency
       }))
