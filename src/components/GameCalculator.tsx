@@ -3157,7 +3157,7 @@ export default function GameCalculator() {
                                   </p>
                                   <p className="text-gray-300">
                                     +{upgrade.wardenBonus.toLocaleString()} warden DOM, 
-                                    +{(upgrade.bookMultiplier * 100).toFixed(1)}% book multiplier
+                                    +{upgrade.bookMultiplier.toFixed(1)}% book multiplier
                                   </p>
                                   <p className="text-blue-300 text-xs">
                                     Total DOM gain: {upgrade.domGain.toLocaleString()}
