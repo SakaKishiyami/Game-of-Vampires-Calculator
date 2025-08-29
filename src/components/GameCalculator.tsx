@@ -509,6 +509,7 @@ export default function GameCalculator() {
       hasAgneyi,
       hasCulann,
       hasHela,
+      talents,
       timestamp: new Date().toISOString(),
     }
   }
@@ -537,6 +538,7 @@ export default function GameCalculator() {
     if (data.hasAgneyi !== undefined) setHasAgneyi(data.hasAgneyi)
     if (data.hasCulann !== undefined) setHasCulann(data.hasCulann)
     if (data.hasHela !== undefined) setHasHela(data.hasHela)
+    if (data.talents) setTalents(data.talents)
   }
 
   // Toggle auto-load cloud saves preference
