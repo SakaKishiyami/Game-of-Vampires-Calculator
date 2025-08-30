@@ -1892,25 +1892,25 @@ export default function GameCalculator() {
           const multiplier = bookName.includes("Encyclopedia") || bookName.includes("Arcana") 
             ? Math.max(conclaveBonus.bookMultipliers.strength, conclaveBonus.bookMultipliers.allure, conclaveBonus.bookMultipliers.intellect, conclaveBonus.bookMultipliers.spirit)
             : conclaveBonus.bookMultipliers.strength
-          totalStrength += baseBonus * multiplier
+          totalStrength += baseBonus * (multiplier / 100)
         }
         if (category === "Allure" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
           const multiplier = bookName.includes("Encyclopedia") || bookName.includes("Arcana")
             ? Math.max(conclaveBonus.bookMultipliers.strength, conclaveBonus.bookMultipliers.allure, conclaveBonus.bookMultipliers.intellect, conclaveBonus.bookMultipliers.spirit)
             : conclaveBonus.bookMultipliers.allure
-          totalAllure += baseBonus * multiplier
+          totalAllure += baseBonus * (multiplier / 100)
         }
         if (category === "Intellect" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
           const multiplier = bookName.includes("Encyclopedia") || bookName.includes("Arcana")
             ? Math.max(conclaveBonus.bookMultipliers.strength, conclaveBonus.bookMultipliers.allure, conclaveBonus.bookMultipliers.intellect, conclaveBonus.bookMultipliers.spirit)
             : conclaveBonus.bookMultipliers.intellect
-          totalIntellect += baseBonus * multiplier
+          totalIntellect += baseBonus * (multiplier / 100)
         }
         if (category === "Spirit" || bookName.includes("Encyclopedia") || bookName.includes("Arcana")) {
           const multiplier = bookName.includes("Encyclopedia") || bookName.includes("Arcana")
             ? Math.max(conclaveBonus.bookMultipliers.strength, conclaveBonus.bookMultipliers.allure, conclaveBonus.bookMultipliers.intellect, conclaveBonus.bookMultipliers.spirit)
             : conclaveBonus.bookMultipliers.spirit
-          totalSpirit += baseBonus * multiplier
+          totalSpirit += baseBonus * (multiplier / 100)
         }
       })
     })
