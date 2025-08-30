@@ -142,3 +142,57 @@ export const scarletBondLevels = [
   { level: 97, single: 565980, affinity: 815738, dual: 377320, dual_affinity: 556440, all: 282990, all_affinity: 350537 },
   { level: 98, single: 582180, affinity: 844008, dual: 388120, dual_affinity: 575850, all: 291060, all_affinity: 366397 },
 ];
+
+// Off-attribute per-level data (non-cumulative). Missing values are linearly interpolated.
+const offSingleKnown: Record<number, number> = {
+  1:100,2:210,3:330,4:460,5:600,6:750,7:910,8:1080,9:1260,10:1460,
+  11:1680,12:1920,13:2180,14:2460,15:2760,16:3080,17:3420,18:3780,19:4160,20:4560,
+  21:4990,22:5450,23:5940,24:6460,25:7010,26:7590,27:8200,28:8840,29:9510,30:10210,
+  31:10950,32:11730,33:12550,34:13410,35:14310,36:15250,37:16230,38:17250,39:18310,40:19410,
+  41:20560,42:21760,43:23010,44:24310,45:25660,46:27060,47:28510,48:30010,49:31560,50:33160,
+  51:34820,52:36540,53:38320,54:40160,55:42060,56:44020,57:46040,58:48120,59:50260,60:52460,
+  61:54730,62:57070,63:59480,64:61960,65:64510,66:67130,67:69820,68:72580,69:75410,70:78310,
+  71:81290,72:84350,73:87490,74:90710,75:94010,76:97390,77:100850,78:104390,79:108010,80:111710,
+  81:115500,82:119380,83:123350,84:127410,85:131560,86:135800,87:140130,88:144550,89:149060,90:153660,
+  91:158360,92:163160,93:168060,94:173060,95:178160,96:183360,97:188660,98:194060,99:199560,100:205160,
+  101:210910,102:216810,103:222860,104:229060,105:235410,106:241910,107:248560,108:255360,109:262310,110:269410,
+  111:276710,112:284210,113:291910,114:299810,115:307910,116:316210
+}
+
+const offAffinityKnown: Record<number, number> = {
+  1:0,2:20,3:24,4:30,5:37,6:44,7:53,8:64,9:76,10:91,
+  11:113,12:131,13:150,14:171,15:194,16:218,17:244,18:273,19:303,20:337,
+  21:372,22:412,23:453,24:497,25:542,26:590,27:640,28:692,29:747,30:804,
+  31:864,32:921,33:979,34:1030,35:1090,36:1150,37:1210,38:1280,39:1340,40:1400,
+  41:1470,42:1540,43:1620,44:1700,45:1790,46:1870,47:1950,48:2040,49:2120,50:2210,
+  51:2300,52:2400,53:2510,54:2610,55:2720,56:2830,57:2940,58:3050,59:3160,60:3280,
+  61:3390,68:4340,116:17260
+}
+
+function interpolate(sortedEntries: Array<[number, number]>, level: number): number {
+  // sortedEntries assumed sorted by level asc
+  let prev = sortedEntries[0]
+  for (let i = 1; i < sortedEntries.length; i++) {
+    const cur = sortedEntries[i]
+    if (level === cur[0]) return cur[1]
+    if (level < cur[0]) {
+      const [l0, v0] = prev
+      const [l1, v1] = cur
+      const t = (level - l0) / (l1 - l0)
+      return Math.round(v0 + t * (v1 - v0))
+    }
+    prev = cur
+  }
+  return prev[1]
+}
+
+export function getOffSingle(level: number): number {
+  return offSingleKnown[level] ?? interpolate(Object.entries(offSingleKnown).map((e)=>[+e[0],+e[1]]).sort((a,b)=>a[0]-b[0]), level)
+}
+
+export function getOffAffinity(level: number): number {
+  const sorted = Object.entries(offAffinityKnown).map((e)=>[+e[0],+e[1]]).sort((a,b)=>a[0]-b[0])
+  const known = offAffinityKnown[level]
+  if (known !== undefined) return known
+  return interpolate(sorted, level)
+}

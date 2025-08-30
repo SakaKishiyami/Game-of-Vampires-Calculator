@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { initialBooks, bookBonuses, type BooksState, type BookCollection } from "@/data/books"
 import { initialAuras } from "@/data/auras"
 import { wardenGroups, wardenAttributes } from "@/data/wardens"
-import { scarletBondData, scarletBondLevels } from "@/data/scarletBonds"
+import { scarletBondData, scarletBondLevels, getOffSingle, getOffAffinity } from "@/data/scarletBonds"
 import { courtyardLevels } from "@/data/courtyard"
 import { conclaveLevels } from "@/data/conclave"
 import { domIncreasePerStarData } from "@/data/talent_stars"
@@ -1104,6 +1104,10 @@ export default function GameCalculator() {
   const calculateBondDomGain = (bondType: string, currentLevel: number, newLevel: number, bondKey: string) => {
     const attr = bondType.replace('Level', '').replace('Percent', '')
     const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+    const [_, warden] = bondKey.split("-")
+    const wardenData = wardenAttributes[warden as keyof typeof wardenAttributes]
+    const mainAttrs = new Set<string>()
+    wardenData?.forEach(a => { if (a.toLowerCase() !== 'balance') mainAttrs.add(a.toLowerCase()) })
     
     if (bondType.endsWith('Level')) {
       // Flat bonus - use correct bonus column based on bond type
@@ -1113,7 +1117,11 @@ export default function GameCalculator() {
       let currentBonus = 0
       let newBonus = 0
       
-      if (bondData?.type === 'All') {
+      if (!mainAttrs.has(attr)) {
+        // Off attribute uses off-table single values
+        currentBonus = getOffSingle(currentLevel)
+        newBonus = getOffSingle(newLevel)
+      } else if (bondData?.type === 'All') {
         currentBonus = currentData?.all || 0
         newBonus = newData?.all || 0
       } else if (bondData?.type === 'Dual') {
@@ -1135,7 +1143,9 @@ export default function GameCalculator() {
       const flatData = scarletBondLevels.find(l => l.level === flatLevel)
       
       let flatBonus = 0
-      if (bondData?.type === 'All') {
+      if (!mainAttrs.has(attr)) {
+        flatBonus = getOffSingle(flatLevel)
+      } else if (bondData?.type === 'All') {
         flatBonus = flatData?.all || 0
       } else if (bondData?.type === 'Dual') {
         flatBonus = flatData?.dual || 0
