@@ -970,24 +970,25 @@ export default function GameCalculator() {
                     'intellectLevel', 'intellectPercent', 'spiritLevel', 'spiritPercent')
     }
     
-    // Calculate cost for each possible upgrade
+    // Calculate cost for each possible upgrade (use per-level cost by differencing cumulative data)
     const upgrades = []
     bondTypes.forEach(bondType => {
       const currentLevel = currentBond[bondType] || 0
       if (currentLevel < 98) {
         const nextLevel = currentLevel + 1
         const levelData = scarletBondLevels.find(l => l.level === nextLevel)
+        const prevLevelData = scarletBondLevels.find(l => l.level === currentLevel)
         if (levelData) {
           let cost = 0
           // Use the correct cost column based on bond type
           if (bondData.type === 'All') {
-            cost = levelData.all_affinity || 0
+            cost = (levelData.all_affinity || 0) - (prevLevelData?.all_affinity || 0)
           } else if (bondData.type === 'Dual') {
-            cost = levelData.dual_affinity || 0
+            cost = (levelData.dual_affinity || 0) - (prevLevelData?.dual_affinity || 0)
           } else if (bondData.type === 'Single') {
-            cost = levelData.affinity || 0
+            cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
           } else {
-            cost = levelData.affinity || 0
+            cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
           }
           
           if (cost >= 0) { // Allow free upgrades (cost = 0)
@@ -1033,16 +1034,17 @@ export default function GameCalculator() {
         if (tempCurrentLevel < 98) {
           const nextLevel = tempCurrentLevel + 1
           const levelData = scarletBondLevels.find(l => l.level === nextLevel)
+          const prevLevelData = scarletBondLevels.find(l => l.level === tempCurrentLevel)
           if (levelData) {
             let cost = 0
             if (bondData.type === 'All') {
-              cost = levelData.all_affinity || 0
+              cost = (levelData.all_affinity || 0) - (prevLevelData?.all_affinity || 0)
             } else if (bondData.type === 'Dual') {
-              cost = levelData.dual_affinity || 0
+              cost = (levelData.dual_affinity || 0) - (prevLevelData?.dual_affinity || 0)
             } else if (bondData.type === 'Single') {
-              cost = levelData.affinity || 0
+              cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
             } else {
-              cost = levelData.affinity || 0
+              cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
             }
             
             if (cost >= 0 && remainingAffinity >= cost) {
