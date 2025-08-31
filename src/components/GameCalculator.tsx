@@ -2370,6 +2370,105 @@ export default function GameCalculator() {
     }
   }
 
+  const calculateSuggestedScarletBondIncrease = () => {
+    let increaseStrength = 0
+    let increaseAllure = 0
+    let increaseIntellect = 0
+    let increaseSpirit = 0
+    let increaseDom = 0
+
+    Object.entries(optimizedBondLevels).forEach(([bondKey, optimizedBond]) => {
+      const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+      const currentBond = scarletBond[bondKey]
+      
+      if (bondData && optimizedBond && currentBond) {
+        const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
+        
+        // Calculate increase for each attribute
+        ['strength', 'allure', 'intellect', 'spirit'].forEach((attr) => {
+          const currentLevel = currentBond[`${attr}Level`] || 0
+          const suggestedLevel = optimizedBond[`${attr}Level`] || 0
+          const currentPercent = currentBond[`${attr}Percent`] || 0
+          const suggestedPercent = optimizedBond[`${attr}Percent`] || 0
+          
+          if (suggestedLevel > currentLevel || suggestedPercent > currentPercent) {
+            // Calculate current bonus
+            let currentFlatBonus = 0
+            let currentPercentBonus = 0
+            if (currentLevel > 0) {
+              const currentLevelData = scarletBondLevels.find(l => l.level === currentLevel)
+              if (currentLevelData) {
+                if (bondData.type === 'All') {
+                  currentFlatBonus = currentLevelData.all || 0
+                } else if (bondData.type === 'Dual') {
+                  currentFlatBonus = currentLevelData.dual || 0
+                } else {
+                  currentFlatBonus = currentLevelData.single || 0
+                }
+                
+                if (currentPercent > 0) {
+                  currentPercentBonus = ((currentPercent || 0)/100) * currentFlatBonus
+                }
+              }
+            }
+            
+            // Calculate suggested bonus
+            let suggestedFlatBonus = 0
+            let suggestedPercentBonus = 0
+            if (suggestedLevel > 0) {
+              const suggestedLevelData = scarletBondLevels.find(l => l.level === suggestedLevel)
+              if (suggestedLevelData) {
+                if (bondData.type === 'All') {
+                  suggestedFlatBonus = suggestedLevelData.all || 0
+                } else if (bondData.type === 'Dual') {
+                  suggestedFlatBonus = suggestedLevelData.dual || 0
+                } else {
+                  suggestedFlatBonus = suggestedLevelData.single || 0
+                }
+                
+                if (suggestedPercent > 0) {
+                  suggestedPercentBonus = ((suggestedPercent || 0)/100) * suggestedFlatBonus
+                }
+              }
+            }
+            
+            // Apply lover bonuses if applicable
+            let multiplier = 1.0
+            const attrCapitalized = attr.charAt(0).toUpperCase() + attr.slice(1)
+            if (wardenAttrs.includes(attrCapitalized)) {
+              const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+              if (loverCount === 1) multiplier = 1.2
+              else if (loverCount === 2) multiplier = 1.25
+              else if (loverCount === 3) multiplier = 1.3
+            }
+            
+            const currentTotal = Math.round((currentFlatBonus + currentPercentBonus) * multiplier)
+            const suggestedTotal = Math.round((suggestedFlatBonus + suggestedPercentBonus) * multiplier)
+            const increase = suggestedTotal - currentTotal
+            
+            if (increase > 0) {
+              if (attr === 'strength') increaseStrength += increase
+              else if (attr === 'allure') increaseAllure += increase
+              else if (attr === 'intellect') increaseIntellect += increase
+              else if (attr === 'spirit') increaseSpirit += increase
+              
+              // Add to DOM increase
+              increaseDom += increase
+            }
+          }
+        })
+      }
+    })
+
+    return {
+      increaseStrength,
+      increaseAllure,
+      increaseIntellect,
+      increaseSpirit,
+      increaseDom
+    }
+  }
+
   const calculateCurrentScarletBondBonuses = () => {
     let currentStrength = 0
     let currentAllure = 0
@@ -2519,6 +2618,7 @@ export default function GameCalculator() {
   const totals = calculateTotals()
   const optimizedBonuses = calculateOptimizedScarletBondBonuses()
   const currentScarletBondBonuses = calculateCurrentScarletBondBonuses()
+  const suggestedIncrease = calculateSuggestedScarletBondIncrease()
   const dynamicAuras = calculateDynamicAuraLevels()
   const auraBonuses = calculateAuraBonuses()
   
@@ -2826,6 +2926,11 @@ export default function GameCalculator() {
             <Card className="bg-gray-800/50 border-gray-600">
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-green-400">+{totals.domIncrease.toLocaleString()}</div>
+                {suggestedIncrease.increaseDom > 0 && (
+                  <div className="text-lg font-bold text-green-400 mt-1">
+                    [+{suggestedIncrease.increaseDom.toLocaleString()} from suggestions]
+                  </div>
+                )}
                 <div className="text-sm text-gray-300">DOM Increase</div>
               </CardContent>
             </Card>
@@ -2855,6 +2960,11 @@ export default function GameCalculator() {
                     {optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses] > 0 && (
                       <span className="text-green-400 ml-2">
                         +{optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses].toLocaleString()}
+                      </span>
+                    )}
+                    {suggestedIncrease[`increase${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof suggestedIncrease] > 0 && (
+                      <span className="text-green-400 ml-2 font-bold">
+                        [+{suggestedIncrease[`increase${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof suggestedIncrease].toLocaleString()} from suggestions]
                       </span>
                     )}
                   </div>
