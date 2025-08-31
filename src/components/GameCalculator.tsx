@@ -869,14 +869,15 @@ export default function GameCalculator() {
           const levelData = scarletBondLevels.find(l => l.level === nextLevel)
           if (levelData) {
             let cost = 0
+            const prevLevelData = scarletBondLevels.find(l => l.level === tempLevel)
             if (bondData.type === 'All') {
-              cost = levelData.all_affinity || 0
+              cost = (levelData.all_affinity || 0) - (prevLevelData?.all_affinity || 0)
             } else if (bondData.type === 'Dual') {
-              cost = levelData.dual_affinity || 0
+              cost = (levelData.dual_affinity || 0) - (prevLevelData?.dual_affinity || 0)
             } else if (bondData.type === 'Single') {
-              cost = levelData.affinity || 0
+              cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
             } else {
-              cost = levelData.affinity || 0
+              cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
             }
             if (cost >= 0 && remainingAffinity >= cost) {
               // Compute DOM gain using temp levels so percent uses updated flat level
