@@ -869,15 +869,15 @@ export default function GameCalculator() {
           const levelData = scarletBondLevels.find(l => l.level === nextLevel)
           if (levelData) {
             let cost = 0
-            const prevLevelData = scarletBondLevels.find(l => l.level === tempLevel)
+            // Since data is non-cumulative, use the affinity value directly
             if (bondData.type === 'All') {
-              cost = (levelData.all_affinity || 0) - (prevLevelData?.all_affinity || 0)
+              cost = levelData.all_affinity || 0
             } else if (bondData.type === 'Dual') {
-              cost = (levelData.dual_affinity || 0) - (prevLevelData?.dual_affinity || 0)
+              cost = levelData.dual_affinity || 0
             } else if (bondData.type === 'Single') {
-              cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
+              cost = levelData.affinity || 0
             } else {
-              cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
+              cost = levelData.affinity || 0
             }
             if (cost >= 0 && remainingAffinity >= cost) {
               // Compute DOM gain using temp levels so percent uses updated flat level
@@ -978,18 +978,18 @@ export default function GameCalculator() {
       if (currentLevel < 205) {
         const nextLevel = currentLevel + 1
         const levelData = scarletBondLevels.find(l => l.level === nextLevel)
-        const prevLevelData = scarletBondLevels.find(l => l.level === currentLevel)
+
         if (levelData) {
           let cost = 0
-          // Use the correct cost column based on bond type
+          // Since data is non-cumulative, use the affinity value directly
           if (bondData.type === 'All') {
-            cost = (levelData.all_affinity || 0) - (prevLevelData?.all_affinity || 0)
+            cost = levelData.all_affinity || 0
           } else if (bondData.type === 'Dual') {
-            cost = (levelData.dual_affinity || 0) - (prevLevelData?.dual_affinity || 0)
+            cost = levelData.dual_affinity || 0
           } else if (bondData.type === 'Single') {
-            cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
+            cost = levelData.affinity || 0
           } else {
-            cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
+            cost = levelData.affinity || 0
           }
           
           if (cost >= 0) { // Allow free upgrades (cost = 0)
@@ -1035,17 +1035,18 @@ export default function GameCalculator() {
         if (tempCurrentLevel < 205) {
           const nextLevel = tempCurrentLevel + 1
           const levelData = scarletBondLevels.find(l => l.level === nextLevel)
-          const prevLevelData = scarletBondLevels.find(l => l.level === tempCurrentLevel)
+
           if (levelData) {
             let cost = 0
+            // Since data is non-cumulative, use the affinity value directly
             if (bondData.type === 'All') {
-              cost = (levelData.all_affinity || 0) - (prevLevelData?.all_affinity || 0)
+              cost = levelData.all_affinity || 0
             } else if (bondData.type === 'Dual') {
-              cost = (levelData.dual_affinity || 0) - (prevLevelData?.dual_affinity || 0)
+              cost = levelData.dual_affinity || 0
             } else if (bondData.type === 'Single') {
-              cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
+              cost = levelData.affinity || 0
             } else {
-              cost = (levelData.affinity || 0) - (prevLevelData?.affinity || 0)
+              cost = levelData.affinity || 0
             }
             
             if (cost >= 0 && remainingAffinity >= cost) {
@@ -1971,8 +1972,11 @@ export default function GameCalculator() {
         if (bondData) {
           const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
           
-          // Use optimized levels if available, otherwise use manual input levels
-          const optimizedBond = optimizedBondLevels[bondKey] || bond
+          // Only use optimized levels for DOM calculation, ignore current manual levels
+          const optimizedBond = optimizedBondLevels[bondKey]
+          
+          // Only calculate bonuses if there are optimized levels (skip if no optimization)
+          if (!optimizedBond) return
           
           // Calculate flat bonuses for each attribute
           if (optimizedBond.strengthLevel && optimizedBond.strengthLevel > 0) {
