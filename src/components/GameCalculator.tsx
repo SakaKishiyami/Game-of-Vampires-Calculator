@@ -217,8 +217,12 @@ export default function GameCalculator() {
         
         // Parse attribute totals - look for lines with symbols + numbers (OCR format)
         if (foundAttributeDetail && attributeOrderIndex < attributeOrder.length) {
-          const match = line.match(/^[^a-zA-Z]*([0-9,.]+[KM]?)/i)
-          if (match) {
+          // Look for lines that contain a number with K/M suffix, possibly preceded by symbols
+          const match = line.match(/([0-9,.]+[KM]?)/i)
+          if (match && !line.includes('Talent Bonus') && !line.includes('Book Bonus') && 
+              !line.includes('Scarlet Bond Bonus') && !line.includes('Presence Bonus') && 
+              !line.includes('Aura Bonus') && !line.includes('Conclave Bonus') && 
+              !line.includes('Avatar Bonus') && !line.includes('Familiar Bonus')) {
             const currentAttr = attributeOrder[attributeOrderIndex]
             attributeData[currentAttr as keyof typeof attributeData].total = parseNumberWithSuffix(match[1])
             currentAttribute = currentAttr
@@ -298,7 +302,7 @@ export default function GameCalculator() {
 
   // Helper function to parse numbers with K/M suffixes
   const parseNumberWithSuffix = (value: string): number => {
-    const numStr = value.toString().toLowerCase()
+    const numStr = value.toString().toLowerCase().replace(/,/g, '')
     if (numStr.includes('k')) {
       return parseFloat(numStr.replace('k', '')) * 1000
     } else if (numStr.includes('m')) {
