@@ -286,13 +286,7 @@ export default function GameCalculator() {
     // Dynamically import Tesseract.js to avoid SSR issues
     const { createWorker } = await import('tesseract.js')
     
-    const worker = await createWorker({
-      logger: (m) => {
-        if (m.status === 'recognizing text') {
-          setOcrProgress(`OCR Progress: ${Math.round(m.progress * 100)}%`)
-        }
-      }
-    })
+    const worker = await createWorker()
     
     try {
       setOcrProgress('Initializing OCR...')
