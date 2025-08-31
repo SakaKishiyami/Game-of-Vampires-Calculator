@@ -423,6 +423,34 @@ export default function GameCalculator() {
   const [hasCulann, setHasCulann] = useState(false)
   const [hasHela, setHasHela] = useState(false)
 
+  // Summonable characters (can be summoned with coins)
+  const [hasFrances, setHasFrances] = useState(false)
+  const [hasRaven, setHasRaven] = useState(false)
+  const [hasMary, setHasMary] = useState(false)
+  const [hasInanna, setHasInanna] = useState(false)
+  const [hasOtchigon, setHasOtchigon] = useState(false)
+  const [hasSkylar, setHasSkylar] = useState(false)
+  const [hasBess, setHasBess] = useState(false)
+  const [hasRoxana, setHasRoxana] = useState(false)
+  const [hasAisha, setHasAisha] = useState(false)
+  const [hasAntonia, setHasAntonia] = useState(false)
+  const [hasGabrielle, setHasGabrielle] = useState(false)
+  const [hasMairi, setHasMairi] = useState(false)
+  const [hasAretha, setHasAretha] = useState(false)
+  const [hasRegina, setHasRegina] = useState(false)
+  const [hasAva, setHasAva] = useState(false)
+  const [hasAlexis, setHasAlexis] = useState(false)
+  const [hasElaine, setHasElaine] = useState(false)
+  const [hasSuria, setHasSuria] = useState(false)
+  const [hasCordelia, setHasCordelia] = useState(false)
+  const [hasHanna, setHasHanna] = useState(false)
+  const [hasElizabeth, setHasElizabeth] = useState(false)
+  const [hasMichelle, setHasMichelle] = useState(false)
+  const [hasHarriet, setHasHarriet] = useState(false)
+  const [hasJohanna, setHasJohanna] = useState(false)
+  const [hasLucy, setHasLucy] = useState(false)
+  const [hasRuna, setHasRuna] = useState(false)
+
   // Talent Scrolls and Scripts
   const [talents, setTalents] = useState({
     // Random Talent Scrolls (with ranges)
@@ -493,6 +521,32 @@ export default function GameCalculator() {
       hasAgneyi,
       hasCulann,
       hasHela,
+      hasFrances,
+      hasRaven,
+      hasMary,
+      hasInanna,
+      hasOtchigon,
+      hasSkylar,
+      hasBess,
+      hasRoxana,
+      hasAisha,
+      hasAntonia,
+      hasGabrielle,
+      hasMairi,
+      hasAretha,
+      hasRegina,
+      hasAva,
+      hasAlexis,
+      hasElaine,
+      hasSuria,
+      hasCordelia,
+      hasHanna,
+      hasElizabeth,
+      hasMichelle,
+      hasHarriet,
+      hasJohanna,
+      hasLucy,
+      hasRuna,
       auras,
       wardenStats,
       scarletBond,
@@ -535,6 +589,32 @@ export default function GameCalculator() {
         setHasAgneyi(parsedData.hasAgneyi || false)
         setHasCulann(parsedData.hasCulann || false)
         setHasHela(parsedData.hasHela || false)
+        setHasFrances(parsedData.hasFrances || false)
+        setHasRaven(parsedData.hasRaven || false)
+        setHasMary(parsedData.hasMary || false)
+        setHasInanna(parsedData.hasInanna || false)
+        setHasOtchigon(parsedData.hasOtchigon || false)
+        setHasSkylar(parsedData.hasSkylar || false)
+        setHasBess(parsedData.hasBess || false)
+        setHasRoxana(parsedData.hasRoxana || false)
+        setHasAisha(parsedData.hasAisha || false)
+        setHasAntonia(parsedData.hasAntonia || false)
+        setHasGabrielle(parsedData.hasGabrielle || false)
+        setHasMairi(parsedData.hasMairi || false)
+        setHasAretha(parsedData.hasAretha || false)
+        setHasRegina(parsedData.hasRegina || false)
+        setHasAva(parsedData.hasAva || false)
+        setHasAlexis(parsedData.hasAlexis || false)
+        setHasElaine(parsedData.hasElaine || false)
+        setHasSuria(parsedData.hasSuria || false)
+        setHasCordelia(parsedData.hasCordelia || false)
+        setHasHanna(parsedData.hasHanna || false)
+        setHasElizabeth(parsedData.hasElizabeth || false)
+        setHasMichelle(parsedData.hasMichelle || false)
+        setHasHarriet(parsedData.hasHarriet || false)
+        setHasJohanna(parsedData.hasJohanna || false)
+        setHasLucy(parsedData.hasLucy || false)
+        setHasRuna(parsedData.hasRuna || false)
         setAuras(parsedData.auras || initialAuras)
         setWardenStats(parsedData.wardenStats || {})
         setUploadedWardenData(parsedData.uploadedWardenData || {})
@@ -601,6 +681,32 @@ export default function GameCalculator() {
       hasAgneyi,
       hasCulann,
       hasHela,
+      hasFrances,
+      hasRaven,
+      hasMary,
+      hasInanna,
+      hasOtchigon,
+      hasSkylar,
+      hasBess,
+      hasRoxana,
+      hasAisha,
+      hasAntonia,
+      hasGabrielle,
+      hasMairi,
+      hasAretha,
+      hasRegina,
+      hasAva,
+      hasAlexis,
+      hasElaine,
+      hasSuria,
+      hasCordelia,
+      hasHanna,
+      hasElizabeth,
+      hasMichelle,
+      hasHarriet,
+      hasJohanna,
+      hasLucy,
+      hasRuna,
       auras,
       wardenStats,
       uploadedWardenData,
@@ -653,6 +759,35 @@ export default function GameCalculator() {
         setHasDracula(importedData.hasDracula || false)
         setHasVictor(importedData.hasVictor || false)
         setHasFrederick(importedData.hasFrederick || false)
+        setHasAgneyi(importedData.hasAgneyi || false)
+        setHasCulann(importedData.hasCulann || false)
+        setHasHela(importedData.hasHela || false)
+        setHasFrances(importedData.hasFrances || false)
+        setHasRaven(importedData.hasRaven || false)
+        setHasMary(importedData.hasMary || false)
+        setHasInanna(importedData.hasInanna || false)
+        setHasOtchigon(importedData.hasOtchigon || false)
+        setHasSkylar(importedData.hasSkylar || false)
+        setHasBess(importedData.hasBess || false)
+        setHasRoxana(importedData.hasRoxana || false)
+        setHasAisha(importedData.hasAisha || false)
+        setHasAntonia(importedData.hasAntonia || false)
+        setHasGabrielle(importedData.hasGabrielle || false)
+        setHasMairi(importedData.hasMairi || false)
+        setHasAretha(importedData.hasAretha || false)
+        setHasRegina(importedData.hasRegina || false)
+        setHasAva(importedData.hasAva || false)
+        setHasAlexis(importedData.hasAlexis || false)
+        setHasElaine(importedData.hasElaine || false)
+        setHasSuria(importedData.hasSuria || false)
+        setHasCordelia(importedData.hasCordelia || false)
+        setHasHanna(importedData.hasHanna || false)
+        setHasElizabeth(importedData.hasElizabeth || false)
+        setHasMichelle(importedData.hasMichelle || false)
+        setHasHarriet(importedData.hasHarriet || false)
+        setHasJohanna(importedData.hasJohanna || false)
+        setHasLucy(importedData.hasLucy || false)
+        setHasRuna(importedData.hasRuna || false)
         setAuras(importedData.auras || initialAuras)
         setWardenStats(importedData.wardenStats || {})
         setScarletBond(importedData.scarletBond || {})
@@ -814,7 +949,79 @@ export default function GameCalculator() {
     if (data.hasAgneyi !== undefined) setHasAgneyi(data.hasAgneyi)
     if (data.hasCulann !== undefined) setHasCulann(data.hasCulann)
     if (data.hasHela !== undefined) setHasHela(data.hasHela)
+    if (data.hasFrances !== undefined) setHasFrances(data.hasFrances)
+    if (data.hasRaven !== undefined) setHasRaven(data.hasRaven)
+    if (data.hasMary !== undefined) setHasMary(data.hasMary)
+    if (data.hasInanna !== undefined) setHasInanna(data.hasInanna)
+    if (data.hasOtchigon !== undefined) setHasOtchigon(data.hasOtchigon)
+    if (data.hasSkylar !== undefined) setHasSkylar(data.hasSkylar)
+    if (data.hasBess !== undefined) setHasBess(data.hasBess)
+    if (data.hasRoxana !== undefined) setHasRoxana(data.hasRoxana)
+    if (data.hasAisha !== undefined) setHasAisha(data.hasAisha)
+    if (data.hasAntonia !== undefined) setHasAntonia(data.hasAntonia)
+    if (data.hasGabrielle !== undefined) setHasGabrielle(data.hasGabrielle)
+    if (data.hasMairi !== undefined) setHasMairi(data.hasMairi)
+    if (data.hasAretha !== undefined) setHasAretha(data.hasAretha)
+    if (data.hasRegina !== undefined) setHasRegina(data.hasRegina)
+    if (data.hasAva !== undefined) setHasAva(data.hasAva)
+    if (data.hasAlexis !== undefined) setHasAlexis(data.hasAlexis)
+    if (data.hasElaine !== undefined) setHasElaine(data.hasElaine)
+    if (data.hasSuria !== undefined) setHasSuria(data.hasSuria)
+    if (data.hasCordelia !== undefined) setHasCordelia(data.hasCordelia)
+    if (data.hasHanna !== undefined) setHasHanna(data.hasHanna)
+    if (data.hasElizabeth !== undefined) setHasElizabeth(data.hasElizabeth)
+    if (data.hasMichelle !== undefined) setHasMichelle(data.hasMichelle)
+    if (data.hasHarriet !== undefined) setHasHarriet(data.hasHarriet)
+    if (data.hasJohanna !== undefined) setHasJohanna(data.hasJohanna)
+    if (data.hasLucy !== undefined) setHasLucy(data.hasLucy)
+    if (data.hasRuna !== undefined) setHasRuna(data.hasRuna)
     if (data.talents) setTalents(data.talents)
+  }
+
+  // Helper function to check if a character is summonable (has vip: 0)
+  const isSummonable = (loverName: string): boolean => {
+    const bondData = scarletBondData.find(b => {
+      // Handle lovers with slashes (different genders)
+      if (b.lover.includes('/')) {
+        const names = b.lover.split('/');
+        return names[0].trim() === loverName || names[1].trim() === loverName;
+      }
+      return b.lover === loverName;
+    });
+    return bondData?.vip === 0;
+  }
+
+  // Helper function to get the state variable for a summonable character
+  const getSummonableState = (loverName: string): [boolean, (value: boolean) => void] => {
+    switch (loverName) {
+      case 'Frances': return [hasFrances, setHasFrances];
+      case 'Raven': return [hasRaven, setHasRaven];
+      case 'Mary': return [hasMary, setHasMary];
+      case 'Inanna': return [hasInanna, setHasInanna];
+      case 'Otchigon': return [hasOtchigon, setHasOtchigon];
+      case 'Skylar': return [hasSkylar, setHasSkylar];
+      case 'Bess': return [hasBess, setHasBess];
+      case 'Roxana': return [hasRoxana, setHasRoxana];
+      case 'Aisha': return [hasAisha, setHasAisha];
+      case 'Antonia': return [hasAntonia, setHasAntonia];
+      case 'Gabrielle': return [hasGabrielle, setHasGabrielle];
+      case 'Mairi': return [hasMairi, setHasMairi];
+      case 'Aretha': return [hasAretha, setHasAretha];
+      case 'Regina': return [hasRegina, setHasRegina];
+      case 'Ava': return [hasAva, setHasAva];
+      case 'Alexis': return [hasAlexis, setHasAlexis];
+      case 'Elaine': return [hasElaine, setHasElaine];
+      case 'Suria': return [hasSuria, setHasSuria];
+      case 'Cordelia': return [hasCordelia, setHasCordelia];
+      case 'Hanna': return [hasHanna, setHasHanna];
+      case 'Elizabeth': return [hasElizabeth, setHasElizabeth];
+      case 'Michelle': return [hasMichelle, setHasMichelle];
+      case 'Harriet': return [hasHarriet, setHasHarriet];
+      case 'Johanna': return [hasJohanna, setHasJohanna];
+      case 'Lucy': return [hasLucy, setHasLucy];
+      case 'Runa': return [hasRuna, setHasRuna];
+      default: return [false, () => {}];
+    }
   }
 
   // Toggle auto-load cloud saves preference
@@ -5386,6 +5593,31 @@ export default function GameCalculator() {
                                   >
                                     {bond.type}
                                   </span>
+                                  {bond.vip === 0 && (
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">
+                                        Summonable
+                                      </span>
+                                      {(() => {
+                                        // Get the first name for the checkbox (handle slashes)
+                                        const loverName = bond.lover.includes('/') ? bond.lover.split('/')[0].trim() : bond.lover;
+                                        const [isOwned, setIsOwned] = getSummonableState(loverName);
+                                        return (
+                                          <div className="flex items-center space-x-1">
+                                            <Checkbox 
+                                              id={`summonable-${loverName}`} 
+                                              checked={isOwned} 
+                                              onCheckedChange={setIsOwned}
+                                              className="border-gray-400"
+                                            />
+                                            <Label htmlFor={`summonable-${loverName}`} className="text-xs text-gray-300">
+                                              Owned
+                                            </Label>
+                                          </div>
+                                        );
+                                      })()}
+                                    </div>
+                                  )}
                                   {wardenData && (
                                     <div className="flex gap-1">
                                       {wardenData.map((attr) => (
