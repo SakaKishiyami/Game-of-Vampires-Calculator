@@ -2390,6 +2390,7 @@ export default function GameCalculator() {
           // Calculate suggestions for this bond
           const suggestedUpgrades = calculateSuggestedUpgrades(bondKey, affinity)
           console.log(`Bond ${bondKey} suggestions:`, suggestedUpgrades)
+          console.log(`Bond ${bondKey} wardenAttrs:`, wardenAttrs)
           
           if (currentBond) {
             // Check each attribute that this warden supports
@@ -2397,9 +2398,13 @@ export default function GameCalculator() {
               const attrCapitalized = attr.charAt(0).toUpperCase() + attr.slice(1)
               const isMainStat = wardenAttrs.some(a => a.toLowerCase() === attr || a === "Balance")
               
+              console.log(`Bond ${bondKey} attr ${attr}: isMainStat=${isMainStat}`)
+              
               if (isMainStat) {
                 const flatSuggestion = suggestedUpgrades[`${attr}Level`]
                 const percentSuggestion = suggestedUpgrades[`${attr}Percent`]
+                
+                console.log(`Bond ${bondKey} ${attr}: flatSuggestion=`, flatSuggestion, 'percentSuggestion=', percentSuggestion)
                 
                 let totalIncrease = 0
                 
@@ -2410,6 +2415,8 @@ export default function GameCalculator() {
                 if (percentSuggestion && percentSuggestion.increase > 0) {
                   totalIncrease += percentSuggestion.domGain || 0
                 }
+                
+                console.log(`Bond ${bondKey} ${attr}: totalIncrease=${totalIncrease}`)
                 
                 if (totalIncrease > 0) {
                   if (attr === 'strength') increaseStrength += totalIncrease
