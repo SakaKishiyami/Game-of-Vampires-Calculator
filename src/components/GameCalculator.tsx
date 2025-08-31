@@ -111,6 +111,215 @@ export default function GameCalculator() {
 
   // Warden stats
   const [wardenStats, setWardenStats] = useState({})
+  
+  // Uploaded warden data with full attribute breakdowns
+  const [uploadedWardenData, setUploadedWardenData] = useState<{
+    [wardenName: string]: {
+      totalAttributes: number;
+      strength: {
+        total: number;
+        talentBonus: number;
+        bookBonus: number;
+        scarletBondBonus: number;
+        presenceBonus: number;
+        auraBonus: number;
+        conclaveBonus: number;
+        avatarBonus: number;
+        familiarBonus: number;
+      };
+      allure: {
+        total: number;
+        talentBonus: number;
+        bookBonus: number;
+        scarletBondBonus: number;
+        presenceBonus: number;
+        auraBonus: number;
+        conclaveBonus: number;
+        avatarBonus: number;
+        familiarBonus: number;
+      };
+      intellect: {
+        total: number;
+        talentBonus: number;
+        bookBonus: number;
+        scarletBondBonus: number;
+        presenceBonus: number;
+        auraBonus: number;
+        conclaveBonus: number;
+        avatarBonus: number;
+        familiarBonus: number;
+      };
+      spirit: {
+        total: number;
+        talentBonus: number;
+        bookBonus: number;
+        scarletBondBonus: number;
+        presenceBonus: number;
+        auraBonus: number;
+        conclaveBonus: number;
+        avatarBonus: number;
+        familiarBonus: number;
+      };
+    }
+  }>({})
+
+  // Upload state
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+
+  // Parse uploaded warden data
+  const parseWardenData = (content: string, fileName: string) => {
+    try {
+      // Extract warden name from filename (remove extension)
+      const wardenName = fileName.replace(/\.(txt|json|csv)$/i, '')
+      
+      // Parse the content to extract attribute breakdown
+      // This handles the format shown in the image
+      const lines = content.split('\n').map(line => line.trim()).filter(line => line)
+      
+      let totalAttributes = 0
+      const attributeData = {
+        strength: { total: 0, talentBonus: 0, bookBonus: 0, scarletBondBonus: 0, presenceBonus: 0, auraBonus: 0, conclaveBonus: 0, avatarBonus: 0, familiarBonus: 0 },
+        allure: { total: 0, talentBonus: 0, bookBonus: 0, scarletBondBonus: 0, presenceBonus: 0, auraBonus: 0, conclaveBonus: 0, avatarBonus: 0, familiarBonus: 0 },
+        intellect: { total: 0, talentBonus: 0, bookBonus: 0, scarletBondBonus: 0, presenceBonus: 0, auraBonus: 0, conclaveBonus: 0, avatarBonus: 0, familiarBonus: 0 },
+        spirit: { total: 0, talentBonus: 0, bookBonus: 0, scarletBondBonus: 0, presenceBonus: 0, auraBonus: 0, conclaveBonus: 0, avatarBonus: 0, familiarBonus: 0 }
+      }
+      
+      let currentAttribute = ''
+      
+      for (const line of lines) {
+        // Parse total attributes
+        if (line.includes('Total Attributes')) {
+          const match = line.match(/Total Attributes\s*[:\s]*([0-9.]+[KM]?)/i)
+          if (match) {
+            totalAttributes = parseNumberWithSuffix(match[1])
+          }
+        }
+        
+        // Parse attribute totals
+        if (line.includes('Strength') && line.match(/[0-9.]+[KM]?/)) {
+          currentAttribute = 'strength'
+          const match = line.match(/Strength\s*[:\s]*([0-9.]+[KM]?)/i)
+          if (match) {
+            attributeData.strength.total = parseNumberWithSuffix(match[1])
+          }
+        } else if (line.includes('Allure') && line.match(/[0-9.]+[KM]?/)) {
+          currentAttribute = 'allure'
+          const match = line.match(/Allure\s*[:\s]*([0-9.]+[KM]?)/i)
+          if (match) {
+            attributeData.allure.total = parseNumberWithSuffix(match[1])
+          }
+        } else if (line.includes('Intellect') && line.match(/[0-9.]+[KM]?/)) {
+          currentAttribute = 'intellect'
+          const match = line.match(/Intellect\s*[:\s]*([0-9.]+[KM]?)/i)
+          if (match) {
+            attributeData.intellect.total = parseNumberWithSuffix(match[1])
+          }
+        } else if (line.includes('Spirit') && line.match(/[0-9.]+[KM]?/)) {
+          currentAttribute = 'spirit'
+          const match = line.match(/Spirit\s*[:\s]*([0-9.]+[KM]?)/i)
+          if (match) {
+            attributeData.spirit.total = parseNumberWithSuffix(match[1])
+          }
+        }
+        
+        // Parse breakdown items for current attribute
+        if (currentAttribute && attributeData[currentAttribute as keyof typeof attributeData]) {
+          const attr = attributeData[currentAttribute as keyof typeof attributeData]
+          
+          if (line.includes('Talent Bonus')) {
+            const match = line.match(/Talent Bonus[:\s]*([0-9.]+[KM]?)/i)
+            if (match) attr.talentBonus = parseNumberWithSuffix(match[1])
+          } else if (line.includes('Book Bonus')) {
+            const match = line.match(/Book Bonus[:\s]*([0-9.]+[KM]?)/i)
+            if (match) attr.bookBonus = parseNumberWithSuffix(match[1])
+          } else if (line.includes('Scarlet Bond Bonus')) {
+            const match = line.match(/Scarlet Bond Bonus[:\s]*([0-9.]+[KM]?)/i)
+            if (match) attr.scarletBondBonus = parseNumberWithSuffix(match[1])
+          } else if (line.includes('Presence Bonus')) {
+            const match = line.match(/Presence Bonus[:\s]*([0-9.]+[KM]?)/i)
+            if (match) attr.presenceBonus = parseNumberWithSuffix(match[1])
+          } else if (line.includes('Aura Bonus')) {
+            const match = line.match(/Aura Bonus[:\s]*([0-9.]+[KM]?)/i)
+            if (match) attr.auraBonus = parseNumberWithSuffix(match[1])
+          } else if (line.includes('Conclave Bonus')) {
+            const match = line.match(/Conclave Bonus[:\s]*([0-9.]+[KM]?)/i)
+            if (match) attr.conclaveBonus = parseNumberWithSuffix(match[1])
+          } else if (line.includes('Avatar Bonus')) {
+            const match = line.match(/Avatar Bonus[:\s]*([0-9.]+[KM]?)/i)
+            if (match) attr.avatarBonus = parseNumberWithSuffix(match[1])
+          } else if (line.includes('Familiar Bonus')) {
+            const match = line.match(/Familiar Bonus[:\s]*([0-9.]+[KM]?)/i)
+            if (match) attr.familiarBonus = parseNumberWithSuffix(match[1])
+          }
+        }
+      }
+      
+      return {
+        wardenName,
+        data: {
+          totalAttributes,
+          ...attributeData
+        }
+      }
+    } catch (error) {
+      throw new Error(`Failed to parse data for ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  // Helper function to parse numbers with K/M suffixes
+  const parseNumberWithSuffix = (value: string): number => {
+    const numStr = value.toString().toLowerCase()
+    if (numStr.includes('k')) {
+      return parseFloat(numStr.replace('k', '')) * 1000
+    } else if (numStr.includes('m')) {
+      return parseFloat(numStr.replace('m', '')) * 1000000
+    }
+    return parseFloat(numStr) || 0
+  }
+
+  // Handle file upload
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || files.length === 0) return
+
+    setIsUploading(true)
+    setUploadError(null)
+
+    try {
+      const newWardenData = { ...uploadedWardenData }
+      let successCount = 0
+      let errorCount = 0
+      const errors: string[] = []
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        try {
+          const content = await file.text()
+          const parsed = parseWardenData(content, file.name)
+          newWardenData[parsed.wardenName] = parsed.data
+          successCount++
+        } catch (error) {
+          errorCount++
+          errors.push(error instanceof Error ? error.message : `Failed to parse ${file.name}`)
+        }
+      }
+
+      setUploadedWardenData(newWardenData)
+      
+      if (errorCount > 0) {
+        setUploadError(`Successfully uploaded ${successCount} files. Errors: ${errors.join(', ')}`)
+      } else {
+        setUploadError(null)
+      }
+    } catch (error) {
+      setUploadError(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setIsUploading(false)
+      // Clear the input so the same file can be uploaded again
+      event.target.value = ''
+    }
+  }
 
   // Scarlet bond - per attribute inputs
   const [scarletBond, setScarletBond] = useState<{
@@ -264,6 +473,7 @@ export default function GameCalculator() {
         setHasHela(parsedData.hasHela || false)
         setAuras(parsedData.auras || initialAuras)
         setWardenStats(parsedData.wardenStats || {})
+        setUploadedWardenData(parsedData.uploadedWardenData || {})
         setScarletBond(parsedData.scarletBond || {})
         setScarletBondAffinity(parsedData.scarletBondAffinity || {})
         setOptimizedBondLevels(parsedData.optimizedBondLevels || {})
@@ -329,6 +539,7 @@ export default function GameCalculator() {
       hasHela,
       auras,
       wardenStats,
+      uploadedWardenData,
       scarletBond,
       scarletBondAffinity,
       optimizedBondLevels,
@@ -532,6 +743,7 @@ export default function GameCalculator() {
     if (data.hasFrederick !== undefined) setHasFrederick(data.hasFrederick)
     if (data.auras) setAuras(data.auras)
     if (data.wardenStats) setWardenStats(data.wardenStats)
+    if (data.uploadedWardenData) setUploadedWardenData(data.uploadedWardenData)
     if (data.scarletBond) setScarletBond(data.scarletBond)
     if (data.scarletBondAffinity) setScarletBondAffinity(data.scarletBondAffinity)
     if (data.optimizedBondLevels) setOptimizedBondLevels(data.optimizedBondLevels)
@@ -4584,49 +4796,197 @@ export default function GameCalculator() {
                   {/* Warden Stats Tab */}
                   {activeWardenTab === "stats" && (
                     <div className="space-y-4">
-                      {getAllSelectedWardens().map((warden) => (
-                        <Card key={`${warden.group}-${warden.name}`} className="bg-gray-700/50 border-gray-600">
-                          <CardHeader>
-                            <CardTitle className="flex items-center gap-3">
-                              <span className="text-white">{warden.name}</span>
-                              <div className="flex gap-1">
-                                {warden.attributes.map((attr) => (
-                                  <span
-                                    key={attr}
-                                    className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
-                                  >
-                                    {attr}
-                                  </span>
-                                ))}
-                              </div>
-                              {renderStars(warden.tier)}
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="grid grid-cols-4 gap-3">
-                              {["strength", "allure", "intellect", "spirit"].map((attr) => (
-                                <div key={attr}>
-                                  <Label className={`capitalize ${getAttributeColor(attr)}`}>{attr}</Label>
-                                  <Input
-                                    type="number"
-                                    value={wardenStats[`${warden.group}-${warden.name}`]?.[attr] || 0}
-                                    onChange={(e) =>
-                                      setWardenStats((prev) => ({
-                                        ...prev,
-                                        [`${warden.group}-${warden.name}`]: {
-                                          ...prev[`${warden.group}-${warden.name}`],
-                                          [attr]: Number.parseInt(e.target.value) || 0,
-                                        },
-                                      }))
-                                    }
-                                    className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                  />
-                                </div>
-                              ))}
+                      {/* Upload Section */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-blue-400">Upload Warden Data</CardTitle>
+                          <div className="text-sm text-gray-300">
+                            Upload files named after your wardens (e.g., "Diana.txt", "Scarlet.txt") containing their attribute breakdowns.
+                            The parser will extract the total attributes and all bonus breakdowns automatically.
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            <div>
+                              <input
+                                type="file"
+                                multiple
+                                accept=".txt,.json,.csv"
+                                onChange={handleFileUpload}
+                                disabled={isUploading}
+                                className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
+                              />
                             </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                            {isUploading && (
+                              <div className="text-yellow-400">
+                                Uploading and parsing files...
+                              </div>
+                            )}
+                            {uploadError && (
+                              <div className="text-red-400 text-sm">
+                                {uploadError}
+                              </div>
+                            )}
+                            {Object.keys(uploadedWardenData).length > 0 && (
+                              <div className="text-green-400 text-sm">
+                                Successfully uploaded data for: {Object.keys(uploadedWardenData).join(', ')}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* All Wardens Section - Show uploaded data first, then selected wardens */}
+                      {Object.keys(uploadedWardenData).length > 0 && (
+                        <div className="space-y-4">
+                          <h3 className="text-xl font-semibold text-white">Uploaded Warden Data</h3>
+                          {Object.entries(uploadedWardenData).map(([wardenName, data]) => (
+                            <Card key={wardenName} className="bg-gray-700/50 border-gray-600">
+                              <CardHeader>
+                                <CardTitle className="flex items-center gap-3">
+                                  <span className="text-white">{wardenName}</span>
+                                  <span className="text-yellow-400 text-sm">
+                                    Total: {data.totalAttributes >= 1000000 
+                                      ? `${(data.totalAttributes / 1000000).toFixed(2)}M` 
+                                      : data.totalAttributes >= 1000 
+                                        ? `${(data.totalAttributes / 1000).toFixed(2)}K` 
+                                        : data.totalAttributes.toLocaleString()}
+                                  </span>
+                                </CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                  {["strength", "allure", "intellect", "spirit"].map((attr) => {
+                                    const attrData = data[attr as keyof typeof data]
+                                    if (typeof attrData === 'object' && attrData.total > 0) {
+                                      return (
+                                        <div key={attr} className="space-y-2">
+                                          <div className={`font-semibold capitalize ${getAttributeColor(attr)} text-lg`}>
+                                            {attr}: {attrData.total >= 1000000 
+                                              ? `${(attrData.total / 1000000).toFixed(2)}M` 
+                                              : attrData.total >= 1000 
+                                                ? `${(attrData.total / 1000).toFixed(2)}K` 
+                                                : attrData.total.toLocaleString()}
+                                          </div>
+                                          <div className="text-sm space-y-1 text-gray-300">
+                                            {attrData.talentBonus > 0 && (
+                                              <div>Talent: {attrData.talentBonus >= 1000000 
+                                                ? `${(attrData.talentBonus / 1000000).toFixed(2)}M` 
+                                                : attrData.talentBonus >= 1000 
+                                                  ? `${(attrData.talentBonus / 1000).toFixed(2)}K` 
+                                                  : attrData.talentBonus.toLocaleString()}</div>
+                                            )}
+                                            {attrData.bookBonus > 0 && (
+                                              <div>Book: {attrData.bookBonus >= 1000000 
+                                                ? `${(attrData.bookBonus / 1000000).toFixed(2)}M` 
+                                                : attrData.bookBonus >= 1000 
+                                                  ? `${(attrData.bookBonus / 1000).toFixed(2)}K` 
+                                                  : attrData.bookBonus.toLocaleString()}</div>
+                                            )}
+                                            {attrData.scarletBondBonus > 0 && (
+                                              <div>Scarlet Bond: {attrData.scarletBondBonus >= 1000000 
+                                                ? `${(attrData.scarletBondBonus / 1000000).toFixed(2)}M` 
+                                                : attrData.scarletBondBonus >= 1000 
+                                                  ? `${(attrData.scarletBondBonus / 1000).toFixed(2)}K` 
+                                                  : attrData.scarletBondBonus.toLocaleString()}</div>
+                                            )}
+                                            {attrData.presenceBonus > 0 && (
+                                              <div>Presence: {attrData.presenceBonus >= 1000000 
+                                                ? `${(attrData.presenceBonus / 1000000).toFixed(2)}M` 
+                                                : attrData.presenceBonus >= 1000 
+                                                  ? `${(attrData.presenceBonus / 1000).toFixed(2)}K` 
+                                                  : attrData.presenceBonus.toLocaleString()}</div>
+                                            )}
+                                            {attrData.auraBonus > 0 && (
+                                              <div>Aura: {attrData.auraBonus >= 1000000 
+                                                ? `${(attrData.auraBonus / 1000000).toFixed(2)}M` 
+                                                : attrData.auraBonus >= 1000 
+                                                  ? `${(attrData.auraBonus / 1000).toFixed(2)}K` 
+                                                  : attrData.auraBonus.toLocaleString()}</div>
+                                            )}
+                                            {attrData.conclaveBonus > 0 && (
+                                              <div>Conclave: {attrData.conclaveBonus >= 1000000 
+                                                ? `${(attrData.conclaveBonus / 1000000).toFixed(2)}M` 
+                                                : attrData.conclaveBonus >= 1000 
+                                                  ? `${(attrData.conclaveBonus / 1000).toFixed(2)}K` 
+                                                  : attrData.conclaveBonus.toLocaleString()}</div>
+                                            )}
+                                            {attrData.avatarBonus > 0 && (
+                                              <div>Avatar: {attrData.avatarBonus >= 1000000 
+                                                ? `${(attrData.avatarBonus / 1000000).toFixed(2)}M` 
+                                                : attrData.avatarBonus >= 1000 
+                                                  ? `${(attrData.avatarBonus / 1000).toFixed(2)}K` 
+                                                  : attrData.avatarBonus.toLocaleString()}</div>
+                                            )}
+                                            {attrData.familiarBonus > 0 && (
+                                              <div>Familiar: {attrData.familiarBonus >= 1000000 
+                                                ? `${(attrData.familiarBonus / 1000000).toFixed(2)}M` 
+                                                : attrData.familiarBonus >= 1000 
+                                                  ? `${(attrData.familiarBonus / 1000).toFixed(2)}K` 
+                                                  : attrData.familiarBonus.toLocaleString()}</div>
+                                            )}
+                                          </div>
+                                        </div>
+                                      )
+                                    }
+                                    return null
+                                  })}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Selected Wardens Section */}
+                      {getAllSelectedWardens().length > 0 && (
+                        <div className="space-y-4">
+                          <h3 className="text-xl font-semibold text-white">Selected Wardens (Manual Input)</h3>
+                          {getAllSelectedWardens().map((warden) => (
+                            <Card key={`${warden.group}-${warden.name}`} className="bg-gray-700/50 border-gray-600">
+                              <CardHeader>
+                                <CardTitle className="flex items-center gap-3">
+                                  <span className="text-white">{warden.name}</span>
+                                  <div className="flex gap-1">
+                                    {warden.attributes.map((attr) => (
+                                      <span
+                                        key={attr}
+                                        className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
+                                      >
+                                        {attr}
+                                      </span>
+                                    ))}
+                                  </div>
+                                  {renderStars(warden.tier)}
+                                </CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="grid grid-cols-4 gap-3">
+                                  {["strength", "allure", "intellect", "spirit"].map((attr) => (
+                                    <div key={attr}>
+                                      <Label className={`capitalize ${getAttributeColor(attr)}`}>{attr}</Label>
+                                      <Input
+                                        type="number"
+                                        value={wardenStats[`${warden.group}-${warden.name}`]?.[attr] || 0}
+                                        onChange={(e) =>
+                                          setWardenStats((prev) => ({
+                                            ...prev,
+                                            [`${warden.group}-${warden.name}`]: {
+                                              ...prev[`${warden.group}-${warden.name}`],
+                                              [attr]: Number.parseInt(e.target.value) || 0,
+                                            },
+                                          }))
+                                        }
+                                        className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
