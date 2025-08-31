@@ -2267,7 +2267,111 @@ export default function GameCalculator() {
     }
   }
 
+  // Calculate only the optimized scarlet bond bonuses (green suggestions)
+  const calculateOptimizedScarletBondBonuses = () => {
+    let optimizedStrength = 0
+    let optimizedAllure = 0
+    let optimizedIntellect = 0
+    let optimizedSpirit = 0
+
+    // Only calculate bonuses from optimized levels, not current manual levels
+    Object.entries(optimizedBondLevels).forEach(([bondKey, optimizedBond]) => {
+      const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+      if (bondData && optimizedBond) {
+        // Calculate flat bonuses for each attribute
+        if (optimizedBond.strengthLevel && optimizedBond.strengthLevel > 0) {
+          const levelData = scarletBondLevels.find(l => l.level === optimizedBond.strengthLevel)
+          if (levelData) {
+            let flatBonus = 0
+            if (bondData.type === 'All') {
+              flatBonus = levelData.all || 0
+            } else if (bondData.type === 'Dual') {
+              flatBonus = levelData.dual || 0
+            } else {
+              flatBonus = levelData.single || 0
+            }
+            optimizedStrength += flatBonus
+
+            // Add percentage bonus if available
+            if (optimizedBond.strengthPercent && optimizedBond.strengthPercent > 0) {
+              const percentBonus = ((optimizedBond.strengthPercent || 0)/100) * flatBonus
+              optimizedStrength += percentBonus
+            }
+          }
+        }
+
+        if (optimizedBond.allureLevel && optimizedBond.allureLevel > 0) {
+          const levelData = scarletBondLevels.find(l => l.level === optimizedBond.allureLevel)
+          if (levelData) {
+            let flatBonus = 0
+            if (bondData.type === 'All') {
+              flatBonus = levelData.all || 0
+            } else if (bondData.type === 'Dual') {
+              flatBonus = levelData.dual || 0
+            } else {
+              flatBonus = levelData.single || 0
+            }
+            optimizedAllure += flatBonus
+
+            if (optimizedBond.allurePercent && optimizedBond.allurePercent > 0) {
+              const percentBonus = ((optimizedBond.allurePercent || 0)/100) * flatBonus
+              optimizedAllure += percentBonus
+            }
+          }
+        }
+
+        if (optimizedBond.intellectLevel && optimizedBond.intellectLevel > 0) {
+          const levelData = scarletBondLevels.find(l => l.level === optimizedBond.intellectLevel)
+          if (levelData) {
+            let flatBonus = 0
+            if (bondData.type === 'All') {
+              flatBonus = levelData.all || 0
+            } else if (bondData.type === 'Dual') {
+              flatBonus = levelData.dual || 0
+            } else {
+              flatBonus = levelData.single || 0
+            }
+            optimizedIntellect += flatBonus
+
+            if (optimizedBond.intellectPercent && optimizedBond.intellectPercent > 0) {
+              const percentBonus = ((optimizedBond.intellectPercent || 0)/100) * flatBonus
+              optimizedIntellect += percentBonus
+            }
+          }
+        }
+
+        if (optimizedBond.spiritLevel && optimizedBond.spiritLevel > 0) {
+          const levelData = scarletBondLevels.find(l => l.level === optimizedBond.spiritLevel)
+          if (levelData) {
+            let flatBonus = 0
+            if (bondData.type === 'All') {
+              flatBonus = levelData.all || 0
+            } else if (bondData.type === 'Dual') {
+              flatBonus = levelData.dual || 0
+            } else {
+              flatBonus = levelData.single || 0
+            }
+            optimizedSpirit += flatBonus
+
+            if (optimizedBond.spiritPercent && optimizedBond.spiritPercent > 0) {
+              const percentBonus = ((optimizedBond.spiritPercent || 0)/100) * flatBonus
+              optimizedSpirit += percentBonus
+            }
+          }
+        }
+      }
+    })
+
+    return {
+      optimizedStrength,
+      optimizedAllure,
+      optimizedIntellect,
+      optimizedSpirit,
+    }
+  }
+
   const totals = calculateTotals()
+  const optimizedBonuses = calculateOptimizedScarletBondBonuses()
   const dynamicAuras = calculateDynamicAuraLevels()
   const auraBonuses = calculateAuraBonuses()
   
@@ -2601,6 +2705,11 @@ export default function GameCalculator() {
                   />
                   <div className="text-sm text-gray-400 mt-1">
                     Total: {totals[`total${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof totals]?.toLocaleString() || 0}
+                    {optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses] > 0 && (
+                      <span className="text-green-400 ml-2">
+                        +{optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses].toLocaleString()}
+                      </span>
+                    )}
                   </div>
                 </CardContent>
               </Card>
