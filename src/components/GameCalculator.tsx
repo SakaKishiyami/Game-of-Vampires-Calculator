@@ -2370,8 +2370,155 @@ export default function GameCalculator() {
     }
   }
 
+  const calculateCurrentScarletBondBonuses = () => {
+    let currentStrength = 0
+    let currentAllure = 0
+    let currentIntellect = 0
+    let currentSpirit = 0
+
+    Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
+      if (bond) {
+        // Find the warden for this bond
+        const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+        if (bondData) {
+          const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
+          
+          // Calculate flat bonuses for each attribute
+          if (bond.strengthLevel && bond.strengthLevel > 0) {
+            const levelData = scarletBondLevels.find(l => l.level === bond.strengthLevel)
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              
+              // Apply lover bonuses if applicable
+              let multiplier = 1.0
+              if (wardenAttrs.includes('Strength')) {
+                const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                if (loverCount === 1) multiplier = 1.2
+                else if (loverCount === 2) multiplier = 1.25
+                else if (loverCount === 3) multiplier = 1.3
+              }
+              
+              currentStrength += Math.round(flatBonus * multiplier)
+
+              // Add percentage bonus
+              if (bond.strengthPercent && bond.strengthPercent > 0) {
+                const percentBonus = ((bond.strengthPercent || 0)/100) * flatBonus
+                currentStrength += Math.round(percentBonus * multiplier)
+              }
+            }
+          }
+          
+          if (bond.allureLevel && bond.allureLevel > 0) {
+            const levelData = scarletBondLevels.find(l => l.level === bond.allureLevel)
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              
+              // Apply lover bonuses if applicable
+              let multiplier = 1.0
+              if (wardenAttrs.includes('Allure')) {
+                const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                if (loverCount === 1) multiplier = 1.2
+                else if (loverCount === 2) multiplier = 1.25
+                else if (loverCount === 3) multiplier = 1.3
+              }
+              
+              currentAllure += Math.round(flatBonus * multiplier)
+
+              if (bond.allurePercent && bond.allurePercent > 0) {
+                const percentBonus = ((bond.allurePercent || 0)/100) * flatBonus
+                currentAllure += Math.round(percentBonus * multiplier)
+              }
+            }
+          }
+          
+          if (bond.intellectLevel && bond.intellectLevel > 0) {
+            const levelData = scarletBondLevels.find(l => l.level === bond.intellectLevel)
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              
+              // Apply lover bonuses if applicable
+              let multiplier = 1.0
+              if (wardenAttrs.includes('Intellect')) {
+                const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                if (loverCount === 1) multiplier = 1.2
+                else if (loverCount === 2) multiplier = 1.25
+                else if (loverCount === 3) multiplier = 1.3
+              }
+              
+              currentIntellect += Math.round(flatBonus * multiplier)
+
+              if (bond.intellectPercent && bond.intellectPercent > 0) {
+                const percentBonus = ((bond.intellectPercent || 0)/100) * flatBonus
+                currentIntellect += Math.round(percentBonus * multiplier)
+              }
+            }
+          }
+          
+          if (bond.spiritLevel && bond.spiritLevel > 0) {
+            const levelData = scarletBondLevels.find(l => l.level === bond.spiritLevel)
+            if (levelData) {
+              let flatBonus = 0
+              if (bondData.type === 'All') {
+                flatBonus = levelData.all || 0
+              } else if (bondData.type === 'Dual') {
+                flatBonus = levelData.dual || 0
+              } else {
+                flatBonus = levelData.single || 0
+              }
+              
+              // Apply lover bonuses if applicable
+              let multiplier = 1.0
+              if (wardenAttrs.includes('Spirit')) {
+                const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                if (loverCount === 1) multiplier = 1.2
+                else if (loverCount === 2) multiplier = 1.25
+                else if (loverCount === 3) multiplier = 1.3
+              }
+              
+              currentSpirit += Math.round(flatBonus * multiplier)
+
+              if (bond.spiritPercent && bond.spiritPercent > 0) {
+                const percentBonus = ((bond.spiritPercent || 0)/100) * flatBonus
+                currentSpirit += Math.round(percentBonus * multiplier)
+              }
+            }
+          }
+        }
+      }
+    })
+
+    return {
+      currentStrength,
+      currentAllure,
+      currentIntellect,
+      currentSpirit
+    }
+  }
+
   const totals = calculateTotals()
   const optimizedBonuses = calculateOptimizedScarletBondBonuses()
+  const currentScarletBondBonuses = calculateCurrentScarletBondBonuses()
   const dynamicAuras = calculateDynamicAuraLevels()
   const auraBonuses = calculateAuraBonuses()
   
@@ -4482,6 +4629,37 @@ export default function GameCalculator() {
                         <div className="text-sm text-yellow-400 mt-2">
                           Currently: {[hasAgneyi, hasCulann, hasHela].filter(Boolean).length}/3 lovers summoned
                         </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Scarlet Bond Totals Summary */}
+                  <Card className="bg-gray-700/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-orange-400">Scarlet Bond Totals</CardTitle>
+                      <div className="text-sm text-gray-300">
+                        Current bonuses from your scarlet bond levels
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {attributeOrder.map((attr) => (
+                          <div key={attr} className={`p-3 rounded ${getAttributeBg(attr)}`}>
+                            <div className="text-center">
+                              <div className={`font-bold text-lg ${getAttributeColor(attr)} capitalize`}>
+                                {attr}
+                              </div>
+                              <div className="text-white font-medium">
+                                {currentScarletBondBonuses[`current${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof currentScarletBondBonuses]?.toLocaleString() || 0}
+                                {optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses] > 0 && (
+                                  <span className="text-green-400 ml-2">
+                                    +{optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses].toLocaleString()}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
