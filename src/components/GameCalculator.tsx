@@ -190,48 +190,41 @@ export default function GameCalculator() {
       }
       
       let currentAttribute = ''
+      let foundAttributeDetail = false
+      let attributeOrderIndex = 0
+      const attributeOrder = ['strength', 'allure', 'intellect', 'spirit']
       
       for (const line of lines) {
         // Debug: Log each line to see what we're parsing
         console.log('Parsing line:', line)
         
-        // Parse total attributes - more flexible regex for OCR
-        if (line.includes('Total Attributes') || line.includes('Total')) {
-          const match = line.match(/(?:Total Attributes?)?\s*[:\s]*([0-9,.]+[KM]?)/i)
+        // Check for "Attribute Detail" header
+        if (line.includes('Attribute Detail')) {
+          foundAttributeDetail = true
+          console.log('Found Attribute Detail header')
+          continue
+        }
+        
+        // Parse total attributes - look for first number with K/M suffix after Attribute Detail
+        if (foundAttributeDetail && totalAttributes === 0) {
+          const match = line.match(/([0-9,.]+[KM]?)/i)
           if (match) {
             totalAttributes = parseNumberWithSuffix(match[1])
             console.log('Found total attributes:', totalAttributes)
+            continue
           }
         }
         
-        // Parse attribute totals - more flexible regex for OCR
-        if (line.includes('Strength')) {
-          currentAttribute = 'strength'
-          const match = line.match(/Strength\s*[:\s]*([0-9,.]+[KM]?)/i)
+        // Parse attribute totals - look for lines with symbols + numbers (OCR format)
+        if (foundAttributeDetail && attributeOrderIndex < attributeOrder.length) {
+          const match = line.match(/^[^a-zA-Z]*([0-9,.]+[KM]?)$/i)
           if (match) {
-            attributeData.strength.total = parseNumberWithSuffix(match[1])
-            console.log('Found strength total:', attributeData.strength.total)
-          }
-        } else if (line.includes('Allure')) {
-          currentAttribute = 'allure'
-          const match = line.match(/Allure\s*[:\s]*([0-9,.]+[KM]?)/i)
-          if (match) {
-            attributeData.allure.total = parseNumberWithSuffix(match[1])
-            console.log('Found allure total:', attributeData.allure.total)
-          }
-        } else if (line.includes('Intellect')) {
-          currentAttribute = 'intellect'
-          const match = line.match(/Intellect\s*[:\s]*([0-9,.]+[KM]?)/i)
-          if (match) {
-            attributeData.intellect.total = parseNumberWithSuffix(match[1])
-            console.log('Found intellect total:', attributeData.intellect.total)
-          }
-        } else if (line.includes('Spirit')) {
-          currentAttribute = 'spirit'
-          const match = line.match(/Spirit\s*[:\s]*([0-9,.]+[KM]?)/i)
-          if (match) {
-            attributeData.spirit.total = parseNumberWithSuffix(match[1])
-            console.log('Found spirit total:', attributeData.spirit.total)
+            const currentAttr = attributeOrder[attributeOrderIndex]
+            attributeData[currentAttr as keyof typeof attributeData].total = parseNumberWithSuffix(match[1])
+            currentAttribute = currentAttr
+            console.log(`Found ${currentAttr} total:`, attributeData[currentAttr as keyof typeof attributeData].total)
+            attributeOrderIndex++
+            continue
           }
         }
         
