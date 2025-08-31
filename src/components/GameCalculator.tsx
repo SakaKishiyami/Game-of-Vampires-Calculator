@@ -864,7 +864,7 @@ export default function GameCalculator() {
       // Build one-step upgrades from current temp levels
       bondTypes.forEach(bondType => {
         const tempLevel = tempCurrentLevels[bondType]
-        if (tempLevel < 98) {
+        if (tempLevel < 205) {
           const nextLevel = tempLevel + 1
           const levelData = scarletBondLevels.find(l => l.level === nextLevel)
           if (levelData) {
@@ -975,7 +975,7 @@ export default function GameCalculator() {
     const upgrades = []
     bondTypes.forEach(bondType => {
       const currentLevel = currentBond[bondType] || 0
-      if (currentLevel < 98) {
+      if (currentLevel < 205) {
         const nextLevel = currentLevel + 1
         const levelData = scarletBondLevels.find(l => l.level === nextLevel)
         const prevLevelData = scarletBondLevels.find(l => l.level === currentLevel)
@@ -1032,7 +1032,7 @@ export default function GameCalculator() {
       const availableUpgrades = []
       bondTypes.forEach(bondType => {
         const tempCurrentLevel = tempCurrentLevels[bondType]
-        if (tempCurrentLevel < 98) {
+        if (tempCurrentLevel < 205) {
           const nextLevel = tempCurrentLevel + 1
           const levelData = scarletBondLevels.find(l => l.level === nextLevel)
           const prevLevelData = scarletBondLevels.find(l => l.level === tempCurrentLevel)
@@ -4508,7 +4508,7 @@ export default function GameCalculator() {
                                         <Input
                                           type="number"
                                           min="0"
-                                          max="98"
+                                          max="205"
                                           value={(scarletBond[bondKey] as any)?.[`${attr}Level`] || 0}
                                           onChange={(e) =>
                                             setScarletBond((prev) => ({
@@ -4538,7 +4538,7 @@ export default function GameCalculator() {
                                         <Input
                                           type="number"
                                           min="0"
-                                          max="98"
+                                          max="205"
                                           value={(scarletBond[bondKey] as any)?.[`${attr}Percent`] || 0}
                                           onChange={(e) =>
                                             setScarletBond((prev) => ({
