@@ -2377,6 +2377,8 @@ export default function GameCalculator() {
     let increaseSpirit = 0
     let increaseDom = 0
 
+    console.log('calculateSuggestedScarletBondIncrease - optimizedBondLevels:', optimizedBondLevels)
+
     Object.entries(optimizedBondLevels).forEach(([bondKey, optimizedBond]) => {
       const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
       const currentBond = scarletBond[bondKey]
@@ -2460,13 +2462,16 @@ export default function GameCalculator() {
       }
     })
 
-    return {
+    const result = {
       increaseStrength,
       increaseAllure,
       increaseIntellect,
       increaseSpirit,
       increaseDom
     }
+    
+    console.log('calculateSuggestedScarletBondIncrease result:', result)
+    return result
   }
 
   const calculateCurrentScarletBondBonuses = () => {
