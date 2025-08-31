@@ -5463,6 +5463,11 @@ export default function GameCalculator() {
                           </Label>
                         </div>
                       </div>
+                      <div className="mt-2 text-center">
+                        <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">
+                          Summonable with Coins
+                        </span>
+                      </div>
                       <div className="mt-4 p-3 bg-gray-600/50 rounded">
                         <div className="text-sm text-gray-300">
                           <strong>Lover Aura System:</strong>
@@ -5598,29 +5603,9 @@ export default function GameCalculator() {
                                     {bond.type}
                                   </span>
                                   {bond.vip === 0 && (
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">
-                                        Summonable
-                                      </span>
-                                      {(() => {
-                                        // Get the first name for the checkbox (handle slashes)
-                                        const loverName = bond.lover.includes('/') ? bond.lover.split('/')[0].trim() : bond.lover;
-                                        const [isOwned, setIsOwned] = getSummonableState(loverName);
-                                        return (
-                                          <div className="flex items-center space-x-1">
-                                            <Checkbox 
-                                              id={`summonable-${loverName}`} 
-                                              checked={isOwned} 
-                                              onCheckedChange={setIsOwned}
-                                              className="border-gray-400"
-                                            />
-                                            <Label htmlFor={`summonable-${loverName}`} className="text-xs text-gray-300">
-                                              Owned
-                                            </Label>
-                                          </div>
-                                        );
-                                      })()}
-                                    </div>
+                                    <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">
+                                      Summonable
+                                    </span>
                                   )}
                                   {wardenData && (
                                     <div className="flex gap-1">
