@@ -2377,88 +2377,53 @@ export default function GameCalculator() {
     let increaseSpirit = 0
     let increaseDom = 0
 
-    console.log('calculateSuggestedScarletBondIncrease - optimizedBondLevels:', optimizedBondLevels)
+    console.log('calculateSuggestedScarletBondIncrease - scarletBondAffinity:', scarletBondAffinity)
 
-    Object.entries(optimizedBondLevels).forEach(([bondKey, optimizedBond]) => {
-      const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
-      const currentBond = scarletBond[bondKey]
-      
-      if (bondData && optimizedBond && currentBond) {
-        const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
-        
-        // Calculate increase for each attribute
-        ['strength', 'allure', 'intellect', 'spirit'].forEach((attr) => {
-          const currentLevel = currentBond[`${attr}Level`] || 0
-          const suggestedLevel = optimizedBond[`${attr}Level`] || 0
-          const currentPercent = currentBond[`${attr}Percent`] || 0
-          const suggestedPercent = optimizedBond[`${attr}Percent`] || 0
+    // Iterate through all bonds that have affinity points
+    Object.entries(scarletBondAffinity).forEach(([bondKey, affinity]) => {
+      if (affinity && affinity > 0) {
+        const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+        if (bondData) {
+          const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
+          const currentBond = scarletBond[bondKey]
           
-          if (suggestedLevel > currentLevel || suggestedPercent > currentPercent) {
-            // Calculate current bonus
-            let currentFlatBonus = 0
-            let currentPercentBonus = 0
-            if (currentLevel > 0) {
-              const currentLevelData = scarletBondLevels.find(l => l.level === currentLevel)
-              if (currentLevelData) {
-                if (bondData.type === 'All') {
-                  currentFlatBonus = currentLevelData.all || 0
-                } else if (bondData.type === 'Dual') {
-                  currentFlatBonus = currentLevelData.dual || 0
-                } else {
-                  currentFlatBonus = currentLevelData.single || 0
-                }
-                
-                if (currentPercent > 0) {
-                  currentPercentBonus = ((currentPercent || 0)/100) * currentFlatBonus
-                }
-              }
-            }
-            
-            // Calculate suggested bonus
-            let suggestedFlatBonus = 0
-            let suggestedPercentBonus = 0
-            if (suggestedLevel > 0) {
-              const suggestedLevelData = scarletBondLevels.find(l => l.level === suggestedLevel)
-              if (suggestedLevelData) {
-                if (bondData.type === 'All') {
-                  suggestedFlatBonus = suggestedLevelData.all || 0
-                } else if (bondData.type === 'Dual') {
-                  suggestedFlatBonus = suggestedLevelData.dual || 0
-                } else {
-                  suggestedFlatBonus = suggestedLevelData.single || 0
-                }
-                
-                if (suggestedPercent > 0) {
-                  suggestedPercentBonus = ((suggestedPercent || 0)/100) * suggestedFlatBonus
-                }
-              }
-            }
-            
-            // Apply lover bonuses if applicable
-            let multiplier = 1.0
-            const attrCapitalized = attr.charAt(0).toUpperCase() + attr.slice(1)
-            if (wardenAttrs.includes(attrCapitalized)) {
-              const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
-              if (loverCount === 1) multiplier = 1.2
-              else if (loverCount === 2) multiplier = 1.25
-              else if (loverCount === 3) multiplier = 1.3
-            }
-            
-            const currentTotal = Math.round((currentFlatBonus + currentPercentBonus) * multiplier)
-            const suggestedTotal = Math.round((suggestedFlatBonus + suggestedPercentBonus) * multiplier)
-            const increase = suggestedTotal - currentTotal
-            
-            if (increase > 0) {
-              if (attr === 'strength') increaseStrength += increase
-              else if (attr === 'allure') increaseAllure += increase
-              else if (attr === 'intellect') increaseIntellect += increase
-              else if (attr === 'spirit') increaseSpirit += increase
+          // Calculate suggestions for this bond
+          const suggestedUpgrades = calculateSuggestedUpgrades(bondKey, affinity)
+          console.log(`Bond ${bondKey} suggestions:`, suggestedUpgrades)
+          
+          if (currentBond) {
+            // Check each attribute that this warden supports
+            ['strength', 'allure', 'intellect', 'spirit'].forEach((attr) => {
+              const attrCapitalized = attr.charAt(0).toUpperCase() + attr.slice(1)
+              const isMainStat = wardenAttrs.some(a => a.toLowerCase() === attr || a === "Balance")
               
-              // Add to DOM increase
-              increaseDom += increase
-            }
+              if (isMainStat) {
+                const flatSuggestion = suggestedUpgrades[`${attr}Level`]
+                const percentSuggestion = suggestedUpgrades[`${attr}Percent`]
+                
+                let totalIncrease = 0
+                
+                if (flatSuggestion && flatSuggestion.increase > 0) {
+                  totalIncrease += flatSuggestion.domGain || 0
+                }
+                
+                if (percentSuggestion && percentSuggestion.increase > 0) {
+                  totalIncrease += percentSuggestion.domGain || 0
+                }
+                
+                if (totalIncrease > 0) {
+                  if (attr === 'strength') increaseStrength += totalIncrease
+                  else if (attr === 'allure') increaseAllure += totalIncrease
+                  else if (attr === 'intellect') increaseIntellect += totalIncrease
+                  else if (attr === 'spirit') increaseSpirit += totalIncrease
+                  
+                  // Add to DOM increase
+                  increaseDom += totalIncrease
+                }
+              }
+            })
           }
-        })
+        }
       }
     })
 
