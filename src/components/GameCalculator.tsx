@@ -2377,34 +2377,35 @@ export default function GameCalculator() {
     let increaseSpirit = 0
     let increaseDom = 0
 
-    console.log('calculateSuggestedScarletBondIncrease - scarletBondAffinity:', scarletBondAffinity)
+    // Debug: Check scarletBondAffinity keys
+    console.log('Available scarletBondAffinity keys:', Object.keys(scarletBondAffinity))
+    console.log('Available scarletBond keys:', Object.keys(scarletBond))
+    console.log('scarletBondData first few entries:', scarletBondData.slice(0, 5))
 
     // Iterate through all bonds that have affinity points
     Object.entries(scarletBondAffinity).forEach(([bondKey, affinity]) => {
+      console.log(`Checking bond ${bondKey} with affinity ${affinity}`)
       if (affinity && affinity > 0) {
         const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+        console.log(`Bond ${bondKey}: found bondData:`, bondData)
         if (bondData) {
           const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
           const currentBond = scarletBond[bondKey]
+          console.log(`Bond ${bondKey}: wardenAttrs=${JSON.stringify(wardenAttrs)}, currentBond exists=${!!currentBond}`)
           
           // Calculate suggestions for this bond
           const suggestedUpgrades = calculateSuggestedUpgrades(bondKey, affinity)
-          console.log(`Bond ${bondKey} suggestions:`, suggestedUpgrades)
-          console.log(`Bond ${bondKey} wardenAttrs:`, wardenAttrs)
+          console.log(`Bond ${bondKey} suggestions:`, Object.keys(suggestedUpgrades), suggestedUpgrades)
           
           if (currentBond) {
             // Check each attribute that this warden supports
             ['strength', 'allure', 'intellect', 'spirit'].forEach((attr) => {
-              const attrCapitalized = attr.charAt(0).toUpperCase() + attr.slice(1)
               const isMainStat = wardenAttrs.some(a => a.toLowerCase() === attr || a.toLowerCase() === "balance")
-              
               console.log(`Bond ${bondKey} attr ${attr}: isMainStat=${isMainStat}`)
               
               if (isMainStat) {
                 const flatSuggestion = suggestedUpgrades[`${attr}Level`]
                 const percentSuggestion = suggestedUpgrades[`${attr}Percent`]
-                
-                console.log(`Bond ${bondKey} ${attr}: flatSuggestion=`, flatSuggestion, 'percentSuggestion=', percentSuggestion)
                 
                 let totalIncrease = 0
                 
@@ -2416,7 +2417,7 @@ export default function GameCalculator() {
                   totalIncrease += percentSuggestion.domGain || 0
                 }
                 
-                console.log(`Bond ${bondKey} ${attr}: totalIncrease=${totalIncrease}`)
+                console.log(`Bond ${bondKey} ${attr}: totalIncrease=${totalIncrease} (flat=${flatSuggestion?.domGain || 0}, percent=${percentSuggestion?.domGain || 0})`)
                 
                 if (totalIncrease > 0) {
                   if (attr === 'strength') increaseStrength += totalIncrease
