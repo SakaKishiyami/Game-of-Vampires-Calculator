@@ -166,6 +166,7 @@ export default function GameCalculator() {
   // Upload state
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [ocrProgress, setOcrProgress] = useState<string>('')
 
   // Parse uploaded warden data
   const parseWardenData = (content: string, fileName: string) => {
@@ -278,13 +279,44 @@ export default function GameCalculator() {
     return parseFloat(numStr) || 0
   }
 
-  // Handle file upload
+  // OCR processing function
+  const processImageWithOCR = async (file: File): Promise<string> => {
+    setOcrProgress('Loading OCR engine...')
+    
+    // Dynamically import Tesseract.js to avoid SSR issues
+    const { createWorker } = await import('tesseract.js')
+    
+    const worker = await createWorker({
+      logger: (m) => {
+        if (m.status === 'recognizing text') {
+          setOcrProgress(`OCR Progress: ${Math.round(m.progress * 100)}%`)
+        }
+      }
+    })
+    
+    try {
+      setOcrProgress('Initializing OCR...')
+      await worker.loadLanguage('eng')
+      await worker.initialize('eng')
+      
+      setOcrProgress('Processing image...')
+      const { data: { text } } = await worker.recognize(file)
+      
+      return text
+    } finally {
+      setOcrProgress('')
+      await worker.terminate()
+    }
+  }
+
+  // Handle file upload (now supports both text files and images)
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (!files || files.length === 0) return
 
     setIsUploading(true)
     setUploadError(null)
+    setOcrProgress('')
 
     try {
       const newWardenData = { ...uploadedWardenData }
@@ -295,7 +327,17 @@ export default function GameCalculator() {
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
         try {
-          const content = await file.text()
+          let content: string
+          
+          // Check if it's an image file
+          if (file.type.startsWith('image/')) {
+            setOcrProgress(`Processing image ${i + 1}/${files.length}: ${file.name}`)
+            content = await processImageWithOCR(file)
+          } else {
+            // Handle text files as before
+            content = await file.text()
+          }
+          
           const parsed = parseWardenData(content, file.name)
           newWardenData[parsed.wardenName] = parsed.data
           successCount++
@@ -316,6 +358,7 @@ export default function GameCalculator() {
       setUploadError(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsUploading(false)
+      setOcrProgress('')
       // Clear the input so the same file can be uploaded again
       event.target.value = ''
     }
@@ -4801,8 +4844,12 @@ export default function GameCalculator() {
                         <CardHeader>
                           <CardTitle className="text-blue-400">Upload Warden Data</CardTitle>
                           <div className="text-sm text-gray-300">
-                            Upload files named after your wardens (e.g., "Diana.txt", "Scarlet.txt") containing their attribute breakdowns.
-                            The parser will extract the total attributes and all bonus breakdowns automatically.
+                            Upload files named after your wardens containing their attribute breakdowns:
+                            <ul className="mt-2 list-disc list-inside">
+                              <li><strong>Screenshots (PNG/JPG):</strong> "Diana.png", "Scarlet.jpg" - Uses OCR to extract text</li>
+                              <li><strong>Text files:</strong> "Diana.txt", "Scarlet.json" - Parses text directly</li>
+                            </ul>
+                            The parser will automatically extract total attributes and all bonus breakdowns.
                           </div>
                         </CardHeader>
                         <CardContent>
@@ -4811,7 +4858,7 @@ export default function GameCalculator() {
                               <input
                                 type="file"
                                 multiple
-                                accept=".txt,.json,.csv"
+                                accept=".txt,.json,.csv,.png,.jpg,.jpeg"
                                 onChange={handleFileUpload}
                                 disabled={isUploading}
                                 className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
@@ -4819,7 +4866,7 @@ export default function GameCalculator() {
                             </div>
                             {isUploading && (
                               <div className="text-yellow-400">
-                                Uploading and parsing files...
+                                {ocrProgress || "Uploading and parsing files..."}
                               </div>
                             )}
                             {uploadError && (
