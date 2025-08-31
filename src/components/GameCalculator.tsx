@@ -2396,7 +2396,7 @@ export default function GameCalculator() {
             // Check each attribute that this warden supports
             ['strength', 'allure', 'intellect', 'spirit'].forEach((attr) => {
               const attrCapitalized = attr.charAt(0).toUpperCase() + attr.slice(1)
-              const isMainStat = wardenAttrs.some(a => a.toLowerCase() === attr || a === "Balance")
+              const isMainStat = wardenAttrs.some(a => a.toLowerCase() === attr || a.toLowerCase() === "balance")
               
               console.log(`Bond ${bondKey} attr ${attr}: isMainStat=${isMainStat}`)
               
