@@ -2896,11 +2896,6 @@ export default function GameCalculator() {
             <Card className="bg-gray-800/50 border-gray-600">
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-green-400">+{totals.domIncrease.toLocaleString()}</div>
-                {suggestedIncrease.increaseDom > 0 && (
-                  <div className="text-lg font-bold text-green-400 mt-1">
-                    [+{suggestedIncrease.increaseDom.toLocaleString()} from suggestions]
-                  </div>
-                )}
                 <div className="text-sm text-gray-300">DOM Increase</div>
               </CardContent>
             </Card>
@@ -2930,11 +2925,6 @@ export default function GameCalculator() {
                     {optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses] > 0 && (
                       <span className="text-green-400 ml-2">
                         +{optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses].toLocaleString()}
-                      </span>
-                    )}
-                    {suggestedIncrease[`increase${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof suggestedIncrease] > 0 && (
-                      <span className="text-green-400 ml-2 font-bold">
-                        [+{suggestedIncrease[`increase${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof suggestedIncrease].toLocaleString()} from suggestions]
                       </span>
                     )}
                   </div>
@@ -4720,6 +4710,11 @@ export default function GameCalculator() {
                       <div className="text-sm text-gray-300">
                         Current bonuses from your scarlet bond levels
                       </div>
+                      {suggestedIncrease.increaseDom > 0 && (
+                        <div className="text-green-400 text-sm font-bold mt-2">
+                          Total DOM from suggestions: +{suggestedIncrease.increaseDom.toLocaleString()}
+                        </div>
+                      )}
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -4735,6 +4730,11 @@ export default function GameCalculator() {
                                   <span className="text-green-400 ml-2">
                                     +{optimizedBonuses[`optimized${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof optimizedBonuses].toLocaleString()}
                                   </span>
+                                )}
+                                {suggestedIncrease[`increase${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof suggestedIncrease] > 0 && (
+                                  <div className="text-green-400 text-sm mt-1 font-bold">
+                                    [+{suggestedIncrease[`increase${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof suggestedIncrease].toLocaleString()} from suggestions]
+                                  </div>
                                 )}
                               </div>
                             </div>
