@@ -4414,6 +4414,15 @@ export default function GameCalculator() {
             <Card className="bg-gray-800/50 border-gray-600">
               <CardHeader>
                 <CardTitle className="text-red-400">Scarlet Bond</CardTitle>
+                {/* PSA Banner */}
+                <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-md p-3 mt-4">
+                  <div className="flex items-start space-x-2">
+                    <div className="text-yellow-400 font-bold text-sm">⚠️ PSA:</div>
+                    <div className="text-yellow-200 text-sm">
+                      Most numbers past level 100 are not 100% accurate yet. We're still collecting and verifying data for higher levels.
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
