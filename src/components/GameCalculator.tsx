@@ -189,9 +189,7 @@ export default function GameCalculator() {
         spirit: { total: 0, talentBonus: 0, bookBonus: 0, scarletBondBonus: 0, presenceBonus: 0, auraBonus: 0, conclaveBonus: 0, avatarBonus: 0, familiarBonus: 0 }
       }
       
-      let currentAttribute = ''
       let foundAttributeDetail = false
-      let attributeOrderIndex = 0
       const attributeOrder = ['strength', 'allure', 'intellect', 'spirit']
       
       // First pass: find the total attributes (first number after Attribute Detail)
@@ -212,13 +210,11 @@ export default function GameCalculator() {
         }
       }
       
-      // Second pass: parse each attribute section
-      let currentSection = ''
-      let inBonusSection = false
+      // Second pass: find lines that contain attribute totals (lines with two parts: symbol + number)
+      // These are the lines that start each attribute section
+      const attributeLines: string[] = []
       
       for (const line of lines) {
-        console.log('Parsing line:', line)
-        
         // Skip until we find Attribute Detail
         if (!foundAttributeDetail) {
           if (line.includes('Attribute Detail')) {
@@ -228,97 +224,92 @@ export default function GameCalculator() {
           continue
         }
         
-        // Look for attribute section headers
-        // Format: "S 4.93M", "(ds 4.55M", "(2 423M" etc.
-        const attributeMatch = line.match(/([A-Za-z()0-9\s]+)\s+([0-9,.]+[KM]?)/i)
-        if (attributeMatch && !line.includes('Talent Bonus') && !line.includes('Book Bonus') && 
-            !line.includes('Scarlet Bond Bonus') && !line.includes('Presence Bonus') && 
-            !line.includes('Aura Bonus') && !line.includes('Conclave Bonus') && 
-            !line.includes('Avatar Bonus') && !line.includes('Familiar Bonus')) {
-          
-          const attributeValue = parseNumberWithSuffix(attributeMatch[2])
-          console.log('Found attribute value:', attributeValue, 'in line:', line)
-          
-          // Determine which attribute this is based on the pattern
-          if (attributeOrderIndex === 0) {
-            // First attribute after total is strength
-            currentAttribute = 'strength'
-            attributeData.strength.total = attributeValue
-            console.log('Set strength total:', attributeValue)
-          } else if (attributeOrderIndex === 1) {
-            // Second attribute is allure (usually starts with S or similar)
-            currentAttribute = 'allure'
-            attributeData.allure.total = attributeValue
-            console.log('Set allure total:', attributeValue)
-          } else if (attributeOrderIndex === 2) {
-            // Third attribute is intellect (usually has symbols like (ds)
-            currentAttribute = 'intellect'
-            attributeData.intellect.total = attributeValue
-            console.log('Set intellect total:', attributeValue)
-          } else if (attributeOrderIndex === 3) {
-            // Fourth attribute is spirit (usually has symbols like (2)
-            currentAttribute = 'spirit'
-            attributeData.spirit.total = attributeValue
-            console.log('Set spirit total:', attributeValue)
-          }
-          
-          attributeOrderIndex++
-          inBonusSection = true
-          continue
+        // Look for lines that contain an attribute total (symbol + number format)
+        // Format examples: "S 4.93M", "(ds 4.55M", "(2 423M"
+        // These lines contain the attribute total and all the bonus values
+        if (line.includes('Talent Bonus') && line.includes('Book Bonus')) {
+          attributeLines.push(line)
+          console.log('Found attribute line:', line)
+        }
+      }
+      
+      // Parse each attribute line in order
+      for (let i = 0; i < attributeLines.length && i < attributeOrder.length; i++) {
+        const line = attributeLines[i]
+        const currentAttribute = attributeOrder[i]
+        const attr = attributeData[currentAttribute as keyof typeof attributeData]
+        
+        console.log(`Parsing ${currentAttribute} from line:`, line)
+        
+        // Extract the attribute total (the number after the symbol)
+        const totalMatch = line.match(/([0-9,.]+[KM]?)/)
+        if (totalMatch) {
+          attr.total = parseNumberWithSuffix(totalMatch[1])
+          console.log(`Set ${currentAttribute} total:`, attr.total)
         }
         
-        // Parse bonus values for the current attribute
-        if (inBonusSection && currentAttribute && attributeData[currentAttribute as keyof typeof attributeData]) {
-          const attr = attributeData[currentAttribute as keyof typeof attributeData]
-          
-          if (line.includes('Talent Bonus')) {
-            const match = line.match(/Talent Bonus[:\s]*([0-9,.]+[KM]?)/i)
-            if (match) {
-              attr.talentBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${currentAttribute} talent bonus:`, attr.talentBonus)
-            }
-          } else if (line.includes('Book Bonus')) {
-            const match = line.match(/Book Bonus[:\s]*([0-9,.]+[KM]?)/i)
-            if (match) {
-              attr.bookBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${currentAttribute} book bonus:`, attr.bookBonus)
-            }
-          } else if (line.includes('Scarlet Bond Bonus')) {
-            const match = line.match(/Scarlet Bond Bonus[:\s]*([0-9,.]+[KM]?)/i)
-            if (match) {
-              attr.scarletBondBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${currentAttribute} scarlet bond bonus:`, attr.scarletBondBonus)
-            }
-          } else if (line.includes('Presence Bonus')) {
-            const match = line.match(/Presence Bonus[:\s]*([0-9,.]+[KM]?)/i)
-            if (match) {
-              attr.presenceBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${currentAttribute} presence bonus:`, attr.presenceBonus)
-            }
-          } else if (line.includes('Aura Bonus')) {
-            const match = line.match(/Aura Bonus[:\s]*([0-9,.]+[KM]?)/i)
-            if (match) {
-              attr.auraBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${currentAttribute} aura bonus:`, attr.auraBonus)
-            }
-          } else if (line.includes('Conclave Bonus')) {
-            const match = line.match(/Conclave Bonus[:\s]*([0-9,.]+[KM]?)/i)
-            if (match) {
-              attr.conclaveBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${currentAttribute} conclave bonus:`, attr.conclaveBonus)
-            }
-          } else if (line.includes('Avatar Bonus')) {
-            const match = line.match(/Avatar Bonus[:\s]*([0-9,.]+[KM]?)/i)
-            if (match) {
-              attr.avatarBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${currentAttribute} avatar bonus:`, attr.avatarBonus)
-            }
-          } else if (line.includes('Familiar Bonus')) {
-            const match = line.match(/Familiar Bonus[:\s]*([0-9,.]+[KM]?)/i)
-            if (match) {
-              attr.familiarBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${currentAttribute} familiar bonus:`, attr.familiarBonus)
-            }
+        // Extract all bonus values
+        if (line.includes('Talent Bonus')) {
+          const match = line.match(/Talent Bonus[:\s]*([0-9,.]+[KM]?)/i)
+          if (match) {
+            attr.talentBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${currentAttribute} talent bonus:`, attr.talentBonus)
+          }
+        }
+        
+        if (line.includes('Book Bonus')) {
+          const match = line.match(/Book Bonus[:\s]*([0-9,.]+[KM]?)/i)
+          if (match) {
+            attr.bookBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${currentAttribute} book bonus:`, attr.bookBonus)
+          }
+        }
+        
+        if (line.includes('Scarlet Bond Bonus')) {
+          const match = line.match(/Scarlet Bond Bonus[:\s]*([0-9,.]+[KM]?)/i)
+          if (match) {
+            attr.scarletBondBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${currentAttribute} scarlet bond bonus:`, attr.scarletBondBonus)
+          }
+        }
+        
+        if (line.includes('Presence Bonus')) {
+          const match = line.match(/Presence Bonus[:\s]*([0-9,.]+[KM]?)/i)
+          if (match) {
+            attr.presenceBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${currentAttribute} presence bonus:`, attr.presenceBonus)
+          }
+        }
+        
+        if (line.includes('Aura Bonus')) {
+          const match = line.match(/Aura Bonus[:\s]*([0-9,.]+[KM]?)/i)
+          if (match) {
+            attr.auraBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${currentAttribute} aura bonus:`, attr.auraBonus)
+          }
+        }
+        
+        if (line.includes('Conclave Bonus')) {
+          const match = line.match(/Conclave Bonus[:\s]*([0-9,.]+[KM]?)/i)
+          if (match) {
+            attr.conclaveBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${currentAttribute} conclave bonus:`, attr.conclaveBonus)
+          }
+        }
+        
+        if (line.includes('Avatar Bonus')) {
+          const match = line.match(/Avatar Bonus[:\s]*([0-9,.]+[KM]?)/i)
+          if (match) {
+            attr.avatarBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${currentAttribute} avatar bonus:`, attr.avatarBonus)
+          }
+        }
+        
+        if (line.includes('Familiar Bonus')) {
+          const match = line.match(/Familiar Bonus[:\s]*([0-9,.]+[KM]?)/i)
+          if (match) {
+            attr.familiarBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${currentAttribute} familiar bonus:`, attr.familiarBonus)
           }
         }
       }
