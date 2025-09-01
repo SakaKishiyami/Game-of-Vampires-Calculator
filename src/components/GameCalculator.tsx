@@ -242,9 +242,11 @@ export default function GameCalculator() {
         console.log(`Parsing ${currentAttribute} from line:`, line)
         
         // Extract the attribute total (the number after the symbol)
-        const totalMatch = line.match(/([0-9,.]+[KM]?)/)
+        // Look for pattern like "S 4.93M", "(ds 4.55M", "(2 423M"
+        // The attribute total is the number that comes after the symbol/letters
+        const totalMatch = line.match(/([A-Za-z()0-9\s]+)\s+([0-9,.]+[KM]?)/)
         if (totalMatch) {
-          attr.total = parseNumberWithSuffix(totalMatch[1])
+          attr.total = parseNumberWithSuffix(totalMatch[2])
           console.log(`Set ${currentAttribute} total:`, attr.total)
         }
         
