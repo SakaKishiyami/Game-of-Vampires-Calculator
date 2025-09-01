@@ -233,6 +233,25 @@ export default function GameCalculator() {
         }
       }
       
+      // Third pass: find the actual attribute total lines (symbol + number format)
+      const attributeTotalLines: string[] = []
+      for (const line of lines) {
+        // Skip until we find Attribute Detail
+        if (!foundAttributeDetail) {
+          continue
+        }
+        
+        // Look for lines that match the pattern: symbol/letters + space + number with K/M suffix
+        // Examples: "S 4.93M", "(ds 4.55M", "(2 423M"
+        if (line.match(/^[A-Za-z()0-9\s]+\s+[0-9,.]+[KM]?$/)) {
+          attributeTotalLines.push(line)
+          console.log('Found attribute total line:', line)
+        }
+      }
+      
+      console.log('Total attribute total lines found:', attributeTotalLines.length)
+      console.log('Attribute total lines:', attributeTotalLines)
+      
       console.log('Total attribute lines found:', attributeLines.length)
       console.log('Attribute lines:', attributeLines)
       
@@ -244,21 +263,21 @@ export default function GameCalculator() {
         
         console.log(`Parsing ${currentAttribute} from line:`, line)
         
-        // Extract the attribute total (the number after the symbol)
-        // Look for the pattern like "S 4.93M", "(ds 4.55M", "(2 423M"
-        // The attribute total is the number that comes after the symbol/letters, before "Talent Bonus"
-        const beforeTalentBonus = line.split('Talent Bonus')[0]
-        const totalMatch = beforeTalentBonus.match(/([A-Za-z()0-9\s]+)\s+([0-9,.]+[KM]?)/)
-        if (totalMatch) {
-          attr.total = parseNumberWithSuffix(totalMatch[2])
-          console.log(`Set ${currentAttribute} total:`, attr.total)
-        } else {
-          // Fallback: try to find the first number with K/M suffix before "Talent Bonus"
-          const fallbackMatch = beforeTalentBonus.match(/([0-9,.]+[KM]?)/)
-          if (fallbackMatch) {
-            attr.total = parseNumberWithSuffix(fallbackMatch[1])
-            console.log(`Set ${currentAttribute} total (fallback):`, attr.total)
+        // Extract the attribute total from the corresponding attribute total line
+        if (i < attributeTotalLines.length) {
+          const totalLine = attributeTotalLines[i]
+          console.log(`Using total line for ${currentAttribute}:`, totalLine)
+          
+          // Extract the number from the total line (format: "S 4.93M", "(ds 4.55M", "(2 423M")
+          const totalMatch = totalLine.match(/^[A-Za-z()0-9\s]+\s+([0-9,.]+[KM]?)$/)
+          if (totalMatch) {
+            attr.total = parseNumberWithSuffix(totalMatch[1])
+            console.log(`Set ${currentAttribute} total:`, attr.total)
+          } else {
+            console.log(`Failed to parse total from line:`, totalLine)
           }
+        } else {
+          console.log(`No total line found for ${currentAttribute}`)
         }
         
         // Extract all bonus values
