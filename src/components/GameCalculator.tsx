@@ -233,6 +233,9 @@ export default function GameCalculator() {
         }
       }
       
+      console.log('Total attribute lines found:', attributeLines.length)
+      console.log('Attribute lines:', attributeLines)
+      
       // Parse each attribute line in order
       for (let i = 0; i < attributeLines.length && i < attributeOrder.length; i++) {
         const line = attributeLines[i]
@@ -242,12 +245,19 @@ export default function GameCalculator() {
         console.log(`Parsing ${currentAttribute} from line:`, line)
         
         // Extract the attribute total (the number after the symbol)
-        // Look for pattern like "S 4.93M", "(ds 4.55M", "(2 423M"
-        // The attribute total is the number that comes after the symbol/letters
+        // Look for the first number with K/M suffix that appears after the symbol
+        // This should be the attribute total, not the bonus values
         const totalMatch = line.match(/([A-Za-z()0-9\s]+)\s+([0-9,.]+[KM]?)/)
         if (totalMatch) {
           attr.total = parseNumberWithSuffix(totalMatch[2])
           console.log(`Set ${currentAttribute} total:`, attr.total)
+        } else {
+          // Fallback: try to find the first number with K/M suffix
+          const fallbackMatch = line.match(/([0-9,.]+[KM]?)/)
+          if (fallbackMatch) {
+            attr.total = parseNumberWithSuffix(fallbackMatch[1])
+            console.log(`Set ${currentAttribute} total (fallback):`, attr.total)
+          }
         }
         
         // Extract all bonus values
