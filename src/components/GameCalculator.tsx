@@ -245,15 +245,16 @@ export default function GameCalculator() {
         console.log(`Parsing ${currentAttribute} from line:`, line)
         
         // Extract the attribute total (the number after the symbol)
-        // Look for the first number with K/M suffix that appears after the symbol
-        // This should be the attribute total, not the bonus values
-        const totalMatch = line.match(/([A-Za-z()0-9\s]+)\s+([0-9,.]+[KM]?)/)
+        // Look for the pattern like "S 4.93M", "(ds 4.55M", "(2 423M"
+        // The attribute total is the number that comes after the symbol/letters, before "Talent Bonus"
+        const beforeTalentBonus = line.split('Talent Bonus')[0]
+        const totalMatch = beforeTalentBonus.match(/([A-Za-z()0-9\s]+)\s+([0-9,.]+[KM]?)/)
         if (totalMatch) {
           attr.total = parseNumberWithSuffix(totalMatch[2])
           console.log(`Set ${currentAttribute} total:`, attr.total)
         } else {
-          // Fallback: try to find the first number with K/M suffix
-          const fallbackMatch = line.match(/([0-9,.]+[KM]?)/)
+          // Fallback: try to find the first number with K/M suffix before "Talent Bonus"
+          const fallbackMatch = beforeTalentBonus.match(/([0-9,.]+[KM]?)/)
           if (fallbackMatch) {
             attr.total = parseNumberWithSuffix(fallbackMatch[1])
             console.log(`Set ${currentAttribute} total (fallback):`, attr.total)
