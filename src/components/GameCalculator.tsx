@@ -291,7 +291,8 @@ export default function GameCalculator() {
       // Now that we have split lines, parsing is much simpler
       // Each bonus is on its own line, so we can directly parse each line
       
-      // Find attribute total lines (symbol + number format)
+      // Find attribute total lines - since placement is always the same, look for lines with K/M numbers
+      // that appear to be attribute totals (not bonus lines)
       const attributeTotalLines: string[] = []
       for (const line of lines) {
         // Skip until we find Attribute Detail
@@ -299,10 +300,9 @@ export default function GameCalculator() {
           continue
         }
         
-        // Look for lines that match the pattern: symbol/letters + space + number with K/M suffix
-        // Examples: "S 4.93M", "(ds 4.55M", "(2 423M", "® 41.07M"
-        // More flexible pattern to catch various formats
-        if (line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+[KM]?\s*$/)) {
+        // Look for lines that contain a number with K/M suffix but are NOT bonus lines
+        // This should catch all attribute total lines regardless of their symbol format
+        if (line.match(/[0-9,.]+(?:\s*[KM])/) && !line.includes('Bonus:')) {
           attributeTotalLines.push(line)
           console.log('Found attribute total line:', line)
         }
@@ -322,8 +322,8 @@ export default function GameCalculator() {
         
         console.log(`Parsing ${currentAttribute} (position ${i}):`, totalLine)
         
-        // Extract the number from the total line (format: "symbol 4.93M")
-        const totalMatch = totalLine.match(/^[A-Za-z()0-9®\s]+\s+([0-9,.]+(?:\s*[KM])?)\s*$/)
+        // Extract the number from the total line - look for any number with K/M suffix
+        const totalMatch = totalLine.match(/([0-9,.]+(?:\s*[KM]))/)
         if (totalMatch) {
           attr.total = parseNumberWithSuffix(totalMatch[1])
           console.log(`Set ${currentAttribute} total:`, attr.total)
@@ -368,7 +368,7 @@ export default function GameCalculator() {
       // Find the line indices of attribute total lines
       const attributeTotalLineIndices: number[] = []
       for (let i = 0; i < lines.length; i++) {
-        if (foundAttributeDetail && lines[i].match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+(?:\s*[KM])?\s*$/)) {
+        if (foundAttributeDetail && lines[i].match(/[0-9,.]+(?:\s*[KM])/) && !lines[i].includes('Bonus:')) {
           attributeTotalLineIndices.push(i)
         }
       }
