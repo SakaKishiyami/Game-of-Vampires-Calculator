@@ -312,89 +312,71 @@ export default function GameCalculator() {
       }
       
       // Now parse all the bonus lines (each bonus is on its own line now)
-      // We need to track which attribute we're currently parsing
-      let currentAttributeIndex = 0
-      
+      // Track which attribute we're currently parsing; start at -1 so first total line sets to 0
+      let currentAttributeIndex = -1
+
       for (const line of lines) {
         // Skip until we find Attribute Detail
         if (!foundAttributeDetail) {
           continue
         }
-        
+
         // Check if this line indicates we're moving to the next attribute
-        // Look for lines that match the pattern: symbol/letters + space + number with K/M suffix
-        // Examples: "® 41.07M", "S 4.93M", "(ds 4.55M", "(2 423M"
         if (line.match(/^[A-Za-z()0-9\s]+\s+[0-9,.]+[KM]?$/)) {
-          console.log(`Found attribute total line: ${line}, moving to next attribute`)
           currentAttributeIndex++
           continue
         }
-        
-        // Parse each bonus line individually and assign to current attribute
-        if (currentAttributeIndex < attributeOrder.length) {
+
+        // Only assign bonuses if index is valid
+        if (currentAttributeIndex >= 0 && currentAttributeIndex < attributeOrder.length) {
           const attrName = attributeOrder[currentAttributeIndex]
-          
+
           if (line.includes('Talent Bonus:')) {
             const match = line.match(/Talent Bonus:\s*([0-9,.]+[KM]?)/i)
             if (match) {
               attributeData[attrName as keyof typeof attributeData].talentBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${attrName} talent bonus:`, parseNumberWithSuffix(match[1]))
             }
           }
-          
           if (line.includes('Book Bonus:')) {
             const match = line.match(/Book Bonus:\s*([0-9,.]+[KM]?)/i)
             if (match) {
               attributeData[attrName as keyof typeof attributeData].bookBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${attrName} book bonus:`, parseNumberWithSuffix(match[1]))
             }
           }
-          
           if (line.includes('Scarlet Bond Bonus:')) {
             const match = line.match(/Scarlet Bond Bonus:\s*([0-9,.]+[KM]?)/i)
             if (match) {
               attributeData[attrName as keyof typeof attributeData].scarletBondBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${attrName} scarlet bond bonus:`, parseNumberWithSuffix(match[1]))
             }
           }
-          
           if (line.includes('Presence Bonus:')) {
             const match = line.match(/Presence Bonus:\s*([0-9,.]+[KM]?)/i)
             if (match) {
               attributeData[attrName as keyof typeof attributeData].presenceBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${attrName} presence bonus:`, parseNumberWithSuffix(match[1]))
             }
           }
-          
           if (line.includes('Aura Bonus:')) {
             const match = line.match(/Aura Bonus:\s*([0-9,.]+[KM]?)/i)
             if (match) {
               attributeData[attrName as keyof typeof attributeData].auraBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${attrName} aura bonus:`, parseNumberWithSuffix(match[1]))
             }
           }
-          
           if (line.includes('Conclave Bonus:')) {
             const match = line.match(/Conclave Bonus:\s*([0-9,.]+[KM]?)/i)
             if (match) {
               attributeData[attrName as keyof typeof attributeData].conclaveBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${attrName} conclave bonus:`, parseNumberWithSuffix(match[1]))
             }
           }
-          
           if (line.includes('Avatar Bonus:')) {
             const match = line.match(/Avatar Bonus:\s*([0-9,.]+[KM]?)/i)
             if (match) {
               attributeData[attrName as keyof typeof attributeData].avatarBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${attrName} avatar bonus:`, parseNumberWithSuffix(match[1]))
             }
           }
-          
           if (line.includes('Familiar Bonus:')) {
             const match = line.match(/Familiar Bonus:\s*([0-9,.]+[KM]?)/i)
             if (match) {
               attributeData[attrName as keyof typeof attributeData].familiarBonus = parseNumberWithSuffix(match[1])
-              console.log(`Found ${attrName} familiar bonus:`, parseNumberWithSuffix(match[1]))
             }
           }
         }
@@ -470,7 +452,7 @@ export default function GameCalculator() {
           let content: string
           
           // Check if it's an image file
-          if (file.type.startsWith('image/')) {
+          if (file.type.startsWith('image/')) { 
             setOcrProgress(`Processing image ${i + 1}/${files.length}: ${file.name}`)
             content = await processImageWithOCR(file)
           } else {
