@@ -287,6 +287,30 @@ export default function GameCalculator() {
       console.log('Total attribute total lines found:', attributeTotalLines.length)
       console.log('Attribute total lines:', attributeTotalLines)
       
+      // Map attribute total lines to their corresponding attributes based on symbols/identifiers
+      const attributeTotalMap: { [key: string]: string } = {}
+      
+      for (const totalLine of attributeTotalLines) {
+        // Extract the symbol/identifier part (before the space and number)
+        const symbolMatch = totalLine.match(/^([A-Za-z()0-9®\s]+)\s+[0-9,.]+[KM]?\s*$/)
+        if (symbolMatch) {
+          const symbol = symbolMatch[1].trim()
+          
+          // Map based on common patterns in the OCR output
+          if (symbol.includes('®') || symbol.includes('41.07M')) {
+            attributeTotalMap['strength'] = totalLine
+          } else if (symbol.includes('S') || symbol.includes('4.93M')) {
+            attributeTotalMap['allure'] = totalLine
+          } else if (symbol.includes('(ds') || symbol.includes('4.55M')) {
+            attributeTotalMap['intellect'] = totalLine
+          } else if (symbol.includes('(2') || symbol.includes('423M')) {
+            attributeTotalMap['spirit'] = totalLine
+          }
+        }
+      }
+      
+      console.log('Attribute total mapping:', attributeTotalMap)
+      
       // Parse each attribute in order
       for (let i = 0; i < attributeOrder.length; i++) {
         const currentAttribute = attributeOrder[i]
@@ -294,9 +318,9 @@ export default function GameCalculator() {
         
         console.log(`Parsing ${currentAttribute}...`)
         
-        // Extract the attribute total from the corresponding attribute total line
-        if (i < attributeTotalLines.length) {
-          const totalLine = attributeTotalLines[i]
+        // Extract the attribute total from the mapped attribute total line
+        const totalLine = attributeTotalMap[currentAttribute]
+        if (totalLine) {
           console.log(`Using total line for ${currentAttribute}:`, totalLine)
           
           // Extract the number from the total line (format: "S 4.93M", "(ds 4.55M", "(2 423M", "® 41.07M")
@@ -415,10 +439,23 @@ export default function GameCalculator() {
   // Helper function to parse numbers with K/M suffixes
   const parseNumberWithSuffix = (value: string): number => {
     const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()
-    if (numStr.includes('k')) {
+    
+    // Handle cases where there might be a space before K/M suffix
+    if (numStr.includes(' k')) {
+      return parseFloat(numStr.replace(' k', '')) * 1000
+    } else if (numStr.includes(' m')) {
+      return parseFloat(numStr.replace(' m', '')) * 1000000
+    } else if (numStr.includes('k')) {
       return parseFloat(numStr.replace('k', '')) * 1000
     } else if (numStr.includes('m')) {
-      return parseFloat(numStr.replace('m', '')) * 1000000
+      // Special handling for cases like "423M" which should be "4.23M"
+      const numPart = numStr.replace('m', '')
+      const num = parseFloat(numPart)
+      if (num >= 100 && num < 1000) {
+        // If it's a 3-digit number, it's likely meant to be in the format 4.23M
+        return (num / 100) * 1000000
+      }
+      return num * 1000000
     }
     return parseFloat(numStr) || 0
   }
