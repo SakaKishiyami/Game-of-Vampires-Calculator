@@ -2379,8 +2379,6 @@ export default function GameCalculator() {
       })
     }
 
-
-
     // VIP Wardens
     const vipWardens = auras.vip
     Object.entries(vipWardens).forEach(([wardenName, wardenData]) => {
