@@ -333,100 +333,148 @@ export default function GameCalculator() {
       }
       
       // Now parse all the bonus lines by mapping them to their correct attributes
-      // Since the order is always the same, we can track which attribute we're currently parsing
-      // by counting the attribute total lines we encounter
+      // Since the order is always the same, we can use a much simpler approach:
+      // 1. Find all bonus lines
+      // 2. Assign them to attributes based on their position relative to attribute total lines
       
-      let currentAttributeIndex = 0
-      let currentAttribute = attributeOrder[currentAttributeIndex]
-      let foundFirstAttributeTotal = false
-      
+      // First, let's find all the bonus lines and group them by their position
+      const bonusLines: string[] = []
       for (const line of lines) {
         // Skip until we find Attribute Detail
         if (!foundAttributeDetail) {
           continue;
         }
-
-        // Check if this line indicates we're moving to the next attribute
-        // Look for the attribute total lines (symbol + number format)
+        
+        // Skip attribute total lines
         if (line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+(?:\s*[KM])?\s*$/)) {
-          if (!foundFirstAttributeTotal) {
-            // First attribute total line - we're starting to parse bonuses for the first attribute
-            foundFirstAttributeTotal = true
-            console.log(`Found first attribute total line, starting to parse bonuses for ${currentAttribute}:`, line)
-          } else {
-            // Subsequent attribute total lines - move to next attribute
-            currentAttributeIndex++
-            if (currentAttributeIndex < attributeOrder.length) {
-              currentAttribute = attributeOrder[currentAttributeIndex]
-              console.log(`Switched to parsing ${currentAttribute} (position ${currentAttributeIndex})`)
-            }
-          }
-          continue
+          continue;
         }
-
-        // Parse bonuses and assign them to the current attribute
+        
+        // Collect all bonus lines
+        if (line.includes('Bonus:')) {
+          bonusLines.push(line)
+        }
+      }
+      
+      console.log('Found bonus lines:', bonusLines)
+      
+      // Now we need to assign bonuses to the correct attributes
+      // Since the order is always the same, we can use the attribute total lines as markers
+      // to determine which attribute each bonus belongs to
+      
+      // Create a mapping of line indices to attribute names
+      const lineToAttributeMap: { [lineIndex: number]: string } = {}
+      
+      // Find the line indices of attribute total lines
+      const attributeTotalLineIndices: number[] = []
+      for (let i = 0; i < lines.length; i++) {
+        if (foundAttributeDetail && lines[i].match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+(?:\s*[KM])?\s*$/)) {
+          attributeTotalLineIndices.push(i)
+        }
+      }
+      
+      console.log('Attribute total line indices:', attributeTotalLineIndices)
+      
+      // Map each line to its corresponding attribute based on position
+      for (let i = 0; i < lines.length; i++) {
+        if (!foundAttributeDetail) continue
+        
+        // Find which attribute this line belongs to
+        let attributeIndex = -1
+        for (let j = 0; j < attributeTotalLineIndices.length; j++) {
+          if (i < attributeTotalLineIndices[j]) {
+            attributeIndex = j - 1
+            break
+          }
+        }
+        
+        // If we're after the last attribute total line, assign to the last attribute
+        if (attributeIndex === -1 && attributeTotalLineIndices.length > 0) {
+          attributeIndex = attributeTotalLineIndices.length - 1
+        }
+        
+        // If we're before the first attribute total line, assign to the first attribute
+        if (attributeIndex === -1 && attributeTotalLineIndices.length > 0) {
+          attributeIndex = 0
+        }
+        
+        if (attributeIndex >= 0 && attributeIndex < attributeOrder.length) {
+          lineToAttributeMap[i] = attributeOrder[attributeIndex]
+        }
+      }
+      
+      console.log('Line to attribute mapping:', lineToAttributeMap)
+      
+      // Now parse bonuses using the mapping
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i]
+        const attributeName = lineToAttributeMap[i]
+        
+        if (!attributeName || !foundAttributeDetail) continue
+        
+        // Parse bonuses and assign them to the correct attribute
         if (line.includes('Talent Bonus:')) {
           const match = line.match(/Talent Bonus:\s*([0-9,.]+(?:\s*[KM])?)/i);
           if (match) {
             const value = parseNumberWithSuffix(match[1])
-            attributeData[currentAttribute as keyof typeof attributeData].talentBonus = value
-            console.log(`Set ${currentAttribute} talent bonus:`, value)
+            attributeData[attributeName as keyof typeof attributeData].talentBonus = value
+            console.log(`Set ${attributeName} talent bonus:`, value)
           }
         }
         if (line.includes('Book Bonus:')) {
           const match = line.match(/Book Bonus:\s*([0-9,.]+(?:\s*[KM])?)/i);
           if (match) {
             const value = parseNumberWithSuffix(match[1])
-            attributeData[currentAttribute as keyof typeof attributeData].bookBonus = value
-            console.log(`Set ${currentAttribute} book bonus:`, value)
+            attributeData[attributeName as keyof typeof attributeData].bookBonus = value
+            console.log(`Set ${attributeName} book bonus:`, value)
           }
         }
         if (line.includes('Scarlet Bond Bonus:')) {
           const match = line.match(/Scarlet Bond Bonus:\s*([0-9,.]+(?:\s*[KM])?)/i);
           if (match) {
             const value = parseNumberWithSuffix(match[1])
-            attributeData[currentAttribute as keyof typeof attributeData].scarletBondBonus = value
-            console.log(`Set ${currentAttribute} scarlet bond bonus:`, value)
+            attributeData[attributeName as keyof typeof attributeData].scarletBondBonus = value
+            console.log(`Set ${attributeName} scarlet bond bonus:`, value)
           }
         }
         if (line.includes('Presence Bonus:')) {
           const match = line.match(/Presence Bonus:\s*([0-9,.]+(?:\s*[KM])?)/i);
           if (match) {
             const value = parseNumberWithSuffix(match[1])
-            attributeData[currentAttribute as keyof typeof attributeData].presenceBonus = value
-            console.log(`Set ${currentAttribute} presence bonus:`, value)
+            attributeData[attributeName as keyof typeof attributeData].presenceBonus = value
+            console.log(`Set ${attributeName} presence bonus:`, value)
           }
         }
         if (line.includes('Aura Bonus:')) {
           const match = line.match(/Aura Bonus:\s*([0-9,.]+(?:\s*[KM])?)/i);
           if (match) {
             const value = parseNumberWithSuffix(match[1])
-            attributeData[currentAttribute as keyof typeof attributeData].auraBonus = value
-            console.log(`Set ${currentAttribute} aura bonus:`, value)
+            attributeData[attributeName as keyof typeof attributeData].auraBonus = value
+            console.log(`Set ${attributeName} aura bonus:`, value)
           }
         }
         if (line.includes('Conclave Bonus:')) {
           const match = line.match(/Conclave Bonus:\s*([0-9,.]+(?:\s*[KM])?)/i);
           if (match) {
             const value = parseNumberWithSuffix(match[1])
-            attributeData[currentAttribute as keyof typeof attributeData].conclaveBonus = value
-            console.log(`Set ${currentAttribute} conclave bonus:`, value)
+            attributeData[attributeName as keyof typeof attributeData].conclaveBonus = value
+            console.log(`Set ${attributeName} conclave bonus:`, value)
           }
         }
         if (line.includes('Avatar Bonus:')) {
           const match = line.match(/Avatar Bonus:\s*([0-9,.]+(?:\s*[KM])?)/i);
           if (match) {
             const value = parseNumberWithSuffix(match[1])
-            attributeData[currentAttribute as keyof typeof attributeData].avatarBonus = value
-            console.log(`Set ${currentAttribute} avatar bonus:`, value)
+            attributeData[attributeName as keyof typeof attributeData].avatarBonus = value
+            console.log(`Set ${attributeName} avatar bonus:`, value)
           }
         }
         if (line.includes('Familiar Bonus:')) {
           const match = line.match(/Familiar Bonus:\s*([0-9,.]+(?:\s*[KM])?)/i);
           if (match) {
             const value = parseNumberWithSuffix(match[1])
-            attributeData[currentAttribute as keyof typeof attributeData].familiarBonus = value
-            console.log(`Set ${currentAttribute} familiar bonus:`, value)
+            attributeData[attributeName as keyof typeof attributeData].familiarBonus = value
+            console.log(`Set ${attributeName} familiar bonus:`, value)
           }
         }
       }
