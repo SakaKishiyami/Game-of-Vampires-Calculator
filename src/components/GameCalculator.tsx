@@ -276,8 +276,9 @@ export default function GameCalculator() {
         }
         
         // Look for lines that match the pattern: symbol/letters + space + number with K/M suffix
-        // Examples: "S 4.93M", "(ds 4.55M", "(2 423M"
-        if (line.match(/^[A-Za-z()0-9\s]+\s+[0-9,.]+[KM]?$/)) {
+        // Examples: "S 4.93M", "(ds 4.55M", "(2 423M", "® 41.07M"
+        // More flexible pattern to catch various formats
+        if (line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+[KM]?\s*$/)) {
           attributeTotalLines.push(line)
           console.log('Found attribute total line:', line)
         }
@@ -298,8 +299,8 @@ export default function GameCalculator() {
           const totalLine = attributeTotalLines[i]
           console.log(`Using total line for ${currentAttribute}:`, totalLine)
           
-          // Extract the number from the total line (format: "S 4.93M", "(ds 4.55M", "(2 423M")
-          const totalMatch = totalLine.match(/^[A-Za-z()0-9\s]+\s+([0-9,.]+[KM]?)$/)
+          // Extract the number from the total line (format: "S 4.93M", "(ds 4.55M", "(2 423M", "® 41.07M")
+          const totalMatch = totalLine.match(/^[A-Za-z()0-9®\s]+\s+([0-9,.]+[KM]?\s*)$/)
           if (totalMatch) {
             attr.total = parseNumberWithSuffix(totalMatch[1])
             console.log(`Set ${currentAttribute} total:`, attr.total)
@@ -376,19 +377,28 @@ export default function GameCalculator() {
         }
 
         // Check if this line indicates we're moving to the next attribute
-        if (line.match(/^[A-Za-z()0-9\s]+\s+[0-9,.]+[KM]?$/)) {
+        if (line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+[KM]?\s*$/)) {
           currentAttributeIndex++;
           continue;
         }
       }
       
+      // Calculate total attributes by summing all individual bonuses
+      let calculatedTotal = 0;
+      Object.values(attributeData).forEach(attr => {
+        calculatedTotal += attr.talentBonus + attr.bookBonus + attr.scarletBondBonus + 
+                        attr.presenceBonus + attr.auraBonus + attr.conclaveBonus + 
+                        attr.avatarBonus + attr.familiarBonus;
+      });
+      
       // Debug: Log the final parsed attribute data
       console.log('Final parsed attribute data:', attributeData)
+      console.log('Calculated total from bonuses:', calculatedTotal)
       
       return {
         wardenName,
         data: {
-          totalAttributes,
+          totalAttributes: calculatedTotal,
           ...attributeData
         }
       }
@@ -399,7 +409,7 @@ export default function GameCalculator() {
 
   // Helper function to parse numbers with K/M suffixes
   const parseNumberWithSuffix = (value: string): number => {
-    const numStr = value.toString().toLowerCase().replace(/,/g, '')
+    const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()
     if (numStr.includes('k')) {
       return parseFloat(numStr.replace('k', '')) * 1000
     } else if (numStr.includes('m')) {
