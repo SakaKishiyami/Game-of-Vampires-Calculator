@@ -315,6 +315,7 @@ export default function GameCalculator() {
       // Now parse all the bonus lines (each bonus is on its own line now)
       // Track which attribute we're currently parsing; start at 0
       let currentAttributeIndex = 0;
+      let currentAttribute = attributeOrder[currentAttributeIndex];
 
       for (const line of lines) {
         // Skip until we find Attribute Detail
@@ -322,9 +323,19 @@ export default function GameCalculator() {
           continue;
         }
 
-        // Assign bonuses to the current attribute before incrementing index
+        // Check if this line indicates we're moving to the next attribute
+        if (line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+[KM]?\s*$/)) {
+          // Move to next attribute
+          currentAttributeIndex++;
+          if (currentAttributeIndex < attributeOrder.length) {
+            currentAttribute = attributeOrder[currentAttributeIndex];
+          }
+          continue;
+        }
+
+        // Assign bonuses to the current attribute
         if (currentAttributeIndex >= 0 && currentAttributeIndex < attributeOrder.length) {
-          const attrName = attributeOrder[currentAttributeIndex];
+          const attrName = currentAttribute;
 
           if (line.includes('Talent Bonus:')) {
             const match = line.match(/Talent Bonus:\s*([0-9,.]+[KM]?)/i);
@@ -374,12 +385,6 @@ export default function GameCalculator() {
               attributeData[attrName as keyof typeof attributeData].familiarBonus = parseNumberWithSuffix(match[1]);
             }
           }
-        }
-
-        // Check if this line indicates we're moving to the next attribute
-        if (line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+[KM]?\s*$/)) {
-          currentAttributeIndex++;
-          continue;
         }
       }
       
