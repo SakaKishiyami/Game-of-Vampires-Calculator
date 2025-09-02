@@ -5250,9 +5250,11 @@ export default function GameCalculator() {
                               </CardHeader>
                               <CardContent>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                  {console.log('Displaying data for', wardenName, ':', data)}
                                   {["strength", "allure", "intellect", "spirit"].map((attr) => {
                                     const attrData = data[attr as keyof typeof data]
-                                    if (typeof attrData === 'object' && attrData.total > 0) {
+                                    {console.log(`Checking ${attr}:`, attrData)}
+                                    if (typeof attrData === 'object' && attrData.total !== undefined) {
                                       return (
                                         <div key={attr} className="space-y-3">
                                           <div className={`font-semibold capitalize ${getAttributeColor(attr)} text-lg`}>
