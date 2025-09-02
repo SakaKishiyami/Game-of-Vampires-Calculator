@@ -287,7 +287,7 @@ export default function GameCalculator() {
       console.log('Attribute total lines:', attributeTotalLines)
       
       // Parse each attribute in order
-      for (let i = 0; i < attributeOrder.length+1; i++) {
+      for (let i = 0; i < attributeOrder.length; i++) {
         const currentAttribute = attributeOrder[i]
         const attr = attributeData[currentAttribute as keyof typeof attributeData]
         
@@ -400,7 +400,8 @@ export default function GameCalculator() {
         }
       }
       
-
+      // Debug: Log the final parsed attribute data
+      console.log('Final parsed attribute data:', attributeData)
       
       return {
         wardenName,
