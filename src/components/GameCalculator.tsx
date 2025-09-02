@@ -293,10 +293,18 @@ export default function GameCalculator() {
       
       // Find attribute total lines - since placement is always the same, look for lines with K/M numbers
       // that appear to be attribute totals (not bonus lines)
+      // IMPORTANT: Skip the global "total attributes" line that we already parsed above
       const attributeTotalLines: string[] = []
+      let foundFirstAttributeTotal = false
       for (const line of lines) {
         // Skip until we find Attribute Detail
         if (!foundAttributeDetail) {
+          continue
+        }
+        
+        // Skip the global total attributes line (first number after Attribute Detail)
+        if (!foundFirstAttributeTotal && line.match(/([0-9,.]+[KM]?)/i)) {
+          foundFirstAttributeTotal = true
           continue
         }
         
@@ -366,9 +374,19 @@ export default function GameCalculator() {
       const lineToAttributeMap: { [lineIndex: number]: string } = {}
       
       // Find the line indices of attribute total lines
+      // IMPORTANT: Skip the global "total attributes" line that we already parsed above
       const attributeTotalLineIndices: number[] = []
+      let foundFirstAttributeTotalIndex = false
       for (let i = 0; i < lines.length; i++) {
-        if (foundAttributeDetail && lines[i].match(/[0-9,.]+(?:\s*[KM])/) && !lines[i].includes('Bonus:')) {
+        if (!foundAttributeDetail) continue
+        
+        // Skip the global total attributes line (first number after Attribute Detail)
+        if (!foundFirstAttributeTotalIndex && lines[i].match(/([0-9,.]+[KM]?)/i)) {
+          foundFirstAttributeTotalIndex = true
+          continue
+        }
+        
+        if (lines[i].match(/[0-9,.]+(?:\s*[KM])/) && !lines[i].includes('Bonus:')) {
           attributeTotalLineIndices.push(i)
         }
       }
