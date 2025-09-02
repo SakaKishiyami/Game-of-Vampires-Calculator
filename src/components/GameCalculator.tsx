@@ -323,14 +323,19 @@ export default function GameCalculator() {
       console.log('Total attribute total lines found:', attributeTotalLines.length)
       console.log('Attribute total lines:', attributeTotalLines)
       
+      // Always take the last 4 lines as individual attribute totals (strength, allure, intellect, spirit)
+      // This ensures we skip the global total attributes line that might be at the beginning
+      const individualAttributeTotals = attributeTotalLines.slice(-4)
+      console.log('Individual attribute totals (last 4):', individualAttributeTotals)
+      
       // Since the placement/order is always the same, we can parse attributes by their position
       // The first attribute total line is strength, second is allure, third is intellect, fourth is spirit
       console.log('Parsing attributes by position (order is always the same):')
       
-      for (let i = 0; i < attributeOrder.length && i < attributeTotalLines.length; i++) {
+      for (let i = 0; i < attributeOrder.length && i < individualAttributeTotals.length; i++) {
         const currentAttribute = attributeOrder[i]
         const attr = attributeData[currentAttribute as keyof typeof attributeData]
-        const totalLine = attributeTotalLines[i]
+        const totalLine = individualAttributeTotals[i]
         
         console.log(`Parsing ${currentAttribute} (position ${i}):`, totalLine)
         
@@ -395,7 +400,9 @@ export default function GameCalculator() {
         }
       }
       
-      console.log('Attribute total line indices:', attributeTotalLineIndices)
+      // Always take the last 4 line indices as individual attribute total line indices
+      const individualAttributeTotalLineIndices = attributeTotalLineIndices.slice(-4)
+      console.log('Individual attribute total line indices (last 4):', individualAttributeTotalLineIndices)
       
       // Map each line to its corresponding attribute based on position
       for (let i = 0; i < lines.length; i++) {
@@ -403,20 +410,20 @@ export default function GameCalculator() {
         
         // Find which attribute this line belongs to
         let attributeIndex = -1
-        for (let j = 0; j < attributeTotalLineIndices.length; j++) {
-          if (i < attributeTotalLineIndices[j]) {
+        for (let j = 0; j < individualAttributeTotalLineIndices.length; j++) {
+          if (i < individualAttributeTotalLineIndices[j]) {
             attributeIndex = j - 1
             break
           }
         }
         
         // If we're after the last attribute total line, assign to the last attribute
-        if (attributeIndex === -1 && attributeTotalLineIndices.length > 0) {
-          attributeIndex = attributeTotalLineIndices.length - 1
+        if (attributeIndex === -1 && individualAttributeTotalLineIndices.length > 0) {
+          attributeIndex = individualAttributeTotalLineIndices.length - 1
         }
         
         // If we're before the first attribute total line, assign to the first attribute
-        if (attributeIndex === -1 && attributeTotalLineIndices.length > 0) {
+        if (attributeIndex === -1 && individualAttributeTotalLineIndices.length > 0) {
           attributeIndex = 0
         }
         
