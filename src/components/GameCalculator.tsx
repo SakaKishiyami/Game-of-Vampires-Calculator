@@ -311,6 +311,10 @@ export default function GameCalculator() {
         }
       }
       
+      // Create a mapping to track which attribute we're currently parsing
+      let currentAttributeIndex = 0
+      let currentAttributeName = attributeOrder[currentAttributeIndex]
+      
       // Now parse all the bonus lines (each bonus is on its own line now)
       for (const line of lines) {
         // Skip until we find Attribute Detail
@@ -318,112 +322,93 @@ export default function GameCalculator() {
           continue
         }
         
-        // Parse each bonus line individually
+        // Check if this line indicates we're moving to the next attribute
+        // Look for lines that contain just the attribute name (like "strength", "allure", etc.)
+        if (line.toLowerCase().trim() === currentAttributeName.toLowerCase()) {
+          console.log(`Found attribute header: ${line}, moving to next attribute`)
+          currentAttributeIndex++
+          if (currentAttributeIndex < attributeOrder.length) {
+            currentAttributeName = attributeOrder[currentAttributeIndex]
+            console.log(`Now parsing: ${currentAttributeName}`)
+          }
+          continue
+        }
+        
+        // Parse each bonus line individually and assign to current attribute
         if (line.includes('Talent Bonus:')) {
           const match = line.match(/Talent Bonus:\s*([0-9,.]+[KM]?)/i)
-          if (match) {
-            // Determine which attribute this belongs to based on context
-            // For now, we'll assign to the first attribute that doesn't have a talent bonus yet
-            for (const attrName of attributeOrder) {
-              if (attributeData[attrName as keyof typeof attributeData].talentBonus === 0) {
-                attributeData[attrName as keyof typeof attributeData].talentBonus = parseNumberWithSuffix(match[1])
-                console.log(`Found ${attrName} talent bonus:`, parseNumberWithSuffix(match[1]))
-                break
-              }
-            }
+          if (match && currentAttributeIndex < attributeOrder.length) {
+            const attrName = attributeOrder[currentAttributeIndex]
+            attributeData[attrName as keyof typeof attributeData].talentBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${attrName} talent bonus:`, parseNumberWithSuffix(match[1]))
           }
         }
         
         if (line.includes('Book Bonus:')) {
           const match = line.match(/Book Bonus:\s*([0-9,.]+[KM]?)/i)
-          if (match) {
-            for (const attrName of attributeOrder) {
-              if (attributeData[attrName as keyof typeof attributeData].bookBonus === 0) {
-                attributeData[attrName as keyof typeof attributeData].bookBonus = parseNumberWithSuffix(match[1])
-                console.log(`Found ${attrName} book bonus:`, parseNumberWithSuffix(match[1]))
-                break
-              }
-            }
+          if (match && currentAttributeIndex < attributeOrder.length) {
+            const attrName = attributeOrder[currentAttributeIndex]
+            attributeData[attrName as keyof typeof attributeData].bookBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${attrName} book bonus:`, parseNumberWithSuffix(match[1]))
           }
         }
         
         if (line.includes('Scarlet Bond Bonus:')) {
           const match = line.match(/Scarlet Bond Bonus:\s*([0-9,.]+[KM]?)/i)
-          if (match) {
-            for (const attrName of attributeOrder) {
-              if (attributeData[attrName as keyof typeof attributeData].scarletBondBonus === 0) {
-                attributeData[attrName as keyof typeof attributeData].scarletBondBonus = parseNumberWithSuffix(match[1])
-                console.log(`Found ${attrName} scarlet bond bonus:`, parseNumberWithSuffix(match[1]))
-                break
-              }
-            }
+          if (match && currentAttributeIndex < attributeOrder.length) {
+            const attrName = attributeOrder[currentAttributeIndex]
+            attributeData[attrName as keyof typeof attributeData].scarletBondBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${attrName} scarlet bond bonus:`, parseNumberWithSuffix(match[1]))
           }
         }
         
         if (line.includes('Presence Bonus:')) {
           const match = line.match(/Presence Bonus:\s*([0-9,.]+[KM]?)/i)
-          if (match) {
-            for (const attrName of attributeOrder) {
-              if (attributeData[attrName as keyof typeof attributeData].presenceBonus === 0) {
-                attributeData[attrName as keyof typeof attributeData].presenceBonus = parseNumberWithSuffix(match[1])
-                break
-              }
-            }
+          if (match && currentAttributeIndex < attributeOrder.length) {
+            const attrName = attributeOrder[currentAttributeIndex]
+            attributeData[attrName as keyof typeof attributeData].presenceBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${attrName} presence bonus:`, parseNumberWithSuffix(match[1]))
           }
         }
         
         if (line.includes('Aura Bonus:')) {
           const match = line.match(/Aura Bonus:\s*([0-9,.]+[KM]?)/i)
-          if (match) {
-            for (const attrName of attributeOrder) {
-              if (attributeData[attrName as keyof typeof attributeData].auraBonus === 0) {
-                attributeData[attrName as keyof typeof attributeData].auraBonus = parseNumberWithSuffix(match[1])
-                console.log(`Found ${attrName} aura bonus:`, parseNumberWithSuffix(match[1]))
-                break
-              }
-            }
+          if (match && currentAttributeIndex < attributeOrder.length) {
+            const attrName = attributeOrder[currentAttributeIndex]
+            attributeData[attrName as keyof typeof attributeData].auraBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${attrName} aura bonus:`, parseNumberWithSuffix(match[1]))
           }
         }
         
         if (line.includes('Conclave Bonus:')) {
           const match = line.match(/Conclave Bonus:\s*([0-9,.]+[KM]?)/i)
-          if (match) {
-            for (const attrName of attributeOrder) {
-              if (attributeData[attrName as keyof typeof attributeData].conclaveBonus === 0) {
-                attributeData[attrName as keyof typeof attributeData].conclaveBonus = parseNumberWithSuffix(match[1])
-                console.log(`Found ${attrName} conclave bonus:`, parseNumberWithSuffix(match[1]))
-                break
-              }
-            }
+          if (match && currentAttributeIndex < attributeOrder.length) {
+            const attrName = attributeOrder[currentAttributeIndex]
+            attributeData[attrName as keyof typeof attributeData].conclaveBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${attrName} conclave bonus:`, parseNumberWithSuffix(match[1]))
           }
         }
         
         if (line.includes('Avatar Bonus:')) {
           const match = line.match(/Avatar Bonus:\s*([0-9,.]+[KM]?)/i)
-          if (match) {
-            for (const attrName of attributeOrder) {
-              if (attributeData[attrName as keyof typeof attributeData].avatarBonus === 0) {
-                attributeData[attrName as keyof typeof attributeData].avatarBonus = parseNumberWithSuffix(match[1])
-                console.log(`Found ${attrName} avatar bonus:`, parseNumberWithSuffix(match[1]))
-                break
-              }
-            }
+          if (match && currentAttributeIndex < attributeOrder.length) {
+            const attrName = attributeOrder[currentAttributeIndex]
+            attributeData[attrName as keyof typeof attributeData].avatarBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${attrName} avatar bonus:`, parseNumberWithSuffix(match[1]))
           }
         }
         
         if (line.includes('Familiar Bonus:')) {
           const match = line.match(/Familiar Bonus:\s*([0-9,.]+[KM]?)/i)
-          if (match) {
-            for (const attrName of attributeOrder) {
-              if (attributeData[attrName as keyof typeof attributeData].familiarBonus === 0) {
-                attributeData[attrName as keyof typeof attributeData].familiarBonus = parseNumberWithSuffix(match[1])
-                console.log(`Found ${attrName} familiar bonus:`, parseNumberWithSuffix(match[1]))
-                break
-              }
-            }
+          if (match && currentAttributeIndex < attributeOrder.length) {
+            const attrName = attributeOrder[currentAttributeIndex]
+            attributeData[attrName as keyof typeof attributeData].familiarBonus = parseNumberWithSuffix(match[1])
+            console.log(`Found ${attrName} familiar bonus:`, parseNumberWithSuffix(match[1]))
           }
         }
       }
+      
+
       
       return {
         wardenName,
