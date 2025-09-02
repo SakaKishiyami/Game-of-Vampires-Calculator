@@ -338,6 +338,7 @@ export default function GameCalculator() {
       
       let currentAttributeIndex = 0
       let currentAttribute = attributeOrder[currentAttributeIndex]
+      let foundFirstAttributeTotal = false
       
       for (const line of lines) {
         // Skip until we find Attribute Detail
@@ -348,11 +349,17 @@ export default function GameCalculator() {
         // Check if this line indicates we're moving to the next attribute
         // Look for the attribute total lines (symbol + number format)
         if (line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+(?:\s*[KM])?\s*$/)) {
-          // Move to next attribute
-          currentAttributeIndex++
-          if (currentAttributeIndex < attributeOrder.length) {
-            currentAttribute = attributeOrder[currentAttributeIndex]
-            console.log(`Switched to parsing ${currentAttribute} (position ${currentAttributeIndex})`)
+          if (!foundFirstAttributeTotal) {
+            // First attribute total line - we're starting to parse bonuses for the first attribute
+            foundFirstAttributeTotal = true
+            console.log(`Found first attribute total line, starting to parse bonuses for ${currentAttribute}:`, line)
+          } else {
+            // Subsequent attribute total lines - move to next attribute
+            currentAttributeIndex++
+            if (currentAttributeIndex < attributeOrder.length) {
+              currentAttribute = attributeOrder[currentAttributeIndex]
+              console.log(`Switched to parsing ${currentAttribute} (position ${currentAttributeIndex})`)
+            }
           }
           continue
         }
