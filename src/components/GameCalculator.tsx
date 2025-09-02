@@ -311,68 +311,33 @@ export default function GameCalculator() {
       console.log('Total attribute total lines found:', attributeTotalLines.length)
       console.log('Attribute total lines:', attributeTotalLines)
       
-      // Map attribute total lines to their corresponding attributes based on symbols/identifiers
-      const attributeTotalMap: { [key: string]: string } = {}
+      // Since the placement/order is always the same, we can parse attributes by their position
+      // The first attribute total line is strength, second is allure, third is intellect, fourth is spirit
+      console.log('Parsing attributes by position (order is always the same):')
       
-      for (const totalLine of attributeTotalLines) {
-        // Extract the symbol/identifier part (before the space and number)
-        const symbolMatch = totalLine.match(/^([A-Za-z()0-9®\s]+)\s+[0-9,.]+[KM]?\s*$/)
-        if (symbolMatch) {
-          const symbol = symbolMatch[1].trim()
-          
-          // Map based on common patterns in the OCR output
-          if (symbol.includes('®') || symbol.includes('41.07M')) {
-            attributeTotalMap['strength'] = totalLine
-          } else if (symbol.includes('S') || symbol.includes('4.93M')) {
-            attributeTotalMap['allure'] = totalLine
-          } else if (symbol.includes('(ds') || symbol.includes('4.55M')) {
-            attributeTotalMap['intellect'] = totalLine
-          } else if (symbol.includes('(2') || symbol.includes('423M')) {
-            attributeTotalMap['spirit'] = totalLine
-          }
-        }
-      }
-      
-      console.log('Attribute total mapping:', attributeTotalMap)
-      
-      // Parse each attribute in order
-      for (let i = 0; i < attributeOrder.length; i++) {
+      for (let i = 0; i < attributeOrder.length && i < attributeTotalLines.length; i++) {
         const currentAttribute = attributeOrder[i]
         const attr = attributeData[currentAttribute as keyof typeof attributeData]
+        const totalLine = attributeTotalLines[i]
         
-        console.log(`Parsing ${currentAttribute}...`)
+        console.log(`Parsing ${currentAttribute} (position ${i}):`, totalLine)
         
-        // Extract the attribute total from the mapped attribute total line
-        const totalLine = attributeTotalMap[currentAttribute]
-        if (totalLine) {
-          console.log(`Using total line for ${currentAttribute}:`, totalLine)
-          
-          // Extract the number from the total line (format: "S 4.93M", "(ds 4.55M", "(2 423M", "® 41.07M")
-          const totalMatch = totalLine.match(/^[A-Za-z()0-9®\s]+\s+([0-9,.]+[KM]?\s*)$/)
-          if (totalMatch) {
-            attr.total = parseNumberWithSuffix(totalMatch[1])
-            console.log(`Set ${currentAttribute} total:`, attr.total)
-          } else {
-            console.log(`Failed to parse total from line:`, totalLine)
-          }
+        // Extract the number from the total line (format: "symbol 4.93M")
+        const totalMatch = totalLine.match(/^[A-Za-z()0-9®\s]+\s+([0-9,.]+(?:\s*[KM])?)\s*$/)
+        if (totalMatch) {
+          attr.total = parseNumberWithSuffix(totalMatch[1])
+          console.log(`Set ${currentAttribute} total:`, attr.total)
         } else {
-          console.log(`No total line found for ${currentAttribute}`)
+          console.log(`Failed to parse total from line:`, totalLine)
         }
       }
       
       // Now parse all the bonus lines by mapping them to their correct attributes
-      // We need to find which attribute each bonus belongs to by looking at the context
+      // Since the order is always the same, we can track which attribute we're currently parsing
+      // by counting the attribute total lines we encounter
       
-      // Create a mapping of attribute identifiers to attribute names
-      const attributeIdentifierMap: { [key: string]: string } = {
-        '®': 'strength',
-        'S': 'allure', 
-        '(ds': 'intellect',
-        '(2': 'spirit'
-      }
-      
-      // Track which attribute we're currently in
-      let currentAttribute = 'strength'
+      let currentAttributeIndex = 0
+      let currentAttribute = attributeOrder[currentAttributeIndex]
       
       for (const line of lines) {
         // Skip until we find Attribute Detail
@@ -381,13 +346,15 @@ export default function GameCalculator() {
         }
 
         // Check if this line indicates we're moving to the next attribute
-        // Look for the attribute identifier lines (® 41.07M, S 4.93M, etc.)
-        for (const [identifier, attrName] of Object.entries(attributeIdentifierMap)) {
-          if (line.includes(identifier) && line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+[KM]?\s*$/)) {
-            currentAttribute = attrName
-            console.log(`Switched to parsing ${currentAttribute} based on identifier: ${identifier}`)
-            break
+        // Look for the attribute total lines (symbol + number format)
+        if (line.match(/^[A-Za-z()0-9®\s]+\s+[0-9,.]+(?:\s*[KM])?\s*$/)) {
+          // Move to next attribute
+          currentAttributeIndex++
+          if (currentAttributeIndex < attributeOrder.length) {
+            currentAttribute = attributeOrder[currentAttributeIndex]
+            console.log(`Switched to parsing ${currentAttribute} (position ${currentAttributeIndex})`)
           }
+          continue
         }
 
         // Parse bonuses and assign them to the current attribute
