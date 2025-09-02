@@ -205,6 +205,10 @@ export default function GameCalculator() {
       // This handles the OCR format from the game
       let lines = content.split('\n').map(line => line.trim()).filter(line => line)
       
+      // TRIM EMPTY LINES: Remove any completely empty lines to ensure consistent counting
+      lines = lines.filter(line => line.length > 0)
+      console.log('After trimming empty lines, total lines:', lines.length)
+      
       // FIRST: Split lines that contain multiple bonuses so each bonus is on its own line
       // This makes parsing much easier
       const splitLines: string[] = []
