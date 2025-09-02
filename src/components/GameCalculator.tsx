@@ -327,10 +327,6 @@ export default function GameCalculator() {
         if (line.match(/^[A-Za-z()0-9\s]+\s+[0-9,.]+[KM]?$/)) {
           console.log(`Found attribute total line: ${line}, moving to next attribute`)
           currentAttributeIndex++
-          if (currentAttributeIndex > attributeOrder.length) {
-            console.log('Reached end of attributes, stopping')
-            break
-          }
           continue
         }
         
