@@ -168,6 +168,23 @@ export default function GameCalculator() {
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [ocrProgress, setOcrProgress] = useState<string>('')
 
+  // Inventory system state
+  const [inventory, setInventory] = useState<{
+    [itemName: string]: {
+      count: number;
+      lastUpdated: string;
+      imageUrl?: string;
+    }
+  }>({})
+  
+  const [inventoryImages, setInventoryImages] = useState<{
+    [itemName: string]: string;
+  }>({})
+  
+  const [isProcessingInventory, setIsProcessingInventory] = useState(false)
+  const [inventoryProgress, setInventoryProgress] = useState('')
+  const [inventoryError, setInventoryError] = useState<string | null>(null)
+
   // Helper function to parse numbers with K/M suffixes
   const parseNumberWithSuffix = (value: string): number => {
     const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()
@@ -557,6 +574,420 @@ export default function GameCalculator() {
     }
   }
 
+  // Inventory image processing and item matching
+  const processInventoryImage = async (file: File): Promise<{
+    matchedItems: { [itemName: string]: number };
+    unmatchedRegions: any[];
+  }> => {
+    setInventoryProgress('Processing inventory image...')
+    
+    try {
+      // Create canvas to analyze the image
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const img = new Image()
+      
+      return new Promise((resolve, reject) => {
+        img.onload = () => {
+          canvas.width = img.width
+          canvas.height = img.height
+          ctx?.drawImage(img, 0, 0)
+          
+          // Get image data for analysis
+          const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height)
+          if (!imageData) {
+            reject(new Error('Failed to get image data'))
+            return
+          }
+          
+          // Simple template matching approach
+          // This is a basic implementation - you can enhance it with more sophisticated algorithms
+          matchItemsInImage(imageData).then(matchedItems => {
+            resolve({
+              matchedItems,
+              unmatchedRegions: [] // Placeholder for future enhancement
+            })
+          }).catch(reject)
+        }
+        
+        img.onerror = () => reject(new Error('Failed to load image'))
+        img.src = URL.createObjectURL(file)
+      })
+    } finally {
+      setInventoryProgress('')
+    }
+  }
+
+  // Template matching function to identify items in the image
+  const matchItemsInImage = async (imageData: ImageData): Promise<{ [itemName: string]: number }> => {
+    const matchedItems: { [itemName: string]: number } = {}
+    
+    try {
+      // Load GoV assets for comparison
+      const assets = await loadGoVAssets()
+      
+      // This is a simplified template matching approach
+      // In a real implementation, you'd want to use more sophisticated computer vision techniques
+      
+      // For now, we'll use a basic approach that looks for distinctive color patterns
+      // and compares them against your PNG assets
+      
+      const { data, width, height } = imageData
+      
+      // Simple edge detection to find potential item boundaries
+      const edges = detectEdges(data, width, height)
+      
+      // Look for regions that might contain items
+      const potentialRegions = findPotentialItemRegions(edges, width, height)
+      
+      // For each potential region, try to match against GoV assets
+      for (const region of potentialRegions) {
+        const bestMatch = await findBestAssetMatch(region, imageData, assets)
+        if (bestMatch) {
+          const itemName = bestMatch.name
+          matchedItems[itemName] = (matchedItems[itemName] || 0) + 1
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error matching items:', error)
+      // Fallback to basic detection if asset loading fails
+      const { data, width, height } = imageData
+      const edges = detectEdges(data, width, height)
+      const potentialRegions = findPotentialItemRegions(edges, width, height)
+      
+      potentialRegions.forEach(region => {
+        const itemName = `Unknown_Item_${region.id}`
+        matchedItems[itemName] = (matchedItems[itemName] || 0) + 1
+      })
+    }
+    
+    return matchedItems
+  }
+
+  // Load GoV assets for template matching
+  const loadGoVAssets = async (): Promise<Array<{ name: string; image: HTMLImageElement; data?: ImageData }>> => {
+    console.log('Loading GoV assets...') // Debug log
+    const assetNames = [
+      'Inventoryicon', 'LvlIcon', 'AffinityIcon', 'IntimacyIcon2', 'AttractionIcon', 'IntimacyIcon',
+      'VIPIcon', 'LoverIcon', 'ScriptIcon', 'BoutiqueIcon', 'ConclaveIcon', 'Dominance1', 'Dominance2',
+      'Dominance3', 'Dominance4', 'Talent1', 'Talent2', 'Talent3', 'Talent4', 'Attraction1', 'Attraction2',
+      'Attraction3', 'Attraction4', 'Inimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'Allure', 'Intellect',
+      'Strength', 'AllRounder', 'Spirit', 'Music', 'MutationPotion1', 'Mystery3', 'Mystery4', 'Mystery5',
+      'Mystery15(1)', 'Nectar', 'Nectar1', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M',
+      'Nectar6', 'Nectar7', 'NectarRandom', 'NewSummonCoinPart', 'NightfallEquip', 'NightfallMedal',
+      'NightfallSuit', 'NoviceLeague1', 'Plazma', 'PremiumGiftBox3', 'PressCard', 'Prestige2',
+      'RandomScroll', 'RenameCard', 'RingOfChange', 'RoseBouquet1', 'SanctuaryStandardFlag',
+      'Skill6WIP', 'Skill8WIP', 'SkillElixir1', 'SkillElixir2', 'SkillElixir4', 'SkillElixirRandom50',
+      'SolidarityStandardFlag', 'SophisticatedSatin', 'Spirit3', 'Spirit15(1)', 'SpiritScript',
+      'Strength3', 'Strength4', 'Strength6', 'Strength15(1)', 'StrengthScript', 'SupremacyBadgePart',
+      'TalentRandom5', 'TalentRandomStar', 'TalentScroll1', 'TalentScroll2', 'TalentScroll3',
+      'TalentScroll6Star', 'TalentScroll5Star', 'TalentScroll7', 'TalentScroll5', 'TalentScroll4Star',
+      'TalentScroll4', 'TalentScroll3Star', 'TalentScroll6', 'TalentScroll100', 'TalentScroll50',
+      'TalentScroll200', 'TourMap', 'TwilightEquip', 'UnusedNotebook'
+    ]
+    
+    const assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }> = []
+    
+    for (const assetName of assetNames) {
+      try {
+        const image = new Image()
+        image.crossOrigin = 'anonymous'
+        
+        // Create a promise to wait for the image to load
+        await new Promise((resolve, reject) => {
+          image.onload = resolve
+          image.onerror = reject
+          image.src = `/data/GoVAssets/${assetName}.PNG`
+        })
+        
+        // Convert image to ImageData for comparison
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')!
+        canvas.width = image.width
+        canvas.height = image.height
+        ctx.drawImage(image, 0, 0)
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        
+        assets.push({
+          name: assetName,
+          image,
+          data: imageData
+        })
+        console.log(`Loaded asset: ${assetName}`) // Debug log
+      } catch (error) {
+        console.warn(`Failed to load asset ${assetName}:`, error)
+      }
+    }
+    
+    console.log(`Total assets loaded: ${assets.length}`) // Debug log
+    return assets
+  }
+
+  // Find the best matching asset for a region
+  const findBestAssetMatch = async (
+    region: any, 
+    sourceImageData: ImageData, 
+    assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }>
+  ): Promise<{ name: string; confidence: number } | null> => {
+    if (assets.length === 0) return null
+    
+    let bestMatch: { name: string; confidence: number } | null = null
+    let bestConfidence = 0
+    
+    // Extract the region from the source image
+    const regionCanvas = document.createElement('canvas')
+    const regionCtx = regionCanvas.getContext('2d')!
+    regionCanvas.width = region.width
+    regionCanvas.height = region.height
+    
+    // Draw the region onto the canvas
+    const regionImageData = regionCtx.createImageData(region.width, region.height)
+    for (let y = 0; y < region.height; y++) {
+      for (let x = 0; x < region.width; x++) {
+        const sourceIdx = ((region.y + y) * sourceImageData.width + (region.x + x)) * 4
+        const targetIdx = (y * region.width + x) * 4
+        
+        regionImageData.data[targetIdx] = sourceImageData.data[sourceIdx]
+        regionImageData.data[targetIdx + 1] = sourceImageData.data[sourceIdx + 1]
+        regionImageData.data[targetIdx + 2] = sourceImageData.data[sourceIdx + 2]
+        regionImageData.data[targetIdx + 3] = sourceImageData.data[sourceIdx + 3]
+      }
+    }
+    
+    regionCtx.putImageData(regionImageData, 0, 0)
+    
+    // Compare against each asset
+    for (const asset of assets) {
+      if (!asset.data) continue
+      
+      const confidence = calculateImageSimilarity(regionImageData, asset.data)
+      
+      if (confidence > bestConfidence && confidence > 0.3) { // Minimum confidence threshold
+        bestConfidence = confidence
+        bestMatch = { name: asset.name, confidence }
+      }
+    }
+    
+    return bestMatch
+  }
+
+  // Calculate similarity between two images using normalized cross-correlation
+  const calculateImageSimilarity = (img1: ImageData, img2: ImageData): number => {
+    // Simple pixel-by-pixel comparison for now
+    // This can be enhanced with more sophisticated algorithms
+    
+    const minWidth = Math.min(img1.width, img2.width)
+    const minHeight = Math.min(img1.height, img2.height)
+    
+    let totalDiff = 0
+    let totalPixels = 0
+    
+    for (let y = 0; y < minHeight; y++) {
+      for (let x = 0; x < minWidth; x++) {
+        const idx1 = (y * img1.width + x) * 4
+        const idx2 = (y * img2.width + x) * 4
+        
+        // Compare RGB values (ignore alpha)
+        const diffR = Math.abs(img1.data[idx1] - img2.data[idx2])
+        const diffG = Math.abs(img1.data[idx1 + 1] - img2.data[idx2 + 1])
+        const diffB = Math.abs(img1.data[idx1 + 2] - img2.data[idx2 + 2])
+        
+        totalDiff += (diffR + diffG + diffB) / 3
+        totalPixels++
+      }
+    }
+    
+    if (totalPixels === 0) return 0
+    
+    // Convert to similarity score (0 = identical, 1 = completely different)
+    const avgDiff = totalDiff / totalPixels
+    const similarity = Math.max(0, 1 - (avgDiff / 255))
+    
+    return similarity
+  }
+
+  // Basic edge detection (simplified)
+  const detectEdges = (data: Uint8ClampedArray, width: number, height: number): Uint8ClampedArray => {
+    const edges = new Uint8ClampedArray(data.length)
+    
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        const idx = (y * width + x) * 4
+        
+        // Simple Sobel edge detection
+        const gx = Math.abs(data[idx + 4] - data[idx - 4]) + 
+                   Math.abs(data[idx + 4 + width * 4] - data[idx - 4 + width * 4])
+        const gy = Math.abs(data[idx + width * 4] - data[idx - width * 4]) + 
+                   Math.abs(data[idx + 4 + width * 4] - data[idx - 4 + width * 4])
+        
+        const magnitude = Math.sqrt(gx * gx + gy * gy)
+        const edgeValue = magnitude > 50 ? 255 : 0
+        
+        edges[idx] = edgeValue
+        edges[idx + 1] = edgeValue
+        edges[idx + 2] = edgeValue
+        edges[idx + 3] = 255
+      }
+    }
+    
+    return edges
+  }
+
+  // Find potential item regions in the image
+  const findPotentialItemRegions = (edges: Uint8ClampedArray, width: number, height: number): any[] => {
+    const regions: any[] = []
+    const visited = new Set<number>()
+    
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const idx = y * width + x
+        if (edges[idx * 4] > 0 && !visited.has(idx)) {
+          // Found an edge pixel, flood fill to find the region
+          const region = floodFill(edges, width, height, x, y, visited)
+          if (region.pixels.length > 100) { // Minimum region size
+            regions.push({
+              id: regions.length,
+              x: region.minX,
+              y: region.minY,
+              width: region.maxX - region.minX,
+              height: region.maxY - region.minY,
+              pixels: region.pixels
+            })
+          }
+        }
+      }
+    }
+    
+    return regions
+  }
+
+  // Flood fill algorithm to find connected regions
+  const floodFill = (edges: Uint8ClampedArray, width: number, height: number, startX: number, startY: number, visited: Set<number>) => {
+    const stack: [number, number][] = [[startX, startY]]
+    const pixels: [number, number][] = []
+    let minX = startX, maxX = startX, minY = startY, maxY = startY
+    
+    while (stack.length > 0) {
+      const [x, y] = stack.pop()!
+      const idx = y * width + x
+      
+      if (x < 0 || x >= width || y < 0 || y >= height || visited.has(idx) || edges[idx * 4] === 0) {
+        continue
+      }
+      
+      visited.add(idx)
+      pixels.push([x, y])
+      
+      minX = Math.min(minX, x)
+      maxX = Math.max(maxX, x)
+      minY = Math.min(minY, y)
+      maxY = Math.max(maxY, y)
+      
+      // Add neighboring pixels to stack
+      stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1])
+    }
+    
+    return { pixels, minX, maxX, minY, maxY }
+  }
+
+  // Handle inventory image upload
+  const handleInventoryImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || files.length === 0) return
+
+    setIsProcessingInventory(true)
+    setInventoryError(null)
+    setInventoryProgress('')
+
+    try {
+      const newInventory = { ...inventory }
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        setInventoryProgress(`Processing image ${i + 1}/${files.length}: ${file.name}`)
+        
+        try {
+          const result = await processInventoryImage(file)
+          console.log('Processing result:', result) // Debug log
+          
+          // Update inventory with matched items
+          Object.entries(result.matchedItems).forEach(([itemName, count]) => {
+            if (newInventory[itemName]) {
+              newInventory[itemName].count += count
+              newInventory[itemName].lastUpdated = new Date().toISOString()
+            } else {
+              newInventory[itemName] = {
+                count,
+                lastUpdated: new Date().toISOString()
+              }
+            }
+          })
+          
+          // Store the image URL for reference
+          const imageUrl = URL.createObjectURL(file)
+          setInventoryImages(prev => ({
+            ...prev,
+            [file.name]: imageUrl
+          }))
+          
+        } catch (error) {
+          console.error(`Failed to process ${file.name}:`, error)
+          setInventoryError(`Failed to process ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+        }
+      }
+
+      setInventory(newInventory)
+      
+    } catch (error) {
+      setInventoryError(`Inventory processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setIsProcessingInventory(false)
+      setInventoryProgress('')
+      // Clear the input so the same file can be uploaded again
+      event.target.value = ''
+    }
+  }
+
+  // Manual inventory management functions
+  const updateItemCount = (itemName: string, newCount: number) => {
+    setInventory(prev => ({
+      ...prev,
+      [itemName]: {
+        count: Math.max(0, newCount),
+        lastUpdated: new Date().toISOString(),
+        imageUrl: prev[itemName]?.imageUrl
+      }
+    }))
+  }
+
+  const addNewItem = (itemName: string, initialCount: number = 0) => {
+    if (itemName.trim()) {
+      setInventory(prev => ({
+        ...prev,
+        [itemName.trim()]: {
+          count: initialCount,
+          lastUpdated: new Date().toISOString()
+        }
+      }))
+    }
+  }
+
+  const removeItem = (itemName: string) => {
+    setInventory(prev => {
+      const newInventory = { ...prev }
+      delete newInventory[itemName]
+      return newInventory
+    })
+    
+    setInventoryImages(prev => {
+      const newImages = { ...prev }
+      delete newImages[itemName]
+      return newImages
+    })
+  }
+
   // Handle file upload (now supports both text files and images)
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -776,10 +1207,12 @@ export default function GameCalculator() {
       hasRuna,
       auras,
       wardenStats,
+      uploadedWardenData,
       scarletBond,
       scarletBondAffinity,
       optimizedBondLevels,
       talents,
+      inventory,
       timestamp: new Date().toISOString()
     }
     
@@ -878,6 +1311,7 @@ export default function GameCalculator() {
             wardenLevel: 1
           }
         })
+        setInventory(parsedData.inventory || {})
         
         alert(`Data loaded successfully! (Saved: ${new Date(parsedData.timestamp).toLocaleString()})`)
       } else {
@@ -941,6 +1375,7 @@ export default function GameCalculator() {
       scarletBondAffinity,
       optimizedBondLevels,
       talents,
+      inventory,
       timestamp: new Date().toISOString()
     }
     
@@ -1020,6 +1455,7 @@ export default function GameCalculator() {
         setScarletBond(importedData.scarletBond || {})
         setScarletBondAffinity(importedData.scarletBondAffinity || {})
         setOptimizedBondLevels(importedData.optimizedBondLevels || {})
+        setInventory(importedData.inventory || {})
         
         alert(`Data imported successfully! (From: ${new Date(importedData.timestamp).toLocaleString()})`)
       } catch (error) {
@@ -1203,6 +1639,7 @@ export default function GameCalculator() {
     if (data.hasLucy !== undefined) setHasLucy(data.hasLucy)
     if (data.hasRuna !== undefined) setHasRuna(data.hasRuna)
     if (data.talents) setTalents(data.talents)
+    if (data.inventory) setInventory(data.inventory)
   }
 
   // Helper function to check if a character is summonable (has vip: 0)
@@ -1375,7 +1812,8 @@ export default function GameCalculator() {
           wardenStats,
           scarletBond,
           scarletBondAffinity,
-          optimizedBondLevels
+          optimizedBondLevels,
+          inventory
         }
         localStorage.setItem('gameCalculatorAutoSave', JSON.stringify(currentState))
       } catch (error) {
@@ -1384,7 +1822,7 @@ export default function GameCalculator() {
     }, 30000) // Auto-save every 30 seconds
 
     return () => clearInterval(autoSaveInterval)
-  }, [baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade, domIncreasePerStar, courtyard, wardenCounts, selectedWardens, hasNyx, hasDracula, hasVictor, hasFrederick, auras, wardenStats, scarletBond, scarletBondAffinity, optimizedBondLevels])
+  }, [baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade, domIncreasePerStar, courtyard, wardenCounts, selectedWardens, hasNyx, hasDracula, hasVictor, hasFrederick, auras, wardenStats, scarletBond, scarletBondAffinity, optimizedBondLevels, inventory])
 
   // Load auto-saved data on component mount
   React.useEffect(() => {
@@ -1415,6 +1853,7 @@ export default function GameCalculator() {
           setScarletBond(parsedData.scarletBond || {})
           setScarletBondAffinity(parsedData.scarletBondAffinity || {})
           setOptimizedBondLevels(parsedData.optimizedBondLevels || {})
+          setInventory(parsedData.inventory || {})
         }
       }
     } catch (error) {
