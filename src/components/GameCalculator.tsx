@@ -686,23 +686,42 @@ export default function GameCalculator() {
   const loadGoVAssets = async (): Promise<Array<{ name: string; image: HTMLImageElement; data?: ImageData }>> => {
     console.log('Loading GoV assets...') // Debug log
     const assetNames = [
-      'Inventoryicon', 'LvlIcon', 'AffinityIcon', 'IntimacyIcon2', 'AttractionIcon', 'IntimacyIcon',
-      'VIPIcon', 'LoverIcon', 'ScriptIcon', 'BoutiqueIcon', 'ConclaveIcon', 'Dominance1', 'Dominance2',
-      'Dominance3', 'Dominance4', 'Talent1', 'Spt_12104000_atlas0', 'Talent2', 'Talent3', 'Talent4',
-      'Attraction4', 'Attraction3', 'Attraction2', 'Attraction1', 'Spt_12103000_atlas0', 'Inimacy1',
-      'Intimacy2', 'Intimacy3', 'Intimacy4', 'Allure', 'Intellect', 'Strength', 'AllRounder', 'Spirit',
-      'Music', 'MutationPotion1', 'Mystery3', 'Mystery4', 'Mystery5', 'Mystery15(1)', 'Nectar',
-      'Nectar1', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M', 'Nectar6', 'Nectar7',
-      'NectarRandom', 'NewSummonCoinPart', 'NightfallEquip', 'NightfallMedal', 'NightfallSuit',
-      'NoviceLeague1', 'Plazma', 'PremiumGiftBox3', 'PressCard', 'Prestige2', 'RandomScroll',
-      'RenameCard', 'RingOfChange', 'RoseBouquet1', 'SanctuaryStandardFlag', 'Skill6WIP', 'Skill8WIP',
-      'SkillElixir1', 'SkillElixir2', 'SkillElixir4', 'SkillElixirRandom50', 'SolidarityStandardFlag',
-      'SophisticatedSatin', 'Spirit3', 'Spirit15(1)', 'SpiritScript', 'Strength3', 'Strength4',
-      'Strength6', 'Strength15(1)', 'StrengthScript', 'SupremacyBadgePart', 'TalentRandom5',
-      'TalentRandomStar', 'TalentScroll1', 'TalentScroll2', 'TalentScroll3', 'TalentScroll6Star',
-      'TalentScroll5Star', 'TalentScroll7', 'TalentScroll5', 'TalentScroll4Star', 'TalentScroll4',
-      'TalentScroll3Star', 'TalentScroll6', 'TalentScroll100', 'TalentScroll50', 'TalentScroll200',
-      'TourMap', 'TwilightEquip', 'UnusedNotebook'
+      'AdvancedItemDonation2', 'AdvancedItemDonationPart', 'AdvancedLeague3', 'AffinityArmlet', 'AffinityLvl1', 'AffinityLvl2',
+      'AgneyiToken', 'AlchemyFormula', 'Allure1', 'Allure15(1)', 'Allure15(2)', 'Allure2', 'Allure3', 'Allure4', 'Allure5',
+      'AllureScript', 'AllyFlag', 'AmethystRing1', 'ArenaMedal', 'ArenaTrophy', 'ArenaTrophyPart', 'ArtLoverToken',
+      'Attraction1', 'Attraction2', 'Attraction3', 'Attraction4', 'AzureBouquet2', 'BackgroundFireworks', 'BackgroundWinter',
+      'BangBear', 'BanishmentStandardFlag', 'BanquetFavor', 'BanquetFavor2', 'Bat', 'Bat1', 'Bat100K', 'Bat2', 'Bat3', 'Bat4',
+      'Bat5', 'Bat6', 'Bat7', 'BatRandom', 'Bats5M', 'Beast', 'BlackPearlRing3', 'Blood', 'Blood1', 'Blood100K', 'Blood2',
+      'Blood3', 'Blood4', 'Blood5', 'Blood5M', 'Blood6', 'Blood7', 'BloodMoonEquip', 'BloodMoonMedal', 'BloodMoonRing',
+      'BloodMoonSuit', 'BloodOriginToken', 'BloodRandom', 'ChallengeFlag', 'CharmBottle2', 'CharmBox', 'CharmPhial1',
+      'ChoreExp', 'ChoreTag', 'CircusTicket', 'CircusTicketPart', 'CircusTicketRandomBox', 'CityBadge', 'CityBadgePart',
+      'CityBadgeRandomBox', 'ConclaveStandardFlag', 'ConclaveStandardFlagPart', 'CourtyardLevel', 'CourtyardPoints',
+      'CrateOfDrinks', 'CulannToken', 'DailyAttractionBox', 'DailySecretPack', 'DarkSunEquip', 'DarkSunMedal', 'DarkSunRing',
+      'DarkSunSuit', 'DeluxeGiftBox2', 'Diamond', 'Dominance1', 'Dominance2', 'Dominance3', 'Dominance4', 'DominanceBox',
+      'DraculaVaultStygianCoin', 'DuskMedal', 'DuskRing', 'DuskSuit', 'EffigyOfRobustness', 'ExquisiteSilk',
+      'FallenStarEquip', 'FallenStarMedal', 'FallenStarRing', 'FallenStarSuit', 'FamiliarFood', 'GiftBox1',
+      'GrandBanquetDecor', 'GrandBanquetInvitation', 'GuardianFlag', 'GuildEXPChest1', 'GuildEXPChest2', 'GuildEXPChest3',
+      'GuildEXPChest4', 'GuildWealth', 'HelaToken', 'HuntFlag', 'ImpeccableCashmere', 'IndigoBouquet3', 'Intellect1',
+      'Intellect15(1)', 'Intellect15(2)', 'Intellect2', 'Intellect3', 'Intellect4', 'Intellect5', 'IntellectScript',
+      'InterLeague2', 'Intimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'IntimacyBag', 'IntimacyCase', 'IntimacyIcon2',
+      'IntimacyPurse', 'Inventoryicon', 'ItemDonation1', 'ItemDonationPart', 'LoudSpeaker', 'LuxuryBanquetDecor',
+      'LuxuryBanquetInvitation', 'MacabrianCoin', 'MacabrianCoinPart', 'MacabrianCoinRandomBox', 'MidnightEquip',
+      'MidnightMedal', 'MidnightRing', 'MidnightSuit', 'MirageMirror', 'MutationPotion1', 'MutationPotion2', 'MutationPotion3',
+      'Mystery1', 'Mystery15(1)', 'Mystery15(2)', 'Mystery2', 'Mystery3', 'Mystery4', 'Mystery5', 'Nectar', 'Nectar1',
+      'Nectar100K', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M', 'Nectar6', 'Nectar7', 'NectarRandom',
+      'NewSummonCoin', 'NewSummonCoinPart', 'NightfallEquip', 'NightfallMedal', 'NightfallRing', 'NightfallSuit',
+      'NoviceLeague1', 'Plazma', 'PocketWatch', 'PremiumGiftBox3', 'PressCard', 'Prestige1', 'Prestige2', 'Purple',
+      'RandomRingBox', 'RandomScriptPart', 'RandomScroll', 'RematchFlag', 'RenameCard', 'ResourceCollectorCard',
+      'RingOfChange', 'RoseBouquet1', 'RubyRing2', 'SanctuaryStandardFlag', 'Skill4WIP', 'Skill500', 'Skill5WIP',
+      'Skill6WIP', 'Skill8WIP', 'SkillElixir1', 'SkillElixir2', 'SkillElixir3', 'SkillElixir4', 'SkillElixirRandom100',
+      'SkillElixirRandom1000', 'SkillElixirRandom50', 'SolidarityStandardFlag', 'SophisticatedSatin', 'Spirit1',
+      'Spirit15(1)', 'Spirit15(2)', 'Spirit2', 'Spirit3', 'Spirit4', 'Spirit5', 'SpiritScript', 'Strength1',
+      'Strength15(1)', 'Strength15(2)', 'Strength2', 'Strength3', 'Strength4', 'Strength6', 'StrengthScript',
+      'SupremacyBadge', 'SupremacyBadgePart', 'SupremacyBadgeRandomBox', 'Talent1', 'Talent2', 'Talent3', 'Talent4',
+      'TalentRandom5', 'TalentRandomStar', 'TalentScroll1', 'TalentScroll100', 'TalentScroll1Star', 'TalentScroll2',
+      'TalentScroll200', 'TalentScroll2Star', 'TalentScroll3', 'TalentScroll3Star', 'TalentScroll4', 'TalentScroll4Star',
+      'TalentScroll5', 'TalentScroll50', 'TalentScroll5Star', 'TalentScroll6', 'TalentScroll6Star', 'TalentScroll7',
+      'TourMap', 'TwilightEquip', 'TwilightMedal', 'TwilightRing', 'TwilightSuit', 'ValiantSlate', 'Vito'
     ]
     
     const assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }> = []
@@ -716,7 +735,7 @@ export default function GameCalculator() {
         await new Promise((resolve, reject) => {
           image.onload = resolve
           image.onerror = reject
-          image.src = `/GoVAssets/${assetName}.PNG`
+          image.src = `/data/GoVAssets/${assetName}.PNG`
         })
         
         // Validate image dimensions before creating canvas
@@ -1043,7 +1062,7 @@ export default function GameCalculator() {
             // Set the GoV asset image URL for each matched item
             setInventoryImages(prev => ({
               ...prev,
-              [itemName]: `/GoVAssets/${itemName}.PNG`
+              [itemName]: `/data/GoVAssets/${itemName}.PNG`
             }))
           })
           
@@ -1119,7 +1138,7 @@ export default function GameCalculator() {
       // Set the image URL for the GoV asset
       setInventoryImages(prev => ({
         ...prev,
-        [trimmedName]: `/GoVAssets/${trimmedName}.PNG`
+        [trimmedName]: `/data/GoVAssets/${trimmedName}.PNG`
       }))
     }
   }
@@ -6711,7 +6730,7 @@ export default function GameCalculator() {
                         <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
                           <div className="flex items-center space-x-3">
                             <img 
-                              src={inventoryImages[itemName] || `/GoVAssets/${itemName}.PNG`} 
+                              src={inventoryImages[itemName] || `/data/GoVAssets/${itemName}.PNG`} 
                               alt={itemName}
                               className="w-8 h-8 object-cover rounded"
                               onError={(e) => {
