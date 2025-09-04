@@ -816,7 +816,7 @@ export default function GameCalculator() {
       
       const confidence = calculateImageSimilarity(regionImageData, asset.data)
       
-      if (confidence > bestConfidence && confidence > 0.4) { // Higher confidence threshold for more accurate matching
+      if (confidence > bestConfidence && confidence > 0.2) { // Higher confidence threshold for more accurate matching
         bestConfidence = confidence
         bestMatch = { name: asset.name, confidence, count }
         console.log(`Matched ${asset.name} with confidence ${confidence.toFixed(3)}`)
@@ -881,17 +881,19 @@ export default function GameCalculator() {
     
     let totalDiff = 0
     let totalPixels = 0
-    let transparentPixels = 0
+    let govAssetPixels = 0
     
     for (let y = 0; y < targetSize; y++) {
       for (let x = 0; x < targetSize; x++) {
         const idx = (y * targetSize + x) * 4
         
-        // Skip transparent pixels
-        if (resized1.data[idx + 3] < 128 || resized2.data[idx + 3] < 128) {
-          transparentPixels++
+        // Only compare pixels where the GoV asset (img1) is NOT transparent
+        // This allows matching transparent GoV assets against colored inventory backgrounds
+        if (resized1.data[idx + 3] < 128) {
           continue
         }
+        
+        govAssetPixels++
         
         // Compare RGB values with weighted importance
         const diffR = Math.abs(resized1.data[idx] - resized2.data[idx])
@@ -911,10 +913,10 @@ export default function GameCalculator() {
     const avgDiff = totalDiff / totalPixels
     const similarity = Math.max(0, 1 - (avgDiff / 255))
     
-    // Boost similarity if images have similar transparency patterns
-    const transparencyBonus = Math.max(0, 1 - (transparentPixels / (targetSize * targetSize)))
+    // Boost similarity based on how much of the GoV asset we could compare
+    const coverageBonus = Math.min(1, govAssetPixels / (targetSize * targetSize * 0.1))
     
-    return (similarity * 0.8 + transparencyBonus * 0.2)
+    return (similarity * 0.9 + coverageBonus * 0.1)
   }
 
   // Helper function to resize ImageData
@@ -979,9 +981,9 @@ export default function GameCalculator() {
           const regionHeight = region.maxY - region.minY
           
           // Only add regions with valid dimensions and item-like characteristics
-          if (region.pixels.length > 200 && regionWidth > 0 && regionHeight > 0 && 
-              regionWidth >= 20 && regionHeight >= 20 && 
-              regionWidth <= 200 && regionHeight <= 200) {
+          if (region.pixels.length > 100 && regionWidth > 0 && regionHeight > 0 && 
+              regionWidth >= 15 && regionHeight >= 15 && 
+              regionWidth <= 300 && regionHeight <= 300) {
             regions.push({
               id: regions.length,
               x: region.minX,
