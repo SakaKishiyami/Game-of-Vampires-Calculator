@@ -686,21 +686,23 @@ export default function GameCalculator() {
   const loadGoVAssets = async (): Promise<Array<{ name: string; image: HTMLImageElement; data?: ImageData }>> => {
     console.log('Loading GoV assets...') // Debug log
     const assetNames = [
-      'Dominance1', 'Dominance2',
-      'Dominance3', 'Dominance4', 'Talent1', 'Talent2', 'Talent3', 'Talent4', 'Attraction1', 'Attraction2',
-      'Attraction3', 'Attraction4', 'Intimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'Allure', 'Intellect',
-      'Strength', 'AllRounder', 'Spirit', 'Music', 'MutationPotion1', 'Mystery3', 'Mystery4', 'Mystery5',
-      'Mystery15(1)', 'Nectar', 'Nectar1', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M',
-      'Nectar6', 'Nectar7', 'NectarRandom', 'NewSummonCoinPart', 'NightfallEquip', 'NightfallMedal',
-      'NightfallSuit', 'NoviceLeague1', 'Plazma', 'PremiumGiftBox3', 'PressCard', 'Prestige2',
-      'RandomScroll', 'RenameCard', 'RingOfChange', 'RoseBouquet1', 'SanctuaryStandardFlag',
-      'Skill6WIP', 'Skill8WIP', 'SkillElixir1', 'SkillElixir2', 'SkillElixir4', 'SkillElixirRandom50',
-      'SolidarityStandardFlag', 'SophisticatedSatin', 'Spirit3', 'Spirit15(1)', 'SpiritScript',
-      'Strength3', 'Strength4', 'Strength6', 'Strength15(1)', 'StrengthScript', 'SupremacyBadgePart',
-      'TalentRandom5', 'TalentRandomStar', 'TalentScroll1', 'TalentScroll2', 'TalentScroll3',
-      'TalentScroll6Star', 'TalentScroll5Star', 'TalentScroll7', 'TalentScroll5', 'TalentScroll4Star',
-      'TalentScroll4', 'TalentScroll3Star', 'TalentScroll6', 'TalentScroll100', 'TalentScroll50',
-      'TalentScroll200', 'TourMap', 'TwilightEquip'
+      'Inventoryicon', 'LvlIcon', 'AffinityIcon', 'IntimacyIcon2', 'AttractionIcon', 'IntimacyIcon',
+      'VIPIcon', 'LoverIcon', 'ScriptIcon', 'BoutiqueIcon', 'ConclaveIcon', 'Dominance1', 'Dominance2',
+      'Dominance3', 'Dominance4', 'Talent1', 'Spt_12104000_atlas0', 'Talent2', 'Talent3', 'Talent4',
+      'Attraction4', 'Attraction3', 'Attraction2', 'Attraction1', 'Spt_12103000_atlas0', 'Inimacy1',
+      'Intimacy2', 'Intimacy3', 'Intimacy4', 'Allure', 'Intellect', 'Strength', 'AllRounder', 'Spirit',
+      'Music', 'MutationPotion1', 'Mystery3', 'Mystery4', 'Mystery5', 'Mystery15(1)', 'Nectar',
+      'Nectar1', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M', 'Nectar6', 'Nectar7',
+      'NectarRandom', 'NewSummonCoinPart', 'NightfallEquip', 'NightfallMedal', 'NightfallSuit',
+      'NoviceLeague1', 'Plazma', 'PremiumGiftBox3', 'PressCard', 'Prestige2', 'RandomScroll',
+      'RenameCard', 'RingOfChange', 'RoseBouquet1', 'SanctuaryStandardFlag', 'Skill6WIP', 'Skill8WIP',
+      'SkillElixir1', 'SkillElixir2', 'SkillElixir4', 'SkillElixirRandom50', 'SolidarityStandardFlag',
+      'SophisticatedSatin', 'Spirit3', 'Spirit15(1)', 'SpiritScript', 'Strength3', 'Strength4',
+      'Strength6', 'Strength15(1)', 'StrengthScript', 'SupremacyBadgePart', 'TalentRandom5',
+      'TalentRandomStar', 'TalentScroll1', 'TalentScroll2', 'TalentScroll3', 'TalentScroll6Star',
+      'TalentScroll5Star', 'TalentScroll7', 'TalentScroll5', 'TalentScroll4Star', 'TalentScroll4',
+      'TalentScroll3Star', 'TalentScroll6', 'TalentScroll100', 'TalentScroll50', 'TalentScroll200',
+      'TourMap', 'TwilightEquip', 'UnusedNotebook'
     ]
     
     const assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }> = []
