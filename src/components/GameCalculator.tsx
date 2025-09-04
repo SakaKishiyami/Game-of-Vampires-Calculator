@@ -629,32 +629,64 @@ export default function GameCalculator() {
     const matchedItems: { [itemName: string]: number } = {}
     
     try {
-      // Convert ImageData to base64 for API call
+      // Convert ImageData to base64 for API call with size optimization
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')!
-      canvas.width = imageData.width
-      canvas.height = imageData.height
+      
+      // Resize inventory image to reduce payload size
+      const maxWidth = 800
+      const maxHeight = 600
+      const aspectRatio = imageData.width / imageData.height
+      
+      let newWidth = imageData.width
+      let newHeight = imageData.height
+      
+      if (imageData.width > maxWidth) {
+        newWidth = maxWidth
+        newHeight = maxWidth / aspectRatio
+      }
+      if (newHeight > maxHeight) {
+        newHeight = maxHeight
+        newWidth = maxHeight * aspectRatio
+      }
+      
+      canvas.width = newWidth
+      canvas.height = newHeight
       ctx.putImageData(imageData, 0, 0)
       
-      const inventoryImageBase64 = canvas.toDataURL('image/png')
+      const inventoryImageBase64 = canvas.toDataURL('image/jpeg', 0.8) // Use JPEG with compression
       
       // Prepare asset images for reference
       const assetImages = []
       const assets = await loadGoVAssets()
       
-      // Convert first 20 assets to base64 for reference
-      for (let i = 0; i < Math.min(20, assets.length); i++) {
+      // Convert first 5 assets to base64 for reference (reduced to avoid 413 error)
+      for (let i = 0; i < Math.min(5, assets.length); i++) {
         const asset = assets[i]
         if (asset.image) {
+          // Resize asset to smaller size to reduce payload
+          const maxSize = 64
           const assetCanvas = document.createElement('canvas')
           const assetCtx = assetCanvas.getContext('2d')!
-          assetCanvas.width = asset.image.width
-          assetCanvas.height = asset.image.height
-          assetCtx.drawImage(asset.image, 0, 0)
+          
+          // Calculate new dimensions maintaining aspect ratio
+          const aspectRatio = asset.image.width / asset.image.height
+          let newWidth = maxSize
+          let newHeight = maxSize
+          
+          if (aspectRatio > 1) {
+            newHeight = maxSize / aspectRatio
+          } else {
+            newWidth = maxSize * aspectRatio
+          }
+          
+          assetCanvas.width = newWidth
+          assetCanvas.height = newHeight
+          assetCtx.drawImage(asset.image, 0, 0, newWidth, newHeight)
           
           assetImages.push({
             name: asset.name,
-            url: assetCanvas.toDataURL('image/png')
+            url: assetCanvas.toDataURL('image/jpeg', 0.8) // Use JPEG with compression
           })
         }
       }

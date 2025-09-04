@@ -82,7 +82,7 @@ Be as accurate as possible with both item identification and count reading.`
             type: 'text',
             text: 'Here are the reference asset images to match against:'
           },
-          ...assetImages.slice(0, 20).map((asset: any) => ({
+          ...assetImages.slice(0, 5).map((asset: any) => ({
             type: 'image_url',
             image_url: {
               url: asset.url
