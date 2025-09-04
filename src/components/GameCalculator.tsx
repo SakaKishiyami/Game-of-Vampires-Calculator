@@ -589,6 +589,12 @@ export default function GameCalculator() {
       
       return new Promise((resolve, reject) => {
         img.onload = () => {
+          // Validate image dimensions
+          if (img.width === 0 || img.height === 0 || !img.width || !img.height) {
+            reject(new Error(`Invalid image dimensions: ${img.width}x${img.height}`))
+            return
+          }
+          
           canvas.width = img.width
           canvas.height = img.height
           ctx?.drawImage(img, 0, 0)
@@ -701,6 +707,12 @@ export default function GameCalculator() {
           image.src = `/GoVAssets/${assetName}.PNG`
         })
         
+        // Validate image dimensions before creating canvas
+        if (image.width === 0 || image.height === 0 || !image.width || !image.height) {
+          console.warn(`Asset ${assetName} has invalid dimensions: ${image.width}x${image.height}`)
+          continue
+        }
+        
         // Convert image to ImageData for comparison
         const canvas = document.createElement('canvas')
         const ctx = canvas.getContext('2d')!
@@ -732,6 +744,12 @@ export default function GameCalculator() {
     assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }>
   ): Promise<{ name: string; confidence: number } | null> => {
     if (assets.length === 0) return null
+    
+    // Validate region dimensions
+    if (!region || !region.width || !region.height || region.width <= 0 || region.height <= 0) {
+      console.warn('Invalid region dimensions:', region)
+      return null
+    }
     
     let bestMatch: { name: string; confidence: number } | null = null
     let bestConfidence = 0
