@@ -988,6 +988,45 @@ export default function GameCalculator() {
     })
   }
 
+  // Additional inventory helper functions for UI
+  const addInventoryItem = (itemName: string, initialCount: number = 1) => {
+    if (itemName.trim()) {
+      setInventory(prev => ({
+        ...prev,
+        [itemName.trim()]: {
+          count: (prev[itemName.trim()]?.count || 0) + initialCount,
+          lastUpdated: new Date().toISOString(),
+          imageUrl: prev[itemName.trim()]?.imageUrl
+        }
+      }))
+    }
+  }
+
+  const updateInventoryItem = (itemName: string, newCount: number) => {
+    setInventory(prev => ({
+      ...prev,
+      [itemName]: {
+        count: Math.max(0, newCount),
+        lastUpdated: new Date().toISOString(),
+        imageUrl: prev[itemName]?.imageUrl
+      }
+    }))
+  }
+
+  const removeInventoryItem = (itemName: string) => {
+    setInventory(prev => {
+      const newInventory = { ...prev }
+      delete newInventory[itemName]
+      return newInventory
+    })
+    
+    setInventoryImages(prev => {
+      const newImages = { ...prev }
+      delete newImages[itemName]
+      return newImages
+    })
+  }
+
   // Handle file upload (now supports both text files and images)
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -4108,7 +4147,7 @@ export default function GameCalculator() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="aura-bonuses" className="w-full">
-          <TabsList className="grid w-full grid-cols-8 bg-gray-800 mb-6">
+          <TabsList className="grid w-full grid-cols-9 bg-gray-800 mb-6">
             <TabsTrigger value="aura-bonuses" className="data-[state=active]:bg-red-600">
               Aura Bonuses
             </TabsTrigger>
@@ -4129,6 +4168,9 @@ export default function GameCalculator() {
             </TabsTrigger>
             <TabsTrigger value="scarlet-bond" className="data-[state=active]:bg-red-600">
               Scarlet Bond
+            </TabsTrigger>
+            <TabsTrigger value="inventory" className="data-[state=active]:bg-red-600">
+              Inventory
             </TabsTrigger>
             <TabsTrigger value="data" className="data-[state=active]:bg-red-600">
               Data
@@ -6410,6 +6452,191 @@ export default function GameCalculator() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Inventory Tab */}
+          <TabsContent value="inventory">
+            <div className="space-y-6">
+              {/* Inventory Management */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-red-400">Inventory Management</CardTitle>
+                  <div className="text-sm text-gray-300">
+                    Upload screenshots to automatically detect and count items, or manage inventory manually
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {/* Image Upload */}
+                    <div>
+                      <Label htmlFor="inventory-upload" className="text-white font-medium">
+                        Upload Inventory Screenshots
+                      </Label>
+                      <div className="mt-2">
+                        <Input
+                          id="inventory-upload"
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleInventoryImageUpload}
+                          className="bg-gray-700 border-gray-600 text-white"
+                        />
+                        <div className="text-xs text-gray-400 mt-1">
+                          Upload one or more screenshots of your inventory
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Processing Status */}
+                    {isProcessingInventory && (
+                      <div className="p-3 bg-blue-900/30 border border-blue-600/50 rounded">
+                        <div className="text-blue-400 font-medium">Processing...</div>
+                        <div className="text-blue-300 text-sm">{inventoryProgress}</div>
+                      </div>
+                    )}
+
+                    {/* Error Display */}
+                    {inventoryError && (
+                      <div className="p-3 bg-red-900/30 border border-red-600/50 rounded">
+                        <div className="text-red-400 font-medium">Error</div>
+                        <div className="text-red-300 text-sm">{inventoryError}</div>
+                      </div>
+                    )}
+
+                    {/* Manual Item Management */}
+                    <div className="border-t border-gray-600 pt-4">
+                      <h3 className="text-yellow-400 font-semibold mb-3">Manual Item Management</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="item-name" className="text-white text-sm">Item Name</Label>
+                          <Input
+                            id="item-name"
+                            placeholder="Enter item name"
+                            className="bg-gray-700 border-gray-600 text-white mt-1"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                const input = e.target as HTMLInputElement;
+                                const itemName = input.value.trim();
+                                if (itemName) {
+                                  addInventoryItem(itemName, 1);
+                                  input.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="item-count" className="text-white text-sm">Count</Label>
+                          <Input
+                            id="item-count"
+                            type="number"
+                            min="1"
+                            defaultValue="1"
+                            className="bg-gray-700 border-gray-600 text-white mt-1"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                const nameInput = document.getElementById('item-name') as HTMLInputElement;
+                                const countInput = e.target as HTMLInputElement;
+                                const itemName = nameInput.value.trim();
+                                const count = parseInt(countInput.value) || 1;
+                                if (itemName) {
+                                  addInventoryItem(itemName, count);
+                                  nameInput.value = '';
+                                  countInput.value = '1';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          const nameInput = document.getElementById('item-name') as HTMLInputElement;
+                          const countInput = document.getElementById('item-count') as HTMLInputElement;
+                          const itemName = nameInput.value.trim();
+                          const count = parseInt(countInput.value) || 1;
+                          if (itemName) {
+                            addInventoryItem(itemName, count);
+                            nameInput.value = '';
+                            countInput.value = '1';
+                          }
+                        }}
+                        className="mt-2 bg-blue-600 hover:bg-blue-700"
+                      >
+                        Add Item
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Current Inventory Display */}
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-green-400">Current Inventory</CardTitle>
+                  <div className="text-sm text-gray-300">
+                    {Object.keys(inventory).length === 0 ? 'No items in inventory' : `${Object.keys(inventory).length} items tracked`}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {Object.keys(inventory).length === 0 ? (
+                    <div className="text-center text-gray-400 py-8">
+                      Upload screenshots or add items manually to get started
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {Object.entries(inventory).map(([itemName, itemData]) => (
+                        <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
+                          <div className="flex items-center space-x-3">
+                            {inventoryImages[itemName] && (
+                              <img 
+                                src={inventoryImages[itemName]} 
+                                alt={itemName}
+                                className="w-8 h-8 object-cover rounded"
+                              />
+                            )}
+                            <div>
+                              <div className="text-white font-medium">{itemName}</div>
+                              <div className="text-gray-400 text-sm">
+                                Last updated: {new Date(itemData.lastUpdated).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <div className="text-2xl font-bold text-yellow-400">
+                              {itemData.count.toLocaleString()}
+                            </div>
+                            <div className="flex space-x-2">
+                              <Button
+                                size="sm"
+                                onClick={() => updateInventoryItem(itemName, itemData.count + 1)}
+                                className="bg-green-600 hover:bg-green-700 text-xs px-2"
+                              >
+                                +
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => updateInventoryItem(itemName, Math.max(0, itemData.count - 1))}
+                                className="bg-red-600 hover:bg-red-700 text-xs px-2"
+                              >
+                                -
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => removeInventoryItem(itemName)}
+                                className="bg-gray-600 hover:bg-gray-700 text-xs px-2"
+                              >
+                                ×
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Data Tab */}
