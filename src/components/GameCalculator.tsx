@@ -656,7 +656,8 @@ export default function GameCalculator() {
         const bestMatch = await findBestAssetMatch(region, imageData, assets)
         if (bestMatch) {
           const itemName = bestMatch.name
-          matchedItems[itemName] = (matchedItems[itemName] || 0) + 1
+          const count = bestMatch.count || 1
+          matchedItems[itemName] = (matchedItems[itemName] || 0) + count
         }
       }
       
@@ -687,7 +688,7 @@ export default function GameCalculator() {
     const assetNames = [
       'Inventoryicon', 'LvlIcon', 'AffinityIcon', 'IntimacyIcon2', 'AttractionIcon', 'IntimacyIcon',
       'VIPIcon', 'LoverIcon', 'ScriptIcon', 'BoutiqueIcon', 'ConclaveIcon', 'Dominance1', 'Dominance2',
-      'Dominance3', 'Dominance4', 'Talent1', 'Talent2', 'Talent3', 'Talent4', 'Attraction1', 'Attraction2',
+      'Dominance3', 'Dominance4', 'Talent1', 'Talent2', 'Talent3', 'Talent4', 'Attraction2',
       'Attraction3', 'Attraction4', 'Inimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'Allure', 'Intellect',
       'Strength', 'AllRounder', 'Spirit', 'Music', 'MutationPotion1', 'Mystery3', 'Mystery4', 'Mystery5',
       'Mystery15(1)', 'Nectar', 'Nectar1', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M',
@@ -747,12 +748,12 @@ export default function GameCalculator() {
     return assets
   }
 
-  // Find the best matching asset for a region
+  // Find the best matching asset for a region and extract count
   const findBestAssetMatch = async (
     region: any, 
     sourceImageData: ImageData, 
     assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }>
-  ): Promise<{ name: string; confidence: number } | null> => {
+  ): Promise<{ name: string; confidence: number; count: number } | null> => {
     if (assets.length === 0) return null
     
     // Validate region dimensions
@@ -786,6 +787,9 @@ export default function GameCalculator() {
     
     regionCtx.putImageData(regionImageData, 0, 0)
     
+    // Extract count number from the region
+    const count = extractCountFromRegion(regionImageData)
+    
     // Compare against each asset
     for (const asset of assets) {
       if (!asset.data) continue
@@ -794,11 +798,77 @@ export default function GameCalculator() {
       
       if (confidence > bestConfidence && confidence > 0.15) { // Lowered confidence threshold for better matching
         bestConfidence = confidence
-        bestMatch = { name: asset.name, confidence }
+        bestMatch = { name: asset.name, confidence, count }
       }
     }
     
     return bestMatch
+  }
+
+  // Extract count number from a region using OCR-like approach
+  const extractCountFromRegion = (regionImageData: ImageData): number => {
+    // Simple number detection by looking for bright text on dark background
+    // This is a basic implementation - could be enhanced with actual OCR
+    
+    const { data, width, height } = regionImageData
+    let maxNumber = 0
+    
+    // Look for patterns that might be numbers
+    // Check different areas of the region for text-like patterns
+    const textAreas = [
+      { x: 0, y: 0, w: width, h: Math.floor(height * 0.3) }, // Top area
+      { x: 0, y: Math.floor(height * 0.7), w: width, h: Math.floor(height * 0.3) }, // Bottom area
+      { x: Math.floor(width * 0.7), y: 0, w: Math.floor(width * 0.3), h: height }, // Right area
+    ]
+    
+    for (const area of textAreas) {
+      const number = detectNumberInArea(data, width, height, area.x, area.y, area.w, area.h)
+      if (number > maxNumber) {
+        maxNumber = number
+      }
+    }
+    
+    // If no number detected, default to 1
+    return maxNumber > 0 ? maxNumber : 1
+  }
+
+  // Detect number in a specific area of the image
+  const detectNumberInArea = (data: Uint8ClampedArray, width: number, height: number, x: number, y: number, w: number, h: number): number => {
+    // Simple heuristic: look for bright pixels that might form numbers
+    let brightPixels = 0
+    let totalPixels = 0
+    
+    for (let dy = 0; dy < h && y + dy < height; dy++) {
+      for (let dx = 0; dx < w && x + dx < width; dx++) {
+        const idx = ((y + dy) * width + (x + dx)) * 4
+        const r = data[idx]
+        const g = data[idx + 1]
+        const b = data[idx + 2]
+        const alpha = data[idx + 3]
+        
+        if (alpha > 128) { // Not transparent
+          totalPixels++
+          const brightness = (r + g + b) / 3
+          if (brightness > 200) { // Bright pixel (likely text)
+            brightPixels++
+          }
+        }
+      }
+    }
+    
+    if (totalPixels === 0) return 0
+    
+    const brightnessRatio = brightPixels / totalPixels
+    
+    // Estimate number based on brightness ratio and area size
+    if (brightnessRatio > 0.1 && w > 10 && h > 10) {
+      // This is a very rough estimation - in a real implementation,
+      // you'd use actual OCR or more sophisticated pattern recognition
+      const estimatedNumber = Math.min(999, Math.max(1, Math.floor(brightnessRatio * 100)))
+      return estimatedNumber
+    }
+    
+    return 0
   }
 
   // Calculate similarity between two images using improved algorithm
@@ -907,8 +977,10 @@ export default function GameCalculator() {
           const regionWidth = region.maxX - region.minX
           const regionHeight = region.maxY - region.minY
           
-          // Only add regions with valid dimensions and minimum size
-          if (region.pixels.length > 100 && regionWidth > 0 && regionHeight > 0) {
+          // Only add regions with valid dimensions and item-like characteristics
+          if (region.pixels.length > 200 && regionWidth > 0 && regionHeight > 0 && 
+              regionWidth >= 20 && regionHeight >= 20 && 
+              regionWidth <= 200 && regionHeight <= 200) {
             regions.push({
               id: regions.length,
               x: region.minX,
