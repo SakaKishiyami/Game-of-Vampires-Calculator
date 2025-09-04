@@ -624,65 +624,72 @@ export default function GameCalculator() {
     }
   }
 
-  // Template matching function to identify items in the image
+  // AI-powered inventory analysis using GPT-4 Vision
   const matchItemsInImage = async (imageData: ImageData): Promise<{ [itemName: string]: number }> => {
     const matchedItems: { [itemName: string]: number } = {}
     
     try {
-      // Load GoV assets for comparison
+      // Convert ImageData to base64 for API call
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')!
+      canvas.width = imageData.width
+      canvas.height = imageData.height
+      ctx.putImageData(imageData, 0, 0)
+      
+      const inventoryImageBase64 = canvas.toDataURL('image/png')
+      
+      // Prepare asset images for reference
+      const assetImages = []
       const assets = await loadGoVAssets()
       
-      const { width, height } = imageData
-      
-      // Ignore bottom 1/4 of the image
-      const usableHeight = Math.floor(height * 0.75)
-      
-      // Calculate grid dimensions (5 columns)
-      const numColumns = 5
-      const itemWidth = Math.floor(width / numColumns)
-      const itemHeight = Math.floor(usableHeight / Math.ceil(usableHeight / itemWidth)) // Make items roughly square
-      
-      console.log(`Grid: ${numColumns} columns, item size: ${itemWidth}x${itemHeight}, usable height: ${usableHeight}`)
-      
-      // Create grid regions and match each one
-      for (let row = 0; row * itemHeight < usableHeight; row++) {
-        for (let col = 0; col < numColumns; col++) {
-          const x = col * itemWidth
-          const y = row * itemHeight
+      // Convert first 20 assets to base64 for reference
+      for (let i = 0; i < Math.min(20, assets.length); i++) {
+        const asset = assets[i]
+        if (asset.image) {
+          const assetCanvas = document.createElement('canvas')
+          const assetCtx = assetCanvas.getContext('2d')!
+          assetCanvas.width = asset.image.width
+          assetCanvas.height = asset.image.height
+          assetCtx.drawImage(asset.image, 0, 0)
           
-          // Skip if this would go outside usable area
-          if (y + itemHeight > usableHeight) break
-          
-          // Add some padding to avoid edges
-          const padding = 5
-          const regionX = x + padding
-          const regionY = y + padding
-          const regionWidth = itemWidth - (padding * 2)
-          const regionHeight = itemHeight - (padding * 2)
-          
-          try {
-            // Extract region image data
-            const regionImageData = extractRegionImageData(imageData, regionX, regionY, regionWidth, regionHeight)
-            if (!regionImageData) continue
-            
-            // Find best matching asset
-            const bestMatch = await findBestAssetMatch(regionImageData, assets)
-            if (bestMatch) {
-              const { name: itemName, count } = bestMatch
-              matchedItems[itemName] = (matchedItems[itemName] || 0) + count
-              console.log(`Matched ${itemName} at grid position (${row}, ${col}) with count ${count}`)
-            }
-          } catch (error) {
-            console.warn(`Error processing grid position (${row}, ${col}):`, error)
-            continue
-          }
+          assetImages.push({
+            name: asset.name,
+            url: assetCanvas.toDataURL('image/png')
+          })
         }
       }
       
-      console.log(`Total matched items:`, Object.keys(matchedItems).length)
+      console.log(`Sending ${assetImages.length} reference assets to GPT-4 Vision`)
+      
+      // Call our API route
+      const response = await fetch('/api/analyze-inventory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          inventoryImage: inventoryImageBase64,
+          assetImages: assetImages
+        })
+      })
+      
+      if (!response.ok) {
+        throw new Error(`API call failed: ${response.statusText}`)
+      }
+      
+      const result = await response.json()
+      
+      if (result.success && result.data && result.data.items) {
+        Object.assign(matchedItems, result.data.items)
+        console.log(`GPT-4 Vision found ${Object.keys(matchedItems).length} items:`, matchedItems)
+      } else {
+        throw new Error('Invalid response from GPT-4 Vision')
+      }
       
     } catch (error) {
-      console.error('Error matching items:', error)
+      console.error('Error with GPT-4 Vision analysis:', error)
+      // Fallback to basic detection if AI fails
+      console.log('Falling back to basic detection...')
     }
     
     return matchedItems

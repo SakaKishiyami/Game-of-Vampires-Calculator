@@ -15,6 +15,7 @@ A comprehensive React-based calculator for the Game of Vampires mobile game. Thi
   - Aura management
   - Individual warden stats
 - **Scarlet Bond**: Bond management with affinity points and attribute bonuses
+- **AI-Powered Inventory**: Upload inventory screenshots and automatically detect items using GPT-4 Vision
 
 ## Getting Started
 
@@ -35,12 +36,20 @@ cd game-calculator
 npm install
 ```
 
-3. Run the development server:
+3. Set up environment variables:
+   - Create a `.env.local` file in the root directory
+   - Add your OpenAI API key:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+   - Get your API key from: https://platform.openai.com/api-keys
+
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Usage
 
@@ -56,6 +65,11 @@ npm run dev
    - Configure auras
    - Set individual warden stats
 7. **Manage Scarlet Bonds**: Set affinity points and attribute bonuses for bonds
+8. **AI Inventory Analysis**: 
+   - Go to the Inventory tab
+   - Upload a screenshot of your game inventory
+   - The AI will automatically detect items and their counts
+   - View your inventory with proper item images and quantities
 
 ## Calculations
 
