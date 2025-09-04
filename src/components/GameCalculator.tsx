@@ -690,6 +690,11 @@ export default function GameCalculator() {
       console.error('Error with GPT-4 Vision analysis:', error)
       // Fallback to basic detection if AI fails
       console.log('Falling back to basic detection...')
+      
+      // If it's an API key error, show helpful message
+      if (error instanceof Error && error.message.includes('API call failed')) {
+        console.log('GPT-4 Vision API not available. Please set up OPENAI_API_KEY in Vercel environment variables.')
+      }
     }
     
     return matchedItems
