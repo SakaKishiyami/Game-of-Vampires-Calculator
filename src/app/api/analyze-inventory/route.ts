@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
+// Add GET method for debugging
+export async function GET() {
+  console.log('GET request received to /api/analyze-inventory')
+  return NextResponse.json({ 
+    message: 'GPT-4 Vision API endpoint is working',
+    timestamp: new Date().toISOString(),
+    methods: ['GET', 'POST']
+  })
+}
+
 export async function POST(request: NextRequest) {
+  console.log('POST request received to /api/analyze-inventory')
   try {
     const { inventoryImage, assetImages } = await request.json()
+    console.log('Request data received:', { hasInventoryImage: !!inventoryImage, assetImagesCount: assetImages?.length || 0 })
 
     if (!inventoryImage) {
       return NextResponse.json({ error: 'No inventory image provided' }, { status: 400 })
