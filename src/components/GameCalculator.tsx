@@ -792,7 +792,7 @@ export default function GameCalculator() {
       
       const confidence = calculateImageSimilarity(regionImageData, asset.data)
       
-      if (confidence > bestConfidence && confidence > 0.3) { // Minimum confidence threshold
+      if (confidence > bestConfidence && confidence > 0.15) { // Lowered confidence threshold for better matching
         bestConfidence = confidence
         bestMatch = { name: asset.name, confidence }
       }
@@ -801,39 +801,69 @@ export default function GameCalculator() {
     return bestMatch
   }
 
-  // Calculate similarity between two images using normalized cross-correlation
+  // Calculate similarity between two images using improved algorithm
   const calculateImageSimilarity = (img1: ImageData, img2: ImageData): number => {
-    // Simple pixel-by-pixel comparison for now
-    // This can be enhanced with more sophisticated algorithms
-    
-    const minWidth = Math.min(img1.width, img2.width)
-    const minHeight = Math.min(img1.height, img2.height)
+    // Resize both images to the same size for comparison
+    const targetSize = 32 // Standardize to 32x32 for comparison
+    const resized1 = resizeImageData(img1, targetSize, targetSize)
+    const resized2 = resizeImageData(img2, targetSize, targetSize)
     
     let totalDiff = 0
     let totalPixels = 0
+    let transparentPixels = 0
     
-    for (let y = 0; y < minHeight; y++) {
-      for (let x = 0; x < minWidth; x++) {
-        const idx1 = (y * img1.width + x) * 4
-        const idx2 = (y * img2.width + x) * 4
+    for (let y = 0; y < targetSize; y++) {
+      for (let x = 0; x < targetSize; x++) {
+        const idx = (y * targetSize + x) * 4
         
-        // Compare RGB values (ignore alpha)
-        const diffR = Math.abs(img1.data[idx1] - img2.data[idx2])
-        const diffG = Math.abs(img1.data[idx1 + 1] - img2.data[idx2 + 1])
-        const diffB = Math.abs(img1.data[idx1 + 2] - img2.data[idx2 + 2])
+        // Skip transparent pixels
+        if (resized1.data[idx + 3] < 128 || resized2.data[idx + 3] < 128) {
+          transparentPixels++
+          continue
+        }
         
-        totalDiff += (diffR + diffG + diffB) / 3
+        // Compare RGB values with weighted importance
+        const diffR = Math.abs(resized1.data[idx] - resized2.data[idx])
+        const diffG = Math.abs(resized1.data[idx + 1] - resized2.data[idx + 1])
+        const diffB = Math.abs(resized1.data[idx + 2] - resized2.data[idx + 2])
+        
+        // Weight colors differently (green is often more important for game items)
+        const weightedDiff = (diffR * 0.3 + diffG * 0.4 + diffB * 0.3)
+        totalDiff += weightedDiff
         totalPixels++
       }
     }
     
     if (totalPixels === 0) return 0
     
-    // Convert to similarity score (0 = identical, 1 = completely different)
+    // Convert to similarity score (0 = completely different, 1 = identical)
     const avgDiff = totalDiff / totalPixels
     const similarity = Math.max(0, 1 - (avgDiff / 255))
     
-    return similarity
+    // Boost similarity if images have similar transparency patterns
+    const transparencyBonus = Math.max(0, 1 - (transparentPixels / (targetSize * targetSize)))
+    
+    return (similarity * 0.8 + transparencyBonus * 0.2)
+  }
+
+  // Helper function to resize ImageData
+  const resizeImageData = (imageData: ImageData, newWidth: number, newHeight: number): ImageData => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')!
+    canvas.width = newWidth
+    canvas.height = newHeight
+    
+    // Create a temporary canvas with original image
+    const tempCanvas = document.createElement('canvas')
+    const tempCtx = tempCanvas.getContext('2d')!
+    tempCanvas.width = imageData.width
+    tempCanvas.height = imageData.height
+    tempCtx.putImageData(imageData, 0, 0)
+    
+    // Draw resized image
+    ctx.drawImage(tempCanvas, 0, 0, newWidth, newHeight)
+    
+    return ctx.getImageData(0, 0, newWidth, newHeight)
   }
 
   // Basic edge detection (simplified)
@@ -955,14 +985,13 @@ export default function GameCalculator() {
                 lastUpdated: new Date().toISOString()
               }
             }
+            
+            // Set the GoV asset image URL for each matched item
+            setInventoryImages(prev => ({
+              ...prev,
+              [itemName]: `/GoVAssets/${itemName}.PNG`
+            }))
           })
-          
-          // Store the image URL for reference
-          const imageUrl = URL.createObjectURL(file)
-          setInventoryImages(prev => ({
-            ...prev,
-            [file.name]: imageUrl
-          }))
           
         } catch (error) {
           console.error(`Failed to process ${file.name}:`, error)
@@ -1023,13 +1052,20 @@ export default function GameCalculator() {
   // Additional inventory helper functions for UI
   const addInventoryItem = (itemName: string, initialCount: number = 1) => {
     if (itemName.trim()) {
+      const trimmedName = itemName.trim()
       setInventory(prev => ({
         ...prev,
-        [itemName.trim()]: {
-          count: (prev[itemName.trim()]?.count || 0) + initialCount,
+        [trimmedName]: {
+          count: (prev[trimmedName]?.count || 0) + initialCount,
           lastUpdated: new Date().toISOString(),
-          imageUrl: prev[itemName.trim()]?.imageUrl
+          imageUrl: prev[trimmedName]?.imageUrl
         }
+      }))
+      
+      // Set the image URL for the GoV asset
+      setInventoryImages(prev => ({
+        ...prev,
+        [trimmedName]: `/GoVAssets/${trimmedName}.PNG`
       }))
     }
   }
@@ -6620,13 +6656,15 @@ export default function GameCalculator() {
                       {Object.entries(inventory).map(([itemName, itemData]) => (
                         <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
                           <div className="flex items-center space-x-3">
-                            {inventoryImages[itemName] && (
-                              <img 
-                                src={inventoryImages[itemName]} 
-                                alt={itemName}
-                                className="w-8 h-8 object-cover rounded"
-                              />
-                            )}
+                            <img 
+                              src={inventoryImages[itemName] || `/GoVAssets/${itemName}.PNG`} 
+                              alt={itemName}
+                              className="w-8 h-8 object-cover rounded"
+                              onError={(e) => {
+                                // Hide image if it fails to load
+                                e.currentTarget.style.display = 'none'
+                              }}
+                            />
                             <div>
                               <div className="text-white font-medium">{itemName}</div>
                               <div className="text-gray-400 text-sm">
