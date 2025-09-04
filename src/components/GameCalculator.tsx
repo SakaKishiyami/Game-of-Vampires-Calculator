@@ -648,6 +648,11 @@ export default function GameCalculator() {
       
       // For each potential region, try to match against GoV assets
       for (const region of potentialRegions) {
+        // Skip regions with invalid dimensions
+        if (!region || !region.width || !region.height || region.width <= 0 || region.height <= 0) {
+          continue
+        }
+        
         const bestMatch = await findBestAssetMatch(region, imageData, assets)
         if (bestMatch) {
           const itemName = bestMatch.name
@@ -663,6 +668,11 @@ export default function GameCalculator() {
       const potentialRegions = findPotentialItemRegions(edges, width, height)
       
       potentialRegions.forEach(region => {
+        // Skip regions with invalid dimensions
+        if (!region || !region.width || !region.height || region.width <= 0 || region.height <= 0) {
+          return
+        }
+        
         const itemName = `Unknown_Item_${region.id}`
         matchedItems[itemName] = (matchedItems[itemName] || 0) + 1
       })
@@ -864,13 +874,17 @@ export default function GameCalculator() {
         if (edges[idx * 4] > 0 && !visited.has(idx)) {
           // Found an edge pixel, flood fill to find the region
           const region = floodFill(edges, width, height, x, y, visited)
-          if (region.pixels.length > 100) { // Minimum region size
+          const regionWidth = region.maxX - region.minX
+          const regionHeight = region.maxY - region.minY
+          
+          // Only add regions with valid dimensions and minimum size
+          if (region.pixels.length > 100 && regionWidth > 0 && regionHeight > 0) {
             regions.push({
               id: regions.length,
               x: region.minX,
               y: region.minY,
-              width: region.maxX - region.minX,
-              height: region.maxY - region.minY,
+              width: regionWidth,
+              height: regionHeight,
               pixels: region.pixels
             })
           }
