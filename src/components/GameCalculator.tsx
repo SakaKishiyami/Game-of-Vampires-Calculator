@@ -735,7 +735,7 @@ export default function GameCalculator() {
         await new Promise((resolve, reject) => {
           image.onload = resolve
           image.onerror = reject
-          image.src = `/data/GoVAssets/${assetName}.PNG`
+          image.src = `/GoVAssets/${assetName}.PNG`
         })
         
         // Validate image dimensions before creating canvas
@@ -1062,7 +1062,7 @@ export default function GameCalculator() {
             // Set the GoV asset image URL for each matched item
             setInventoryImages(prev => ({
               ...prev,
-              [itemName]: `/data/GoVAssets/${itemName}.PNG`
+              [itemName]: `/GoVAssets/${itemName}.PNG`
             }))
           })
           
@@ -1138,7 +1138,7 @@ export default function GameCalculator() {
       // Set the image URL for the GoV asset
       setInventoryImages(prev => ({
         ...prev,
-        [trimmedName]: `/data/GoVAssets/${trimmedName}.PNG`
+        [trimmedName]: `/GoVAssets/${trimmedName}.PNG`
       }))
     }
   }
@@ -6730,7 +6730,7 @@ export default function GameCalculator() {
                         <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
                           <div className="flex items-center space-x-3">
                             <img 
-                              src={inventoryImages[itemName] || `/data/GoVAssets/${itemName}.PNG`} 
+                              src={inventoryImages[itemName] || `/GoVAssets/${itemName}.PNG`} 
                               alt={itemName}
                               className="w-8 h-8 object-cover rounded"
                               onError={(e) => {
