@@ -698,7 +698,7 @@ export default function GameCalculator() {
         await new Promise((resolve, reject) => {
           image.onload = resolve
           image.onerror = reject
-          image.src = `/data/GoVAssets/${assetName}.PNG`
+          image.src = `/GoVAssets/${assetName}.PNG`
         })
         
         // Convert image to ImageData for comparison
