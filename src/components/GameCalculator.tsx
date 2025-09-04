@@ -828,8 +828,58 @@ export default function GameCalculator() {
 
   // Extract count number from a region using conservative approach
   const extractCountFromRegion = (regionImageData: ImageData): number => {
-    // For now, return 1 as default since the count detection is not accurate enough
-    // In a real implementation, you'd use proper OCR or manual verification
+    const width = regionImageData.width
+    const height = regionImageData.height
+    
+    // Look at the bottom right corner (last 20% of width and height)
+    const cornerWidth = Math.max(10, Math.floor(width * 0.2))
+    const cornerHeight = Math.max(10, Math.floor(height * 0.2))
+    const startX = width - cornerWidth
+    const startY = height - cornerHeight
+    
+    // Extract the corner region
+    const cornerData = new Uint8ClampedArray(cornerWidth * cornerHeight * 4)
+    for (let y = 0; y < cornerHeight; y++) {
+      for (let x = 0; x < cornerWidth; x++) {
+        const srcIdx = ((startY + y) * width + (startX + x)) * 4
+        const dstIdx = (y * cornerWidth + x) * 4
+        cornerData[dstIdx] = regionImageData.data[srcIdx]     // R
+        cornerData[dstIdx + 1] = regionImageData.data[srcIdx + 1] // G
+        cornerData[dstIdx + 2] = regionImageData.data[srcIdx + 2] // B
+        cornerData[dstIdx + 3] = regionImageData.data[srcIdx + 3] // A
+      }
+    }
+    
+    // Simple heuristic: look for bright/white pixels that could be numbers
+    let brightPixels = 0
+    let totalPixels = 0
+    
+    for (let i = 0; i < cornerData.length; i += 4) {
+      const r = cornerData[i]
+      const g = cornerData[i + 1]
+      const b = cornerData[i + 2]
+      const a = cornerData[i + 3]
+      
+      if (a > 128) { // Non-transparent pixel
+        totalPixels++
+        // Check if pixel is bright (could be white/yellow text)
+        if (r > 200 && g > 200 && b > 150) {
+          brightPixels++
+        }
+      }
+    }
+    
+    if (totalPixels === 0) return 1
+    
+    const brightnessRatio = brightPixels / totalPixels
+    
+    // If there are enough bright pixels, try to estimate the number
+    if (brightnessRatio > 0.1) {
+      // Simple estimation based on brightness ratio and corner size
+      const estimatedCount = Math.max(1, Math.floor(brightnessRatio * 20))
+      return Math.min(estimatedCount, 999) // Cap at reasonable number
+    }
+    
     return 1
   }
 
