@@ -686,10 +686,9 @@ export default function GameCalculator() {
   const loadGoVAssets = async (): Promise<Array<{ name: string; image: HTMLImageElement; data?: ImageData }>> => {
     console.log('Loading GoV assets...') // Debug log
     const assetNames = [
-      'Inventoryicon', 'LvlIcon', 'AffinityIcon', 'IntimacyIcon2', 'AttractionIcon', 'IntimacyIcon',
-      'VIPIcon', 'LoverIcon', 'ScriptIcon', 'BoutiqueIcon', 'ConclaveIcon', 'Dominance1', 'Dominance2',
-      'Dominance3', 'Dominance4', 'Talent1', 'Talent2', 'Talent3', 'Talent4', 'Attraction2',
-      'Attraction3', 'Attraction4', 'Inimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'Allure', 'Intellect',
+      'Dominance1', 'Dominance2',
+      'Dominance3', 'Dominance4', 'Talent1', 'Talent2', 'Talent3', 'Talent4', 'Attraction1', 'Attraction2',
+      'Attraction3', 'Attraction4', 'Intimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'Allure', 'Intellect',
       'Strength', 'AllRounder', 'Spirit', 'Music', 'MutationPotion1', 'Mystery3', 'Mystery4', 'Mystery5',
       'Mystery15(1)', 'Nectar', 'Nectar1', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M',
       'Nectar6', 'Nectar7', 'NectarRandom', 'NewSummonCoinPart', 'NightfallEquip', 'NightfallMedal',
@@ -701,7 +700,7 @@ export default function GameCalculator() {
       'TalentRandom5', 'TalentRandomStar', 'TalentScroll1', 'TalentScroll2', 'TalentScroll3',
       'TalentScroll6Star', 'TalentScroll5Star', 'TalentScroll7', 'TalentScroll5', 'TalentScroll4Star',
       'TalentScroll4', 'TalentScroll3Star', 'TalentScroll6', 'TalentScroll100', 'TalentScroll50',
-      'TalentScroll200', 'TourMap', 'TwilightEquip', 'UnusedNotebook'
+      'TalentScroll200', 'TourMap', 'TwilightEquip'
     ]
     
     const assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }> = []
@@ -796,40 +795,21 @@ export default function GameCalculator() {
       
       const confidence = calculateImageSimilarity(regionImageData, asset.data)
       
-      if (confidence > bestConfidence && confidence > 0.15) { // Lowered confidence threshold for better matching
+      if (confidence > bestConfidence && confidence > 0.4) { // Higher confidence threshold for more accurate matching
         bestConfidence = confidence
         bestMatch = { name: asset.name, confidence, count }
+        console.log(`Matched ${asset.name} with confidence ${confidence.toFixed(3)}`)
       }
     }
     
     return bestMatch
   }
 
-  // Extract count number from a region using OCR-like approach
+  // Extract count number from a region using conservative approach
   const extractCountFromRegion = (regionImageData: ImageData): number => {
-    // Simple number detection by looking for bright text on dark background
-    // This is a basic implementation - could be enhanced with actual OCR
-    
-    const { data, width, height } = regionImageData
-    let maxNumber = 0
-    
-    // Look for patterns that might be numbers
-    // Check different areas of the region for text-like patterns
-    const textAreas = [
-      { x: 0, y: 0, w: width, h: Math.floor(height * 0.3) }, // Top area
-      { x: 0, y: Math.floor(height * 0.7), w: width, h: Math.floor(height * 0.3) }, // Bottom area
-      { x: Math.floor(width * 0.7), y: 0, w: Math.floor(width * 0.3), h: height }, // Right area
-    ]
-    
-    for (const area of textAreas) {
-      const number = detectNumberInArea(data, width, height, area.x, area.y, area.w, area.h)
-      if (number > maxNumber) {
-        maxNumber = number
-      }
-    }
-    
-    // If no number detected, default to 1
-    return maxNumber > 0 ? maxNumber : 1
+    // For now, return 1 as default since the count detection is not accurate enough
+    // In a real implementation, you'd use proper OCR or manual verification
+    return 1
   }
 
   // Detect number in a specific area of the image
