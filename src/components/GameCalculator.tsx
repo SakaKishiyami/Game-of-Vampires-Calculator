@@ -632,51 +632,57 @@ export default function GameCalculator() {
       // Load GoV assets for comparison
       const assets = await loadGoVAssets()
       
-      // This is a simplified template matching approach
-      // In a real implementation, you'd want to use more sophisticated computer vision techniques
+      const { width, height } = imageData
       
-      // For now, we'll use a basic approach that looks for distinctive color patterns
-      // and compares them against your PNG assets
+      // Ignore bottom 1/4 of the image
+      const usableHeight = Math.floor(height * 0.75)
       
-      const { data, width, height } = imageData
+      // Calculate grid dimensions (5 columns)
+      const numColumns = 5
+      const itemWidth = Math.floor(width / numColumns)
+      const itemHeight = Math.floor(usableHeight / Math.ceil(usableHeight / itemWidth)) // Make items roughly square
       
-      // Simple edge detection to find potential item boundaries
-      const edges = detectEdges(data, width, height)
+      console.log(`Grid: ${numColumns} columns, item size: ${itemWidth}x${itemHeight}, usable height: ${usableHeight}`)
       
-      // Look for regions that might contain items
-      const potentialRegions = findPotentialItemRegions(edges, width, height)
-      
-      // For each potential region, try to match against GoV assets
-      for (const region of potentialRegions) {
-        // Skip regions with invalid dimensions
-        if (!region || !region.width || !region.height || region.width <= 0 || region.height <= 0) {
-          continue
-        }
-        
-        const bestMatch = await findBestAssetMatch(region, imageData, assets)
-        if (bestMatch) {
-          const itemName = bestMatch.name
-          const count = bestMatch.count || 1
-          matchedItems[itemName] = (matchedItems[itemName] || 0) + count
+      // Create grid regions and match each one
+      for (let row = 0; row * itemHeight < usableHeight; row++) {
+        for (let col = 0; col < numColumns; col++) {
+          const x = col * itemWidth
+          const y = row * itemHeight
+          
+          // Skip if this would go outside usable area
+          if (y + itemHeight > usableHeight) break
+          
+          // Add some padding to avoid edges
+          const padding = 5
+          const regionX = x + padding
+          const regionY = y + padding
+          const regionWidth = itemWidth - (padding * 2)
+          const regionHeight = itemHeight - (padding * 2)
+          
+          try {
+            // Extract region image data
+            const regionImageData = extractRegionImageData(imageData, regionX, regionY, regionWidth, regionHeight)
+            if (!regionImageData) continue
+            
+            // Find best matching asset
+            const bestMatch = await findBestAssetMatch(regionImageData, assets)
+            if (bestMatch) {
+              const { name: itemName, count } = bestMatch
+              matchedItems[itemName] = (matchedItems[itemName] || 0) + count
+              console.log(`Matched ${itemName} at grid position (${row}, ${col}) with count ${count}`)
+            }
+          } catch (error) {
+            console.warn(`Error processing grid position (${row}, ${col}):`, error)
+            continue
+          }
         }
       }
       
+      console.log(`Total matched items:`, Object.keys(matchedItems).length)
+      
     } catch (error) {
       console.error('Error matching items:', error)
-      // Fallback to basic detection if asset loading fails
-      const { data, width, height } = imageData
-      const edges = detectEdges(data, width, height)
-      const potentialRegions = findPotentialItemRegions(edges, width, height)
-      
-      potentialRegions.forEach(region => {
-        // Skip regions with invalid dimensions
-        if (!region || !region.width || !region.height || region.width <= 0 || region.height <= 0) {
-          return
-        }
-        
-        const itemName = `Unknown_Item_${region.id}`
-        matchedItems[itemName] = (matchedItems[itemName] || 0) + 1
-      })
     }
     
     return matchedItems
@@ -770,42 +776,19 @@ export default function GameCalculator() {
 
   // Find the best matching asset for a region and extract count
   const findBestAssetMatch = async (
-    region: any, 
-    sourceImageData: ImageData, 
+    regionImageData: ImageData, 
     assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }>
   ): Promise<{ name: string; confidence: number; count: number } | null> => {
     if (assets.length === 0) return null
     
     // Validate region dimensions
-    if (!region || !region.width || !region.height || region.width <= 0 || region.height <= 0) {
-      console.warn('Invalid region dimensions:', region)
+    if (!regionImageData || regionImageData.width <= 0 || regionImageData.height <= 0) {
+      console.warn('Invalid region dimensions:', regionImageData)
       return null
     }
     
-    let bestMatch: { name: string; confidence: number } | null = null
+    let bestMatch: { name: string; confidence: number; count: number } | null = null
     let bestConfidence = 0
-    
-    // Extract the region from the source image
-    const regionCanvas = document.createElement('canvas')
-    const regionCtx = regionCanvas.getContext('2d')!
-    regionCanvas.width = region.width
-    regionCanvas.height = region.height
-    
-    // Draw the region onto the canvas
-    const regionImageData = regionCtx.createImageData(region.width, region.height)
-    for (let y = 0; y < region.height; y++) {
-      for (let x = 0; x < region.width; x++) {
-        const sourceIdx = ((region.y + y) * sourceImageData.width + (region.x + x)) * 4
-        const targetIdx = (y * region.width + x) * 4
-        
-        regionImageData.data[targetIdx] = sourceImageData.data[sourceIdx]
-        regionImageData.data[targetIdx + 1] = sourceImageData.data[sourceIdx + 1]
-        regionImageData.data[targetIdx + 2] = sourceImageData.data[sourceIdx + 2]
-        regionImageData.data[targetIdx + 3] = sourceImageData.data[sourceIdx + 3]
-      }
-    }
-    
-    regionCtx.putImageData(regionImageData, 0, 0)
     
     // Extract count number from the region
     const count = extractCountFromRegion(regionImageData)
