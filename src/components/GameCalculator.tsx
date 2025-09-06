@@ -116,6 +116,7 @@ export default function GameCalculator() {
     };
   }>({})
 
+
   // Comprehensive warden list (excluding VIP and banner wardens)
   const allWardens = [
     // Circus Wardens
@@ -5706,20 +5707,41 @@ export default function GameCalculator() {
                   {/* Summons/Acquired Tab */}
                   {activeWardenTab === "summons" && (
                     <div className="space-y-6">
-                      {/* All Wardens with Images and Skins */}
-                      <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
-                          <CardTitle className="text-white">All Wardens</CardTitle>
-                          <div className="text-sm text-gray-300">
-                            Select which wardens you have and their skins
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {allWardens.map((warden) => (
-                              <Card key={warden.name} className="bg-gray-600/50 border-gray-500">
-                                <CardContent className="p-4">
-                                  <div className="flex items-start gap-3">
+                      {Object.entries(wardenGroups).map(([groupKey, wardens]) => (
+                        <Card key={groupKey} className="bg-gray-700/50 border-gray-600">
+                          <CardHeader>
+                            <CardTitle className="text-white capitalize">
+                              {groupKey === "circus"
+                                ? "Circus Wardens"
+                                : groupKey === "tyrants"
+                                  ? "Bloody Tyrants"
+                                  : groupKey === "noir"
+                                    ? "Monster Noir"
+                                    : "Wild Hunt"}{" "}
+                              ({wardenCounts[groupKey as keyof typeof wardenCounts]}/{groupKey === "noir" || groupKey === "hunt" ? 4 : 5})
+                            </CardTitle>
+                            <div>
+                              <Label className="text-white">Number of {groupKey} wardens:</Label>
+                              <Input
+                                type="number"
+                                min="0"
+                                max={groupKey === "noir" || groupKey === "hunt" ? 4 : 5}
+                                value={wardenCounts[groupKey as keyof typeof wardenCounts]}
+                                onChange={(e) =>
+                                  setWardenCounts((prev) => ({
+                                    ...prev,
+                                    [groupKey]: Number.parseInt(e.target.value) || 0,
+                                  }))
+                                }
+                                className="w-20 mt-1 bg-gray-600 border-gray-500 text-white"
+                              />
+                            </div>
+                          </CardHeader>
+                          {wardenCounts[groupKey as keyof typeof wardenCounts] > 0 && (
+                            <CardContent>
+                              <div className="grid grid-cols-2 gap-3">
+                                {wardens.map((warden) => (
+                                  <div key={warden.name} className="flex items-center gap-3 p-4 bg-gray-600/50 border border-gray-500 rounded">
                                     {/* Warden Image */}
                                     <div className="w-16 h-16 flex-shrink-0">
                                       <img 
@@ -5732,22 +5754,21 @@ export default function GameCalculator() {
                                       />
                                     </div>
                                     
-                                    {/* Warden Info */}
-                                    <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Checkbox 
-                                          id={`warden-${warden.name}`}
-                                          checked={selectedWardens[warden.group as keyof typeof selectedWardens]?.includes(warden.name) || false}
-                                          onCheckedChange={() => handleWardenSelection(warden.group, warden.name)}
-                                          className="border-gray-400"
-                                        />
-                                        <Label htmlFor={`warden-${warden.name}`} className="text-white font-semibold text-sm">
-                                          {warden.name}
-                                        </Label>
-                                      </div>
-                                      
-                                      {/* Attributes */}
-                                      <div className="flex gap-1 mb-2">
+                                    <Button
+                                      variant={selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) ? "default" : "outline"}
+                                      onClick={() => handleWardenSelection(groupKey, warden.name)}
+                                      disabled={
+                                        !selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) &&
+                                        selectedWardens[groupKey as keyof typeof selectedWardens]?.length >= wardenCounts[groupKey as keyof typeof wardenCounts]
+                                      }
+                                      className={`p-4 h-auto flex flex-col items-start flex-1 ${
+                                        selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name)
+                                          ? "bg-red-600 hover:bg-red-700"
+                                          : "bg-gray-600 hover:bg-gray-500"
+                                      }`}
+                                    >
+                                      <div className="font-semibold text-white">{warden.name}</div>
+                                      <div className="flex gap-1 mt-1">
                                         {warden.attributes.map((attr) => (
                                           <span
                                             key={attr}
@@ -5757,36 +5778,15 @@ export default function GameCalculator() {
                                           </span>
                                         ))}
                                       </div>
-                                      
-                                      {/* Skins */}
-                                      {warden.skins.length > 0 && (
-                                        <div className="mt-2">
-                                          <div className="text-xs text-gray-300 mb-1">Skins:</div>
-                                          <div className="flex flex-wrap gap-1">
-                                            {warden.skins.map((skin) => (
-                                              <div key={skin} className="flex items-center gap-1">
-                                                <Checkbox 
-                                                  id={`skin-${warden.name}-${skin}`}
-                                                  checked={wardenSkins[warden.name]?.[skin] || false}
-                                                  onCheckedChange={() => handleSkinToggle(warden.name, skin)}
-                                                  className="border-gray-400"
-                                                />
-                                                <Label htmlFor={`skin-${warden.name}-${skin}`} className="text-xs text-gray-300">
-                                                  {skin.replace(`${warden.name}Skin`, 'Skin ')}
-                                                </Label>
-                                              </div>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
+                                      {renderStars(warden.tier)}
+                                    </Button>
                                   </div>
-                                </CardContent>
-                              </Card>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
+                                ))}
+                              </div>
+                            </CardContent>
+                          )}
+                        </Card>
+                      ))}
                     </div>
                   )}
 
@@ -6143,332 +6143,117 @@ export default function GameCalculator() {
                   {/* Warden Stats Tab */}
                   {activeWardenTab === "stats" && (
                     <div className="space-y-4">
-                      {/* Upload Section */}
+                      {/* All Wardens with Images, Stats, and Skins */}
                       <Card className="bg-gray-700/50 border-gray-600">
                         <CardHeader>
-                          <CardTitle className="text-blue-400">Upload Warden Data</CardTitle>
+                          <CardTitle className="text-white">All Wardens</CardTitle>
                           <div className="text-sm text-gray-300">
-                            Upload files named after your wardens containing their attribute breakdowns:
-                            <ul className="mt-2 list-disc list-inside">
-                              <li><strong>Screenshots (PNG/JPG):</strong> "Diana.png", "Scarlet.jpg" - Uses OCR to extract text</li>
-                              <li><strong>Text files:</strong> "Diana.txt", "Scarlet.json" - Parses text directly</li>
-                            </ul>
-                            The parser will automatically extract total attributes and all bonus breakdowns.
+                            Shows all wardens (including VIP and selected ones) with their stats and skins
                           </div>
                         </CardHeader>
                         <CardContent>
-                          <div className="space-y-4">
-                            <div>
-                              <input
-                                type="file"
-                                multiple
-                                accept=".txt,.json,.csv,.png,.jpg,.jpeg"
-                                onChange={handleFileUpload}
-                                disabled={isUploading}
-                                className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
-                              />
-                            </div>
-                            {isUploading && (
-                              <div className="text-yellow-400">
-                                {ocrProgress || "Uploading and parsing files..."}
-                              </div>
-                            )}
-                            {uploadError && (
-                              <div className="text-red-400 text-sm">
-                                {uploadError}
-                              </div>
-                            )}
-                            {Object.keys(uploadedWardenData).length > 0 && (
-                              <div className="text-green-400 text-sm">
-                                Successfully uploaded data for: {Object.keys(uploadedWardenData).join(', ')}
-                              </div>
-                            )}
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {allWardens.map((warden) => {
+                              // Check if warden is selected in summons tab or is VIP
+                              const isSelected = selectedWardens[warden.group as keyof typeof selectedWardens]?.includes(warden.name) || 
+                                                warden.name === "Nyx" || warden.name === "Dracula"
+                              
+                              return (
+                                <Card key={warden.name} className="bg-gray-600/50 border-gray-500">
+                                  <CardContent className="p-4">
+                                    <div className="flex gap-3">
+                                      {/* Warden Image */}
+                                      <div className="w-20 h-20 flex-shrink-0">
+                                        <img 
+                                          src={`/data/Gov/Wardens/BaseWardens/${warden.name}.png`}
+                                          alt={warden.name}
+                                          className="w-full h-full object-contain"
+                                          onError={(e) => {
+                                            (e.target as HTMLImageElement).style.display = 'none';
+                                          }}
+                                        />
+                                      </div>
+                                      
+                                      {/* Warden Info and Stats */}
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-2">
+                                          <span className="text-white font-semibold text-sm">{warden.name}</span>
+                                          {isSelected && (
+                                            <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">
+                                              Owned
+                                            </span>
+                                          )}
+                                        </div>
+                                        
+                                        {/* Attributes */}
+                                        <div className="flex gap-1 mb-2">
+                                          {warden.attributes.map((attr) => (
+                                            <span
+                                              key={attr}
+                                              className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
+                                            >
+                                              {attr}
+                                            </span>
+                                          ))}
+                                        </div>
+                                        
+                                        {/* Stats Inputs */}
+                                        <div className="space-y-1">
+                                          {["strength", "allure", "intellect", "spirit"].map((attr) => (
+                                            <div key={attr} className="flex items-center gap-1">
+                                              <span className={`text-xs w-12 ${getAttributeColor(attr)}`}>
+                                                {attr.charAt(0).toUpperCase()}
+                                              </span>
+                                              <Input
+                                                type="number"
+                                                placeholder="0"
+                                                className="w-16 h-6 text-xs bg-gray-700 border-gray-600 text-white"
+                                                value={wardenStats[warden.name]?.[attr] || ''}
+                                                onChange={(e) => {
+                                                  const value = Number.parseInt(e.target.value) || 0
+                                                  setWardenStats(prev => ({
+                                                    ...prev,
+                                                    [warden.name]: {
+                                                      ...prev[warden.name],
+                                                      [attr]: value
+                                                    }
+                                                  }))
+                                                }}
+                                              />
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                      
+                                      {/* Skins Section */}
+                                      {warden.skins.length > 0 && (
+                                        <div className="w-24 flex-shrink-0">
+                                          <div className="text-xs text-gray-300 mb-1">Skins:</div>
+                                          <div className="space-y-1">
+                                            {warden.skins.map((skin) => (
+                                              <div key={skin} className="flex items-center gap-1">
+                                                <Checkbox 
+                                                  id={`skin-${warden.name}-${skin}`}
+                                                  checked={wardenSkins[warden.name]?.[skin] || false}
+                                                  onCheckedChange={() => handleSkinToggle(warden.name, skin)}
+                                                  className="border-gray-400"
+                                                />
+                                                <Label htmlFor={`skin-${warden.name}-${skin}`} className="text-xs text-gray-300">
+                                                  {skin.replace(`${warden.name}Skin`, 'S')}
+                                                </Label>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              )
+                            })}
                           </div>
                         </CardContent>
                       </Card>
-
-                      {/* All Wardens Section - Show uploaded data first, then selected wardens */}
-                      {Object.keys(uploadedWardenData).length > 0 && (
-                        <div className="space-y-4">
-                          <h3 className="text-xl font-semibold text-white">Uploaded Warden Data</h3>
-                          {Object.entries(uploadedWardenData).map(([wardenName, data]) => (
-                            <Card key={wardenName} className="bg-gray-700/50 border-gray-600">
-                              <CardHeader>
-                                <CardTitle className="flex items-center gap-3">
-                                  <span className="text-white">{wardenName}</span>
-                                  <span className="text-yellow-400 text-sm">
-                                    Total: {data.totalAttributes >= 1000000 
-                                      ? `${(data.totalAttributes / 1000000).toFixed(2)}M` 
-                                      : data.totalAttributes >= 1000 
-                                        ? `${(data.totalAttributes / 1000).toFixed(2)}K` 
-                                        : data.totalAttributes.toLocaleString()}
-                                  </span>
-                                </CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                  {console.log('Displaying data for', wardenName, ':', data)}
-                                  {["strength", "allure", "intellect", "spirit"].map((attr) => {
-                                    const attrData = data[attr as keyof typeof data]
-                                    {console.log(`Checking ${attr}:`, attrData)}
-                                    if (typeof attrData === 'object' && attrData.total !== undefined) {
-                                      return (
-                                        <div key={attr} className="space-y-3">
-                                          <div className={`font-semibold capitalize ${getAttributeColor(attr)} text-lg`}>
-                                            {attr}
-                                          </div>
-                                          <div className="space-y-2">
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Total</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.total}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        total: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Talent Bonus</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.talentBonus}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        talentBonus: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Book Bonus</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.bookBonus}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        bookBonus: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Scarlet Bond Bonus</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.scarletBondBonus}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        scarletBondBonus: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Presence Bonus</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.presenceBonus}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        presenceBonus: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Aura Bonus</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.auraBonus}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        auraBonus: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Conclave Bonus</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.conclaveBonus}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        conclaveBonus: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Avatar Bonus</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.avatarBonus}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        avatarBonus: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Familiar Bonus</Label>
-                                              <Input
-                                                type="number"
-                                                value={attrData.familiarBonus}
-                                                onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        familiarBonus: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
-                                          </div>
-                                        </div>
-                                      )
-                                    }
-                                    return null
-                                  })}
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Selected Wardens Section */}
-                      {getAllSelectedWardens().length > 0 && (
-                        <div className="space-y-4">
-                          <h3 className="text-xl font-semibold text-white">Selected Wardens (Manual Input)</h3>
-                          {getAllSelectedWardens().map((warden) => (
-                            <Card key={`${warden.group}-${warden.name}`} className="bg-gray-700/50 border-gray-600">
-                              <CardHeader>
-                                <CardTitle className="flex items-center gap-3">
-                                  <span className="text-white">{warden.name}</span>
-                                  <div className="flex gap-1">
-                                    {warden.attributes.map((attr) => (
-                                      <span
-                                        key={attr}
-                                        className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
-                                      >
-                                        {attr}
-                                      </span>
-                                    ))}
-                                  </div>
-                                  {renderStars(warden.tier)}
-                                </CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="grid grid-cols-4 gap-3">
-                                  {["strength", "allure", "intellect", "spirit"].map((attr) => (
-                                    <div key={attr}>
-                                      <Label className={`capitalize ${getAttributeColor(attr)}`}>{attr}</Label>
-                                      <Input
-                                        type="number"
-                                        value={wardenStats[`${warden.group}-${warden.name}`]?.[attr] || 0}
-                                        onChange={(e) =>
-                                          setWardenStats((prev) => ({
-                                            ...prev,
-                                            [`${warden.group}-${warden.name}`]: {
-                                              ...prev[`${warden.group}-${warden.name}`],
-                                              [attr]: Number.parseInt(e.target.value) || 0,
-                                            },
-                                          }))
-                                        }
-                                        className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>
@@ -6632,8 +6417,12 @@ export default function GameCalculator() {
                                     if (bond.lover.includes('/') && !img.src.includes('fallback-attempted')) {
                                       const names = bond.lover.split('/');
                                       img.src = `/data/Gov/Lovers/BaseLovers/${names[1].trim()}.PNG?fallback-attempted=true`;
+                                    } else if (!img.src.includes('fallback-lowercase')) {
+                                      // Try lowercase extension
+                                      const currentSrc = img.src.replace('.PNG', '.png');
+                                      img.src = currentSrc + '?fallback-lowercase=true';
                                     } else {
-                                      // Hide image if both names fail
+                                      // Hide image if all attempts fail
                                       img.style.display = 'none';
                                     }
                                   }}
