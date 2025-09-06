@@ -109,6 +109,90 @@ export default function GameCalculator() {
   const [hasNyx, setHasNyx] = useState(false)
   const [hasDracula, setHasDracula] = useState(false)
 
+  // All wardens with their skins
+  const [wardenSkins, setWardenSkins] = useState<{
+    [wardenName: string]: {
+      [skinName: string]: boolean;
+    };
+  }>({})
+
+  // Comprehensive warden list (excluding VIP and banner wardens)
+  const allWardens = [
+    // Circus Wardens
+    { name: "Thorgrim", group: "circus", attributes: ["Intellect", "Strength"], tier: 5, skins: ["ThorgrimSkin1"] },
+    { name: "Naja", group: "circus", attributes: ["Allure", "Spirit"], tier: 5, skins: [] },
+    { name: "Diavolo", group: "circus", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
+    { name: "Jester", group: "circus", attributes: ["Allure", "Intellect"], tier: 5, skins: [] },
+    { name: "Dominique", group: "circus", attributes: ["Balance"], tier: 5, skins: [] },
+    
+    // Bloody Tyrants
+    { name: "Cesare", group: "tyrants", attributes: ["Intellect", "Strength"], tier: 5, skins: ["CesareSkin1"] },
+    { name: "Ivan", group: "tyrants", attributes: ["Allure", "Spirit"], tier: 5, skins: ["IvanSkin1"] },
+    { name: "Max", group: "tyrants", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
+    { name: "Erzsebet", group: "tyrants", attributes: ["Allure", "Intellect"], tier: 5, skins: [] },
+    { name: "Maria", group: "tyrants", attributes: ["Balance"], tier: 5, skins: ["MariaSkin1"] },
+    
+    // Monster Noir
+    { name: "Eddie", group: "noir", attributes: ["Strength"], tier: 5, skins: ["EddieSkin1"] },
+    { name: "Scarlet", group: "noir", attributes: ["Allure"], tier: 5, skins: ["ScarletSkin1"] },
+    { name: "Sam", group: "noir", attributes: ["Intellect"], tier: 5, skins: ["SamSkin1"] },
+    { name: "Grendel", group: "noir", attributes: ["Spirit"], tier: 5, skins: ["GrendelSkin1"] },
+    
+    // Wild Hunt
+    { name: "Rudra", group: "hunt", attributes: ["Strength"], tier: 5, skins: ["RudraSkin1", "RudraSkin2"] },
+    { name: "Woden", group: "hunt", attributes: ["Allure"], tier: 5, skins: ["WodenSkin1", "WodenSkin2"] },
+    { name: "Artemis", group: "hunt", attributes: ["Intellect"], tier: 5, skins: ["ArtemisSkin1", "ArtemisSkin2"] },
+    { name: "Finn", group: "hunt", attributes: ["Spirit"], tier: 5, skins: ["FinnSkin1", "FinnSkin2"] },
+    
+    // Other Wardens
+    { name: "Aurelia", group: "other", attributes: ["Allure", "Strength"], tier: 5, skins: ["AureliaSkin1"] },
+    { name: "Asra", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: [] },
+    { name: "Harker", group: "other", attributes: ["Strength"], tier: 5, skins: ["HarkerSkin1"] },
+    { name: "Pavan", group: "other", attributes: ["Strength"], tier: 5, skins: ["PavanSkin1"] },
+    { name: "Frederick", group: "other", attributes: ["Allure"], tier: 5, skins: ["FrederickSkin1"] },
+    { name: "Carmilla", group: "other", attributes: ["Balance"], tier: 5, skins: ["CarmillaSkin1", "CarmillaSkin2"] },
+    { name: "Gilgamesh", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: ["GilgameshSkin1"] },
+    { name: "Drusilla", group: "other", attributes: ["Allure"], tier: 5, skins: [] },
+    { name: "Tomas", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["TomasSkin1"] },
+    { name: "Max", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
+    { name: "Ivan", group: "other", attributes: ["Allure", "Spirit"], tier: 5, skins: [] },
+    { name: "Artemis", group: "other", attributes: ["Intellect"], tier: 5, skins: [] },
+    { name: "Temujin", group: "other", attributes: ["Allure", "Strength"], tier: 5, skins: ["TemujinSkin1"] },
+    { name: "Josey", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["JoseySkin1"] },
+    { name: "Julie", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: ["JulieSkin1"] },
+    { name: "Mortimer", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
+    { name: "Cleo", group: "other", attributes: ["Balance"], tier: 5, skins: ["CleoSkin1"] },
+    { name: "Mike", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["MikeSkin1"] },
+    { name: "Erzsebet", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: ["ErzsebetSkin1"] },
+    { name: "Woden", group: "other", attributes: ["Allure"], tier: 5, skins: [] },
+    { name: "Rudra", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
+    { name: "Ulfred", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
+    { name: "Diana", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
+    { name: "Damian", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
+    { name: "Vance", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
+    { name: "Edward", group: "other", attributes: ["Intellect"], tier: 5, skins: [] },
+    { name: "William", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
+    { name: "Finn", group: "other", attributes: ["Spirit"], tier: 5, skins: [] },
+    { name: "Vicente", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["VicenteSkin1"] },
+    { name: "Desare", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
+    { name: "Saber", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
+    { name: "Nikolai", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: [] },
+    { name: "Cornelius", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
+    { name: "Rollo", group: "other", attributes: ["Allure"], tier: 5, skins: ["RolloSkin1"] },
+    { name: "Morien", group: "other", attributes: ["Strength"], tier: 5, skins: ["MorienSkin1", "MorienSkin2"] },
+    { name: "Piper", group: "other", attributes: ["Spirit"], tier: 5, skins: ["PiperSkin1"] },
+    { name: "Robert", group: "other", attributes: ["Allure", "Spirit"], tier: 5, skins: [] },
+    { name: "John", group: "other", attributes: ["Spirit"], tier: 5, skins: ["JohnSkin1"] },
+    { name: "Lorenzo", group: "other", attributes: ["Intellect"], tier: 5, skins: ["LorenzoSkin1"] },
+    { name: "Hans", group: "other", attributes: ["Spirit"], tier: 5, skins: ["HansSkin1"] },
+    { name: "Franco", group: "other", attributes: ["Allure"], tier: 5, skins: ["FrancoSkin1"] },
+    { name: "Alastair", group: "other", attributes: ["Spirit"], tier: 5, skins: ["AlastairSkin1"] },
+    { name: "Elsie", group: "other", attributes: ["Allure", "Spirit"], tier: 5, skins: ["ElsieSkin1"] },
+    { name: "Nostradamus", group: "other", attributes: ["Intellect"], tier: 5, skins: ["NostradamusSkin1"] },
+    { name: "Erik", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["ErikSkin1"] },
+    { name: "Charlemagne", group: "other", attributes: ["Balance"], tier: 5, skins: ["CharlemagneSkin1"] },
+  ]
+
   // Warden stats
   const [wardenStats, setWardenStats] = useState({})
   
@@ -868,6 +952,9 @@ export default function GameCalculator() {
       
       // Convert to image for Tesseract
       const imageDataUrl = canvas.toDataURL('image/png')
+      
+      // Dynamically import Tesseract.js to avoid SSR issues
+      const Tesseract = await import('tesseract.js')
       
       // Use Tesseract.js for OCR
       const { data: { text } } = await Tesseract.recognize(imageDataUrl, 'eng', {
@@ -4117,6 +4204,17 @@ export default function GameCalculator() {
     })
   }
 
+  // Handle skin toggle
+  const handleSkinToggle = (wardenName: string, skinName: string) => {
+    setWardenSkins((prev) => ({
+      ...prev,
+      [wardenName]: {
+        ...prev[wardenName],
+        [skinName]: !prev[wardenName]?.[skinName],
+      },
+    }))
+  }
+
   // Get all selected wardens flattened
   const getAllSelectedWardens = () => {
     const allSelected: any[] = []
@@ -5608,73 +5706,87 @@ export default function GameCalculator() {
                   {/* Summons/Acquired Tab */}
                   {activeWardenTab === "summons" && (
                     <div className="space-y-6">
-                      {Object.entries(wardenGroups).map(([groupKey, wardens]) => (
-                        <Card key={groupKey} className="bg-gray-700/50 border-gray-600">
-                          <CardHeader>
-                            <CardTitle className="text-white capitalize">
-                              {groupKey === "circus"
-                                ? "Circus Wardens"
-                                : groupKey === "tyrants"
-                                  ? "Bloody Tyrants"
-                                  : groupKey === "noir"
-                                    ? "Monster Noir"
-                                    : "Wild Hunt"}{" "}
-                              ({wardenCounts[groupKey as keyof typeof wardenCounts]}/{groupKey === "noir" || groupKey === "hunt" ? 4 : 5})
-                            </CardTitle>
-                            <div>
-                              <Label className="text-white">Number of {groupKey} wardens:</Label>
-                              <Input
-                                type="number"
-                                min="0"
-                                max={groupKey === "noir" || groupKey === "hunt" ? 4 : 5}
-                                value={wardenCounts[groupKey as keyof typeof wardenCounts]}
-                                onChange={(e) =>
-                                  setWardenCounts((prev) => ({
-                                    ...prev,
-                                    [groupKey]: Number.parseInt(e.target.value) || 0,
-                                  }))
-                                }
-                                className="w-20 mt-1 bg-gray-600 border-gray-500 text-white"
-                              />
-                            </div>
-                          </CardHeader>
-                          {wardenCounts[groupKey as keyof typeof wardenCounts] > 0 && (
-                            <CardContent>
-                              <div className="grid grid-cols-2 gap-3">
-                                {wardens.map((warden) => (
-                                  <Button
-                                    key={warden.name}
-                                    variant={selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) ? "default" : "outline"}
-                                    onClick={() => handleWardenSelection(groupKey, warden.name)}
-                                    disabled={
-                                      !selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) &&
-                                      selectedWardens[groupKey as keyof typeof selectedWardens]?.length >= wardenCounts[groupKey as keyof typeof wardenCounts]
-                                    }
-                                    className={`p-4 h-auto flex flex-col items-start ${
-                                      selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name)
-                                        ? "bg-red-600 hover:bg-red-700"
-                                        : "bg-gray-600 hover:bg-gray-500"
-                                    }`}
-                                  >
-                                    <div className="font-semibold text-white">{warden.name}</div>
-                                    <div className="flex gap-1 mt-1">
-                                      {warden.attributes.map((attr) => (
-                                        <span
-                                          key={attr}
-                                          className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
-                                        >
-                                          {attr}
-                                        </span>
-                                      ))}
+                      {/* All Wardens with Images and Skins */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-white">All Wardens</CardTitle>
+                          <div className="text-sm text-gray-300">
+                            Select which wardens you have and their skins
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {allWardens.map((warden) => (
+                              <Card key={warden.name} className="bg-gray-600/50 border-gray-500">
+                                <CardContent className="p-4">
+                                  <div className="flex items-start gap-3">
+                                    {/* Warden Image */}
+                                    <div className="w-16 h-16 flex-shrink-0">
+                                      <img 
+                                        src={`/data/Gov/Wardens/BaseWardens/${warden.name}.png`}
+                                        alt={warden.name}
+                                        className="w-full h-full object-contain"
+                                        onError={(e) => {
+                                          (e.target as HTMLImageElement).style.display = 'none';
+                                        }}
+                                      />
                                     </div>
-                                    {renderStars(warden.tier)}
-                                  </Button>
-                                ))}
-                              </div>
-                            </CardContent>
-                          )}
-                        </Card>
-                      ))}
+                                    
+                                    {/* Warden Info */}
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <Checkbox 
+                                          id={`warden-${warden.name}`}
+                                          checked={selectedWardens[warden.group as keyof typeof selectedWardens]?.includes(warden.name) || false}
+                                          onCheckedChange={() => handleWardenSelection(warden.group, warden.name)}
+                                          className="border-gray-400"
+                                        />
+                                        <Label htmlFor={`warden-${warden.name}`} className="text-white font-semibold text-sm">
+                                          {warden.name}
+                                        </Label>
+                                      </div>
+                                      
+                                      {/* Attributes */}
+                                      <div className="flex gap-1 mb-2">
+                                        {warden.attributes.map((attr) => (
+                                          <span
+                                            key={attr}
+                                            className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
+                                          >
+                                            {attr}
+                                          </span>
+                                        ))}
+                                      </div>
+                                      
+                                      {/* Skins */}
+                                      {warden.skins.length > 0 && (
+                                        <div className="mt-2">
+                                          <div className="text-xs text-gray-300 mb-1">Skins:</div>
+                                          <div className="flex flex-wrap gap-1">
+                                            {warden.skins.map((skin) => (
+                                              <div key={skin} className="flex items-center gap-1">
+                                                <Checkbox 
+                                                  id={`skin-${warden.name}-${skin}`}
+                                                  checked={wardenSkins[warden.name]?.[skin] || false}
+                                                  onCheckedChange={() => handleSkinToggle(warden.name, skin)}
+                                                  className="border-gray-400"
+                                                />
+                                                <Label htmlFor={`skin-${warden.name}-${skin}`} className="text-xs text-gray-300">
+                                                  {skin.replace(`${warden.name}Skin`, 'Skin ')}
+                                                </Label>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   )}
 
@@ -6498,32 +6610,47 @@ export default function GameCalculator() {
                       return (
                         <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                           <div className="flex">
-                            {/* Lover Image - Left Side */}
-                            <div className="w-32 flex-shrink-0 relative overflow-hidden rounded-l-lg">
-                              <img 
-                                src={(() => {
-                                  // Handle lovers with slashes (different genders)
-                                  if (bond.lover.includes('/')) {
-                                    const names = bond.lover.split('/');
-                                    // Try first name, then second name as fallback
-                                    return `/Gov/Lovers/${names[0].trim()}.jpg`;
-                                  }
-                                  return `/Gov/Lovers/${bond.lover}.jpg`;
-                                })()}
-                                alt={bond.lover}
-                                className="w-full h-auto min-h-full object-contain"
-                                onError={(e) => {
-                                  // Fallback to second name if lover has a slash
-                                  const img = e.target as HTMLImageElement;
-                                  if (bond.lover.includes('/') && !img.src.includes('fallback-attempted')) {
-                                    const names = bond.lover.split('/');
-                                    img.src = `/Gov/Lovers/${names[1].trim()}.jpg?fallback-attempted=true`;
-                                  } else {
-                                    // Hide image if both names fail
-                                    img.style.display = 'none';
-                                  }
-                                }}
-                              />
+                            {/* Lover and Warden Images Side by Side - Left Side */}
+                            <div className="w-48 flex-shrink-0 relative overflow-hidden rounded-l-lg flex">
+                              {/* Lover Image */}
+                              <div className="w-1/2 relative overflow-hidden">
+                                <img 
+                                  src={(() => {
+                                    // Handle lovers with slashes (different genders)
+                                    if (bond.lover.includes('/')) {
+                                      const names = bond.lover.split('/');
+                                      // Try first name, then second name as fallback
+                                      return `/data/Gov/Lovers/BaseLovers/${names[0].trim()}.PNG`;
+                                    }
+                                    return `/data/Gov/Lovers/BaseLovers/${bond.lover}.PNG`;
+                                  })()}
+                                  alt={bond.lover}
+                                  className="w-full h-auto min-h-full object-contain"
+                                  onError={(e) => {
+                                    // Fallback to second name if lover has a slash
+                                    const img = e.target as HTMLImageElement;
+                                    if (bond.lover.includes('/') && !img.src.includes('fallback-attempted')) {
+                                      const names = bond.lover.split('/');
+                                      img.src = `/data/Gov/Lovers/BaseLovers/${names[1].trim()}.PNG?fallback-attempted=true`;
+                                    } else {
+                                      // Hide image if both names fail
+                                      img.style.display = 'none';
+                                    }
+                                  }}
+                                />
+                              </div>
+                              {/* Warden Image */}
+                              <div className="w-1/2 relative overflow-hidden">
+                                <img 
+                                  src={`/data/Gov/Wardens/BaseWardens/${bond.warden}.png`}
+                                  alt={bond.warden}
+                                  className="w-full h-auto min-h-full object-contain"
+                                  onError={(e) => {
+                                    // Fallback if image doesn't exist
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                  }}
+                                />
+                              </div>
                             </div>
                             
                             {/* Content - Right Side */}
@@ -6542,16 +6669,6 @@ export default function GameCalculator() {
                                         </span>
                                       </div>
                                     </div>
-                                    {/* Warden Image - Inline with both names */}
-                                    <img 
-                                      src={`/Gov/Wardens/${bond.warden}.jpg`}
-                                      alt={bond.warden}
-                                      className="w-20 h-20 object-contain flex-shrink-0"
-                                      onError={(e) => {
-                                        // Fallback if image doesn't exist
-                                        (e.target as HTMLImageElement).style.display = 'none';
-                                      }}
-                                    />
                                   </div>
                                   <span
                                     className={`text-xs px-2 py-1 rounded ${
