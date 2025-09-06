@@ -7,7 +7,9 @@ export async function GET() {
   return NextResponse.json({ 
     message: 'GPT-4 Vision API endpoint is working',
     timestamp: new Date().toISOString(),
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST'],
+    hasApiKey: !!process.env.OPENAI_API_KEY,
+    apiKeyPrefix: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.substring(0, 10) + '...' : 'NOT_SET'
   })
 }
 
