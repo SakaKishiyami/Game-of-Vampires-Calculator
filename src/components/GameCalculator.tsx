@@ -726,6 +726,7 @@ export default function GameCalculator() {
       // If it's an API key error, show helpful message
       if (error instanceof Error && error.message.includes('API call failed')) {
         console.log('GPT-4 Vision API not available. Please set up OPENAI_API_KEY in Vercel environment variables.')
+        console.log('Error details:', error.message)
       }
     }
     

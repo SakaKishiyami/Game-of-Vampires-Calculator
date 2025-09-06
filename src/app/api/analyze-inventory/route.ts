@@ -122,9 +122,34 @@ Be as accurate as possible with both item identification and count reading.`
 
   } catch (error) {
     console.error('Error analyzing inventory:', error)
+    
+    // Provide more specific error information
+    let errorMessage = 'Unknown error'
+    let statusCode = 500
+    
+    if (error instanceof Error) {
+      errorMessage = error.message
+      
+      // Check for specific error types
+      if (error.message.includes('API key')) {
+        statusCode = 500
+        errorMessage = 'OpenAI API key not configured. Please add OPENAI_API_KEY to Vercel environment variables.'
+      } else if (error.message.includes('rate limit')) {
+        statusCode = 429
+        errorMessage = 'OpenAI API rate limit exceeded. Please try again later.'
+      } else if (error.message.includes('quota')) {
+        statusCode = 402
+        errorMessage = 'OpenAI API quota exceeded. Please check your billing.'
+      }
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to analyze inventory', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { 
+        error: 'Failed to analyze inventory', 
+        details: errorMessage,
+        timestamp: new Date().toISOString()
+      },
+      { status: statusCode }
     )
   }
 }
