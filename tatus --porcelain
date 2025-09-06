@@ -1,0 +1,43 @@
+[1mdiff --git a/src/components/GameCalculator.tsx b/src/components/GameCalculator.tsx[m
+[1mindex 786e619..7750c0e 100644[m
+[1m--- a/src/components/GameCalculator.tsx[m
+[1m+++ b/src/components/GameCalculator.tsx[m
+[36m@@ -185,6 +185,38 @@[m [mexport default function GameCalculator() {[m
+   const [inventoryProgress, setInventoryProgress] = useState('')[m
+   const [inventoryError, setInventoryError] = useState<string | null>(null)[m
+ [m
+[32m+[m[32m  // Extract a region from image data and return as ImageData[m
+[32m+[m[32m  const extractRegionImageData = (sourceImageData: ImageData, x: number, y: number, width: number, height: number): ImageData | null => {[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      // Validate bounds[m
+[32m+[m[32m      if (x < 0 || y < 0 || x + width > sourceImageData.width || y + height > sourceImageData.height) {[m
+[32m+[m[32m        console.warn('Region bounds exceed source image dimensions')[m
+[32m+[m[32m        return null[m
+[32m+[m[32m      }[m
+[32m+[m[41m      [m
+[32m+[m[32m      // Create new image data for the region[m
+[32m+[m[32m      const regionData = new Uint8ClampedArray(width * height * 4)[m
+[32m+[m[41m      [m
+[32m+[m[32m      // Copy pixel data from source to region[m
+[32m+[m[32m      for (let row = 0; row < height; row++) {[m
+[32m+[m[32m        for (let col = 0; col < width; col++) {[m
+[32m+[m[32m          const srcIdx = ((y + row) * sourceImageData.width + (x + col)) * 4[m
+[32m+[m[32m          const dstIdx = (row * width + col) * 4[m
+[32m+[m[41m          [m
+[32m+[m[32m          regionData[dstIdx] = sourceImageData.data[srcIdx]     // R[m
+[32m+[m[32m          regionData[dstIdx + 1] = sourceImageData.data[srcIdx + 1] // G[m
+[32m+[m[32m          regionData[dstIdx + 2] = sourceImageData.data[srcIdx + 2] // B[m
+[32m+[m[32m          regionData[dstIdx + 3] = sourceImageData.data[srcIdx + 3] // A[m
+[32m+[m[32m        }[m
+[32m+[m[32m      }[m
+[32m+[m[41m      [m
+[32m+[m[32m      return new ImageData(regionData, width, height)[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      console.warn('Error extracting region image data:', error)[m
+[32m+[m[32m      return null[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m
+   // Helper function to parse numbers with K/M suffixes[m
+   const parseNumberWithSuffix = (value: string): number => {[m
+     const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()[m

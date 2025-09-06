@@ -185,6 +185,38 @@ export default function GameCalculator() {
   const [inventoryProgress, setInventoryProgress] = useState('')
   const [inventoryError, setInventoryError] = useState<string | null>(null)
 
+  // Extract a region from image data and return as ImageData
+  const extractRegionImageData = (sourceImageData: ImageData, x: number, y: number, width: number, height: number): ImageData | null => {
+    try {
+      // Validate bounds
+      if (x < 0 || y < 0 || x + width > sourceImageData.width || y + height > sourceImageData.height) {
+        console.warn('Region bounds exceed source image dimensions')
+        return null
+      }
+      
+      // Create new image data for the region
+      const regionData = new Uint8ClampedArray(width * height * 4)
+      
+      // Copy pixel data from source to region
+      for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
+          const srcIdx = ((y + row) * sourceImageData.width + (x + col)) * 4
+          const dstIdx = (row * width + col) * 4
+          
+          regionData[dstIdx] = sourceImageData.data[srcIdx]     // R
+          regionData[dstIdx + 1] = sourceImageData.data[srcIdx + 1] // G
+          regionData[dstIdx + 2] = sourceImageData.data[srcIdx + 2] // B
+          regionData[dstIdx + 3] = sourceImageData.data[srcIdx + 3] // A
+        }
+      }
+      
+      return new ImageData(regionData, width, height)
+    } catch (error) {
+      console.warn('Error extracting region image data:', error)
+      return null
+    }
+  }
+
   // Helper function to parse numbers with K/M suffixes
   const parseNumberWithSuffix = (value: string): number => {
     const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()
