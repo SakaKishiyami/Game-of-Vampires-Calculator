@@ -127,7 +127,6 @@ export default function GameCalculator() {
     { name: "Dominique", group: "circus", attributes: ["Balance"], tier: 5, skins: [] },
     
     // Bloody Tyrants
-    { name: "Cesare", group: "tyrants", attributes: ["Intellect", "Strength"], tier: 5, skins: ["CesareSkin1"] },
     { name: "Ivan", group: "tyrants", attributes: ["Allure", "Spirit"], tier: 5, skins: ["IvanSkin1"] },
     { name: "Max", group: "tyrants", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
     { name: "Erzsebet", group: "tyrants", attributes: ["Allure", "Intellect"], tier: 5, skins: [] },
@@ -145,7 +144,7 @@ export default function GameCalculator() {
     { name: "Artemis", group: "hunt", attributes: ["Intellect"], tier: 5, skins: ["ArtemisSkin1", "ArtemisSkin2"] },
     { name: "Finn", group: "hunt", attributes: ["Spirit"], tier: 5, skins: ["FinnSkin1", "FinnSkin2"] },
     
-    // Other Wardens
+    // Other Wardens (only those with actual image files)
     { name: "Aurelia", group: "other", attributes: ["Allure", "Strength"], tier: 5, skins: ["AureliaSkin1"] },
     { name: "Asra", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: [] },
     { name: "Harker", group: "other", attributes: ["Strength"], tier: 5, skins: ["HarkerSkin1"] },
@@ -155,25 +154,18 @@ export default function GameCalculator() {
     { name: "Gilgamesh", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: ["GilgameshSkin1"] },
     { name: "Drusilla", group: "other", attributes: ["Allure"], tier: 5, skins: [] },
     { name: "Tomas", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["TomasSkin1"] },
-    { name: "Max", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
-    { name: "Ivan", group: "other", attributes: ["Allure", "Spirit"], tier: 5, skins: [] },
-    { name: "Artemis", group: "other", attributes: ["Intellect"], tier: 5, skins: [] },
     { name: "Temujin", group: "other", attributes: ["Allure", "Strength"], tier: 5, skins: ["TemujinSkin1"] },
     { name: "Josey", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["JoseySkin1"] },
     { name: "Julie", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: ["JulieSkin1"] },
     { name: "Mortimer", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
     { name: "Cleo", group: "other", attributes: ["Balance"], tier: 5, skins: ["CleoSkin1"] },
     { name: "Mike", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["MikeSkin1"] },
-    { name: "Erzsebet", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: ["ErzsebetSkin1"] },
-    { name: "Woden", group: "other", attributes: ["Allure"], tier: 5, skins: [] },
-    { name: "Rudra", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
     { name: "Ulfred", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
     { name: "Diana", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
     { name: "Damian", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
     { name: "Vance", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
     { name: "Edward", group: "other", attributes: ["Intellect"], tier: 5, skins: [] },
     { name: "William", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
-    { name: "Finn", group: "other", attributes: ["Spirit"], tier: 5, skins: [] },
     { name: "Vicente", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["VicenteSkin1"] },
     { name: "Desare", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
     { name: "Saber", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
@@ -189,9 +181,11 @@ export default function GameCalculator() {
     { name: "Franco", group: "other", attributes: ["Allure"], tier: 5, skins: ["FrancoSkin1"] },
     { name: "Alastair", group: "other", attributes: ["Spirit"], tier: 5, skins: ["AlastairSkin1"] },
     { name: "Elsie", group: "other", attributes: ["Allure", "Spirit"], tier: 5, skins: ["ElsieSkin1"] },
-    { name: "Nostradamus", group: "other", attributes: ["Intellect"], tier: 5, skins: ["NostradamusSkin1"] },
+    { name: "Nostadamus", group: "other", attributes: ["Intellect"], tier: 5, skins: ["NostadamusSkin1"] },
     { name: "Erik", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["ErikSkin1"] },
-    { name: "Charlemagne", group: "other", attributes: ["Balance"], tier: 5, skins: ["CharlemagneSkin1"] },
+    { name: "Victor", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
+    { name: "Poe", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
+    { name: "Candace", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
   ]
 
   // Warden stats
