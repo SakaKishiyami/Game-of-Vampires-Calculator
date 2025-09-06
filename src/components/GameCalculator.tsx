@@ -624,110 +624,67 @@ export default function GameCalculator() {
     }
   }
 
-  // AI-powered inventory analysis using GPT-4 Vision
+  // Free OCR-based inventory analysis using Tesseract.js
   const matchItemsInImage = async (imageData: ImageData): Promise<{ [itemName: string]: number }> => {
     const matchedItems: { [itemName: string]: number } = {}
     
     try {
-      // Convert ImageData to base64 for API call with size optimization
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')!
+      console.log('Starting free OCR-based inventory analysis...')
       
-      // Resize inventory image to reduce payload size
-      const maxWidth = 800
-      const maxHeight = 600
-      const aspectRatio = imageData.width / imageData.height
-      
-      let newWidth = imageData.width
-      let newHeight = imageData.height
-      
-      if (imageData.width > maxWidth) {
-        newWidth = maxWidth
-        newHeight = maxWidth / aspectRatio
-      }
-      if (newHeight > maxHeight) {
-        newHeight = maxHeight
-        newWidth = maxHeight * aspectRatio
-      }
-      
-      canvas.width = newWidth
-      canvas.height = newHeight
-      ctx.putImageData(imageData, 0, 0)
-      
-      const inventoryImageBase64 = canvas.toDataURL('image/jpeg', 0.8) // Use JPEG with compression
-      
-      // Prepare asset images for reference
-      const assetImages = []
+      // Load GoV assets for template matching
       const assets = await loadGoVAssets()
       
-      // Convert first 5 assets to base64 for reference (reduced to avoid 413 error)
-      for (let i = 0; i < Math.min(5, assets.length); i++) {
-        const asset = assets[i]
-        if (asset.image) {
-          // Resize asset to smaller size to reduce payload
-          const maxSize = 64
-          const assetCanvas = document.createElement('canvas')
-          const assetCtx = assetCanvas.getContext('2d')!
+      const { width, height } = imageData
+      
+      // Ignore bottom 1/4 of the image
+      const usableHeight = Math.floor(height * 0.75)
+      
+      // Calculate grid dimensions (5 columns)
+      const numColumns = 5
+      const itemWidth = Math.floor(width / numColumns)
+      const itemHeight = Math.floor(usableHeight / Math.ceil(usableHeight / itemWidth)) // Make items roughly square
+      
+      console.log(`Grid: ${numColumns} columns, item size: ${itemWidth}x${itemHeight}, usable height: ${usableHeight}`)
+      
+      // Create grid regions and analyze each one
+      for (let row = 0; row * itemHeight < usableHeight; row++) {
+        for (let col = 0; col < numColumns; col++) {
+          const x = col * itemWidth
+          const y = row * itemHeight
           
-          // Calculate new dimensions maintaining aspect ratio
-          const aspectRatio = asset.image.width / asset.image.height
-          let newWidth = maxSize
-          let newHeight = maxSize
+          // Skip if this would go outside usable area
+          if (y + itemHeight > usableHeight) break
           
-          if (aspectRatio > 1) {
-            newHeight = maxSize / aspectRatio
-          } else {
-            newWidth = maxSize * aspectRatio
+          // Add some padding to avoid edges
+          const padding = 5
+          const regionX = x + padding
+          const regionY = y + padding
+          const regionWidth = itemWidth - (padding * 2)
+          const regionHeight = itemHeight - (padding * 2)
+          
+          try {
+            // Extract region image data
+            const regionImageData = extractRegionImageData(imageData, regionX, regionY, regionWidth, regionHeight)
+            if (!regionImageData) continue
+            
+            // Find best matching asset using template matching
+            const bestMatch = await findBestAssetMatch(regionImageData, assets)
+            if (bestMatch) {
+              const { name: itemName, count } = bestMatch
+              matchedItems[itemName] = (matchedItems[itemName] || 0) + count
+              console.log(`Matched ${itemName} at grid position (${row}, ${col}) with count ${count}`)
+            }
+          } catch (error) {
+            console.warn(`Error processing grid position (${row}, ${col}):`, error)
+            continue
           }
-          
-          assetCanvas.width = newWidth
-          assetCanvas.height = newHeight
-          assetCtx.drawImage(asset.image, 0, 0, newWidth, newHeight)
-          
-          assetImages.push({
-            name: asset.name,
-            url: assetCanvas.toDataURL('image/jpeg', 0.8) // Use JPEG with compression
-          })
         }
       }
       
-      console.log(`Sending ${assetImages.length} reference assets to GPT-4 Vision`)
-      
-      // Call our API route
-      const response = await fetch('/api/analyze-inventory', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          inventoryImage: inventoryImageBase64,
-          assetImages: assetImages
-        })
-      })
-      
-      if (!response.ok) {
-        throw new Error(`API call failed: ${response.statusText}`)
-      }
-      
-      const result = await response.json()
-      
-      if (result.success && result.data && result.data.items) {
-        Object.assign(matchedItems, result.data.items)
-        console.log(`GPT-4 Vision found ${Object.keys(matchedItems).length} items:`, matchedItems)
-      } else {
-        throw new Error('Invalid response from GPT-4 Vision')
-      }
+      console.log(`Free OCR analysis found ${Object.keys(matchedItems).length} items:`, matchedItems)
       
     } catch (error) {
-      console.error('Error with GPT-4 Vision analysis:', error)
-      // Fallback to basic detection if AI fails
-      console.log('Falling back to basic detection...')
-      
-      // If it's an API key error, show helpful message
-      if (error instanceof Error && error.message.includes('API call failed')) {
-        console.log('GPT-4 Vision API not available. Please set up OPENAI_API_KEY in Vercel environment variables.')
-        console.log('Error details:', error.message)
-      }
+      console.error('Error with free OCR analysis:', error)
     }
     
     return matchedItems
@@ -835,8 +792,8 @@ export default function GameCalculator() {
     let bestMatch: { name: string; confidence: number; count: number } | null = null
     let bestConfidence = 0
     
-    // Extract count number from the region
-    const count = extractCountFromRegion(regionImageData)
+    // Extract count number from the region using OCR
+    const count = await extractCountWithOCR(regionImageData)
     
     // Compare against each asset
     for (const asset of assets) {
@@ -844,7 +801,7 @@ export default function GameCalculator() {
       
       const confidence = calculateImageSimilarity(regionImageData, asset.data)
       
-      if (confidence > bestConfidence && confidence > 0.2) { // Higher confidence threshold for more accurate matching
+      if (confidence > bestConfidence && confidence > 0.15) { // Lower threshold for free OCR approach
         bestConfidence = confidence
         bestMatch = { name: asset.name, confidence, count }
         console.log(`Matched ${asset.name} with confidence ${confidence.toFixed(3)}`)
@@ -854,7 +811,55 @@ export default function GameCalculator() {
     return bestMatch
   }
 
-  // Extract count number from a region using conservative approach
+  // Extract count using OCR from the bottom right corner
+  const extractCountWithOCR = async (regionImageData: ImageData): Promise<number> => {
+    try {
+      const width = regionImageData.width
+      const height = regionImageData.height
+      
+      // Look at the bottom right corner (last 20% of width and height)
+      const cornerWidth = Math.max(20, Math.floor(width * 0.2))
+      const cornerHeight = Math.max(20, Math.floor(height * 0.2))
+      const cornerX = width - cornerWidth
+      const cornerY = height - cornerHeight
+      
+      // Extract the corner region
+      const cornerData = extractRegionImageData(regionImageData, cornerX, cornerY, cornerWidth, cornerHeight)
+      if (!cornerData) return 1
+      
+      // Create canvas for OCR
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')!
+      canvas.width = cornerWidth
+      canvas.height = cornerHeight
+      ctx.putImageData(cornerData, 0, 0)
+      
+      // Convert to image for Tesseract
+      const imageDataUrl = canvas.toDataURL('image/png')
+      
+      // Use Tesseract.js for OCR
+      const { data: { text } } = await Tesseract.recognize(imageDataUrl, 'eng', {
+        logger: m => console.log('OCR progress:', m)
+      })
+      
+      // Extract numbers from the text
+      const numbers = text.match(/\d+/g)
+      if (numbers && numbers.length > 0) {
+        const count = parseInt(numbers[0])
+        if (count > 0 && count <= 999) {
+          console.log(`OCR detected count: ${count}`)
+          return count
+        }
+      }
+      
+      return 1
+    } catch (error) {
+      console.warn('OCR failed, using fallback:', error)
+      return extractCountFromRegion(regionImageData)
+    }
+  }
+
+  // Extract count number from a region using conservative approach (fallback)
   const extractCountFromRegion = (regionImageData: ImageData): number => {
     const width = regionImageData.width
     const height = regionImageData.height
