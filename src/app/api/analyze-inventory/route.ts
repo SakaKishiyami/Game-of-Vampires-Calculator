@@ -95,7 +95,7 @@ Be as accurate as possible with both item identification and count reading.`
     }
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4-vision-preview',
+      model: 'gpt-4o', // Updated to use the current GPT-4o model with vision
       messages: messages,
       max_tokens: 1000,
       temperature: 0.1
