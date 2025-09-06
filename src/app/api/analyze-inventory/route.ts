@@ -94,12 +94,24 @@ Be as accurate as possible with both item identification and count reading.`
       })
     }
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o', // Updated to use the current GPT-4o model with vision
-      messages: messages,
-      max_tokens: 1000,
-      temperature: 0.1
-    })
+    // Try GPT-4o first, fallback to gpt-4-turbo if billing issue
+    let response
+    try {
+      response = await openai.chat.completions.create({
+        model: 'gpt-4o', // Updated to use the current GPT-4o model with vision
+        messages: messages,
+        max_tokens: 1000,
+        temperature: 0.1
+      })
+    } catch (billingError) {
+      console.log('GPT-4o failed, trying gpt-4-turbo...')
+      response = await openai.chat.completions.create({
+        model: 'gpt-4-turbo', // Fallback model
+        messages: messages,
+        max_tokens: 1000,
+        temperature: 0.1
+      })
+    }
 
     const content = response.choices[0]?.message?.content
     if (!content) {
