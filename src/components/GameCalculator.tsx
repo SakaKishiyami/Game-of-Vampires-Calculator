@@ -5786,17 +5786,11 @@ export default function GameCalculator() {
                                     {/* Warden Image */}
                                     <div className="w-16 h-16 flex-shrink-0">
                                       <img 
-                                        src={`/Gov/Wardens/${warden.name}.png`}
+                                        src={`/Gov/Wardens/${warden.name}.jpg`}
                                         alt={warden.name}
                                         className="w-full h-full object-contain"
                                         onError={(e) => {
-                                          const img = e.target as HTMLImageElement
-                                          if (!img.dataset.fallback) {
-                                            img.dataset.fallback = 'jpg'
-                                            img.src = `/Gov/Wardens/${warden.name}.jpg`
-                                          } else {
-                                            img.style.display = 'none'
-                                          }
+                                          (e.target as HTMLImageElement).style.display = 'none';
                                         }}
                                       />
                                     </div>
@@ -6212,17 +6206,11 @@ export default function GameCalculator() {
                                       {/* Warden Image */}
                                       <div className="w-20 h-20 flex-shrink-0">
                                         <img 
-                                          src={`/Gov/Wardens/${warden.name}.png`}
+                                          src={`/Gov/Wardens/${warden.name}.jpg`}
                                           alt={warden.name}
                                           className="w-full h-full object-contain"
                                           onError={(e) => {
-                                            const img = e.target as HTMLImageElement
-                                            if (!img.dataset.fallback) {
-                                              img.dataset.fallback = 'jpg'
-                                              img.src = `/Gov/Wardens/${warden.name}.jpg`
-                                            } else {
-                                              img.style.display = 'none'
-                                            }
+                                            (e.target as HTMLImageElement).style.display = 'none';
                                           }}
                                         />
                                       </div>
@@ -6456,17 +6444,11 @@ export default function GameCalculator() {
                                   const renderImg = (loverName: string, key: string) => (
                                     <img
                                       key={key}
-                                      src={`/Gov/Lovers/${loverName}.png`}
+                                      src={`/Gov/Lovers/${loverName}.jpg`}
                                       alt={loverName}
                                       className="w-1/2 h-auto min-h-full object-contain"
                                       onError={(e) => {
-                                        const img = e.target as HTMLImageElement
-                                        if (!img.dataset.fallback) {
-                                          img.dataset.fallback = 'jpg'
-                                          img.src = `/Gov/Lovers/${loverName}.jpg`
-                                        } else {
-                                          img.style.display = 'none'
-                                        }
+                                        (e.target as HTMLImageElement).style.display = 'none';
                                       }}
                                     />
                                   )
@@ -6483,17 +6465,11 @@ export default function GameCalculator() {
                               {/* Warden Image */}
                               <div className="w-1/2 relative overflow-hidden">
                                 <img 
-                                  src={`/Gov/Wardens/${bond.warden}.png`}
+                                  src={`/Gov/Wardens/${bond.warden}.jpg`}
                                   alt={bond.warden}
                                   className="w-full h-auto min-h-full object-contain"
                                   onError={(e) => {
-                                    const img = e.target as HTMLImageElement
-                                    if (!img.dataset.fallback) {
-                                      img.dataset.fallback = 'jpg'
-                                      img.src = `/Gov/Wardens/${bond.warden}.jpg`
-                                    } else {
-                                      img.style.display = 'none'
-                                    }
+                                    (e.target as HTMLImageElement).style.display = 'none';
                                   }}
                                 />
                               </div>
