@@ -922,6 +922,54 @@ export default function GameCalculator() {
     return bestMatch
   }
 
+  // Preprocess an ImageData for OCR: scale up, grayscale, increase contrast, and threshold
+  const preprocessImageDataForOCR = (source: ImageData): ImageData => {
+    // Scale up to improve OCR accuracy
+    const scaleFactor = 2
+    const scaledWidth = source.width * scaleFactor
+    const scaledHeight = source.height * scaleFactor
+    
+    const tempCanvas = document.createElement('canvas')
+    const tempCtx = tempCanvas.getContext('2d')!
+    tempCanvas.width = scaledWidth
+    tempCanvas.height = scaledHeight
+    
+    // Draw original onto scaled canvas
+    const srcCanvas = document.createElement('canvas')
+    const srcCtx = srcCanvas.getContext('2d')!
+    srcCanvas.width = source.width
+    srcCanvas.height = source.height
+    srcCtx.putImageData(source, 0, 0)
+    tempCtx.imageSmoothingEnabled = false
+    tempCtx.drawImage(srcCanvas, 0, 0, source.width, source.height, 0, 0, scaledWidth, scaledHeight)
+    
+    // Get scaled image data
+    const scaled = tempCtx.getImageData(0, 0, scaledWidth, scaledHeight)
+    const data = scaled.data
+    
+    // Convert to grayscale and increase contrast, then threshold
+    // Contrast factor: 1.4 (0=no change). Threshold ~ 170.
+    const contrast = 1.4
+    const threshold = 170
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i]
+      const g = data[i + 1]
+      const b = data[i + 2]
+      // Luma grayscale
+      let v = Math.round(0.2126 * r + 0.7152 * g + 0.0722 * b)
+      // Contrast around mid-point 128
+      v = Math.min(255, Math.max(0, Math.round((v - 128) * contrast + 128)))
+      // Threshold to binary
+      const bin = v >= threshold ? 255 : 0
+      data[i] = bin
+      data[i + 1] = bin
+      data[i + 2] = bin
+      // keep alpha
+    }
+    
+    return scaled
+  }
+
   // Extract count using OCR from the bottom right corner
   const extractCountWithOCR = async (regionImageData: ImageData): Promise<number> => {
     try {
@@ -938,14 +986,13 @@ export default function GameCalculator() {
       const cornerData = extractRegionImageData(regionImageData, cornerX, cornerY, cornerWidth, cornerHeight)
       if (!cornerData) return 1
       
-      // Create canvas for OCR
+      // Preprocess for OCR and convert to image
+      const preprocessed = preprocessImageDataForOCR(cornerData)
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')!
-      canvas.width = cornerWidth
-      canvas.height = cornerHeight
-      ctx.putImageData(cornerData, 0, 0)
-      
-      // Convert to image for Tesseract
+      canvas.width = preprocessed.width
+      canvas.height = preprocessed.height
+      ctx.putImageData(preprocessed, 0, 0)
       const imageDataUrl = canvas.toDataURL('image/png')
       
       // Dynamically import Tesseract.js to avoid SSR issues
@@ -5739,11 +5786,17 @@ export default function GameCalculator() {
                                     {/* Warden Image */}
                                     <div className="w-16 h-16 flex-shrink-0">
                                       <img 
-                                        src={`/data/Gov/Wardens/BaseWardens/${warden.name}.png`}
+                                        src={`/Gov/Wardens/${warden.name}.png`}
                                         alt={warden.name}
                                         className="w-full h-full object-contain"
                                         onError={(e) => {
-                                          (e.target as HTMLImageElement).style.display = 'none';
+                                          const img = e.target as HTMLImageElement
+                                          if (!img.dataset.fallback) {
+                                            img.dataset.fallback = 'jpg'
+                                            img.src = `/Gov/Wardens/${warden.name}.jpg`
+                                          } else {
+                                            img.style.display = 'none'
+                                          }
                                         }}
                                       />
                                     </div>
@@ -6159,11 +6212,17 @@ export default function GameCalculator() {
                                       {/* Warden Image */}
                                       <div className="w-20 h-20 flex-shrink-0">
                                         <img 
-                                          src={`/data/Gov/Wardens/BaseWardens/${warden.name}.png`}
+                                          src={`/Gov/Wardens/${warden.name}.png`}
                                           alt={warden.name}
                                           className="w-full h-full object-contain"
                                           onError={(e) => {
-                                            (e.target as HTMLImageElement).style.display = 'none';
+                                            const img = e.target as HTMLImageElement
+                                            if (!img.dataset.fallback) {
+                                              img.dataset.fallback = 'jpg'
+                                              img.src = `/Gov/Wardens/${warden.name}.jpg`
+                                            } else {
+                                              img.style.display = 'none'
+                                            }
                                           }}
                                         />
                                       </div>
@@ -6391,46 +6450,50 @@ export default function GameCalculator() {
                           <div className="flex">
                             {/* Lover and Warden Images Side by Side - Left Side */}
                             <div className="w-48 flex-shrink-0 relative overflow-hidden rounded-l-lg flex">
-                              {/* Lover Image */}
-                              <div className="w-1/2 relative overflow-hidden">
-                                <img 
-                                  src={(() => {
-                                    // Handle lovers with slashes (different genders)
-                                    if (bond.lover.includes('/')) {
-                                      const names = bond.lover.split('/');
-                                      // Try first name, then second name as fallback
-                                      return `/data/Gov/Lovers/BaseLovers/${names[0].trim()}.PNG`;
-                                    }
-                                    return `/data/Gov/Lovers/BaseLovers/${bond.lover}.PNG`;
-                                  })()}
-                                  alt={bond.lover}
-                                  className="w-full h-auto min-h-full object-contain"
-                                  onError={(e) => {
-                                    // Fallback to second name if lover has a slash
-                                    const img = e.target as HTMLImageElement;
-                                    if (bond.lover.includes('/') && !img.src.includes('fallback-attempted')) {
-                                      const names = bond.lover.split('/');
-                                      img.src = `/data/Gov/Lovers/BaseLovers/${names[1].trim()}.PNG?fallback-attempted=true`;
-                                    } else if (!img.src.includes('fallback-lowercase')) {
-                                      // Try lowercase extension
-                                      const currentSrc = img.src.replace('.PNG', '.png');
-                                      img.src = currentSrc + '?fallback-lowercase=true';
-                                    } else {
-                                      // Hide image if all attempts fail
-                                      img.style.display = 'none';
-                                    }
-                                  }}
-                                />
+                              {/* Lover Images (show both if dual) */}
+                              <div className="w-1/2 relative overflow-hidden flex">
+                                {(() => {
+                                  const renderImg = (loverName: string, key: string) => (
+                                    <img
+                                      key={key}
+                                      src={`/Gov/Lovers/${loverName}.png`}
+                                      alt={loverName}
+                                      className="w-1/2 h-auto min-h-full object-contain"
+                                      onError={(e) => {
+                                        const img = e.target as HTMLImageElement
+                                        if (!img.dataset.fallback) {
+                                          img.dataset.fallback = 'jpg'
+                                          img.src = `/Gov/Lovers/${loverName}.jpg`
+                                        } else {
+                                          img.style.display = 'none'
+                                        }
+                                      }}
+                                    />
+                                  )
+                                  if (bond.lover.includes('/')) {
+                                    const [a, b] = bond.lover.split('/').map(s => s.trim())
+                                    return (<>
+                                      {renderImg(a, 'lover-a')}
+                                      {renderImg(b, 'lover-b')}
+                                    </>)
+                                  }
+                                  return renderImg(bond.lover, 'lover-single')
+                                })()}
                               </div>
                               {/* Warden Image */}
                               <div className="w-1/2 relative overflow-hidden">
                                 <img 
-                                  src={`/data/Gov/Wardens/BaseWardens/${bond.warden}.png`}
+                                  src={`/Gov/Wardens/${bond.warden}.png`}
                                   alt={bond.warden}
                                   className="w-full h-auto min-h-full object-contain"
                                   onError={(e) => {
-                                    // Fallback if image doesn't exist
-                                    (e.target as HTMLImageElement).style.display = 'none';
+                                    const img = e.target as HTMLImageElement
+                                    if (!img.dataset.fallback) {
+                                      img.dataset.fallback = 'jpg'
+                                      img.src = `/Gov/Wardens/${bond.warden}.jpg`
+                                    } else {
+                                      img.style.display = 'none'
+                                    }
                                   }}
                                 />
                               </div>
