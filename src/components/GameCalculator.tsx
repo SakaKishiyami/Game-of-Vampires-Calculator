@@ -6184,6 +6184,281 @@ export default function GameCalculator() {
                   {/* Warden Stats Tab */}
                   {activeWardenTab === "stats" && (
                     <div className="space-y-4">
+                      {/* Upload Section */}
+                      <Card className="bg-gray-700/50 border-gray-600">
+                        <CardHeader>
+                          <CardTitle className="text-blue-400">Upload Warden Data</CardTitle>
+                          <div className="text-sm text-gray-300">
+                            Upload files named after your wardens containing their attribute breakdowns:
+                            <ul className="mt-2 list-disc list-inside">
+                              <li><strong>Screenshots (PNG/JPG):</strong> "Diana.png", "Scarlet.jpg" - Uses OCR to extract text</li>
+                              <li><strong>Text files:</strong> "Diana.txt", "Scarlet.json" - Parses text directly</li>
+                            </ul>
+                            The parser will automatically extract total attributes and all bonus breakdowns.
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            <div>
+                              <input
+                                type="file"
+                                multiple
+                                accept=".txt,.json,.csv,.png,.jpg,.jpeg"
+                                onChange={handleFileUpload}
+                                disabled={isUploading}
+                                className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
+                              />
+                            </div>
+                            {isUploading && (
+                              <div className="text-yellow-400">
+                                {ocrProgress || "Uploading and parsing files..."}
+                              </div>
+                            )}
+                            {uploadError && (
+                              <div className="text-red-400 text-sm">
+                                {uploadError}
+                              </div>
+                            )}
+                            {Object.keys(uploadedWardenData).length > 0 && (
+                              <div className="text-green-400 text-sm">
+                                Successfully uploaded data for: {Object.keys(uploadedWardenData).join(', ')}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Uploaded Warden Data Section */}
+                      {Object.keys(uploadedWardenData).length > 0 && (
+                        <div className="space-y-4">
+                          <h3 className="text-xl font-semibold text-white">Uploaded Warden Data</h3>
+                          {Object.entries(uploadedWardenData).map(([wardenName, data]) => (
+                            <Card key={wardenName} className="bg-gray-700/50 border-gray-600">
+                              <CardHeader>
+                                <CardTitle className="flex items-center gap-3">
+                                  <span className="text-white">{wardenName}</span>
+                                  <span className="text-yellow-400 text-sm">
+                                    Total: {data.totalAttributes >= 1000000 
+                                      ? `${(data.totalAttributes / 1000000).toFixed(2)}M` 
+                                      : data.totalAttributes >= 1000 
+                                        ? `${(data.totalAttributes / 1000).toFixed(2)}K` 
+                                        : data.totalAttributes.toLocaleString()}
+                                  </span>
+                                </CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                  {["strength", "allure", "intellect", "spirit"].map((attr) => {
+                                    const attrData = data[attr as keyof typeof data]
+                                    if (typeof attrData === 'object' && attrData.total !== undefined) {
+                                      return (
+                                        <div key={attr} className="space-y-3">
+                                          <div className={`font-semibold capitalize ${getAttributeColor(attr)} text-lg`}>
+                                            {attr}
+                                          </div>
+                                          <div className="space-y-2">
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Total</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.total}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        total: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Talent Bonus</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.talentBonus}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        talentBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Book Bonus</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.bookBonus}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        bookBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Scarlet Bond Bonus</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.scarletBondBonus}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        scarletBondBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Presence Bonus</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.presenceBonus}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        presenceBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Aura Bonus</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.auraBonus}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        auraBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Conclave Bonus</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.conclaveBonus}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        conclaveBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Avatar Bonus</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.avatarBonus}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        avatarBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                            <div>
+                                              <Label className="text-sm text-gray-300">Familiar Bonus</Label>
+                                              <Input
+                                                type="number"
+                                                value={attrData.familiarBonus}
+                                                onChange={(e) => {
+                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        familiarBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                              />
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )
+                                    }
+                                    return null
+                                  })}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      )}
+
                       {/* All Wardens with Images, Stats, and Skins */}
                       <Card className="bg-gray-700/50 border-gray-600">
                         <CardHeader>
@@ -6436,43 +6711,32 @@ export default function GameCalculator() {
                       return (
                         <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                           <div className="flex">
-                            {/* Lover and Warden Images Side by Side - Left Side */}
-                            <div className="w-48 flex-shrink-0 relative overflow-hidden rounded-l-lg flex">
-                              {/* Lover Images (show both if dual) */}
-                              <div className="w-1/2 relative overflow-hidden flex">
-                                {(() => {
-                                  const renderImg = (loverName: string, key: string) => (
-                                    <img
-                                      key={key}
-                                      src={`/Gov/Lovers/${loverName}.jpg`}
-                                      alt={loverName}
-                                      className="w-1/2 h-auto min-h-full object-contain"
-                                      onError={(e) => {
-                                        (e.target as HTMLImageElement).style.display = 'none';
-                                      }}
-                                    />
-                                  )
+                            {/* Lover Image - Left Side */}
+                            <div className="w-32 flex-shrink-0 relative overflow-hidden rounded-l-lg">
+                              <img 
+                                src={(() => {
+                                  // Handle lovers with slashes (different genders)
                                   if (bond.lover.includes('/')) {
-                                    const [a, b] = bond.lover.split('/').map(s => s.trim())
-                                    return (<>
-                                      {renderImg(a, 'lover-a')}
-                                      {renderImg(b, 'lover-b')}
-                                    </>)
+                                    const names = bond.lover.split('/');
+                                    // Try first name, then second name as fallback
+                                    return `/Gov/Lovers/${names[0].trim()}.jpg`;
                                   }
-                                  return renderImg(bond.lover, 'lover-single')
+                                  return `/Gov/Lovers/${bond.lover}.jpg`;
                                 })()}
-                              </div>
-                              {/* Warden Image */}
-                              <div className="w-1/2 relative overflow-hidden">
-                                <img 
-                                  src={`/Gov/Wardens/${bond.warden}.jpg`}
-                                  alt={bond.warden}
-                                  className="w-full h-auto min-h-full object-contain"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).style.display = 'none';
-                                  }}
-                                />
-                              </div>
+                                alt={bond.lover}
+                                className="w-full h-auto min-h-full object-contain"
+                                onError={(e) => {
+                                  // Fallback to second name if lover has a slash
+                                  const img = e.target as HTMLImageElement;
+                                  if (bond.lover.includes('/') && !img.src.includes('fallback-attempted')) {
+                                    const names = bond.lover.split('/');
+                                    img.src = `/Gov/Lovers/${names[1].trim()}.jpg?fallback-attempted=true`;
+                                  } else {
+                                    // Hide image if all attempts fail
+                                    img.style.display = 'none';
+                                  }
+                                }}
+                              />
                             </div>
                             
                             {/* Content - Right Side */}
@@ -6489,6 +6753,16 @@ export default function GameCalculator() {
                                         <span className="text-white font-semibold">
                                           {bond.warden}
                                         </span>
+                                        {/* Warden Image - Inline with both names */}
+                                        <img 
+                                          src={`/Gov/Wardens/${bond.warden}.jpg`}
+                                          alt={bond.warden}
+                                          className="w-20 h-20 object-contain flex-shrink-0"
+                                          onError={(e) => {
+                                            // Fallback if image doesn't exist
+                                            (e.target as HTMLImageElement).style.display = 'none';
+                                          }}
+                                        />
                                       </div>
                                     </div>
                                   </div>

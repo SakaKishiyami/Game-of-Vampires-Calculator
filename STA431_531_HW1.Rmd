@@ -1,17 +1,16 @@
 ---
-title: "STA 431/531 Homework 1"
-author: "Your Name"
-date: "2025-09-10"
-output:
-  html_document:
-    toc: true
-    toc_depth: 2
-    number_sections: true
-  pdf_document: default
+title: "HW1"
+author: "Kaitlin Tabernik"
+date: "2025-09-09"
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
 ```
 
 ## 1. Descriptive computations without using mean/sd/cor
@@ -35,17 +34,16 @@ n <- length(Y)
 (a) Sample mean of Y:
 
 ```{r q1a-mean}
-# mean(Y) = sum(Y) / n
 sumY <- sum(Y)
 Y_bar <- sumY / n
 Y_bar
 ```
 
 (b) Sample standard deviation of Y:
+-  Sample variance: s^2 = sum((Y - Y_bar)^2) / (n - 1)
+-  Sample sd: sqrt(s^2)
 
 ```{r q1b-sd}
-# Sample variance: s^2 = sum((Y - Y_bar)^2) / (n - 1)
-# Sample sd: sqrt(s^2)
 Y_dev <- Y - Y_bar
 SSY <- sum(Y_dev^2)
 Y_var <- SSY / (n - 1)
@@ -54,10 +52,12 @@ Y_sd
 ```
 
 (c) Correlation coefficient between X and Y:
+-  r = S_xy / sqrt(S_xx * S_yy)
+-  S_xy = sum((X - X_bar)*(Y - Y_bar))
+-  S_xx = sum((X - X_bar)^2)
+-  S_yy = sum((Y - Y_bar)^2)
 
 ```{r q1c-cor}
-# r = S_xy / sqrt(S_xx * S_yy), where
-# S_xy = sum((X - X_bar)*(Y - Y_bar)), S_xx = sum((X - X_bar)^2), S_yy = sum((Y - Y_bar)^2)
 X_bar <- sum(X) / n
 X_dev <- X - X_bar
 S_xy <- sum(X_dev * Y_dev)
@@ -67,7 +67,7 @@ r_xy <- S_xy / sqrt(S_xx * S_yy)
 r_xy
 ```
 
-(Quick check with built-ins – not part of required solution):
+(Check with built-ins):
 
 ```{r q1-check, echo=FALSE}
 list(meanY_builtin = mean(Y), sdY_builtin = sd(Y), cor_builtin = cor(X, Y))
@@ -114,20 +114,23 @@ read_tennis_data <- function(path) {
 }
 
 # Update path to your actual tennis.txt location if different
-tennis_path <- "tennis.txt"
+tennis_path <- "C:/Users/Katie/Downloads/tennis.txt"
 # If file is not found, skip execution gracefully
 if (file.exists(tennis_path)) {
   tennis.dfr <- read_tennis_data(tennis_path)
+  cat("Successfully loaded tennis data with", nrow(tennis.dfr), "players\n")
 } else {
   tennis.dfr <- NULL
-  message("tennis.txt not found in working directory; skipping data load.")
+  cat("tennis.txt not found at:", tennis_path, "\n")
 }
 ```
 
 Add winning percentage columns:
 
-```{r q2-add-cols, eval=!!file.exists("tennis.txt")}
-stopifnot(!is.null(tennis.dfr))
+```{r q2-add-cols, echo=TRUE}
+if (is.null(tennis.dfr)) {
+  cat("Skipping tennis data operations - tennis.dfr is NULL\n")
+} else {
 with(tennis.dfr, {
   major_total <- major.match.wins + major.match.losses
   overall_total <- overall.match.wins + overall.match.losses
@@ -137,36 +140,53 @@ tennis.dfr$major.winning.pct <- with(tennis.dfr, major.match.wins / (major.match
 tennis.dfr$overall.winning.pct <- with(tennis.dfr, overall.match.wins / (overall.match.wins + overall.match.losses))
 
 head(tennis.dfr)
+}
 ```
 
 (c) Sort by major titles (descending):
 
-```{r q2c-sort, eval=!!file.exists("tennis.txt")}
-ord1 <- order(-tennis.dfr$major.titles)
-sorted_major <- tennis.dfr[ord1, ]
-sorted_major
+```{r q2c-sort}
+if (!is.null(tennis.dfr)) {
+  ord1 <- order(-tennis.dfr$major.titles)
+  sorted_major <- tennis.dfr[ord1, ]
+  sorted_major
+} else {
+  cat("Skipping sort - tennis.dfr is NULL\n")
+}
 ```
 
 (d) Nested sort: major titles (desc), then major winning pct (desc):
 
-```{r q2d-nested-sort, eval=!!file.exists("tennis.txt")}
-ord2 <- order(-tennis.dfr$major.titles, -tennis.dfr$major.winning.pct)
-sorted_nested <- tennis.dfr[ord2, ]
-sorted_nested
+```{r q2d-nested-sort}
+if (!is.null(tennis.dfr)) {
+  ord2 <- order(-tennis.dfr$major.titles, -tennis.dfr$major.winning.pct)
+  sorted_nested <- tennis.dfr[ord2, ]
+  sorted_nested
+} else {
+  cat("Skipping nested sort - tennis.dfr is NULL\n")
+}
 ```
 
 (e) Subset to players with at least 6 major titles:
 
-```{r q2e-subset, eval=!!file.exists("tennis.txt")}
-greatest.dfr <- subset(tennis.dfr, major.titles >= 6)
-greatest.dfr
+```{r q2e-subset}
+if (!is.null(tennis.dfr)) {
+  greatest.dfr <- subset(tennis.dfr, major.titles >= 6)
+  greatest.dfr
+} else {
+  cat("Skipping subset - tennis.dfr is NULL\n")
+}
 ```
 
 (f) Sample means for each numeric variable in `tennis.dfr`:
 
-```{r q2f-means, eval=!!file.exists("tennis.txt")}
-num_vars <- vapply(tennis.dfr, is.numeric, logical(1))
-colMeans(tennis.dfr[, num_vars, drop = FALSE])
+```{r q2f-means}
+if (!is.null(tennis.dfr)) {
+  num_vars <- vapply(tennis.dfr, is.numeric, logical(1))
+  colMeans(tennis.dfr[, num_vars, drop = FALSE])
+} else {
+  cat("Skipping means calculation - tennis.dfr is NULL\n")
+}
 ```
 
 ## 3. Write `tennis.dfr` to external file
@@ -175,17 +195,21 @@ Original prompt:
 
 - Use `write.table()` to write `tennis.dfr` to an external file including column names, and ensure players' names are not surrounded by quotes.
 
-```{r q3-write, eval=!!file.exists("tennis.txt")}
-output_path <- "tennis_out.txt"
-write.table(
-  tennis.dfr,
-  file = output_path,
-  quote = FALSE,          # do not quote character fields
-  row.names = FALSE,
-  col.names = TRUE,
-  sep = "\t"
-)
-output_path
+```{r q3-write}
+if (!is.null(tennis.dfr)) {
+  output_path <- "C:/Users/Katie/Downloads/tennis_out.txt"
+  write.table(
+    tennis.dfr,
+    file = output_path,
+    quote = FALSE,        
+    row.names = FALSE,
+    col.names = TRUE,
+    sep = "\t"
+  )
+  output_path
+} else {
+  cat("Skipping file write - tennis.dfr is NULL\n")
+}
 ```
 
 ## 4. Optional (STA 431): Fibonacci numbers
