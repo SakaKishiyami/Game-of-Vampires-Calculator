@@ -5784,11 +5784,11 @@ export default function GameCalculator() {
                                 {wardens.map((warden) => (
                                   <div key={warden.name} className="flex items-center gap-3 p-4 bg-gray-600/50 border border-gray-500 rounded">
                                     {/* Warden Image */}
-                                    <div className="w-16 h-16 flex-shrink-0">
+                                    <div className="w-20 h-20 flex-shrink-0 relative overflow-hidden rounded">
                                       <img 
                                         src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                         alt={warden.name}
-                                        className="w-full h-full object-contain"
+                                        className="w-full h-full object-cover"
                                         onError={(e) => {
                                           (e.target as HTMLImageElement).style.display = 'none';
                                         }}
@@ -6479,11 +6479,11 @@ export default function GameCalculator() {
                                   <CardContent className="p-4">
                                     <div className="flex gap-3">
                                       {/* Warden Image */}
-                                      <div className="w-20 h-20 flex-shrink-0">
+                                      <div className="w-24 h-24 flex-shrink-0 relative overflow-hidden rounded">
                                         <img 
                                           src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                           alt={warden.name}
-                                          className="w-full h-full object-contain"
+                                          className="w-full h-full object-cover"
                                           onError={(e) => {
                                             (e.target as HTMLImageElement).style.display = 'none';
                                           }}
@@ -6711,32 +6711,40 @@ export default function GameCalculator() {
                       return (
                         <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                           <div className="flex">
-                            {/* Lover Image - Left Side */}
-                            <div className="w-32 flex-shrink-0 relative overflow-hidden rounded-l-lg">
-                              <img 
-                                src={(() => {
-                                  // Handle lovers with slashes (different genders)
-                                  if (bond.lover.includes('/')) {
-                                    const names = bond.lover.split('/');
-                                    // Try first name, then second name as fallback
-                                    return `/Gov/Lovers/BaseLovers/${names[0].trim()}.PNG`;
-                                  }
-                                  return `/Gov/Lovers/BaseLovers/${bond.lover}.PNG`;
-                                })()}
-                                alt={bond.lover}
-                                className="w-full h-auto min-h-full object-contain"
-                                onError={(e) => {
-                                  // Fallback to second name if lover has a slash
-                                  const img = e.target as HTMLImageElement;
-                                  if (bond.lover.includes('/') && !img.src.includes('fallback-attempted')) {
-                                    const names = bond.lover.split('/');
-                                    img.src = `/Gov/Lovers/BaseLovers/${names[1].trim()}.PNG?fallback-attempted=true`;
-                                  } else {
-                                    // Hide image if all attempts fail
-                                    img.style.display = 'none';
-                                  }
-                                }}
-                              />
+                            {/* Lover Images - Left Side */}
+                            <div className="w-40 h-32 flex-shrink-0 relative overflow-hidden rounded-l-lg flex">
+                              {(() => {
+                                if (bond.lover.includes('/')) {
+                                  // Show both genders side by side
+                                  const names = bond.lover.split('/').map(s => s.trim());
+                                  return names.map((name, index) => (
+                                    <div key={index} className="w-1/2 h-full relative overflow-hidden">
+                                      <img 
+                                        src={`/Gov/Lovers/BaseLovers/${name}.PNG`}
+                                        alt={name}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          (e.target as HTMLImageElement).style.display = 'none';
+                                        }}
+                                      />
+                                    </div>
+                                  ));
+                                } else {
+                                  // Single lover - center the image
+                                  return (
+                                    <div className="w-full h-full relative overflow-hidden flex items-center justify-center">
+                                      <img 
+                                        src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`}
+                                        alt={bond.lover}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          (e.target as HTMLImageElement).style.display = 'none';
+                                        }}
+                                      />
+                                    </div>
+                                  );
+                                }
+                              })()}
                             </div>
                             
                             {/* Content - Right Side */}
@@ -6754,15 +6762,17 @@ export default function GameCalculator() {
                                           {bond.warden}
                                         </span>
                                         {/* Warden Image - Inline with both names */}
-                                        <img 
-                                          src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
-                                          alt={bond.warden}
-                                          className="w-20 h-20 object-contain flex-shrink-0"
-                                          onError={(e) => {
-                                            // Fallback if image doesn't exist
-                                            (e.target as HTMLImageElement).style.display = 'none';
-                                          }}
-                                        />
+                                        <div className="w-20 h-20 relative overflow-hidden rounded flex-shrink-0">
+                                          <img 
+                                            src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
+                                            alt={bond.warden}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                              // Fallback if image doesn't exist
+                                              (e.target as HTMLImageElement).style.display = 'none';
+                                            }}
+                                          />
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
