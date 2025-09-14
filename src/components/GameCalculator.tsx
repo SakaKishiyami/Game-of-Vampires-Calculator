@@ -5786,7 +5786,7 @@ export default function GameCalculator() {
                                     {/* Warden Image */}
                                     <div className="w-16 h-16 flex-shrink-0">
                                       <img 
-                                        src={`/Gov/Wardens/BaseWardens/${warden.name}.jpg`}
+                                        src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                         alt={warden.name}
                                         className="w-full h-full object-contain"
                                         onError={(e) => {
@@ -6481,7 +6481,7 @@ export default function GameCalculator() {
                                       {/* Warden Image */}
                                       <div className="w-20 h-20 flex-shrink-0">
                                         <img 
-                                          src={`/Gov/Wardens/BaseWardens/${warden.name}.jpg`}
+                                          src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                           alt={warden.name}
                                           className="w-full h-full object-contain"
                                           onError={(e) => {
@@ -6719,9 +6719,9 @@ export default function GameCalculator() {
                                   if (bond.lover.includes('/')) {
                                     const names = bond.lover.split('/');
                                     // Try first name, then second name as fallback
-                                    return `/Gov/Lovers/BaseLovers/${names[0].trim()}.jpg`;
+                                    return `/Gov/Lovers/BaseLovers/${names[0].trim()}.PNG`;
                                   }
-                                  return `/Gov/Lovers/BaseLovers/${bond.lover}.jpg`;
+                                  return `/Gov/Lovers/BaseLovers/${bond.lover}.PNG`;
                                 })()}
                                 alt={bond.lover}
                                 className="w-full h-auto min-h-full object-contain"
@@ -6730,7 +6730,7 @@ export default function GameCalculator() {
                                   const img = e.target as HTMLImageElement;
                                   if (bond.lover.includes('/') && !img.src.includes('fallback-attempted')) {
                                     const names = bond.lover.split('/');
-                                    img.src = `/Gov/Lovers/BaseLovers/${names[1].trim()}.jpg?fallback-attempted=true`;
+                                    img.src = `/Gov/Lovers/BaseLovers/${names[1].trim()}.PNG?fallback-attempted=true`;
                                   } else {
                                     // Hide image if all attempts fail
                                     img.style.display = 'none';
@@ -6755,7 +6755,7 @@ export default function GameCalculator() {
                                         </span>
                                         {/* Warden Image - Inline with both names */}
                                         <img 
-                                          src={`/Gov/Wardens/BaseWardens/${bond.warden}.jpg`}
+                                          src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
                                           alt={bond.warden}
                                           className="w-20 h-20 object-contain flex-shrink-0"
                                           onError={(e) => {
