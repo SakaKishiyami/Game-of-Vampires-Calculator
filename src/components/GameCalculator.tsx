@@ -5784,11 +5784,11 @@ export default function GameCalculator() {
                                 {wardens.map((warden) => (
                                   <div key={warden.name} className="flex items-center gap-3 p-4 bg-gray-600/50 border border-gray-500 rounded">
                                     {/* Warden Image */}
-                                    <div className="w-20 h-20 flex-shrink-0 relative overflow-hidden rounded">
+                                    <div className="w-20 h-20 flex-shrink-0">
                                       <img 
                                         src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                         alt={warden.name}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-contain"
                                         onError={(e) => {
                                           (e.target as HTMLImageElement).style.display = 'none';
                                         }}
@@ -6479,11 +6479,11 @@ export default function GameCalculator() {
                                   <CardContent className="p-4">
                                     <div className="flex gap-3">
                                       {/* Warden Image */}
-                                      <div className="w-24 h-24 flex-shrink-0 relative overflow-hidden rounded">
+                                      <div className="w-24 h-24 flex-shrink-0">
                                         <img 
                                           src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                           alt={warden.name}
-                                          className="w-full h-full object-cover"
+                                          className="w-full h-full object-contain"
                                           onError={(e) => {
                                             (e.target as HTMLImageElement).style.display = 'none';
                                           }}
@@ -6712,17 +6712,17 @@ export default function GameCalculator() {
                         <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                           <div className="flex">
                             {/* Lover Images - Left Side */}
-                            <div className="w-40 h-32 flex-shrink-0 relative overflow-hidden rounded-l-lg flex">
+                            <div className="w-48 h-40 flex-shrink-0 flex">
                               {(() => {
                                 if (bond.lover.includes('/')) {
                                   // Show both genders side by side
                                   const names = bond.lover.split('/').map(s => s.trim());
                                   return names.map((name, index) => (
-                                    <div key={index} className="w-1/2 h-full relative overflow-hidden">
+                                    <div key={index} className="w-1/2 h-full">
                                       <img 
                                         src={`/Gov/Lovers/BaseLovers/${name}.PNG`}
                                         alt={name}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-contain"
                                         onError={(e) => {
                                           (e.target as HTMLImageElement).style.display = 'none';
                                         }}
@@ -6732,11 +6732,11 @@ export default function GameCalculator() {
                                 } else {
                                   // Single lover - center the image
                                   return (
-                                    <div className="w-full h-full relative overflow-hidden flex items-center justify-center">
+                                    <div className="w-full h-full flex items-center justify-center">
                                       <img 
                                         src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`}
                                         alt={bond.lover}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-contain"
                                         onError={(e) => {
                                           (e.target as HTMLImageElement).style.display = 'none';
                                         }}
@@ -6749,24 +6749,24 @@ export default function GameCalculator() {
                             
                             {/* Content - Right Side */}
                             <div className="flex-1">
-                              <CardHeader>
-                                <CardTitle className="flex items-center gap-3 flex-wrap">
+                              <CardHeader className="pb-2">
+                                <CardTitle className="flex items-center gap-3 flex-wrap text-base">
                                   <div className="flex items-center gap-3">
-                                    <div className="flex flex-col gap-2">
-                                      <span className="text-white text-lg font-bold">
+                                    <div className="flex flex-col gap-1">
+                                      <span className="text-white text-base font-bold">
                                         {bond.lover}
                                       </span>
                                       <div className="flex items-center gap-2">
-                                        <span className="text-gray-300">with</span>
-                                        <span className="text-white font-semibold">
+                                        <span className="text-gray-300 text-sm">with</span>
+                                        <span className="text-white font-semibold text-sm">
                                           {bond.warden}
                                         </span>
                                         {/* Warden Image - Inline with both names */}
-                                        <div className="w-20 h-20 relative overflow-hidden rounded flex-shrink-0">
+                                        <div className="w-20 h-20 flex-shrink-0">
                                           <img 
                                             src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
                                             alt={bond.warden}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-contain"
                                             onError={(e) => {
                                               // Fallback if image doesn't exist
                                               (e.target as HTMLImageElement).style.display = 'none';
@@ -6824,7 +6824,7 @@ export default function GameCalculator() {
                                   </div>
                                 </CardTitle>
                               </CardHeader>
-                          <CardContent>
+                          <CardContent className="pt-2">
                             <div className="grid grid-cols-8 gap-2">
                               {["strength", "allure", "intellect", "spirit"].map((attr) => {
                                 const isMainStat = wardenData?.some(
