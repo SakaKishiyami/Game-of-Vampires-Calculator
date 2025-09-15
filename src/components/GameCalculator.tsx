@@ -5825,7 +5825,7 @@ export default function GameCalculator() {
                             <CardContent>
                               <div className="grid grid-cols-2 gap-3">
                                 {wardens.map((warden) => (
-                                  <div key={warden.name} className="flex items-center gap-3 p-4 bg-gray-600/50 border border-gray-500 rounded">
+                                  <div key={warden.name} className="flex items-center gap-2 p-2 bg-gray-600/50 border border-gray-500 rounded">
                                     {/* Warden Image */}
                                     <div className="w-20 h-20 flex-shrink-0">
                                       <img 
@@ -6519,8 +6519,8 @@ export default function GameCalculator() {
                               
                               return (
                                 <Card key={warden.name} className="bg-gray-600/50 border-gray-500">
-                                  <CardContent className="p-4">
-                                    <div className="flex gap-3">
+                                  <CardContent className="p-2">
+                                    <div className="flex gap-2">
                                       {/* Warden Image */}
                                       <div className="w-24 h-24 flex-shrink-0">
                                         <img 
@@ -6755,7 +6755,7 @@ export default function GameCalculator() {
                         <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                           <div className="flex">
                             {/* Lover Images - Left Side */}
-                            <div className="w-56 h-48 flex-shrink-0 flex">
+                            <div className="w-64 h-56 flex-shrink-0 flex">
                               {(() => {
                                 if (bond.lover.includes('/')) {
                                   // Show both genders side by side
@@ -6763,11 +6763,17 @@ export default function GameCalculator() {
                                   return names.map((name, index) => (
                                     <div key={index} className="w-1/2 h-full flex items-center justify-center">
                                       <img 
-                                        src={`/Gov/Lovers/BaseLovers/${name}.PNG`}
+                                        src={`/Gov/Lovers/BaseLovers/${name}.png`}
                                         alt={name}
                                         className="w-full h-full object-contain"
                                         onError={(e) => {
-                                          (e.target as HTMLImageElement).style.display = 'none';
+                                          const img = e.target as HTMLImageElement;
+                                          // Try .jpg fallback
+                                          if (!img.src.includes('.jpg')) {
+                                            img.src = `/Gov/Lovers/BaseLovers/${name}.jpg`;
+                                          } else {
+                                            img.style.display = 'none';
+                                          }
                                         }}
                                       />
                                     </div>
@@ -6777,11 +6783,17 @@ export default function GameCalculator() {
                                   return (
                                     <div className="w-full h-full flex items-center justify-center">
                                       <img 
-                                        src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`}
+                                        src={`/Gov/Lovers/BaseLovers/${bond.lover}.png`}
                                         alt={bond.lover}
                                         className="w-full h-full object-contain"
                                         onError={(e) => {
-                                          (e.target as HTMLImageElement).style.display = 'none';
+                                          const img = e.target as HTMLImageElement;
+                                          // Try .jpg fallback
+                                          if (!img.src.includes('.jpg')) {
+                                            img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.jpg`;
+                                          } else {
+                                            img.style.display = 'none';
+                                          }
                                         }}
                                       />
                                     </div>
@@ -6792,11 +6804,11 @@ export default function GameCalculator() {
                             
                             {/* Content - Right Side */}
                             <div className="flex-1">
-                              <CardHeader className="pb-1">
-                                <CardTitle className="flex items-center gap-2 flex-wrap text-sm">
-                                  <div className="flex items-center gap-2">
-                                    <div className="flex flex-col gap-0.5">
-                                      <span className="text-white text-sm font-bold">
+                              <CardHeader className="pb-0 pt-2">
+                                <CardTitle className="flex items-center gap-1 flex-wrap text-xs">
+                                  <div className="flex items-center gap-1">
+                                    <div className="flex flex-col gap-0">
+                                      <span className="text-white text-xs font-bold">
                                         {bond.lover}
                                       </span>
                                       <div className="flex items-center gap-1">
@@ -6805,7 +6817,7 @@ export default function GameCalculator() {
                                           {bond.warden}
                                         </span>
                                         {/* Warden Image - Inline with both names */}
-                                        <div className="w-16 h-16 flex-shrink-0">
+                                        <div className="w-12 h-12 flex-shrink-0">
                                           <img 
                                             src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
                                             alt={bond.warden}
@@ -6867,7 +6879,7 @@ export default function GameCalculator() {
                                   </div>
                                 </CardTitle>
                               </CardHeader>
-                          <CardContent className="pt-1">
+                          <CardContent className="pt-0 pb-2">
                             <div className="grid grid-cols-8 gap-2">
                               {["strength", "allure", "intellect", "spirit"].map((attr) => {
                                 const isMainStat = wardenData?.some(
