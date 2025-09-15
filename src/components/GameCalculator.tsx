@@ -167,7 +167,6 @@ export default function GameCalculator() {
     { name: "Edward", group: "other", attributes: ["Intellect"], tier: 5, skins: [] },
     { name: "William", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
     { name: "Vicente", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["VicenteSkin1"] },
-    { name: "Cesare", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
     { name: "Saber", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
     { name: "Nikolai", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: [] },
     { name: "Cornelius", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
@@ -1469,6 +1468,112 @@ export default function GameCalculator() {
     }
   }
 
+  // Mapping function to sync inventory items with other systems
+  const syncInventoryWithOtherSystems = (itemName: string, newCount: number) => {
+    // Map talent scrolls
+    if (itemName === 'TalentScroll1') {
+      setTalents(prev => ({ ...prev, talentScrollLvl1: { ...prev.talentScrollLvl1, count: newCount } }))
+    } else if (itemName === 'TalentScroll2') {
+      setTalents(prev => ({ ...prev, talentScrollLvl2: { ...prev.talentScrollLvl2, count: newCount } }))
+    } else if (itemName === 'TalentScroll3') {
+      setTalents(prev => ({ ...prev, talentScrollLvl3: { ...prev.talentScrollLvl3, count: newCount } }))
+    } else if (itemName === 'TalentScroll4') {
+      setTalents(prev => ({ ...prev, talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount } }))
+    } else if (itemName === 'TalentScroll50') {
+      setTalents(prev => ({ ...prev, basicTalentScroll: { ...prev.basicTalentScroll, count: newCount } }))
+    } else if (itemName === 'TalentScroll100') {
+      setTalents(prev => ({ ...prev, fineTalentScroll: { ...prev.fineTalentScroll, count: newCount } }))
+    } else if (itemName === 'TalentScroll200') {
+      setTalents(prev => ({ ...prev, superiorTalentScroll: { ...prev.superiorTalentScroll, count: newCount } }))
+    } else if (itemName === 'TalentRandom5') {
+      setTalents(prev => ({ ...prev, randomTalentScroll: { ...prev.randomTalentScroll, count: newCount } }))
+    } else if (itemName === 'TalentScroll5') {
+      setTalents(prev => ({ ...prev, talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount } }))
+    } else if (itemName === 'TalentScroll6') {
+      setTalents(prev => ({ ...prev, talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount } }))
+    } else if (itemName === 'TalentScroll7') {
+      setTalents(prev => ({ ...prev, talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount } }))
+    }
+    
+    // Map books - items with 4 numbers correspond to attribute 1-4 books, items with 3 numbers correspond to attribute 15 books
+    // Strength books
+    if (itemName === 'Strength1') {
+      setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Warfare I": newCount } }))
+    } else if (itemName === 'Strength2') {
+      setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Warfare II": newCount } }))
+    } else if (itemName === 'Strength3') {
+      setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Warfare III": newCount } }))
+    } else if (itemName === 'Strength4') {
+      setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Warfare IV": newCount } }))
+    } else if (itemName === 'Strength15(1)') {
+      setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Combat I": newCount } }))
+    } else if (itemName === 'Strength15(2)') {
+      setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Combat II": newCount } }))
+    }
+    
+    // Allure books
+    if (itemName === 'Allure1') {
+      setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Glamor I": newCount } }))
+    } else if (itemName === 'Allure2') {
+      setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Glamor II": newCount } }))
+    } else if (itemName === 'Allure3') {
+      setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Glamor III": newCount } }))
+    } else if (itemName === 'Allure4') {
+      setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Glamor IV": newCount } }))
+    } else if (itemName === 'Allure15(1)') {
+      setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Beauty I": newCount } }))
+    } else if (itemName === 'Allure15(2)') {
+      setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Beauty II": newCount } }))
+    }
+    
+    // Intellect books
+    if (itemName === 'Intellect1') {
+      setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "Alchemy I": newCount } }))
+    } else if (itemName === 'Intellect2') {
+      setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "Alchemy II": newCount } }))
+    } else if (itemName === 'Intellect3') {
+      setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "Alchemy III": newCount } }))
+    } else if (itemName === 'Intellect4') {
+      setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "Alchemy IV": newCount } }))
+    } else if (itemName === 'Intellect15(1)') {
+      setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "History I": newCount } }))
+    } else if (itemName === 'Intellect15(2)') {
+      setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "History II": newCount } }))
+    }
+    
+    // Spirit books
+    if (itemName === 'Spirit1') {
+      setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Occult I": newCount } }))
+    } else if (itemName === 'Spirit2') {
+      setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Occult II": newCount } }))
+    } else if (itemName === 'Spirit3') {
+      setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Occult III": newCount } }))
+    } else if (itemName === 'Spirit4') {
+      setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Occult IV": newCount } }))
+    } else if (itemName === 'Spirit15(1)') {
+      setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Mysticism I": newCount } }))
+    } else if (itemName === 'Spirit15(2)') {
+      setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Mysticism II": newCount } }))
+    }
+    
+    // Mystery books (Balanced category)
+    if (itemName === 'Mystery1') {
+      setBooks(prev => ({ ...prev, Balanced: { ...prev.Balanced, "Encyclopedia A-E": newCount } }))
+    } else if (itemName === 'Mystery2') {
+      setBooks(prev => ({ ...prev, Balanced: { ...prev.Balanced, "Encyclopedia A-J": newCount } }))
+    } else if (itemName === 'Mystery3') {
+      setBooks(prev => ({ ...prev, Balanced: { ...prev.Balanced, "Encyclopedia A-O": newCount } }))
+    } else if (itemName === 'Mystery4') {
+      setBooks(prev => ({ ...prev, Balanced: { ...prev.Balanced, "Encyclopedia A-T": newCount } }))
+    } else if (itemName === 'Mystery5') {
+      setBooks(prev => ({ ...prev, Balanced: { ...prev.Balanced, "Encyclopedia A-Z": newCount } }))
+    } else if (itemName === 'Mystery15(1)') {
+      setBooks(prev => ({ ...prev, Balanced: { ...prev.Balanced, "Arcana I": newCount } }))
+    } else if (itemName === 'Mystery15(2)') {
+      setBooks(prev => ({ ...prev, Balanced: { ...prev.Balanced, "Arcana II": newCount } }))
+    }
+  }
+
   const updateInventoryItem = (itemName: string, newCount: number) => {
     setInventory(prev => ({
       ...prev,
@@ -1478,6 +1583,88 @@ export default function GameCalculator() {
         imageUrl: prev[itemName]?.imageUrl
       }
     }))
+    
+    // Sync with other systems
+    syncInventoryWithOtherSystems(itemName, newCount)
+  }
+
+  // Reverse sync functions - update inventory when other systems change
+  const syncBooksToInventory = (category: string, bookName: string, newCount: number) => {
+    let inventoryItemName = ''
+    
+    // Map book names back to inventory item names
+    if (category === 'Strength') {
+      if (bookName === 'Warfare I') inventoryItemName = 'Strength1'
+      else if (bookName === 'Warfare II') inventoryItemName = 'Strength2'
+      else if (bookName === 'Warfare III') inventoryItemName = 'Strength3'
+      else if (bookName === 'Warfare IV') inventoryItemName = 'Strength4'
+      else if (bookName === 'Combat I') inventoryItemName = 'Strength15(1)'
+      else if (bookName === 'Combat II') inventoryItemName = 'Strength15(2)'
+    } else if (category === 'Allure') {
+      if (bookName === 'Glamor I') inventoryItemName = 'Allure1'
+      else if (bookName === 'Glamor II') inventoryItemName = 'Allure2'
+      else if (bookName === 'Glamor III') inventoryItemName = 'Allure3'
+      else if (bookName === 'Glamor IV') inventoryItemName = 'Allure4'
+      else if (bookName === 'Beauty I') inventoryItemName = 'Allure15(1)'
+      else if (bookName === 'Beauty II') inventoryItemName = 'Allure15(2)'
+    } else if (category === 'Intellect') {
+      if (bookName === 'Alchemy I') inventoryItemName = 'Intellect1'
+      else if (bookName === 'Alchemy II') inventoryItemName = 'Intellect2'
+      else if (bookName === 'Alchemy III') inventoryItemName = 'Intellect3'
+      else if (bookName === 'Alchemy IV') inventoryItemName = 'Intellect4'
+      else if (bookName === 'History I') inventoryItemName = 'Intellect15(1)'
+      else if (bookName === 'History II') inventoryItemName = 'Intellect15(2)'
+    } else if (category === 'Spirit') {
+      if (bookName === 'Occult I') inventoryItemName = 'Spirit1'
+      else if (bookName === 'Occult II') inventoryItemName = 'Spirit2'
+      else if (bookName === 'Occult III') inventoryItemName = 'Spirit3'
+      else if (bookName === 'Occult IV') inventoryItemName = 'Spirit4'
+      else if (bookName === 'Mysticism I') inventoryItemName = 'Spirit15(1)'
+      else if (bookName === 'Mysticism II') inventoryItemName = 'Spirit15(2)'
+    } else if (category === 'Balanced') {
+      if (bookName === 'Encyclopedia A-E') inventoryItemName = 'Mystery1'
+      else if (bookName === 'Encyclopedia A-J') inventoryItemName = 'Mystery2'
+      else if (bookName === 'Encyclopedia A-O') inventoryItemName = 'Mystery3'
+      else if (bookName === 'Encyclopedia A-T') inventoryItemName = 'Mystery4'
+      else if (bookName === 'Encyclopedia A-Z') inventoryItemName = 'Mystery5'
+      else if (bookName === 'Arcana I') inventoryItemName = 'Mystery15(1)'
+      else if (bookName === 'Arcana II') inventoryItemName = 'Mystery15(2)'
+    }
+    
+    if (inventoryItemName) {
+      setInventory(prev => ({
+        ...prev,
+        [inventoryItemName]: {
+          count: newCount,
+          lastUpdated: new Date().toISOString(),
+          imageUrl: prev[inventoryItemName]?.imageUrl
+        }
+      }))
+    }
+  }
+
+  const syncTalentsToInventory = (talentType: string, newCount: number) => {
+    let inventoryItemName = ''
+    
+    if (talentType === 'randomTalentScroll') inventoryItemName = 'TalentRandom5'
+    else if (talentType === 'talentScrollLvl1') inventoryItemName = 'TalentScroll1'
+    else if (talentType === 'talentScrollLvl2') inventoryItemName = 'TalentScroll2'
+    else if (talentType === 'talentScrollLvl3') inventoryItemName = 'TalentScroll3'
+    else if (talentType === 'talentScrollLvl4') inventoryItemName = 'TalentScroll4'
+    else if (talentType === 'basicTalentScroll') inventoryItemName = 'TalentScroll50'
+    else if (talentType === 'fineTalentScroll') inventoryItemName = 'TalentScroll100'
+    else if (talentType === 'superiorTalentScroll') inventoryItemName = 'TalentScroll200'
+    
+    if (inventoryItemName) {
+      setInventory(prev => ({
+        ...prev,
+        [inventoryItemName]: {
+          count: newCount,
+          lastUpdated: new Date().toISOString(),
+          imageUrl: prev[inventoryItemName]?.imageUrl
+        }
+      }))
+    }
   }
 
   const removeInventoryItem = (itemName: string) => {
@@ -2209,6 +2396,7 @@ export default function GameCalculator() {
       hasCulann,
       hasHela,
       talents,
+      inventory,
       timestamp: new Date().toISOString(),
     }
   }
@@ -3328,7 +3516,7 @@ export default function GameCalculator() {
     const bloodyTyrantsBaseLevel = bloodyTyrantsCount > 0 ? 10 : 0
     const bloodyTyrantsBonus = Math.max(0, bloodyTyrantsCount - 1)
     
-    const bloodyTyrantsNames = ["Cesare", "Max", "Erzsebet", "Ivan", "Maria"]
+    const bloodyTyrantsNames = ["Max", "Erzsebet", "Ivan", "Maria"]
     bloodyTyrantsNames.forEach(name => {
       if (selectedBloodyTyrants.includes(name)) {
         if (name === "Maria") {
@@ -3433,7 +3621,6 @@ export default function GameCalculator() {
       const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
       
       switch (wardenName) {
-        case "Cesare": // Strength/Intellect Books
           bonuses.books.strength += currentBonus
           bonuses.books.intellect += currentBonus
           break
@@ -3530,7 +3717,6 @@ export default function GameCalculator() {
         const currentBonus = wardenData.baseValue + wardenData.current * wardenData.increment
         
         switch (wardenName) {
-          case "Cesare": // Strength/Intellect Books
             bonuses.books.strength += currentBonus
             bonuses.books.intellect += currentBonus
             break
@@ -5465,15 +5651,17 @@ export default function GameCalculator() {
                               <Input
                                 type="number"
                                 value={count}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                  const newCount = Number.parseInt(e.target.value) || 0
                                   setBooks((prev) => ({
                                     ...prev,
                                     [category]: {
                                       ...prev[category as keyof BooksState],
-                                      [bookName]: Number.parseInt(e.target.value) || 0,
+                                      [bookName]: newCount,
                                     },
                                   }))
-                                }
+                                  syncBooksToInventory(category, bookName, newCount)
+                                }}
                                 className="mt-1 bg-gray-700 border-gray-600 text-white"
                               />
                               <div className="text-xs text-gray-400 mt-1">
@@ -5509,10 +5697,14 @@ export default function GameCalculator() {
                         <Input
                           type="number"
                           value={talents.randomTalentScroll.count}
-                          onChange={(e) => setTalents(prev => ({
-                            ...prev,
-                            randomTalentScroll: { ...prev.randomTalentScroll, count: parseInt(e.target.value) || 0 }
-                          }))}
+                          onChange={(e) => {
+                            const newCount = parseInt(e.target.value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              randomTalentScroll: { ...prev.randomTalentScroll, count: newCount }
+                            }))
+                            syncTalentsToInventory('randomTalentScroll', newCount)
+                          }}
                           className="bg-gray-700 border-gray-600 text-white"
                           placeholder="0"
                         />
@@ -5524,10 +5716,14 @@ export default function GameCalculator() {
                         <Input
                           type="number"
                           value={talents.talentScrollLvl4.count}
-                          onChange={(e) => setTalents(prev => ({
-                            ...prev,
-                            talentScrollLvl4: { ...prev.talentScrollLvl4, count: parseInt(e.target.value) || 0 }
-                          }))}
+                          onChange={(e) => {
+                            const newCount = parseInt(e.target.value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount }
+                            }))
+                            syncTalentsToInventory('talentScrollLvl4', newCount)
+                          }}
                           className="bg-gray-700 border-gray-600 text-white"
                           placeholder="0"
                         />
@@ -5539,10 +5735,14 @@ export default function GameCalculator() {
                         <Input
                           type="number"
                           value={talents.talentScrollLvl3.count}
-                          onChange={(e) => setTalents(prev => ({
-                            ...prev,
-                            talentScrollLvl3: { ...prev.talentScrollLvl3, count: parseInt(e.target.value) || 0 }
-                          }))}
+                          onChange={(e) => {
+                            const newCount = parseInt(e.target.value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              talentScrollLvl3: { ...prev.talentScrollLvl3, count: newCount }
+                            }))
+                            syncTalentsToInventory('talentScrollLvl3', newCount)
+                          }}
                           className="bg-gray-700 border-gray-600 text-white"
                           placeholder="0"
                         />
@@ -5554,10 +5754,14 @@ export default function GameCalculator() {
                         <Input
                           type="number"
                           value={talents.talentScrollLvl2.count}
-                          onChange={(e) => setTalents(prev => ({
-                            ...prev,
-                            talentScrollLvl2: { ...prev.talentScrollLvl2, count: parseInt(e.target.value) || 0 }
-                          }))}
+                          onChange={(e) => {
+                            const newCount = parseInt(e.target.value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              talentScrollLvl2: { ...prev.talentScrollLvl2, count: newCount }
+                            }))
+                            syncTalentsToInventory('talentScrollLvl2', newCount)
+                          }}
                           className="bg-gray-700 border-gray-600 text-white"
                           placeholder="0"
                         />
@@ -5569,10 +5773,14 @@ export default function GameCalculator() {
                         <Input
                           type="number"
                           value={talents.talentScrollLvl1.count}
-                          onChange={(e) => setTalents(prev => ({
-                            ...prev,
-                            talentScrollLvl1: { ...prev.talentScrollLvl1, count: parseInt(e.target.value) || 0 }
-                          }))}
+                          onChange={(e) => {
+                            const newCount = parseInt(e.target.value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              talentScrollLvl1: { ...prev.talentScrollLvl1, count: newCount }
+                            }))
+                            syncTalentsToInventory('talentScrollLvl1', newCount)
+                          }}
                           className="bg-gray-700 border-gray-600 text-white"
                           placeholder="0"
                         />
@@ -5590,10 +5798,14 @@ export default function GameCalculator() {
                         <Input
                           type="number"
                           value={talents.basicTalentScroll.count}
-                          onChange={(e) => setTalents(prev => ({
-                            ...prev,
-                            basicTalentScroll: { ...prev.basicTalentScroll, count: parseInt(e.target.value) || 0 }
-                          }))}
+                          onChange={(e) => {
+                            const newCount = parseInt(e.target.value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              basicTalentScroll: { ...prev.basicTalentScroll, count: newCount }
+                            }))
+                            syncTalentsToInventory('basicTalentScroll', newCount)
+                          }}
                           className="bg-gray-700 border-gray-600 text-white"
                           placeholder="0"
                         />
@@ -5604,10 +5816,14 @@ export default function GameCalculator() {
                         <Input
                           type="number"
                           value={talents.fineTalentScroll.count}
-                          onChange={(e) => setTalents(prev => ({
-                            ...prev,
-                            fineTalentScroll: { ...prev.fineTalentScroll, count: parseInt(e.target.value) || 0 }
-                          }))}
+                          onChange={(e) => {
+                            const newCount = parseInt(e.target.value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              fineTalentScroll: { ...prev.fineTalentScroll, count: newCount }
+                            }))
+                            syncTalentsToInventory('fineTalentScroll', newCount)
+                          }}
                           className="bg-gray-700 border-gray-600 text-white"
                           placeholder="0"
                         />
@@ -5618,10 +5834,14 @@ export default function GameCalculator() {
                         <Input
                           type="number"
                           value={talents.superiorTalentScroll.count}
-                          onChange={(e) => setTalents(prev => ({
-                            ...prev,
-                            superiorTalentScroll: { ...prev.superiorTalentScroll, count: parseInt(e.target.value) || 0 }
-                          }))}
+                          onChange={(e) => {
+                            const newCount = parseInt(e.target.value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              superiorTalentScroll: { ...prev.superiorTalentScroll, count: newCount }
+                            }))
+                            syncTalentsToInventory('superiorTalentScroll', newCount)
+                          }}
                           className="bg-gray-700 border-gray-600 text-white"
                           placeholder="0"
                         />
@@ -6771,18 +6991,32 @@ export default function GameCalculator() {
                                       {warden.skins.length > 0 && (
                                         <div className="w-24 flex-shrink-0">
                                           <div className="text-xs text-gray-300 mb-1">Skins:</div>
-                                          <div className="space-y-1">
+                                          <div className="space-y-2">
                                             {warden.skins.map((skin) => (
-                                              <div key={skin} className="flex items-center gap-1">
-                                                <Checkbox 
-                                                  id={`skin-${warden.name}-${skin}`}
-                                                  checked={wardenSkins[warden.name]?.[skin] || false}
-                                                  onCheckedChange={() => handleSkinToggle(warden.name, skin)}
-                                                  className="border-gray-400"
-                                                />
-                                                <Label htmlFor={`skin-${warden.name}-${skin}`} className="text-xs text-gray-300">
-                                                  {skin.replace(`${warden.name}Skin`, 'S')}
-                                                </Label>
+                                              <div key={skin} className="flex flex-col items-center gap-1">
+                                                {/* Skin Image */}
+                                                <div className="w-16 h-16 flex items-center justify-center">
+                                                  <img 
+                                                    src={`/Gov/Wardens/WardenSkins/${skin}.png`}
+                                                    alt={skin}
+                                                    className="w-full h-full object-contain"
+                                                    onError={(e) => {
+                                                      (e.target as HTMLImageElement).style.display = 'none';
+                                                    }}
+                                                  />
+                                                </div>
+                                                {/* Skin Checkbox */}
+                                                <div className="flex items-center gap-1">
+                                                  <Checkbox 
+                                                    id={`skin-${warden.name}-${skin}`}
+                                                    checked={wardenSkins[warden.name]?.[skin] || false}
+                                                    onCheckedChange={() => handleSkinToggle(warden.name, skin)}
+                                                    className="border-gray-400"
+                                                  />
+                                                  <Label htmlFor={`skin-${warden.name}-${skin}`} className="text-xs text-gray-300">
+                                                    {skin.replace(`${warden.name}Skin`, 'S')}
+                                                  </Label>
+                                                </div>
                                               </div>
                                             ))}
                                           </div>

@@ -9,7 +9,6 @@ export const wardenGroups = {
     { name: "Dominique", attributes: ["Balance"], tier: 5 },
   ],
   tyrants: [
-    { name: "Cesare", attributes: ["Intellect", "Strength"], tier: 5 },
     { name: "Ivan", attributes: ["Allure", "Spirit"], tier: 5 },
     { name: "Max", attributes: ["Spirit", "Strength"], tier: 5 },
     { name: "Erzsebet", attributes: ["Allure", "Intellect"], tier: 5 },
@@ -38,7 +37,6 @@ export const wardenAttributes = {
   "Nyx": ["Balance"],
   "Diavolo": ["Spirit", "Strength"],
   "Thorgrim": ["Intellect", "Strength"],
-  "Cesare": ["Intellect", "Strength"],
   "Max": ["Spirit", "Strength"],
   "Dominique": ["Balance"],
   "Maria": ["Balance"],
@@ -67,7 +65,6 @@ export const wardenAttributes = {
   "Erik": ["Spirit", "Strength"],
   "Candace": ["Intellect", "Strength"],
   "Frederick": ["Allure"],
-  "Charlemagne": ["Balance"],
   "Vicente": ["Spirit", "Strength"],
   "Alastair": ["Spirit"],
   "Harker": ["Strength"],
