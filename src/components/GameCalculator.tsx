@@ -6712,13 +6712,13 @@ export default function GameCalculator() {
                         <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                           <div className="flex">
                             {/* Lover Images - Left Side */}
-                            <div className="w-48 h-40 flex-shrink-0 flex">
+                            <div className="w-56 h-48 flex-shrink-0 flex">
                               {(() => {
                                 if (bond.lover.includes('/')) {
                                   // Show both genders side by side
                                   const names = bond.lover.split('/').map(s => s.trim());
                                   return names.map((name, index) => (
-                                    <div key={index} className="w-1/2 h-full">
+                                    <div key={index} className="w-1/2 h-full flex items-center justify-center">
                                       <img 
                                         src={`/Gov/Lovers/BaseLovers/${name}.PNG`}
                                         alt={name}
@@ -6749,20 +6749,20 @@ export default function GameCalculator() {
                             
                             {/* Content - Right Side */}
                             <div className="flex-1">
-                              <CardHeader className="pb-2">
-                                <CardTitle className="flex items-center gap-3 flex-wrap text-base">
-                                  <div className="flex items-center gap-3">
-                                    <div className="flex flex-col gap-1">
-                                      <span className="text-white text-base font-bold">
+                              <CardHeader className="pb-1">
+                                <CardTitle className="flex items-center gap-2 flex-wrap text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className="flex flex-col gap-0.5">
+                                      <span className="text-white text-sm font-bold">
                                         {bond.lover}
                                       </span>
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-gray-300 text-sm">with</span>
-                                        <span className="text-white font-semibold text-sm">
+                                      <div className="flex items-center gap-1">
+                                        <span className="text-gray-300 text-xs">with</span>
+                                        <span className="text-white font-semibold text-xs">
                                           {bond.warden}
                                         </span>
                                         {/* Warden Image - Inline with both names */}
-                                        <div className="w-20 h-20 flex-shrink-0">
+                                        <div className="w-16 h-16 flex-shrink-0">
                                           <img 
                                             src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
                                             alt={bond.warden}
@@ -6824,7 +6824,7 @@ export default function GameCalculator() {
                                   </div>
                                 </CardTitle>
                               </CardHeader>
-                          <CardContent className="pt-2">
+                          <CardContent className="pt-1">
                             <div className="grid grid-cols-8 gap-2">
                               {["strength", "allure", "intellect", "spirit"].map((attr) => {
                                 const isMainStat = wardenData?.some(
