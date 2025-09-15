@@ -6668,11 +6668,11 @@ export default function GameCalculator() {
                                   <CardContent className="p-2">
                                     <div className="flex gap-2">
                                       {/* Warden Image */}
-                                      <div className="w-32 h-32 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
+                                      <div className="w-32 h-full flex-shrink-0 flex items-center justify-center">
                                         <img 
                                           src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                           alt={warden.name}
-                                          className="max-w-full max-h-full object-contain"
+                                          className="w-full h-full object-contain"
                                           onError={(e) => {
                                             (e.target as HTMLImageElement).style.display = 'none';
                                           }}
@@ -6901,12 +6901,20 @@ export default function GameCalculator() {
                         <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                           <div className="flex">
                             {/* Lover Images - Left Side */}
-                            <div className="w-64 h-56 flex-shrink-0 flex">
+                            <div className="w-48 h-64 flex-shrink-0 flex">
                               {(() => {
                                   if (bond.lover.includes('/')) {
-                                  // Show both genders side by side
+                                  // Show both genders side by side - female first
                                   const names = bond.lover.split('/').map(s => s.trim());
-                                  return names.map((name, index) => (
+                                  // Sort to put female first (assuming female names come first in the data)
+                                  const sortedNames = names.sort((a, b) => {
+                                    // If one contains "Female" or similar indicators, put it first
+                                    if (a.toLowerCase().includes('female') && !b.toLowerCase().includes('female')) return -1;
+                                    if (b.toLowerCase().includes('female') && !a.toLowerCase().includes('female')) return 1;
+                                    // Otherwise maintain original order (assuming data is already in female/male order)
+                                    return 0;
+                                  });
+                                  return sortedNames.map((name, index) => (
                                     <div key={index} className="w-1/2 h-full flex items-center justify-center">
                                       <img 
                                         src={`/Gov/Lovers/BaseLovers/${name}.PNG`}
@@ -6953,7 +6961,7 @@ export default function GameCalculator() {
                             </div>
                             
                             {/* Content - Right Side */}
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
                               <CardHeader className="pb-0 pt-2">
                                 <CardTitle className="flex items-center gap-1 flex-wrap text-xs">
                                   <div className="flex items-center gap-1">
@@ -6967,11 +6975,11 @@ export default function GameCalculator() {
                                           {bond.warden}
                                         </span>
                                     {/* Warden Image - Inline with both names */}
-                                        <div className="w-28 h-28 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
+                                        <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
                                           <img 
                                             src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
                                             alt={bond.warden}
-                                            className="max-w-full max-h-full object-contain"
+                                            className="w-full h-full object-contain"
                                             onError={(e) => {
                                               // Fallback if image doesn't exist
                                               (e.target as HTMLImageElement).style.display = 'none';
