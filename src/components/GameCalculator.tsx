@@ -1457,6 +1457,49 @@ export default function GameCalculator() {
     })
   }
 
+  // Helper function to group items by type (for better organization)
+  const groupItemsByType = (items: string[]): { [type: string]: string[] } => {
+    const groups: { [type: string]: string[] } = {}
+    
+    items.forEach(item => {
+      // Extract the base type from the item name
+      let type = 'Other'
+      
+      if (item.includes('Blood')) type = 'Blood'
+      else if (item.includes('Bat')) type = 'Bat'
+      else if (item.includes('Nectar')) type = 'Nectar'
+      else if (item.includes('Allure')) type = 'Allure'
+      else if (item.includes('Intellect')) type = 'Intellect'
+      else if (item.includes('Spirit')) type = 'Spirit'
+      else if (item.includes('Strength')) type = 'Strength'
+      else if (item.includes('Mystery')) type = 'Mystery'
+      else if (item.includes('Dominance')) type = 'Dominance'
+      else if (item.includes('Skill')) type = 'Skill'
+      else if (item.includes('Talent')) type = 'Talent'
+      else if (item.includes('BloodMoon')) type = 'Blood Moon'
+      else if (item.includes('DarkSun')) type = 'Dark Sun'
+      else if (item.includes('Dusk')) type = 'Dusk'
+      else if (item.includes('FallenStar')) type = 'Fallen Star'
+      else if (item.includes('Midnight')) type = 'Midnight'
+      else if (item.includes('Nightfall')) type = 'Nightfall'
+      else if (item.includes('Affinity')) type = 'Affinity'
+      else if (item.includes('Token')) type = 'Tokens'
+      else if (item.includes('Coin')) type = 'Coins'
+      else if (item.includes('Badge')) type = 'Badges'
+      else if (item.includes('Scroll')) type = 'Scrolls'
+      else if (item.includes('Elixir')) type = 'Elixirs'
+      else if (item.includes('Ring')) type = 'Rings'
+      else if (item.includes('Medal')) type = 'Medals'
+      else if (item.includes('Suit')) type = 'Suits'
+      else if (item.includes('Equip')) type = 'Equipment'
+      
+      if (!groups[type]) groups[type] = []
+      groups[type].push(item)
+    })
+    
+    return groups
+  }
+
   // Handle file upload (now supports both text files and images)
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -7005,65 +7048,68 @@ export default function GameCalculator() {
                   <TabsTrigger value="warden-equip" className="data-[state=active]:bg-red-600">Warden Equipment</TabsTrigger>
                 </TabsList>
 
-                {/* All Items Tab */}
-                <TabsContent value="all" className="mt-4">
-                  <Card className="bg-gray-800/50 border-gray-600">
-                    <CardHeader>
-                      <CardTitle className="text-green-400">All Items</CardTitle>
-                      <div className="text-sm text-gray-300">
-                        {Object.keys(inventory).length === 0 ? 'No items in inventory' : `${Object.keys(inventory).length} items tracked`}
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      {Object.keys(inventory).length === 0 ? (
-                        <div className="text-center text-gray-400 py-8">
-                          No items in inventory
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {Object.entries(inventory).map(([itemName, itemData]) => (
-                            <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
-                              <div className="flex items-center space-x-3">
-                                <img 
-                                  src={`/InventoryAssets/${getItemCategory(itemName)}/${itemName}.PNG`} 
-                                  alt={itemName}
-                                  className="w-8 h-8 object-contain"
-                                  onError={(e) => {
-                                    e.currentTarget.style.display = 'none'
-                                  }}
-                                />
-                                <div>
-                                  <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
-                                </div>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <div className="text-lg font-bold text-yellow-400">
-                                  {itemData.count.toLocaleString()}
-                                </div>
-                                <div className="flex space-x-1">
-                                  <Button
-                                    size="sm"
-                                    onClick={() => updateInventoryItem(itemName, itemData.count + 1)}
-                                    className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
-                                  >
-                                    +
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    onClick={() => updateInventoryItem(itemName, Math.max(0, itemData.count - 1))}
-                                    className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
-                                  >
-                                    -
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+                 {/* All Items Tab */}
+                 <TabsContent value="all" className="mt-4">
+                   <Card className="bg-gray-800/50 border-gray-600">
+                     <CardHeader>
+                       <CardTitle className="text-green-400">All Items</CardTitle>
+                       <div className="text-sm text-gray-300">
+                         {Object.keys(inventory).length === 0 ? 'No items in inventory' : `${Object.keys(inventory).length} items tracked`}
+                       </div>
+                     </CardHeader>
+                     <CardContent>
+                       {Object.keys(inventory).length === 0 ? (
+                         <div className="text-center text-gray-400 py-8">
+                           No items in inventory
+                         </div>
+                       ) : (
+                         <div className="space-y-6">
+                           {Object.entries(inventory).map(([itemName, itemData]) => (
+                             <div key={itemName} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                               <div className="flex items-center space-x-4">
+                                 <img
+                                   src={`/InventoryAssets/${getItemCategory(itemName)}/${itemName}.PNG`}
+                                   alt={itemName}
+                                   className="w-16 h-16 object-contain"
+                                   onError={(e) => {
+                                     e.currentTarget.style.display = 'none'
+                                   }}
+                                 />
+                                 <div>
+                                   <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
+                                 </div>
+                               </div>
+                               <div className="flex items-center space-x-3">
+                                 <div className="flex items-center space-x-2">
+                                   <Button
+                                     size="sm"
+                                     onClick={() => updateInventoryItem(itemName, Math.max(0, itemData.count - 1))}
+                                     className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
+                                   >
+                                     -
+                                   </Button>
+                                   <input
+                                     type="number"
+                                     value={itemData.count}
+                                     onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
+                                     className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
+                                   />
+                                   <Button
+                                     size="sm"
+                                     onClick={() => updateInventoryItem(itemName, itemData.count + 1)}
+                                     className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
+                                   >
+                                     +
+                                   </Button>
+                                 </div>
+                               </div>
+                             </div>
+                           ))}
+                         </div>
+                       )}
+                     </CardContent>
+                   </Card>
+                 </TabsContent>
 
                 {/* Resources Tab */}
                 <TabsContent value="resources" className="mt-4">
@@ -7072,40 +7118,43 @@ export default function GameCalculator() {
                       <CardTitle className="text-green-400">Resources</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="space-y-6">
                         {getItemsByCategory('Resources').map((itemName) => (
-                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
-                            <div className="flex items-center space-x-3">
+                          <div key={itemName} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                            <div className="flex items-center space-x-4">
                               <img 
                                 src={`/InventoryAssets/Resources/${itemName}.PNG`} 
                                 alt={itemName}
-                                className="w-8 h-8 object-contain"
+                                className="w-16 h-16 object-contain"
                                 onError={(e) => {
                                   e.currentTarget.style.display = 'none'
                                 }}
                               />
                               <div>
-                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                                <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
                               </div>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <div className="text-lg font-bold text-yellow-400">
-                                {inventory[itemName]?.count || 0}
-                              </div>
-                              <div className="flex space-x-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
-                                >
-                                  +
-                                </Button>
+                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center space-x-2">
                                 <Button
                                   size="sm"
                                   onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
-                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                  className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
                                 >
                                   -
+                                </Button>
+                                <input
+                                  type="number"
+                                  value={inventory[itemName]?.count || 0}
+                                  onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
+                                  className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
+                                />
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                  className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
+                                >
+                                  +
                                 </Button>
                               </div>
                             </div>
@@ -7123,42 +7172,54 @@ export default function GameCalculator() {
                       <CardTitle className="text-green-400">Warden Items</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {getItemsByCategory('WardenItems').map((itemName) => (
-                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
-                            <div className="flex items-center space-x-3">
-                              <img 
-                                src={`/InventoryAssets/WardenItems/${itemName}.PNG`} 
-                                alt={itemName}
-                                className="w-8 h-8 object-contain"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none'
-                                }}
-                              />
-                              <div>
-                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <div className="text-lg font-bold text-yellow-400">
-                                {inventory[itemName]?.count || 0}
-                              </div>
-                              <div className="flex space-x-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
-                                >
-                                  +
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
-                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
-                                >
-                                  -
-                                </Button>
-                              </div>
+                      <div className="space-y-8">
+                        {Object.entries(groupItemsByType(getItemsByCategory('WardenItems'))).map(([type, items]) => (
+                          <div key={type}>
+                            <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
+                              {type}
+                            </h3>
+                            <div className="space-y-4">
+                              {items.map((itemName) => (
+                                <div key={itemName} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                                  <div className="flex items-center space-x-4">
+                                    <img 
+                                      src={`/InventoryAssets/WardenItems/${itemName}.PNG`} 
+                                      alt={itemName}
+                                      className="w-16 h-16 object-contain"
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = 'none'
+                                      }}
+                                    />
+                                    <div>
+                                      <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center space-x-3">
+                                    <div className="flex items-center space-x-2">
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                        className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
+                                      >
+                                        -
+                                      </Button>
+                                      <input
+                                        type="number"
+                                        value={inventory[itemName]?.count || 0}
+                                        onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
+                                        className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
+                                      />
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                        className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
+                                      >
+                                        +
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         ))}
@@ -7174,42 +7235,54 @@ export default function GameCalculator() {
                       <CardTitle className="text-green-400">Lover & Child Items</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {getItemsByCategory('Lover+ChildItems').map((itemName) => (
-                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
-                            <div className="flex items-center space-x-3">
-                              <img 
-                                src={`/InventoryAssets/Lover+ChildItems/${itemName}.PNG`} 
-                                alt={itemName}
-                                className="w-8 h-8 object-contain"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none'
-                                }}
-                              />
-                              <div>
-                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <div className="text-lg font-bold text-yellow-400">
-                                {inventory[itemName]?.count || 0}
-                              </div>
-                              <div className="flex space-x-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
-                                >
-                                  +
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
-                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
-                                >
-                                  -
-                                </Button>
-                              </div>
+                      <div className="space-y-8">
+                        {Object.entries(groupItemsByType(getItemsByCategory('Lover+ChildItems'))).map(([type, items]) => (
+                          <div key={type}>
+                            <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
+                              {type}
+                            </h3>
+                            <div className="space-y-4">
+                              {items.map((itemName) => (
+                                <div key={itemName} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                                  <div className="flex items-center space-x-4">
+                                    <img 
+                                      src={`/InventoryAssets/Lover+ChildItems/${itemName}.PNG`} 
+                                      alt={itemName}
+                                      className="w-16 h-16 object-contain"
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = 'none'
+                                      }}
+                                    />
+                                    <div>
+                                      <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center space-x-3">
+                                    <div className="flex items-center space-x-2">
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                        className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
+                                      >
+                                        -
+                                      </Button>
+                                      <input
+                                        type="number"
+                                        value={inventory[itemName]?.count || 0}
+                                        onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
+                                        className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
+                                      />
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                        className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
+                                      >
+                                        +
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         ))}
@@ -7225,40 +7298,43 @@ export default function GameCalculator() {
                       <CardTitle className="text-green-400">Familiar Items</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="space-y-4">
                         {getItemsByCategory('FamiliarItems').map((itemName) => (
-                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
-                            <div className="flex items-center space-x-3">
+                          <div key={itemName} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                            <div className="flex items-center space-x-4">
                               <img 
                                 src={`/InventoryAssets/FamiliarItems/${itemName}.PNG`} 
                                 alt={itemName}
-                                className="w-8 h-8 object-contain"
+                                className="w-16 h-16 object-contain"
                                 onError={(e) => {
                                   e.currentTarget.style.display = 'none'
                                 }}
                               />
                               <div>
-                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                                <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
                               </div>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <div className="text-lg font-bold text-yellow-400">
-                                {inventory[itemName]?.count || 0}
-                              </div>
-                              <div className="flex space-x-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
-                                >
-                                  +
-                                </Button>
+                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center space-x-2">
                                 <Button
                                   size="sm"
                                   onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
-                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                  className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
                                 >
                                   -
+                                </Button>
+                                <input
+                                  type="number"
+                                  value={inventory[itemName]?.count || 0}
+                                  onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
+                                  className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
+                                />
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                  className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
+                                >
+                                  +
                                 </Button>
                               </div>
                             </div>
@@ -7276,42 +7352,54 @@ export default function GameCalculator() {
                       <CardTitle className="text-green-400">Misc Items</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {getItemsByCategory('MiscItems').map((itemName) => (
-                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
-                            <div className="flex items-center space-x-3">
-                              <img 
-                                src={`/InventoryAssets/MiscItems/${itemName}.PNG`} 
-                                alt={itemName}
-                                className="w-8 h-8 object-contain"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none'
-                                }}
-                              />
-                              <div>
-                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <div className="text-lg font-bold text-yellow-400">
-                                {inventory[itemName]?.count || 0}
-                              </div>
-                              <div className="flex space-x-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
-                                >
-                                  +
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
-                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
-                                >
-                                  -
-                                </Button>
-                              </div>
+                      <div className="space-y-8">
+                        {Object.entries(groupItemsByType(getItemsByCategory('MiscItems'))).map(([type, items]) => (
+                          <div key={type}>
+                            <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
+                              {type}
+                            </h3>
+                            <div className="space-y-4">
+                              {items.map((itemName) => (
+                                <div key={itemName} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                                  <div className="flex items-center space-x-4">
+                                    <img 
+                                      src={`/InventoryAssets/MiscItems/${itemName}.PNG`} 
+                                      alt={itemName}
+                                      className="w-16 h-16 object-contain"
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = 'none'
+                                      }}
+                                    />
+                                    <div>
+                                      <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center space-x-3">
+                                    <div className="flex items-center space-x-2">
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                        className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
+                                      >
+                                        -
+                                      </Button>
+                                      <input
+                                        type="number"
+                                        value={inventory[itemName]?.count || 0}
+                                        onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
+                                        className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
+                                      />
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                        className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
+                                      >
+                                        +
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         ))}
@@ -7327,42 +7415,54 @@ export default function GameCalculator() {
                       <CardTitle className="text-green-400">Warden Equipment</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {getItemsByCategory('WardenEquip').map((itemName) => (
-                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
-                            <div className="flex items-center space-x-3">
-                              <img 
-                                src={`/InventoryAssets/WardenEquip/${itemName}.PNG`} 
-                                alt={itemName}
-                                className="w-8 h-8 object-contain"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none'
-                                }}
-                              />
-                              <div>
-                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <div className="text-lg font-bold text-yellow-400">
-                                {inventory[itemName]?.count || 0}
-                              </div>
-                              <div className="flex space-x-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
-                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
-                                >
-                                  +
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
-                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
-                                >
-                                  -
-                                </Button>
-                              </div>
+                      <div className="space-y-8">
+                        {Object.entries(groupItemsByType(getItemsByCategory('WardenEquip'))).map(([type, items]) => (
+                          <div key={type}>
+                            <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
+                              {type}
+                            </h3>
+                            <div className="space-y-4">
+                              {items.map((itemName) => (
+                                <div key={itemName} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                                  <div className="flex items-center space-x-4">
+                                    <img 
+                                      src={`/InventoryAssets/WardenEquip/${itemName}.PNG`} 
+                                      alt={itemName}
+                                      className="w-16 h-16 object-contain"
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = 'none'
+                                      }}
+                                    />
+                                    <div>
+                                      <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center space-x-3">
+                                    <div className="flex items-center space-x-2">
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                        className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
+                                      >
+                                        -
+                                      </Button>
+                                      <input
+                                        type="number"
+                                        value={inventory[itemName]?.count || 0}
+                                        onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
+                                        className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
+                                      />
+                                      <Button
+                                        size="sm"
+                                        onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                        className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
+                                      >
+                                        +
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         ))}
