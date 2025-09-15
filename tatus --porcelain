@@ -41,3 +41,8 @@
    // Helper function to parse numbers with K/M suffixes[m
    const parseNumberWithSuffix = (value: string): number => {[m
      const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()[m
+[33m2094f8d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m 28
+[33m3cea580[m Fix warden image centering, remove old pictures, fix lover image fallbacks, and make warden images larger in Scarlet Bond
+[33ma02c980[m Redesign inventory as square UI items with large images, names below, controls below that, and fix equipment grouping with 4-per-line layout
+[33m747412e[m Fix Scarlet Bond images back to .PNG paths and make warden images bigger in warden tab
+[33md88ca69[m Improve inventory UI: bigger icons, minus on left, fillable number input, organized by type with grouping
