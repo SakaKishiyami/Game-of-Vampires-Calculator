@@ -1392,15 +1392,12 @@ export default function GameCalculator() {
     if (nameWithoutExt.includes('WIP')) {
       nameWithoutExt = nameWithoutExt.replace('WIP', '')
     }
-    if (nameWithoutExt.includes('50')) {
-      nameWithoutExt = nameWithoutExt.replace('50', '50')
-    }
-    if (nameWithoutExt.includes('100')) {
-      nameWithoutExt = nameWithoutExt.replace('100', '100')
-    }
-    if (nameWithoutExt.includes('200')) {
-      nameWithoutExt = nameWithoutExt.replace('200', '200')
-    }
+    
+    // Fix number formatting - remove spaces between numbers
+    nameWithoutExt = nameWithoutExt.replace(/(\d)\s+(\d)/g, '$1$2')
+    
+    // Fix EXP formatting
+    nameWithoutExt = nameWithoutExt.replace(/E\s+X\s+P/g, 'EXP')
     
     // Add spaces before capital letters and numbers
     return nameWithoutExt
@@ -1432,10 +1429,10 @@ export default function GameCalculator() {
   const getItemsByCategory = (category: string): string[] => {
     const itemLists = {
       'Resources': ['Blood5M', 'BloodRandom', 'Blood100K', 'Blood7', 'Blood6', 'Blood5', 'Blood4', 'Blood3', 'Blood2', 'Blood1', 'Nectar5M', 'NectarRandom', 'Nectar100K', 'Nectar7', 'Nectar6', 'Nectar5', 'Nectar4', 'Nectar3', 'Nectar2', 'Nectar1', 'Bats5M', 'BatRandom', 'Bat100K', 'Bat7', 'Bat6', 'Bat5', 'Bat4', 'Bat3', 'Bat2', 'Bat1', 'ResourceCollectorCard'],
-      'WardenItems': ['BloodOriginToken', 'SupremacyBadge', 'SupremacyBadgePart', 'MacabrianCoin', 'MacabrianCoinPart', 'CircusTicket', 'CircusTicketPart', 'CityBadge', 'CityBadgePart', 'ArenaTrophy', 'ArenaTrophyPart', 'NewSummonCoin', 'NewSummonCoinPart', 'SupremacyBadgeRandomBox', 'MacabrianCoinRandomBox', 'CircusTicketRandomBox', 'CityBadgeRandomBox', 'RandomScroll', 'RandomScriptPart', 'AllureScript', 'IntellectScript', 'SpiritScript', 'StrengthScript', 'TalentScroll6Star', 'TalentScroll5Star', 'TalentScroll4Star', 'TalentScroll3Star', 'TalentScroll2Star', 'TalentScroll1Star', 'TalentRandom5', 'TalentScroll7', 'TalentScroll6', 'TalentScroll5', 'TalentScroll4', 'TalentScroll3', 'TalentScroll2', 'TalentScroll1', 'TalentScroll50', 'TalentScroll100', 'TalentScroll200', 'Talent4', 'Talent3', 'Talent2', 'Talent1', 'Mystery1', 'Mystery2', 'Mystery3', 'Mystery4', 'Mystery5', 'Mystery15(1)', 'Mystery15(2)', 'Strength1', 'Strength2', 'Strength3', 'Strength4', 'Strength6', 'Strength15(1)', 'Strength15(2)', 'Allure1', 'Allure2', 'Allure3', 'Allure4', 'Allure5', 'Allure15(1)', 'Allure15(2)', 'Intellect1', 'Intellect2', 'Intellect3', 'Intellect4', 'Intellect5', 'Intellect15(1)', 'Intellect15(2)', 'Spirit1', 'Spirit2', 'Spirit3', 'Spirit4', 'Spirit5', 'Spirit15(1)', 'Spirit15(2)', 'Dominance4', 'Dominance3', 'Dominance2', 'Dominance1', 'DominanceBox', 'Skill8', 'Skill6', 'Skill4', 'Skill5', 'Skill500', 'SkillElixirRandom1000', 'SkillElixirRandom100', 'SkillElixirRandom50', 'SkillElixir4', 'SkillElixir3', 'SkillElixir2', 'SkillElixir1'],
-      'Lover+ChildItems': ['Intimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'Attraction1', 'Attraction2', 'Attraction3', 'Attraction4', 'Plazma', 'PremiumGiftBox3', 'RingOfChange', 'RoseBouquet1', 'TourMap', 'Vito', 'AffinityArmlet', 'AgneyiToken', 'AmethystRing1', 'CharmBox', 'CharmPhial1', 'CrateOfDrinks', 'CulannToken', 'DailyAttractionBox', 'HelaToken', 'IndigoBouquet3', 'IntimacyBag', 'RubyRing2', 'BlackPearlRing3', 'GiftBox1', 'RandomRingBox', 'DailySecretPack', 'DeluxeGiftBox2', 'CharmBottle2', 'IntimacyCase', 'AzureBouquet2', 'Beast', 'IntimacyPurse', 'ArtLoverToken', 'AffinityLvl1', 'AffinityLvl2'],
+      'WardenItems': ['BloodOriginToken', 'SupremacyBadge', 'SupremacyBadgePart', 'MacabrianCoin', 'MacabrianCoinPart', 'CircusTicket', 'CircusTicketPart', 'CityBadge', 'CityBadgePart', 'ArenaTrophy', 'ArenaTrophyPart', 'NewSummonCoin', 'NewSummonCoinPart', 'SupremacyBadgeRandomBox', 'MacabrianCoinRandomBox', 'CircusTicketRandomBox', 'CityBadgeRandomBox', 'RandomScroll', 'RandomScriptPart', 'StrengthScript', 'AllureScript', 'IntellectScript', 'SpiritScript', 'TalentScroll6Star', 'TalentScroll5Star', 'TalentScroll4Star', 'TalentScroll3Star', 'TalentScroll2Star', 'TalentScroll1Star', 'TalentRandom5', 'TalentScroll7', 'TalentScroll6', 'TalentScroll5', 'TalentScroll4', 'TalentScroll3', 'TalentScroll2', 'TalentScroll1', 'TalentScroll50', 'TalentScroll100', 'TalentScroll200', 'Talent4', 'Talent3', 'Talent2', 'Talent1', 'Mystery1', 'Mystery2', 'Mystery3', 'Mystery4', 'Mystery5', 'Mystery15(1)', 'Mystery15(2)', 'Strength1', 'Strength2', 'Strength3', 'Strength4', 'Strength6', 'Strength15(1)', 'Strength15(2)', 'Allure1', 'Allure2', 'Allure3', 'Allure4', 'Allure5', 'Allure15(1)', 'Allure15(2)', 'Intellect1', 'Intellect2', 'Intellect3', 'Intellect4', 'Intellect5', 'Intellect15(1)', 'Intellect15(2)', 'Spirit1', 'Spirit2', 'Spirit3', 'Spirit4', 'Spirit5', 'Spirit15(1)', 'Spirit15(2)', 'Dominance4', 'Dominance3', 'Dominance2', 'Dominance1', 'DominanceBox', 'Skill8', 'Skill6', 'Skill4', 'Skill5', 'Skill500', 'SkillElixirRandom1000', 'SkillElixirRandom100', 'SkillElixirRandom50', 'SkillElixir4', 'SkillElixir3', 'SkillElixir2', 'SkillElixir1'],
+      'Lover+ChildItems': ['AgneyiToken', 'CulannToken', 'HelaToken', 'ArtLoverToken', 'DailySecretPack', 'IntimacyCase', 'IntimacyBag', 'IntimacyPurse', 'PremiumGiftBox3', 'DeluxeGiftBox2', 'GiftBox1', 'Intimacy4', 'Intimacy3', 'Intimacy2', 'Intimacy1', 'DailyAttractionBox', 'CharmBox', 'CharmBottle2', 'CharmPhial1', 'IndigoBouquet3', 'AzureBouquet2', 'RoseBouquet1', 'Attraction4', 'Attraction3', 'Attraction2', 'Attraction1', 'TourMap', 'CrateOfDrinks', 'Beast', 'Vito', 'Plazma', 'BlackPearlRing3', 'RubyRing2', 'AmethystRing1', 'RingOfChange', 'RandomRingBox', 'AffinityLvl2', 'AffinityLvl1', 'AffinityArmlet'],
       'FamiliarItems': ['MutationPotion1', 'MutationPotion2', 'MutationPotion3', 'EffigyOfRobustness', 'FamiliarFood', 'BangBear'],
-      'MiscItems': ['LookingGlass', 'CourageTablet', 'NoviceLeague1', 'PressCard', 'Prestige1', 'Prestige2', 'RenameCard', 'SanctuaryStandardFlag', 'SolidarityStandardFlag', 'SophisticatedSatin', 'ValiantSlate', 'AdvancedItemDonation2', 'AdvancedItemDonationPart', 'AdvancedLeague3', 'AlchemyFormula', 'BanishmentStandardFlag', 'BanquetFavor', 'BanquetFavor2', 'ChallengeFlag', 'ConclaveStandardFlag', 'ConclaveStandardFlagPart', 'ExquisiteSilk', 'GrandBanquetDecor', 'GrandBanquetInvitation', 'GuildEXPChest1', 'GuildEXPChest2', 'GuildEXPChest3', 'GuildEXPChest4', 'HuntFlag', 'ImpeccableCashmere', 'InterLeague2', 'ItemDonation1', 'ItemDonationPart', 'LoudSpeaker', 'LuxuryBanquetDecor', 'LuxuryBanquetInvitation', 'RematchFlag', 'AllyFlag', 'ArenaMedal', 'GuardianFlag', 'MirageMirror', 'PocketWatch', 'BackgroundWinter', 'BackgroundFireworks'],
+      'MiscItems': ['ExquisiteSilk', 'ImpeccableCashmere', 'SophisticatedSatin', 'LoudSpeaker', 'PocketWatch', 'Prestige2', 'Prestige1', 'BanquetFavor', 'PressCard', 'CourageTablet', 'LookingGlass', 'AdvancedItemDonation2', 'AdvancedItemDonationPart', 'ItemDonation1', 'ItemDonationPart', 'GuildEXPChest4', 'GuildEXPChest3', 'GuildEXPChest2', 'GuildEXPChest1', 'BanishmentStandardFlag', 'ConclaveStandardFlag', 'ConclaveStandardFlagPart', 'SolidarityStandardFlag', 'SanctuaryStandardFlag', 'BanquetFavor2', 'GrandBanquetInvitation', 'GrandBanquetDecor', 'LuxuryBanquetInvitation', 'LuxuryBanquetDecor', 'RematchFlag', 'AllyFlag', 'ChallengeFlag', 'GuardianFlag', 'HuntFlag', 'ArenaMedal', 'AdvancedLeague3', 'InterLeague2', 'NoviceLeague1', 'MirageMirror', 'RenameCard', 'BackgroundWinter', 'BackgroundFireworks'],
       'WardenEquip': ['NightfallEquip', 'NightfallMedal', 'NightfallSuit', 'NightfallRing', 'TwilightEquip', 'TwilightMedal', 'TwilightRing', 'TwilightSuit', 'BloodMoonEquip', 'BloodMoonMedal', 'BloodMoonRing', 'BloodMoonSuit', 'DarkSunEquip', 'DarkSunMedal', 'DarkSunRing', 'DarkSunSuit', 'DuskMedal', 'DuskRing', 'DuskSuit', 'FallenStarEquip', 'FallenStarMedal', 'FallenStarRing', 'FallenStarSuit', 'MidnightEquip', 'MidnightMedal', 'MidnightRing', 'MidnightSuit']
     }
     return itemLists[category as keyof typeof itemLists] || []
@@ -1498,10 +1495,10 @@ export default function GameCalculator() {
       // Special handling for WardenItems with new organization
       if (item.includes('BloodOriginToken') || item.includes('SupremacyBadge') || item.includes('MacabrianCoin') || 
           item.includes('CircusTicket') || item.includes('CityBadge') || item.includes('ArenaTrophy') || 
-          item.includes('NewSummonCoin') || item.includes('RandomScroll') || item.includes('RandomScriptPart')) {
+          item.includes('NewSummonCoin') || item.includes('RandomScriptPart')) {
         type = 'Special Items'
       }
-      else if (item.includes('Script')) type = 'Scripts'
+      else if (item.includes('Script') || item.includes('RandomScroll')) type = 'Scripts'
       else if (item.includes('Talent')) type = 'Talents'
       else if (item.includes('Mystery')) type = 'Mystery'
       else if (item.includes('Strength')) type = 'Strength'
@@ -1510,8 +1507,27 @@ export default function GameCalculator() {
       else if (item.includes('Spirit')) type = 'Spirit'
       else if (item.includes('Dominance')) type = 'Dominance'
       else if (item.includes('Skill')) type = 'Skills'
+      // Special handling for Lover+ChildItems with new organization
+      else if (item.includes('Token')) type = 'Tokens'
+      else if (item.includes('Intimacy')) type = 'Intimacy'
+      else if (item.includes('Attraction') || item.includes('Charm') || item.includes('Bouquet')) type = 'Attraction'
+      else if (item.includes('TourMap') || item.includes('CrateOfDrinks') || item.includes('Beast') || 
+               item.includes('Vito') || item.includes('Plazma')) type = 'Misc'
+      else if (item.includes('Ring')) type = 'Rings'
+      else if (item.includes('Affinity')) type = 'Affinity'
+      // Special handling for MiscItems with new organization
+      else if (item.includes('ExquisiteSilk') || item.includes('ImpeccableCashmere') || item.includes('SophisticatedSatin')) type = 'Skin'
+      else if (item.includes('LoudSpeaker') || item.includes('PocketWatch') || item.includes('Prestige') || 
+               item.includes('BanquetFavor') || item.includes('PressCard')) type = 'Useable'
+      else if (item.includes('CourageTablet') || item.includes('LookingGlass')) type = 'Underworld'
+      else if (item.includes('ItemDonation') || item.includes('GuildEXPChest')) type = 'Guild'
+      else if (item.includes('StandardFlag') || item.includes('Conclave')) type = 'Conclave'
+      else if (item.includes('Banquet') || item.includes('Luxury')) type = 'Banquet'
+      else if (item.includes('Flag') || item.includes('ArenaMedal')) type = 'Arena'
+      else if (item.includes('League')) type = 'League'
+      else if (item.includes('MirageMirror') || item.includes('RenameCard') || item.includes('Background')) type = 'Customization'
       else if (item.includes('Blood')) type = 'Blood'
-      else if (item.includes('Bat')) type = 'Bat'
+      else if (item.includes('Bat') || item.includes('ResourceCollectorCard')) type = 'Bat'
       else if (item.includes('Nectar')) type = 'Nectar'
       else if (item.includes('BloodMoon')) type = 'Blood Moon'
       else if (item.includes('DarkSun')) type = 'Dark Sun'
@@ -7476,7 +7492,7 @@ export default function GameCalculator() {
                             <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
                               {setName}
                             </h3>
-                            <div className="grid grid-cols-4 gap-4">
+                            <div className={`grid gap-4 ${setName === 'Dusk' ? 'grid-cols-4 justify-start' : 'grid-cols-4'}`}>
                               {items.map((itemName) => (
                                 <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                                   <img 
