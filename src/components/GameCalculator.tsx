@@ -5903,11 +5903,11 @@ export default function GameCalculator() {
                                 {wardens.map((warden) => (
                                   <div key={warden.name} className="flex items-center gap-2 p-2 bg-gray-600/50 border border-gray-500 rounded">
                                     {/* Warden Image */}
-                                    <div className="w-32 h-32 flex-shrink-0">
+                                    <div className="w-32 h-32 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
                                       <img 
                                         src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                         alt={warden.name}
-                                        className="w-full h-full object-contain"
+                                        className="max-w-full max-h-full object-contain"
                                         onError={(e) => {
                                           (e.target as HTMLImageElement).style.display = 'none';
                                         }}
@@ -6598,11 +6598,11 @@ export default function GameCalculator() {
                                   <CardContent className="p-2">
                                     <div className="flex gap-2">
                                       {/* Warden Image */}
-                                      <div className="w-32 h-32 flex-shrink-0">
+                                      <div className="w-32 h-32 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
                                         <img 
                                           src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                           alt={warden.name}
-                                          className="w-full h-full object-contain"
+                                          className="max-w-full max-h-full object-contain"
                                           onError={(e) => {
                                             (e.target as HTMLImageElement).style.display = 'none';
                                           }}
@@ -6844,8 +6844,10 @@ export default function GameCalculator() {
                                         className="w-full h-full object-contain"
                                         onError={(e) => {
                                           const img = e.target as HTMLImageElement;
-                                          // Try .jpg fallback
-                                          if (!img.src.includes('.jpg')) {
+                                          // Try .png fallback first, then .jpg
+                                          if (!img.src.includes('.png')) {
+                                            img.src = `/Gov/Lovers/BaseLovers/${name}.png`;
+                                          } else if (!img.src.includes('.jpg')) {
                                             img.src = `/Gov/Lovers/BaseLovers/${name}.jpg`;
                                           } else {
                                             img.style.display = 'none';
@@ -6860,18 +6862,20 @@ export default function GameCalculator() {
                                     <div className="w-full h-full flex items-center justify-center">
                                       <img 
                                         src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`}
-                                alt={bond.lover}
+                                        alt={bond.lover}
                                         className="w-full h-full object-contain"
-                                onError={(e) => {
-                                  const img = e.target as HTMLImageElement;
-                                          // Try .jpg fallback
-                                          if (!img.src.includes('.jpg')) {
+                                        onError={(e) => {
+                                          const img = e.target as HTMLImageElement;
+                                          // Try .png fallback first, then .jpg
+                                          if (!img.src.includes('.png')) {
+                                            img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.png`;
+                                          } else if (!img.src.includes('.jpg')) {
                                             img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.jpg`;
-                                  } else {
-                                    img.style.display = 'none';
-                                  }
-                                }}
-                              />
+                                          } else {
+                                            img.style.display = 'none';
+                                          }
+                                        }}
+                                      />
                                     </div>
                                   );
                                 }
@@ -6893,16 +6897,16 @@ export default function GameCalculator() {
                                           {bond.warden}
                                         </span>
                                     {/* Warden Image - Inline with both names */}
-                                        <div className="w-20 h-20 flex-shrink-0">
-                                    <img 
+                                        <div className="w-28 h-28 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
+                                          <img 
                                             src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
-                                      alt={bond.warden}
-                                            className="w-full h-full object-contain"
-                                      onError={(e) => {
-                                        // Fallback if image doesn't exist
-                                        (e.target as HTMLImageElement).style.display = 'none';
-                                      }}
-                                    />
+                                            alt={bond.warden}
+                                            className="max-w-full max-h-full object-contain"
+                                            onError={(e) => {
+                                              // Fallback if image doesn't exist
+                                              (e.target as HTMLImageElement).style.display = 'none';
+                                            }}
+                                          />
                                         </div>
                                       </div>
                                     </div>
