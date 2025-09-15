@@ -167,7 +167,7 @@ export default function GameCalculator() {
     { name: "Edward", group: "other", attributes: ["Intellect"], tier: 5, skins: [] },
     { name: "William", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
     { name: "Vicente", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["VicenteSkin1"] },
-    { name: "Desare", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
+    { name: "Cesare", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
     { name: "Saber", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
     { name: "Nikolai", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: [] },
     { name: "Cornelius", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
@@ -1408,10 +1408,11 @@ export default function GameCalculator() {
     // Fix EXP formatting
     nameWithoutExt = nameWithoutExt.replace(/E\s+X\s+P/g, 'EXP')
     
-    // Add spaces before capital letters and numbers
+    // Add spaces before capital letters and numbers, but not between consecutive numbers
     return nameWithoutExt
       .replace(/([A-Z])/g, ' $1')
-      .replace(/([0-9])/g, ' $1')
+      .replace(/([a-z])([0-9])/g, '$1 $2') // Add space between letter and number
+      .replace(/([0-9])([A-Z])/g, '$1 $2') // Add space between number and capital letter
       .replace(/^ /, '') // Remove leading space
       .trim()
   }
@@ -1518,10 +1519,10 @@ export default function GameCalculator() {
       else if (item.includes('Skill')) type = 'Skills'
       // Special handling for Lover+ChildItems with new organization
       else if (item.includes('Token')) type = 'Tokens'
-      else if (item.includes('Intimacy') || item.includes('TourMap') || item.includes('CrateOfDrinks') || 
-               item.includes('Beast') || item.includes('Vito') || item.includes('Plazma') ||
-               item.includes('DailySecretPack') || item.includes('PremiumGiftBox') || item.includes('DeluxeGiftBox') || 
-               item.includes('GiftBox')) type = 'Intimacy'
+      else if (item.includes('Intimacy') || item.includes('DailySecretPack') || item.includes('PremiumGiftBox') || 
+               item.includes('DeluxeGiftBox') || item.includes('GiftBox')) type = 'Intimacy'
+      else if (item.includes('TourMap') || item.includes('CrateOfDrinks') || item.includes('Beast') || 
+               item.includes('Vito') || item.includes('Plazma')) type = 'Drinks'
       else if (item.includes('Attraction') || item.includes('Charm') || item.includes('Bouquet')) type = 'Attraction'
       else if (item.includes('Ring')) type = 'Rings'
       else if (item.includes('Affinity')) type = 'Affinity'
@@ -6995,22 +6996,25 @@ export default function GameCalculator() {
                                   // Single lover - center the image
                                   return (
                                     <div className="w-full h-full flex items-center justify-center">
-                                      <img 
-                                        src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`}
-                                        alt={bond.lover}
-                                        className="w-full h-full object-contain"
-                                        onError={(e) => {
-                                          const img = e.target as HTMLImageElement;
-                                          // Try .png fallback first, then .jpg
-                                          if (!img.src.includes('.png')) {
-                                            img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.png`;
-                                          } else if (!img.src.includes('.jpg')) {
-                                            img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.jpg`;
-                                          } else {
-                                            img.style.display = 'none';
-                                          }
-                                        }}
-                                      />
+                                        <img 
+                                          src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`}
+                                          alt={bond.lover}
+                                          className="w-full h-full object-contain"
+                                          onError={(e) => {
+                                            const img = e.target as HTMLImageElement;
+                                            // Try different naming patterns
+                                            if (!img.src.includes('.png')) {
+                                              img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.png`;
+                                            } else if (!img.src.includes('.jpg')) {
+                                              img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.jpg`;
+                                            } else if (!img.src.includes('_')) {
+                                              // Try with underscore
+                                              img.src = `/Gov/Lovers/BaseLovers/${bond.lover.replace(/([A-Z])/g, '_$1').toLowerCase()}.PNG`;
+                                            } else {
+                                              img.style.display = 'none';
+                                            }
+                                          }}
+                                        />
                                     </div>
                                   );
                                 }
