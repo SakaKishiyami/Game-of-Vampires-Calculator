@@ -2289,6 +2289,21 @@ export default function GameCalculator() {
       setAutoLoadCloudSaves(JSON.parse(savedAutoLoad))
     }
 
+    // Map scripts
+    if (itemName === 'StrengthScript') {
+      setTalents(prev => ({ ...prev, strengthScript: { ...prev.strengthScript, count: newCount } as any }))
+    } else if (itemName === 'AllureScript') {
+      setTalents(prev => ({ ...prev, allureScript: { ...prev.allureScript, count: newCount } as any }))
+    } else if (itemName === 'IntellectScript') {
+      setTalents(prev => ({ ...prev, intellectScript: { ...prev.intellectScript, count: newCount } as any }))
+    } else if (itemName === 'SpiritScript') {
+      setTalents(prev => ({ ...prev, spiritScript: { ...prev.spiritScript, count: newCount } as any }))
+    } else if (itemName === 'RandomScroll') {
+      setTalents(prev => ({ ...prev, randomScript: { ...((prev as any).randomScript || {}), count: newCount } as any }))
+    } else if (itemName === 'RandomScriptPart') {
+      setTalents(prev => ({ ...prev, randomScriptPart: { ...((prev as any).randomScriptPart || {}), count: newCount } as any }))
+    }
+
     const savedDataPreference = localStorage.getItem('dataLoadPreference')
     if (savedDataPreference !== null) {
       setDataLoadPreference(JSON.parse(savedDataPreference))
@@ -7185,41 +7200,52 @@ export default function GameCalculator() {
                             <div className="w-56 h-80 flex-shrink-0 flex">
                               {(() => {
                                   if (bond.lover.includes('/')) {
-                                  // Show both genders side by side - female first
                                   const names = bond.lover.split('/').map(s => s.trim());
-                                  // Sort to put female first (assuming female names come first in the data)
-                                  const sortedNames = names.sort((a, b) => {
-                                    // If one contains "Female" or similar indicators, put it first
-                                    if (a.toLowerCase().includes('female') && !b.toLowerCase().includes('female')) return -1;
-                                    if (b.toLowerCase().includes('female') && !a.toLowerCase().includes('female')) return 1;
-                                    // Otherwise maintain original order (assuming data is already in female/male order)
-                                    return 0;
-                                  });
-                                  return sortedNames.map((name, index) => {
-                                    // Convert name to lowercase and add gender suffix
-                                    const baseName = name.toLowerCase();
-                                    const genderSuffix = index === 0 ? 'female' : 'male';
-                                    const imageName = `${baseName}${genderSuffix}`;
-                                    
-                                    return (
-                                      <div key={index} className="w-1/2 h-full flex items-center justify-center">
-                                        <img 
-                                          src={`/Gov/Lovers/BaseLovers/${imageName}.png`}
-                                          alt={name}
-                                          className="w-full h-full object-contain"
-                                          onError={(e) => {
-                                            const img = e.target as HTMLImageElement;
-                                            // Try .PNG fallback
-                                            if (!img.src.includes('.PNG')) {
-                                              img.src = `/Gov/Lovers/BaseLovers/${imageName}.PNG`;
-                                            } else {
-                                              img.style.display = 'none';
-                                            }
-                                          }}
-                                        />
-                                      </div>
-                                    );
-                                  });
+                                  const sameName = names[0].toLowerCase() === names[1].toLowerCase();
+                                  // If same name (e.g., Raven/Raven), use female/male suffix files, female first
+                                  if (sameName) {
+                                    const ordered = [names[0], names[1]]; // keep given order; we’ll render female first below
+                                    return ordered.map((name, index) => {
+                                      const base = name.toLowerCase();
+                                      const genderSuffix = index === 0 ? 'female' : 'male';
+                                      const imageName = `${base}${genderSuffix}`;
+                                      return (
+                                        <div key={`${name}-${index}`} className="w-1/2 h-full flex items-center justify-center">
+                                          <img 
+                                            src={`/Gov/Lovers/BaseLovers/${imageName}.png`}
+                                            alt={name}
+                                            className="w-full h-full object-contain"
+                                            onError={(e) => {
+                                              const img = e.target as HTMLImageElement;
+                                              if (!img.src.includes('.PNG')) {
+                                                img.src = `/Gov/Lovers/BaseLovers/${imageName}.PNG`;
+                                              } else {
+                                                img.style.display = 'none';
+                                              }
+                                            }}
+                                          />
+                                        </div>
+                                      );
+                                    });
+                                  }
+                                  // Different names (e.g., April/Axel): use images by exact names
+                                  return names.map((name) => (
+                                    <div key={name} className="w-1/2 h-full flex items-center justify-center">
+                                      <img 
+                                        src={`/Gov/Lovers/BaseLovers/${name}.PNG`}
+                                        alt={name}
+                                        className="w-full h-full object-contain"
+                                        onError={(e) => {
+                                          const img = e.target as HTMLImageElement;
+                                          if (!img.src.includes('.png')) {
+                                            img.src = `/Gov/Lovers/BaseLovers/${name}.png`;
+                                          } else {
+                                            img.style.display = 'none';
+                                          }
+                                        }}
+                                      />
+                                    </div>
+                                  ));
                                 } else {
                                   // Single lover - center the image
                                   return (
