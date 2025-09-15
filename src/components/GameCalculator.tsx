@@ -1371,7 +1371,37 @@ export default function GameCalculator() {
   // Helper functions for inventory item management
   const formatItemName = (fileName: string): string => {
     // Remove file extension and convert to readable format
-    const nameWithoutExt = fileName.replace(/\.(PNG|png)$/, '')
+    let nameWithoutExt = fileName.replace(/\.(PNG|png)$/, '')
+    
+    // Special formatting for resources
+    if (nameWithoutExt.includes('100K')) {
+      nameWithoutExt = nameWithoutExt.replace('100K', '100k')
+    }
+    if (nameWithoutExt.includes('5M')) {
+      nameWithoutExt = nameWithoutExt.replace('5M', '5M')
+    }
+    if (nameWithoutExt.includes('Random')) {
+      // Move "Random" to the beginning for resources
+      if (nameWithoutExt.includes('Blood') || nameWithoutExt.includes('Nectar') || nameWithoutExt.includes('Bat')) {
+        const baseName = nameWithoutExt.replace('Random', '').trim()
+        nameWithoutExt = `Random ${baseName}`
+      }
+    }
+    
+    // Special formatting for skills - remove WIP and fix number formatting
+    if (nameWithoutExt.includes('WIP')) {
+      nameWithoutExt = nameWithoutExt.replace('WIP', '')
+    }
+    if (nameWithoutExt.includes('50')) {
+      nameWithoutExt = nameWithoutExt.replace('50', '50')
+    }
+    if (nameWithoutExt.includes('100')) {
+      nameWithoutExt = nameWithoutExt.replace('100', '100')
+    }
+    if (nameWithoutExt.includes('200')) {
+      nameWithoutExt = nameWithoutExt.replace('200', '200')
+    }
+    
     // Add spaces before capital letters and numbers
     return nameWithoutExt
       .replace(/([A-Z])/g, ' $1')
@@ -1401,8 +1431,8 @@ export default function GameCalculator() {
 
   const getItemsByCategory = (category: string): string[] => {
     const itemLists = {
-      'Resources': ['Nectar1', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M', 'Nectar6', 'Nectar7', 'NectarRandom', 'Bat1', 'Bat2', 'Bat3', 'Bat4', 'Bat5', 'Bat6', 'Bat7', 'Blood1', 'Blood2', 'Blood3', 'Blood4', 'Blood5', 'Blood5M', 'Blood6', 'Blood7', 'Blood100K', 'Nectar100K', 'ResourceCollectorCard', 'BloodRandom', 'Bat100K', 'BatRandom', 'Bats5M'],
-      'WardenItems': ['Allure1', 'Allure2', 'Allure3', 'Allure4', 'Allure5', 'Allure15(1)', 'Allure15(2)', 'AllureScript', 'Intellect1', 'Intellect2', 'Intellect3', 'Intellect4', 'Intellect5', 'Intellect15(1)', 'Intellect15(2)', 'IntellectScript', 'Spirit1', 'Spirit2', 'Spirit3', 'Spirit4', 'Spirit5', 'Spirit15(1)', 'Spirit15(2)', 'SpiritScript', 'Strength1', 'Strength2', 'Strength3', 'Strength4', 'Strength6', 'Strength15(1)', 'Strength15(2)', 'StrengthScript', 'Talent1', 'Talent2', 'Talent3', 'Talent4', 'TalentRandom5', 'TalentRandomStar', 'TalentScroll1', 'TalentScroll2', 'TalentScroll3', 'TalentScroll4', 'TalentScroll5', 'TalentScroll6', 'TalentScroll7', 'TalentScroll50', 'TalentScroll100', 'TalentScroll200', 'TalentScroll1Star', 'TalentScroll2Star', 'TalentScroll3Star', 'TalentScroll4Star', 'TalentScroll5Star', 'TalentScroll6Star', 'Mystery1', 'Mystery2', 'Mystery3', 'Mystery4', 'Mystery5', 'Mystery15(1)', 'Mystery15(2)', 'Skill4WIP', 'Skill5WIP', 'Skill6WIP', 'Skill8WIP', 'Skill500', 'SkillElixir1', 'SkillElixir2', 'SkillElixir3', 'SkillElixir4', 'SkillElixirRandom50', 'SkillElixirRandom100', 'SkillElixirRandom1000', 'Dominance1', 'Dominance2', 'Dominance3', 'Dominance4', 'DominanceBox', 'ArenaTrophy', 'ArenaTrophyPart', 'BloodOriginToken', 'CityBadge', 'CityBadgePart', 'CityBadgeRandomBox', 'CircusTicket', 'CircusTicketPart', 'CircusTicketRandomBox', 'MacabrianCoin', 'MacabrianCoinPart', 'MacabrianCoinRandomBox', 'NewSummonCoin', 'NewSummonCoinPart', 'SupremacyBadge', 'SupremacyBadgePart', 'SupremacyBadgeRandomBox', 'RandomScroll', 'RandomScriptPart'],
+      'Resources': ['Blood5M', 'BloodRandom', 'Blood100K', 'Blood7', 'Blood6', 'Blood5', 'Blood4', 'Blood3', 'Blood2', 'Blood1', 'Nectar5M', 'NectarRandom', 'Nectar100K', 'Nectar7', 'Nectar6', 'Nectar5', 'Nectar4', 'Nectar3', 'Nectar2', 'Nectar1', 'Bats5M', 'BatRandom', 'Bat100K', 'Bat7', 'Bat6', 'Bat5', 'Bat4', 'Bat3', 'Bat2', 'Bat1', 'ResourceCollectorCard'],
+      'WardenItems': ['BloodOriginToken', 'SupremacyBadge', 'SupremacyBadgePart', 'MacabrianCoin', 'MacabrianCoinPart', 'CircusTicket', 'CircusTicketPart', 'CityBadge', 'CityBadgePart', 'ArenaTrophy', 'ArenaTrophyPart', 'NewSummonCoin', 'NewSummonCoinPart', 'SupremacyBadgeRandomBox', 'MacabrianCoinRandomBox', 'CircusTicketRandomBox', 'CityBadgeRandomBox', 'RandomScroll', 'RandomScriptPart', 'AllureScript', 'IntellectScript', 'SpiritScript', 'StrengthScript', 'TalentScroll6Star', 'TalentScroll5Star', 'TalentScroll4Star', 'TalentScroll3Star', 'TalentScroll2Star', 'TalentScroll1Star', 'TalentRandom5', 'TalentScroll7', 'TalentScroll6', 'TalentScroll5', 'TalentScroll4', 'TalentScroll3', 'TalentScroll2', 'TalentScroll1', 'TalentScroll50', 'TalentScroll100', 'TalentScroll200', 'Talent4', 'Talent3', 'Talent2', 'Talent1', 'Mystery1', 'Mystery2', 'Mystery3', 'Mystery4', 'Mystery5', 'Mystery15(1)', 'Mystery15(2)', 'Strength1', 'Strength2', 'Strength3', 'Strength4', 'Strength6', 'Strength15(1)', 'Strength15(2)', 'Allure1', 'Allure2', 'Allure3', 'Allure4', 'Allure5', 'Allure15(1)', 'Allure15(2)', 'Intellect1', 'Intellect2', 'Intellect3', 'Intellect4', 'Intellect5', 'Intellect15(1)', 'Intellect15(2)', 'Spirit1', 'Spirit2', 'Spirit3', 'Spirit4', 'Spirit5', 'Spirit15(1)', 'Spirit15(2)', 'Dominance4', 'Dominance3', 'Dominance2', 'Dominance1', 'DominanceBox', 'Skill8', 'Skill6', 'Skill4', 'Skill5', 'Skill500', 'SkillElixirRandom1000', 'SkillElixirRandom100', 'SkillElixirRandom50', 'SkillElixir4', 'SkillElixir3', 'SkillElixir2', 'SkillElixir1'],
       'Lover+ChildItems': ['Intimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'Attraction1', 'Attraction2', 'Attraction3', 'Attraction4', 'Plazma', 'PremiumGiftBox3', 'RingOfChange', 'RoseBouquet1', 'TourMap', 'Vito', 'AffinityArmlet', 'AgneyiToken', 'AmethystRing1', 'CharmBox', 'CharmPhial1', 'CrateOfDrinks', 'CulannToken', 'DailyAttractionBox', 'HelaToken', 'IndigoBouquet3', 'IntimacyBag', 'RubyRing2', 'BlackPearlRing3', 'GiftBox1', 'RandomRingBox', 'DailySecretPack', 'DeluxeGiftBox2', 'CharmBottle2', 'IntimacyCase', 'AzureBouquet2', 'Beast', 'IntimacyPurse', 'ArtLoverToken', 'AffinityLvl1', 'AffinityLvl2'],
       'FamiliarItems': ['MutationPotion1', 'MutationPotion2', 'MutationPotion3', 'EffigyOfRobustness', 'FamiliarFood', 'BangBear'],
       'MiscItems': ['LookingGlass', 'CourageTablet', 'NoviceLeague1', 'PressCard', 'Prestige1', 'Prestige2', 'RenameCard', 'SanctuaryStandardFlag', 'SolidarityStandardFlag', 'SophisticatedSatin', 'ValiantSlate', 'AdvancedItemDonation2', 'AdvancedItemDonationPart', 'AdvancedLeague3', 'AlchemyFormula', 'BanishmentStandardFlag', 'BanquetFavor', 'BanquetFavor2', 'ChallengeFlag', 'ConclaveStandardFlag', 'ConclaveStandardFlagPart', 'ExquisiteSilk', 'GrandBanquetDecor', 'GrandBanquetInvitation', 'GuildEXPChest1', 'GuildEXPChest2', 'GuildEXPChest3', 'GuildEXPChest4', 'HuntFlag', 'ImpeccableCashmere', 'InterLeague2', 'ItemDonation1', 'ItemDonationPart', 'LoudSpeaker', 'LuxuryBanquetDecor', 'LuxuryBanquetInvitation', 'RematchFlag', 'AllyFlag', 'ArenaMedal', 'GuardianFlag', 'MirageMirror', 'PocketWatch', 'BackgroundWinter', 'BackgroundFireworks'],
@@ -1465,17 +1495,24 @@ export default function GameCalculator() {
       // Extract the base type from the item name
       let type = 'Other'
       
-      if (item.includes('Blood')) type = 'Blood'
-      else if (item.includes('Bat')) type = 'Bat'
-      else if (item.includes('Nectar')) type = 'Nectar'
+      // Special handling for WardenItems with new organization
+      if (item.includes('BloodOriginToken') || item.includes('SupremacyBadge') || item.includes('MacabrianCoin') || 
+          item.includes('CircusTicket') || item.includes('CityBadge') || item.includes('ArenaTrophy') || 
+          item.includes('NewSummonCoin') || item.includes('RandomScroll') || item.includes('RandomScriptPart')) {
+        type = 'Special Items'
+      }
+      else if (item.includes('Script')) type = 'Scripts'
+      else if (item.includes('Talent')) type = 'Talents'
+      else if (item.includes('Mystery')) type = 'Mystery'
+      else if (item.includes('Strength')) type = 'Strength'
       else if (item.includes('Allure')) type = 'Allure'
       else if (item.includes('Intellect')) type = 'Intellect'
       else if (item.includes('Spirit')) type = 'Spirit'
-      else if (item.includes('Strength')) type = 'Strength'
-      else if (item.includes('Mystery')) type = 'Mystery'
       else if (item.includes('Dominance')) type = 'Dominance'
-      else if (item.includes('Skill')) type = 'Skill'
-      else if (item.includes('Talent')) type = 'Talent'
+      else if (item.includes('Skill')) type = 'Skills'
+      else if (item.includes('Blood')) type = 'Blood'
+      else if (item.includes('Bat')) type = 'Bat'
+      else if (item.includes('Nectar')) type = 'Nectar'
       else if (item.includes('BloodMoon')) type = 'Blood Moon'
       else if (item.includes('DarkSun')) type = 'Dark Sun'
       else if (item.includes('Dusk')) type = 'Dusk'
@@ -1530,7 +1567,24 @@ export default function GameCalculator() {
       })
     })
     
-    return sets
+    // Return sets in the specified order: dusk, nightfall, midnight, twilight, fallen star, blood moon, dark sun
+    const orderedSets: { [setName: string]: string[] } = {}
+    const order = ['Dusk', 'Nightfall', 'Midnight', 'Twilight', 'Fallen Star', 'Blood Moon', 'Dark Sun']
+    
+    order.forEach(setName => {
+      if (sets[setName]) {
+        orderedSets[setName] = sets[setName]
+      }
+    })
+    
+    // Add any remaining sets that weren't in the order
+    Object.keys(sets).forEach(setName => {
+      if (!orderedSets[setName]) {
+        orderedSets[setName] = sets[setName]
+      }
+    })
+    
+    return orderedSets
   }
 
   // Handle file upload (now supports both text files and images)
