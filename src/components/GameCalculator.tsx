@@ -2538,14 +2538,20 @@ export default function GameCalculator() {
     
     // Apply lover aura bonuses
     let loverMultiplier = 1
-    if (attribute === 'strength' && hasAgneyi) {
-      const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+    
+    // Check if lover is summoned (checkbox) OR has 100+ tokens in inventory
+    const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
+    const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
+    const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
+    
+    if (attribute === 'strength' && canSummonAgneyi) {
+      const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
       loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
-    } else if (attribute === 'intellect' && hasCulann) {
-      const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+    } else if (attribute === 'intellect' && canSummonCulann) {
+      const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
       loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
-    } else if (attribute === 'spirit' && hasHela) {
-      const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+    } else if (attribute === 'spirit' && canSummonHela) {
+      const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
       loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
     }
     
@@ -3240,7 +3246,11 @@ export default function GameCalculator() {
 
   // Calculate dynamic lover aura levels
   const calculateLoverAuraLevels = () => {
-    const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+    // Check if lover is summoned (checkbox) OR has 100+ tokens in inventory
+    const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
+    const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
+    const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
+    const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
     const loverAuras = JSON.parse(JSON.stringify(auras.lovers))
     
     Object.entries(loverAuras).forEach(([loverName, loverData]) => {
@@ -4248,7 +4258,11 @@ export default function GameCalculator() {
               // Apply lover bonuses if applicable
               let multiplier = 1.0
               if (wardenAttrs.includes('Strength')) {
-                const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                // Check if lover is summoned (checkbox) OR has 100+ tokens in inventory
+    const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
+    const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
+    const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
+    const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
                 if (loverCount === 1) multiplier = 1.2
                 else if (loverCount === 2) multiplier = 1.25
                 else if (loverCount === 3) multiplier = 1.3
@@ -4279,7 +4293,11 @@ export default function GameCalculator() {
               // Apply lover bonuses if applicable
               let multiplier = 1.0
               if (wardenAttrs.includes('Allure')) {
-                const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                // Check if lover is summoned (checkbox) OR has 100+ tokens in inventory
+    const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
+    const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
+    const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
+    const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
                 if (loverCount === 1) multiplier = 1.2
                 else if (loverCount === 2) multiplier = 1.25
                 else if (loverCount === 3) multiplier = 1.3
@@ -4309,7 +4327,11 @@ export default function GameCalculator() {
               // Apply lover bonuses if applicable
               let multiplier = 1.0
               if (wardenAttrs.includes('Intellect')) {
-                const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                // Check if lover is summoned (checkbox) OR has 100+ tokens in inventory
+    const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
+    const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
+    const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
+    const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
                 if (loverCount === 1) multiplier = 1.2
                 else if (loverCount === 2) multiplier = 1.25
                 else if (loverCount === 3) multiplier = 1.3
@@ -4339,7 +4361,11 @@ export default function GameCalculator() {
               // Apply lover bonuses if applicable
               let multiplier = 1.0
               if (wardenAttrs.includes('Spirit')) {
-                const loverCount = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                // Check if lover is summoned (checkbox) OR has 100+ tokens in inventory
+    const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
+    const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
+    const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
+    const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
                 if (loverCount === 1) multiplier = 1.2
                 else if (loverCount === 2) multiplier = 1.25
                 else if (loverCount === 3) multiplier = 1.3
@@ -6853,6 +6879,22 @@ export default function GameCalculator() {
                         </div>
                         <div className="text-sm text-yellow-400 mt-2">
                           Currently: {[hasAgneyi, hasCulann, hasHela].filter(Boolean).length}/3 lovers summoned
+                          {(() => {
+                            const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
+                            const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
+                            const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
+                            const tokenSummoned = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
+                            const checkboxSummoned = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
+                            
+                            if (tokenSummoned > checkboxSummoned) {
+                              return (
+                                <div className="text-green-400 text-xs mt-1">
+                                  (Can summon {tokenSummoned - checkboxSummoned} more with tokens)
+                                </div>
+                              )
+                            }
+                            return null
+                          })()}
                         </div>
                       </div>
                     </CardContent>
@@ -6911,7 +6953,7 @@ export default function GameCalculator() {
                         <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                           <div className="flex">
                             {/* Lover Images - Left Side */}
-                            <div className="w-48 h-64 flex-shrink-0 flex">
+                            <div className="w-56 h-80 flex-shrink-0 flex">
                               {(() => {
                                   if (bond.lover.includes('/')) {
                                   // Show both genders side by side - female first
@@ -6924,26 +6966,31 @@ export default function GameCalculator() {
                                     // Otherwise maintain original order (assuming data is already in female/male order)
                                     return 0;
                                   });
-                                  return sortedNames.map((name, index) => (
-                                    <div key={index} className="w-1/2 h-full flex items-center justify-center">
-                                      <img 
-                                        src={`/Gov/Lovers/BaseLovers/${name}.PNG`}
-                                        alt={name}
-                                        className="w-full h-full object-contain"
-                                        onError={(e) => {
-                                          const img = e.target as HTMLImageElement;
-                                          // Try .png fallback first, then .jpg
-                                          if (!img.src.includes('.png')) {
-                                            img.src = `/Gov/Lovers/BaseLovers/${name}.png`;
-                                          } else if (!img.src.includes('.jpg')) {
-                                            img.src = `/Gov/Lovers/BaseLovers/${name}.jpg`;
-                                          } else {
-                                            img.style.display = 'none';
-                                          }
-                                        }}
-                                      />
-                                    </div>
-                                  ));
+                                  return sortedNames.map((name, index) => {
+                                    // Convert name to lowercase and add gender suffix
+                                    const baseName = name.toLowerCase();
+                                    const genderSuffix = index === 0 ? 'female' : 'male';
+                                    const imageName = `${baseName}${genderSuffix}`;
+                                    
+                                    return (
+                                      <div key={index} className="w-1/2 h-full flex items-center justify-center">
+                                        <img 
+                                          src={`/Gov/Lovers/BaseLovers/${imageName}.png`}
+                                          alt={name}
+                                          className="w-full h-full object-contain"
+                                          onError={(e) => {
+                                            const img = e.target as HTMLImageElement;
+                                            // Try .PNG fallback
+                                            if (!img.src.includes('.PNG')) {
+                                              img.src = `/Gov/Lovers/BaseLovers/${imageName}.PNG`;
+                                            } else {
+                                              img.style.display = 'none';
+                                            }
+                                          }}
+                                        />
+                                      </div>
+                                    );
+                                  });
                                 } else {
                                   // Single lover - center the image
                                   return (
