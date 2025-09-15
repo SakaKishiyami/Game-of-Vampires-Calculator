@@ -1368,6 +1368,49 @@ export default function GameCalculator() {
     })
   }
 
+  // Helper functions for inventory item management
+  const formatItemName = (fileName: string): string => {
+    // Remove file extension and convert to readable format
+    const nameWithoutExt = fileName.replace(/\.(PNG|png)$/, '')
+    // Add spaces before capital letters and numbers
+    return nameWithoutExt
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/([0-9])/g, ' $1')
+      .replace(/^ /, '') // Remove leading space
+      .trim()
+  }
+
+  const getItemCategory = (itemName: string): string => {
+    // Determine which category an item belongs to based on the item name
+    const categories = {
+      'Resources': ['Nectar', 'Bat', 'Blood', 'ResourceCollectorCard'],
+      'WardenItems': ['Allure', 'Intellect', 'Spirit', 'Strength', 'Talent', 'Mystery', 'Skill', 'Dominance', 'ArenaTrophy', 'BloodOriginToken', 'CityBadge', 'CircusTicket', 'MacabrianCoin', 'NewSummonCoin', 'SupremacyBadge', 'RandomScroll', 'RandomScriptPart'],
+      'Lover+ChildItems': ['Intimacy', 'Attraction', 'Plazma', 'PremiumGiftBox', 'RingOfChange', 'RoseBouquet', 'TourMap', 'Vito', 'AffinityArmlet', 'AgneyiToken', 'AmethystRing', 'CharmBox', 'CharmPhial', 'CrateOfDrinks', 'CulannToken', 'DailyAttractionBox', 'HelaToken', 'IndigoBouquet', 'IntimacyBag', 'RubyRing', 'BlackPearlRing', 'GiftBox', 'RandomRingBox', 'DailySecretPack', 'DeluxeGiftBox', 'CharmBottle', 'IntimacyCase', 'AzureBouquet', 'Beast', 'IntimacyPurse', 'ArtLoverToken', 'AffinityLvl'],
+      'FamiliarItems': ['MutationPotion', 'EffigyOfRobustness', 'FamiliarFood', 'BangBear'],
+      'MiscItems': ['LookingGlass', 'CourageTablet', 'NoviceLeague', 'PressCard', 'Prestige', 'RenameCard', 'SanctuaryStandardFlag', 'SolidarityStandardFlag', 'SophisticatedSatin', 'ValiantSlate', 'AdvancedItemDonation', 'AdvancedLeague', 'AlchemyFormula', 'BanishmentStandardFlag', 'BanquetFavor', 'ChallengeFlag', 'ConclaveStandardFlag', 'ExquisiteSilk', 'GrandBanquetDecor', 'GrandBanquetInvitation', 'GuildEXPChest', 'HuntFlag', 'ImpeccableCashmere', 'InterLeague', 'ItemDonation', 'LoudSpeaker', 'LuxuryBanquetDecor', 'LuxuryBanquetInvitation', 'RematchFlag', 'AllyFlag', 'ArenaMedal', 'GuardianFlag', 'MirageMirror', 'PocketWatch', 'BackgroundWinter', 'BackgroundFireworks'],
+      'WardenEquip': ['NightfallEquip', 'NightfallMedal', 'NightfallSuit', 'TwilightEquip', 'BloodMoonEquip', 'BloodMoonSuit', 'DarkSunEquip', 'DarkSunMedal', 'DarkSunSuit', 'DuskMedal', 'DuskRing', 'FallenStarEquip', 'FallenStarSuit', 'MidnightEquip', 'MidnightRing', 'TwilightRing', 'NightfallRing', 'FallenStarRing', 'DarkSunRing', 'TwilightSuit', 'BloodMoonRing', 'DuskSuit', 'FallenStarMedal', 'MidnightSuit', 'MidnightMedal', 'TwilightMedal', 'BloodMoonMedal']
+    }
+
+    for (const [category, items] of Object.entries(categories)) {
+      if (items.some(item => itemName.includes(item))) {
+        return category
+      }
+    }
+    return 'MiscItems' // Default fallback
+  }
+
+  const getItemsByCategory = (category: string): string[] => {
+    const itemLists = {
+      'Resources': ['Nectar1', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M', 'Nectar6', 'Nectar7', 'NectarRandom', 'Bat1', 'Bat2', 'Bat3', 'Bat4', 'Bat5', 'Bat6', 'Bat7', 'Blood1', 'Blood2', 'Blood3', 'Blood4', 'Blood5', 'Blood5M', 'Blood6', 'Blood7', 'Blood100K', 'Nectar100K', 'ResourceCollectorCard', 'BloodRandom', 'Bat100K', 'BatRandom', 'Bats5M'],
+      'WardenItems': ['Allure1', 'Allure2', 'Allure3', 'Allure4', 'Allure5', 'Allure15(1)', 'Allure15(2)', 'AllureScript', 'Intellect1', 'Intellect2', 'Intellect3', 'Intellect4', 'Intellect5', 'Intellect15(1)', 'Intellect15(2)', 'IntellectScript', 'Spirit1', 'Spirit2', 'Spirit3', 'Spirit4', 'Spirit5', 'Spirit15(1)', 'Spirit15(2)', 'SpiritScript', 'Strength1', 'Strength2', 'Strength3', 'Strength4', 'Strength6', 'Strength15(1)', 'Strength15(2)', 'StrengthScript', 'Talent1', 'Talent2', 'Talent3', 'Talent4', 'TalentRandom5', 'TalentRandomStar', 'TalentScroll1', 'TalentScroll2', 'TalentScroll3', 'TalentScroll4', 'TalentScroll5', 'TalentScroll6', 'TalentScroll7', 'TalentScroll50', 'TalentScroll100', 'TalentScroll200', 'TalentScroll1Star', 'TalentScroll2Star', 'TalentScroll3Star', 'TalentScroll4Star', 'TalentScroll5Star', 'TalentScroll6Star', 'Mystery1', 'Mystery2', 'Mystery3', 'Mystery4', 'Mystery5', 'Mystery15(1)', 'Mystery15(2)', 'Skill4WIP', 'Skill5WIP', 'Skill6WIP', 'Skill8WIP', 'Skill500', 'SkillElixir1', 'SkillElixir2', 'SkillElixir3', 'SkillElixir4', 'SkillElixirRandom50', 'SkillElixirRandom100', 'SkillElixirRandom1000', 'Dominance1', 'Dominance2', 'Dominance3', 'Dominance4', 'DominanceBox', 'ArenaTrophy', 'ArenaTrophyPart', 'BloodOriginToken', 'CityBadge', 'CityBadgePart', 'CityBadgeRandomBox', 'CircusTicket', 'CircusTicketPart', 'CircusTicketRandomBox', 'MacabrianCoin', 'MacabrianCoinPart', 'MacabrianCoinRandomBox', 'NewSummonCoin', 'NewSummonCoinPart', 'SupremacyBadge', 'SupremacyBadgePart', 'SupremacyBadgeRandomBox', 'RandomScroll', 'RandomScriptPart'],
+      'Lover+ChildItems': ['Intimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'Attraction1', 'Attraction2', 'Attraction3', 'Attraction4', 'Plazma', 'PremiumGiftBox3', 'RingOfChange', 'RoseBouquet1', 'TourMap', 'Vito', 'AffinityArmlet', 'AgneyiToken', 'AmethystRing1', 'CharmBox', 'CharmPhial1', 'CrateOfDrinks', 'CulannToken', 'DailyAttractionBox', 'HelaToken', 'IndigoBouquet3', 'IntimacyBag', 'RubyRing2', 'BlackPearlRing3', 'GiftBox1', 'RandomRingBox', 'DailySecretPack', 'DeluxeGiftBox2', 'CharmBottle2', 'IntimacyCase', 'AzureBouquet2', 'Beast', 'IntimacyPurse', 'ArtLoverToken', 'AffinityLvl1', 'AffinityLvl2'],
+      'FamiliarItems': ['MutationPotion1', 'MutationPotion2', 'MutationPotion3', 'EffigyOfRobustness', 'FamiliarFood', 'BangBear'],
+      'MiscItems': ['LookingGlass', 'CourageTablet', 'NoviceLeague1', 'PressCard', 'Prestige1', 'Prestige2', 'RenameCard', 'SanctuaryStandardFlag', 'SolidarityStandardFlag', 'SophisticatedSatin', 'ValiantSlate', 'AdvancedItemDonation2', 'AdvancedItemDonationPart', 'AdvancedLeague3', 'AlchemyFormula', 'BanishmentStandardFlag', 'BanquetFavor', 'BanquetFavor2', 'ChallengeFlag', 'ConclaveStandardFlag', 'ConclaveStandardFlagPart', 'ExquisiteSilk', 'GrandBanquetDecor', 'GrandBanquetInvitation', 'GuildEXPChest1', 'GuildEXPChest2', 'GuildEXPChest3', 'GuildEXPChest4', 'HuntFlag', 'ImpeccableCashmere', 'InterLeague2', 'ItemDonation1', 'ItemDonationPart', 'LoudSpeaker', 'LuxuryBanquetDecor', 'LuxuryBanquetInvitation', 'RematchFlag', 'AllyFlag', 'ArenaMedal', 'GuardianFlag', 'MirageMirror', 'PocketWatch', 'BackgroundWinter', 'BackgroundFireworks'],
+      'WardenEquip': ['NightfallEquip', 'NightfallMedal', 'NightfallSuit', 'NightfallRing', 'TwilightEquip', 'TwilightMedal', 'TwilightRing', 'TwilightSuit', 'BloodMoonEquip', 'BloodMoonMedal', 'BloodMoonRing', 'BloodMoonSuit', 'DarkSunEquip', 'DarkSunMedal', 'DarkSunRing', 'DarkSunSuit', 'DuskMedal', 'DuskRing', 'DuskSuit', 'FallenStarEquip', 'FallenStarMedal', 'FallenStarRing', 'FallenStarSuit', 'MidnightEquip', 'MidnightMedal', 'MidnightRing', 'MidnightSuit']
+    }
+    return itemLists[category as keyof typeof itemLists] || []
+  }
+
   // Additional inventory helper functions for UI
   const addInventoryItem = (itemName: string, initialCount: number = 1) => {
     if (itemName.trim()) {
@@ -6938,187 +6981,384 @@ export default function GameCalculator() {
           {/* Inventory Tab */}
           <TabsContent value="inventory">
             <div className="space-y-6">
-              {/* Inventory Management */}
-              <Card className="bg-gray-800/50 border-gray-600">
-                <CardHeader>
-                  <CardTitle className="text-red-400">Inventory Management</CardTitle>
-                  <div className="text-sm text-gray-300">
-                    Upload screenshots to automatically detect and count items, or manage inventory manually
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Image Upload */}
-                    <div>
-                      <Label htmlFor="inventory-upload" className="text-white font-medium">
-                        Upload Inventory Screenshots
-                      </Label>
-                      <div className="mt-2">
-                        <Input
-                          id="inventory-upload"
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={handleInventoryImageUpload}
-                          className="bg-gray-700 border-gray-600 text-white"
-                        />
-                        <div className="text-xs text-gray-400 mt-1">
-                          Upload one or more screenshots of your inventory
+              {/* Inventory Tabs */}
+              <Tabs defaultValue="all" className="w-full">
+                <TabsList className="grid w-full grid-cols-7 bg-gray-800">
+                  <TabsTrigger value="all" className="data-[state=active]:bg-red-600">All Items</TabsTrigger>
+                  <TabsTrigger value="resources" className="data-[state=active]:bg-red-600">Resources</TabsTrigger>
+                  <TabsTrigger value="warden-items" className="data-[state=active]:bg-red-600">Warden Items</TabsTrigger>
+                  <TabsTrigger value="lover-child" className="data-[state=active]:bg-red-600">Lover & Child</TabsTrigger>
+                  <TabsTrigger value="familiar" className="data-[state=active]:bg-red-600">Familiar</TabsTrigger>
+                  <TabsTrigger value="misc" className="data-[state=active]:bg-red-600">Misc Items</TabsTrigger>
+                  <TabsTrigger value="warden-equip" className="data-[state=active]:bg-red-600">Warden Equipment</TabsTrigger>
+                </TabsList>
+
+                {/* All Items Tab */}
+                <TabsContent value="all" className="mt-4">
+                  <Card className="bg-gray-800/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-green-400">All Items</CardTitle>
+                      <div className="text-sm text-gray-300">
+                        {Object.keys(inventory).length === 0 ? 'No items in inventory' : `${Object.keys(inventory).length} items tracked`}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {Object.keys(inventory).length === 0 ? (
+                        <div className="text-center text-gray-400 py-8">
+                          No items in inventory
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Processing Status */}
-                    {isProcessingInventory && (
-                      <div className="p-3 bg-blue-900/30 border border-blue-600/50 rounded">
-                        <div className="text-blue-400 font-medium">Processing...</div>
-                        <div className="text-blue-300 text-sm">{inventoryProgress}</div>
-                      </div>
-                    )}
-
-                    {/* Error Display */}
-                    {inventoryError && (
-                      <div className="p-3 bg-red-900/30 border border-red-600/50 rounded">
-                        <div className="text-red-400 font-medium">Error</div>
-                        <div className="text-red-300 text-sm">{inventoryError}</div>
-                      </div>
-                    )}
-
-                    {/* Manual Item Management */}
-                    <div className="border-t border-gray-600 pt-4">
-                      <h3 className="text-yellow-400 font-semibold mb-3">Manual Item Management</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="item-name" className="text-white text-sm">Item Name</Label>
-                          <Input
-                            id="item-name"
-                            placeholder="Enter item name"
-                            className="bg-gray-700 border-gray-600 text-white mt-1"
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                const input = e.target as HTMLInputElement;
-                                const itemName = input.value.trim();
-                                if (itemName) {
-                                  addInventoryItem(itemName, 1);
-                                  input.value = '';
-                                }
-                              }
-                            }}
-                          />
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {Object.entries(inventory).map(([itemName, itemData]) => (
+                            <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
+                              <div className="flex items-center space-x-3">
+                                <img 
+                                  src={`/InventoryAssets/${getItemCategory(itemName)}/${itemName}.PNG`} 
+                                  alt={itemName}
+                                  className="w-8 h-8 object-contain"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none'
+                                  }}
+                                />
+                                <div>
+                                  <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <div className="text-lg font-bold text-yellow-400">
+                                  {itemData.count.toLocaleString()}
+                                </div>
+                                <div className="flex space-x-1">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => updateInventoryItem(itemName, itemData.count + 1)}
+                                    className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
+                                  >
+                                    +
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => updateInventoryItem(itemName, Math.max(0, itemData.count - 1))}
+                                    className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                  >
+                                    -
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        <div>
-                          <Label htmlFor="item-count" className="text-white text-sm">Count</Label>
-                          <Input
-                            id="item-count"
-                            type="number"
-                            min="1"
-                            defaultValue="1"
-                            className="bg-gray-700 border-gray-600 text-white mt-1"
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                const nameInput = document.getElementById('item-name') as HTMLInputElement;
-                                const countInput = e.target as HTMLInputElement;
-                                const itemName = nameInput.value.trim();
-                                const count = parseInt(countInput.value) || 1;
-                                if (itemName) {
-                                  addInventoryItem(itemName, count);
-                                  nameInput.value = '';
-                                  countInput.value = '1';
-                                }
-                              }
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <Button
-                        onClick={() => {
-                          const nameInput = document.getElementById('item-name') as HTMLInputElement;
-                          const countInput = document.getElementById('item-count') as HTMLInputElement;
-                          const itemName = nameInput.value.trim();
-                          const count = parseInt(countInput.value) || 1;
-                          if (itemName) {
-                            addInventoryItem(itemName, count);
-                            nameInput.value = '';
-                            countInput.value = '1';
-                          }
-                        }}
-                        className="mt-2 bg-blue-600 hover:bg-blue-700"
-                      >
-                        Add Item
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
 
-              {/* Current Inventory Display */}
-              <Card className="bg-gray-800/50 border-gray-600">
-                <CardHeader>
-                  <CardTitle className="text-green-400">Current Inventory</CardTitle>
-                  <div className="text-sm text-gray-300">
-                    {Object.keys(inventory).length === 0 ? 'No items in inventory' : `${Object.keys(inventory).length} items tracked`}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {Object.keys(inventory).length === 0 ? (
-                    <div className="text-center text-gray-400 py-8">
-                      Upload screenshots or add items manually to get started
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {Object.entries(inventory).map(([itemName, itemData]) => (
-                        <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
-                          <div className="flex items-center space-x-3">
-                            <img 
-                              src={inventoryImages[itemName] || `/GoVAssets/${itemName}.PNG`} 
-                              alt={itemName}
-                              className="w-8 h-8 object-cover rounded"
-                              onError={(e) => {
-                                // Hide image if it fails to load
-                                e.currentTarget.style.display = 'none'
-                              }}
-                            />
-                            <div>
-                              <div className="text-white font-medium">{itemName}</div>
-                              <div className="text-gray-400 text-sm">
-                                Last updated: {new Date(itemData.lastUpdated).toLocaleDateString()}
+                {/* Resources Tab */}
+                <TabsContent value="resources" className="mt-4">
+                  <Card className="bg-gray-800/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-green-400">Resources</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {getItemsByCategory('Resources').map((itemName) => (
+                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={`/InventoryAssets/Resources/${itemName}.PNG`} 
+                                alt={itemName}
+                                className="w-8 h-8 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                              />
+                              <div>
+                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="text-lg font-bold text-yellow-400">
+                                {inventory[itemName]?.count || 0}
+                              </div>
+                              <div className="flex space-x-1">
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
+                                >
+                                  +
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                >
+                                  -
+                                </Button>
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center space-x-3">
-                            <div className="text-2xl font-bold text-yellow-400">
-                              {itemData.count.toLocaleString()}
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Warden Items Tab */}
+                <TabsContent value="warden-items" className="mt-4">
+                  <Card className="bg-gray-800/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-green-400">Warden Items</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {getItemsByCategory('WardenItems').map((itemName) => (
+                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={`/InventoryAssets/WardenItems/${itemName}.PNG`} 
+                                alt={itemName}
+                                className="w-8 h-8 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                              />
+                              <div>
+                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                              </div>
                             </div>
-                            <div className="flex space-x-2">
-                              <Button
-                                size="sm"
-                                onClick={() => updateInventoryItem(itemName, itemData.count + 1)}
-                                className="bg-green-600 hover:bg-green-700 text-xs px-2"
-                              >
-                                +
-                              </Button>
-                              <Button
-                                size="sm"
-                                onClick={() => updateInventoryItem(itemName, Math.max(0, itemData.count - 1))}
-                                className="bg-red-600 hover:bg-red-700 text-xs px-2"
-                              >
-                                -
-                              </Button>
-                              <Button
-                                size="sm"
-                                onClick={() => removeInventoryItem(itemName)}
-                                className="bg-gray-600 hover:bg-gray-700 text-xs px-2"
-                              >
-                                ×
-                              </Button>
+                            <div className="flex items-center space-x-2">
+                              <div className="text-lg font-bold text-yellow-400">
+                                {inventory[itemName]?.count || 0}
+                              </div>
+                              <div className="flex space-x-1">
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
+                                >
+                                  +
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                >
+                                  -
+                                </Button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Lover & Child Items Tab */}
+                <TabsContent value="lover-child" className="mt-4">
+                  <Card className="bg-gray-800/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-green-400">Lover & Child Items</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {getItemsByCategory('Lover+ChildItems').map((itemName) => (
+                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={`/InventoryAssets/Lover+ChildItems/${itemName}.PNG`} 
+                                alt={itemName}
+                                className="w-8 h-8 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                              />
+                              <div>
+                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="text-lg font-bold text-yellow-400">
+                                {inventory[itemName]?.count || 0}
+                              </div>
+                              <div className="flex space-x-1">
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
+                                >
+                                  +
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                >
+                                  -
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Familiar Items Tab */}
+                <TabsContent value="familiar" className="mt-4">
+                  <Card className="bg-gray-800/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-green-400">Familiar Items</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {getItemsByCategory('FamiliarItems').map((itemName) => (
+                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={`/InventoryAssets/FamiliarItems/${itemName}.PNG`} 
+                                alt={itemName}
+                                className="w-8 h-8 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                              />
+                              <div>
+                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="text-lg font-bold text-yellow-400">
+                                {inventory[itemName]?.count || 0}
+                              </div>
+                              <div className="flex space-x-1">
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
+                                >
+                                  +
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                >
+                                  -
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Misc Items Tab */}
+                <TabsContent value="misc" className="mt-4">
+                  <Card className="bg-gray-800/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-green-400">Misc Items</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {getItemsByCategory('MiscItems').map((itemName) => (
+                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={`/InventoryAssets/MiscItems/${itemName}.PNG`} 
+                                alt={itemName}
+                                className="w-8 h-8 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                              />
+                              <div>
+                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="text-lg font-bold text-yellow-400">
+                                {inventory[itemName]?.count || 0}
+                              </div>
+                              <div className="flex space-x-1">
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
+                                >
+                                  +
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                >
+                                  -
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Warden Equipment Tab */}
+                <TabsContent value="warden-equip" className="mt-4">
+                  <Card className="bg-gray-800/50 border-gray-600">
+                    <CardHeader>
+                      <CardTitle className="text-green-400">Warden Equipment</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {getItemsByCategory('WardenEquip').map((itemName) => (
+                          <div key={itemName} className="flex items-center justify-between p-3 bg-gray-700/50 rounded">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={`/InventoryAssets/WardenEquip/${itemName}.PNG`} 
+                                alt={itemName}
+                                className="w-8 h-8 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                              />
+                              <div>
+                                <div className="text-white font-medium text-sm">{formatItemName(itemName)}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="text-lg font-bold text-yellow-400">
+                                {inventory[itemName]?.count || 0}
+                              </div>
+                              <div className="flex space-x-1">
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
+                                  className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6"
+                                >
+                                  +
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
+                                  className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6"
+                                >
+                                  -
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
             </div>
           </TabsContent>
 
