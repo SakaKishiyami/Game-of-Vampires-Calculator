@@ -5870,7 +5870,7 @@ export default function GameCalculator() {
                                 {wardens.map((warden) => (
                                   <div key={warden.name} className="flex items-center gap-2 p-2 bg-gray-600/50 border border-gray-500 rounded">
                                     {/* Warden Image */}
-                                    <div className="w-20 h-20 flex-shrink-0">
+                                    <div className="w-32 h-32 flex-shrink-0">
                                       <img 
                                         src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                         alt={warden.name}
@@ -5881,32 +5881,32 @@ export default function GameCalculator() {
                                       />
                                     </div>
                                     
-                                    <Button
-                                      variant={selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) ? "default" : "outline"}
-                                      onClick={() => handleWardenSelection(groupKey, warden.name)}
-                                      disabled={
-                                        !selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) &&
-                                        selectedWardens[groupKey as keyof typeof selectedWardens]?.length >= wardenCounts[groupKey as keyof typeof wardenCounts]
-                                      }
+                                  <Button
+                                    variant={selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) ? "default" : "outline"}
+                                    onClick={() => handleWardenSelection(groupKey, warden.name)}
+                                    disabled={
+                                      !selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) &&
+                                      selectedWardens[groupKey as keyof typeof selectedWardens]?.length >= wardenCounts[groupKey as keyof typeof wardenCounts]
+                                    }
                                       className={`p-4 h-auto flex flex-col items-start flex-1 ${
-                                        selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name)
-                                          ? "bg-red-600 hover:bg-red-700"
-                                          : "bg-gray-600 hover:bg-gray-500"
-                                      }`}
-                                    >
-                                      <div className="font-semibold text-white">{warden.name}</div>
-                                      <div className="flex gap-1 mt-1">
-                                        {warden.attributes.map((attr) => (
-                                          <span
-                                            key={attr}
-                                            className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
-                                          >
-                                            {attr}
-                                          </span>
-                                        ))}
-                                      </div>
-                                      {renderStars(warden.tier)}
-                                    </Button>
+                                      selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name)
+                                        ? "bg-red-600 hover:bg-red-700"
+                                        : "bg-gray-600 hover:bg-gray-500"
+                                    }`}
+                                  >
+                                    <div className="font-semibold text-white">{warden.name}</div>
+                                    <div className="flex gap-1 mt-1">
+                                      {warden.attributes.map((attr) => (
+                                        <span
+                                          key={attr}
+                                          className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
+                                        >
+                                          {attr}
+                                        </span>
+                                      ))}
+                                    </div>
+                                    {renderStars(warden.tier)}
+                                  </Button>
                                   </div>
                                 ))}
                               </div>
@@ -6547,7 +6547,7 @@ export default function GameCalculator() {
 
                       {/* All Wardens with Images, Stats, and Skins */}
                       <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
+                              <CardHeader>
                           <CardTitle className="text-white">All Wardens</CardTitle>
                           <div className="text-sm text-gray-300">
                             Shows all wardens (including VIP and selected ones) with their stats and skins
@@ -6565,7 +6565,7 @@ export default function GameCalculator() {
                                   <CardContent className="p-2">
                                     <div className="flex gap-2">
                                       {/* Warden Image */}
-                                      <div className="w-24 h-24 flex-shrink-0">
+                                      <div className="w-32 h-32 flex-shrink-0">
                                         <img 
                                           src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                           alt={warden.name}
@@ -6589,42 +6589,42 @@ export default function GameCalculator() {
                                         
                                         {/* Attributes */}
                                         <div className="flex gap-1 mb-2">
-                                          {warden.attributes.map((attr) => (
-                                            <span
-                                              key={attr}
-                                              className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
-                                            >
-                                              {attr}
-                                            </span>
-                                          ))}
-                                        </div>
+                                    {warden.attributes.map((attr) => (
+                                      <span
+                                        key={attr}
+                                        className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}
+                                      >
+                                        {attr}
+                                      </span>
+                                    ))}
+                                  </div>
                                         
                                         {/* Stats Inputs */}
                                         <div className="space-y-1">
-                                          {["strength", "allure", "intellect", "spirit"].map((attr) => (
+                                  {["strength", "allure", "intellect", "spirit"].map((attr) => (
                                             <div key={attr} className="flex items-center gap-1">
                                               <span className={`text-xs w-12 ${getAttributeColor(attr)}`}>
                                                 {attr.charAt(0).toUpperCase()}
                                               </span>
-                                              <Input
-                                                type="number"
+                                      <Input
+                                        type="number"
                                                 placeholder="0"
                                                 className="w-16 h-6 text-xs bg-gray-700 border-gray-600 text-white"
                                                 value={wardenStats[warden.name]?.[attr] || ''}
                                                 onChange={(e) => {
                                                   const value = Number.parseInt(e.target.value) || 0
                                                   setWardenStats(prev => ({
-                                                    ...prev,
+                                            ...prev,
                                                     [warden.name]: {
                                                       ...prev[warden.name],
                                                       [attr]: value
                                                     }
                                                   }))
                                                 }}
-                                              />
-                                            </div>
-                                          ))}
-                                        </div>
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
                                       </div>
                                       
                                       {/* Skins Section */}
@@ -6646,8 +6646,8 @@ export default function GameCalculator() {
                                               </div>
                                             ))}
                                           </div>
-                                        </div>
-                                      )}
+                        </div>
+                      )}
                                     </div>
                                   </CardContent>
                                 </Card>
@@ -6800,13 +6800,13 @@ export default function GameCalculator() {
                             {/* Lover Images - Left Side */}
                             <div className="w-64 h-56 flex-shrink-0 flex">
                               {(() => {
-                                if (bond.lover.includes('/')) {
+                                  if (bond.lover.includes('/')) {
                                   // Show both genders side by side
                                   const names = bond.lover.split('/').map(s => s.trim());
                                   return names.map((name, index) => (
                                     <div key={index} className="w-1/2 h-full flex items-center justify-center">
                                       <img 
-                                        src={`/Gov/Lovers/BaseLovers/${name}.png`}
+                                        src={`/Gov/Lovers/BaseLovers/${name}.PNG`}
                                         alt={name}
                                         className="w-full h-full object-contain"
                                         onError={(e) => {
@@ -6826,19 +6826,19 @@ export default function GameCalculator() {
                                   return (
                                     <div className="w-full h-full flex items-center justify-center">
                                       <img 
-                                        src={`/Gov/Lovers/BaseLovers/${bond.lover}.png`}
-                                        alt={bond.lover}
+                                        src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`}
+                                alt={bond.lover}
                                         className="w-full h-full object-contain"
-                                        onError={(e) => {
-                                          const img = e.target as HTMLImageElement;
+                                onError={(e) => {
+                                  const img = e.target as HTMLImageElement;
                                           // Try .jpg fallback
                                           if (!img.src.includes('.jpg')) {
                                             img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.jpg`;
-                                          } else {
-                                            img.style.display = 'none';
-                                          }
-                                        }}
-                                      />
+                                  } else {
+                                    img.style.display = 'none';
+                                  }
+                                }}
+                              />
                                     </div>
                                   );
                                 }
@@ -6859,17 +6859,17 @@ export default function GameCalculator() {
                                         <span className="text-white font-semibold text-xs">
                                           {bond.warden}
                                         </span>
-                                        {/* Warden Image - Inline with both names */}
-                                        <div className="w-12 h-12 flex-shrink-0">
-                                          <img 
+                                    {/* Warden Image - Inline with both names */}
+                                        <div className="w-20 h-20 flex-shrink-0">
+                                    <img 
                                             src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`}
-                                            alt={bond.warden}
+                                      alt={bond.warden}
                                             className="w-full h-full object-contain"
-                                            onError={(e) => {
-                                              // Fallback if image doesn't exist
-                                              (e.target as HTMLImageElement).style.display = 'none';
-                                            }}
-                                          />
+                                      onError={(e) => {
+                                        // Fallback if image doesn't exist
+                                        (e.target as HTMLImageElement).style.display = 'none';
+                                      }}
+                                    />
                                         </div>
                                       </div>
                                     </div>
@@ -7050,14 +7050,14 @@ export default function GameCalculator() {
 
                  {/* All Items Tab */}
                  <TabsContent value="all" className="mt-4">
-                   <Card className="bg-gray-800/50 border-gray-600">
-                     <CardHeader>
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
                        <CardTitle className="text-green-400">All Items</CardTitle>
-                       <div className="text-sm text-gray-300">
+                  <div className="text-sm text-gray-300">
                          {Object.keys(inventory).length === 0 ? 'No items in inventory' : `${Object.keys(inventory).length} items tracked`}
-                       </div>
-                     </CardHeader>
-                     <CardContent>
+                  </div>
+                </CardHeader>
+                <CardContent>
                        {Object.keys(inventory).length === 0 ? (
                          <div className="text-center text-gray-400 py-8">
                            No items in inventory
@@ -7075,7 +7075,7 @@ export default function GameCalculator() {
                                      e.currentTarget.style.display = 'none'
                                    }}
                                  />
-                                 <div>
+                    <div>
                                    <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
                                  </div>
                                </div>
@@ -7101,12 +7101,12 @@ export default function GameCalculator() {
                                    >
                                      +
                                    </Button>
-                                 </div>
-                               </div>
-                             </div>
+                        </div>
+                      </div>
+                    </div>
                            ))}
-                         </div>
-                       )}
+                      </div>
+                    )}
                      </CardContent>
                    </Card>
                  </TabsContent>
@@ -7132,7 +7132,7 @@ export default function GameCalculator() {
                               />
                               <div>
                                 <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
-                              </div>
+                      </div>
                             </div>
                             <div className="flex items-center space-x-3">
                               <div className="flex items-center space-x-2">
@@ -7190,7 +7190,7 @@ export default function GameCalculator() {
                                         e.currentTarget.style.display = 'none'
                                       }}
                                     />
-                                    <div>
+                        <div>
                                       <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
                                     </div>
                                   </div>
@@ -7204,7 +7204,7 @@ export default function GameCalculator() {
                                         -
                                       </Button>
                                       <input
-                                        type="number"
+                            type="number"
                                         value={inventory[itemName]?.count || 0}
                                         onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
                                         className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
@@ -7255,11 +7255,11 @@ export default function GameCalculator() {
                                     />
                                     <div>
                                       <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
-                                    </div>
-                                  </div>
+                        </div>
+                      </div>
                                   <div className="flex items-center space-x-3">
                                     <div className="flex items-center space-x-2">
-                                      <Button
+                      <Button
                                         size="sm"
                                         onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
                                         className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
@@ -7278,26 +7278,26 @@ export default function GameCalculator() {
                                         className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
                                       >
                                         +
-                                      </Button>
-                                    </div>
+                      </Button>
+                    </div>
                                   </div>
                                 </div>
                               ))}
                             </div>
                           </div>
                         ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  </div>
+                </CardContent>
+              </Card>
                 </TabsContent>
 
                 {/* Familiar Items Tab */}
                 <TabsContent value="familiar" className="mt-4">
-                  <Card className="bg-gray-800/50 border-gray-600">
-                    <CardHeader>
+              <Card className="bg-gray-800/50 border-gray-600">
+                <CardHeader>
                       <CardTitle className="text-green-400">Familiar Items</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                </CardHeader>
+                <CardContent>
                       <div className="space-y-4">
                         {getItemsByCategory('FamiliarItems').map((itemName) => (
                           <div key={itemName} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
@@ -7312,9 +7312,9 @@ export default function GameCalculator() {
                               />
                               <div>
                                 <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
-                              </div>
+                    </div>
                             </div>
-                            <div className="flex items-center space-x-3">
+                          <div className="flex items-center space-x-3">
                               <div className="flex items-center space-x-2">
                                 <Button
                                   size="sm"
@@ -7364,20 +7364,20 @@ export default function GameCalculator() {
                                   <div className="flex items-center space-x-4">
                                     <img 
                                       src={`/InventoryAssets/MiscItems/${itemName}.PNG`} 
-                                      alt={itemName}
+                              alt={itemName}
                                       className="w-16 h-16 object-contain"
-                                      onError={(e) => {
-                                        e.currentTarget.style.display = 'none'
-                                      }}
-                                    />
-                                    <div>
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none'
+                              }}
+                            />
+                            <div>
                                       <div className="text-white font-medium text-lg">{formatItemName(itemName)}</div>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center space-x-3">
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
                                     <div className="flex items-center space-x-2">
-                                      <Button
-                                        size="sm"
+                              <Button
+                                size="sm"
                                         onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
                                         className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
                                       >
@@ -7393,9 +7393,9 @@ export default function GameCalculator() {
                                         size="sm"
                                         onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
                                         className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
-                                      >
-                                        +
-                                      </Button>
+                              >
+                                +
+                              </Button>
                                     </div>
                                   </div>
                                 </div>
@@ -7439,36 +7439,36 @@ export default function GameCalculator() {
                                   </div>
                                   <div className="flex items-center space-x-3">
                                     <div className="flex items-center space-x-2">
-                                      <Button
-                                        size="sm"
+                              <Button
+                                size="sm"
                                         onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
                                         className="bg-red-600 hover:bg-red-700 text-sm px-3 py-2 h-8"
-                                      >
-                                        -
-                                      </Button>
+                              >
+                                -
+                              </Button>
                                       <input
                                         type="number"
                                         value={inventory[itemName]?.count || 0}
                                         onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
                                         className="w-20 text-center text-lg font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-2 py-1"
                                       />
-                                      <Button
-                                        size="sm"
+                              <Button
+                                size="sm"
                                         onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
                                         className="bg-green-600 hover:bg-green-700 text-sm px-3 py-2 h-8"
-                                      >
+                              >
                                         +
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
+                              </Button>
                             </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                           </div>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
+                </CardContent>
+              </Card>
                 </TabsContent>
               </Tabs>
             </div>
