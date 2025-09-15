@@ -3621,9 +3621,6 @@ export default function GameCalculator() {
       const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
       
       switch (wardenName) {
-          bonuses.books.strength += currentBonus
-          bonuses.books.intellect += currentBonus
-          break
         case "Max": // Strength/Spirit Books
           bonuses.books.strength += currentBonus
           bonuses.books.spirit += currentBonus
@@ -3717,9 +3714,6 @@ export default function GameCalculator() {
         const currentBonus = wardenData.baseValue + wardenData.current * wardenData.increment
         
         switch (wardenName) {
-            bonuses.books.strength += currentBonus
-            bonuses.books.intellect += currentBonus
-            break
           case "Max": // Strength/Spirit Books
             bonuses.books.strength += currentBonus
             bonuses.books.spirit += currentBonus
