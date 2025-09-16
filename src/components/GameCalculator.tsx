@@ -1572,6 +1572,21 @@ export default function GameCalculator() {
     } else if (itemName === 'Mystery15(2)') {
       setBooks(prev => ({ ...prev, Balanced: { ...prev.Balanced, "Arcana II": newCount } }))
     }
+    
+    // Map scripts
+    if (itemName === 'StrengthScript') {
+      setTalents(prev => ({ ...prev, strengthScript: { ...prev.strengthScript, count: newCount } as any }))
+    } else if (itemName === 'AllureScript') {
+      setTalents(prev => ({ ...prev, allureScript: { ...prev.allureScript, count: newCount } as any }))
+    } else if (itemName === 'IntellectScript') {
+      setTalents(prev => ({ ...prev, intellectScript: { ...prev.intellectScript, count: newCount } as any }))
+    } else if (itemName === 'SpiritScript') {
+      setTalents(prev => ({ ...prev, spiritScript: { ...prev.spiritScript, count: newCount } as any }))
+    } else if (itemName === 'RandomScroll') {
+      setTalents(prev => ({ ...prev, randomScript: { ...((prev as any).randomScript || {}), count: newCount } as any }))
+    } else if (itemName === 'RandomScriptPart') {
+      setTalents(prev => ({ ...prev, randomScriptPart: { ...((prev as any).randomScriptPart || {}), count: newCount } as any }))
+    }
   }
 
   const updateInventoryItem = (itemName: string, newCount: number) => {
@@ -2287,21 +2302,6 @@ export default function GameCalculator() {
     const savedAutoLoad = localStorage.getItem('autoLoadCloudSaves')
     if (savedAutoLoad !== null) {
       setAutoLoadCloudSaves(JSON.parse(savedAutoLoad))
-    }
-
-    // Map scripts
-    if (itemName === 'StrengthScript') {
-      setTalents(prev => ({ ...prev, strengthScript: { ...prev.strengthScript, count: newCount } as any }))
-    } else if (itemName === 'AllureScript') {
-      setTalents(prev => ({ ...prev, allureScript: { ...prev.allureScript, count: newCount } as any }))
-    } else if (itemName === 'IntellectScript') {
-      setTalents(prev => ({ ...prev, intellectScript: { ...prev.intellectScript, count: newCount } as any }))
-    } else if (itemName === 'SpiritScript') {
-      setTalents(prev => ({ ...prev, spiritScript: { ...prev.spiritScript, count: newCount } as any }))
-    } else if (itemName === 'RandomScroll') {
-      setTalents(prev => ({ ...prev, randomScript: { ...((prev as any).randomScript || {}), count: newCount } as any }))
-    } else if (itemName === 'RandomScriptPart') {
-      setTalents(prev => ({ ...prev, randomScriptPart: { ...((prev as any).randomScriptPart || {}), count: newCount } as any }))
     }
 
     const savedDataPreference = localStorage.getItem('dataLoadPreference')
