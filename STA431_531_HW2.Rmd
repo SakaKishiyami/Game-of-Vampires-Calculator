@@ -1,0 +1,186 @@
+---
+title: "HW2"
+author: "Kaitlin Tabernik"
+date: "2025-09-19"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1: Ohio Exit Poll Analysis
+
+## Given Data
+- Total Ohio residents polled: n = 2020
+- Number who voted for Bush: x = 1030
+
+## (a) i. Proportion who voted for Bush
+
+```{r prob1ai}
+n <- 2020
+x <- 1030
+p_hat <- x / n
+cat("Proportion who voted for Bush: p̂ =", x, "/", n, "=", round(p_hat, 3))
+```
+
+## (a) ii. Null Model Specification
+
+**H0: p = 0.5** (Bush would NOT carry Ohio)  
+**H1: p > 0.5** (Bush WOULD carry Ohio)
+
+## (a) iii. Simulation and P-value
+
+```{r prob1aiii}
+# Exact p-value calculation
+p_value_exact <- 1 - pbinom(x - 1, n, 0.5)
+cat("Exact p-value:", round(p_value_exact, 4))
+
+# Normal approximation
+mu <- n * 0.5
+sigma <- sqrt(n * 0.5 * 0.5)
+z_stat <- (x - mu) / sigma
+p_value_normal <- 1 - pnorm(z_stat)
+cat("\nNormal approximation p-value:", round(p_value_normal, 4))
+
+# Simulation
+set.seed(123)
+simulations <- rbinom(1000, n, 0.5)
+p_value_sim <- mean(simulations >= x)
+cat("\nSimulation p-value (1000 reps):", round(p_value_sim, 4))
+
+cat("\n\nResult: The p-value is", round(p_value_exact, 3), 
+    "which is greater than 0.05, so the result is NOT statistically significant.")
+```
+
+## (a) iv. Confidence Intervals
+
+```{r prob1aiv}
+# Standard error
+se <- sqrt(p_hat * (1 - p_hat) / n)
+
+# 95% CI (5% rejection standard)
+z_95 <- qnorm(0.975)
+ci_95_lower <- p_hat - z_95 * se
+ci_95_upper <- p_hat + z_95 * se
+cat("95% CI:", round(ci_95_lower, 3), "to", round(ci_95_upper, 3))
+
+# 99% CI (1% rejection standard)
+z_99 <- qnorm(0.995)
+ci_99_lower <- p_hat - z_99 * se
+ci_99_upper <- p_hat + z_99 * se
+cat("\n99% CI:", round(ci_99_lower, 3), "to", round(ci_99_upper, 3))
+```
+
+## (b) Formal Hypothesis Test (4C's)
+
+**Context:** Testing whether Bush would carry Ohio based on exit poll data
+
+**Conditions:** 
+```{r prob1b_conditions}
+cat("n × p̂ =", n * p_hat, "≥ 10 ✓")
+cat("\nn × (1-p̂) =", n * (1 - p_hat), "≥ 10 ✓")
+```
+
+**Calculation:**
+```{r prob1b_calc}
+# Test statistic
+z_test <- (p_hat - 0.5) / sqrt(0.5 * 0.5 / n)
+cat("Test statistic: z =", round(z_test, 3))
+cat("\np-value =", round(p_value_exact, 4))
+```
+
+**Conclusion:** Fail to reject H0 at alpha = 0.05. Bush would NOT carry Ohio.
+
+## (c) 90% Confidence Interval
+
+```{r prob1c}
+z_90 <- qnorm(0.95)
+ci_90_lower <- p_hat - z_90 * se
+ci_90_upper <- p_hat + z_90 * se
+cat("90% CI:", round(ci_90_lower, 3), "to", round(ci_90_upper, 3))
+```
+
+## (d) R Confirmation
+
+```{r prob1d}
+# Hypothesis test
+prop_test_result <- prop.test(x, n, p = 0.5, alternative = "greater", conf.level = 0.95)
+print(prop_test_result)
+
+# 90% confidence interval
+prop_test_90 <- prop.test(x, n, conf.level = 0.90)
+cat("\n90% confidence interval:")
+print(prop_test_90$conf.int)
+```
+
+## (e) Type of Error
+
+Since Bush did carry Ohio in 2004, and we failed to reject H0, this would be a **Type II error**.
+
+# Problem 2: Covariance and Variance
+
+## Given:
+- Var(X) = 1
+- Var(Y) = 4  
+- Cov(X,Y) = 1
+- U = 2X - 3Y
+- V = 3X + 2Y
+
+## (a) Cov(U,V)
+
+Cov(U,V) = Cov(2X-3Y, 3X+2Y)  
+= 6*Var(X) + 4*Cov(X,Y) - 9*Cov(X,Y) - 6*Var(Y)  
+= 6*1 + 4*1 - 9*1 - 6*4 = **-23**
+
+## (b) Var(U) and Var(V)
+
+**Var(U) = Var(2X - 3Y)**  
+= 4*Var(X) + 9*Var(Y) - 12*Cov(X,Y)  
+= 4*1 + 9*4 - 12*1 = **28**
+
+**Var(V) = Var(3X + 2Y)**  
+= 9*Var(X) + 4*Var(Y) + 12*Cov(X,Y)  
+= 9*1 + 4*4 + 12*1 = **37**
+
+## (c) rho(U,V)
+
+```{r prob2c}
+cov_uv <- -23
+var_u <- 28
+var_v <- 37
+correlation <- cov_uv / sqrt(var_u * var_v)
+cat("ρ(U,V) =", round(correlation, 3))
+```
+
+# Problem 3: Distribution Identification
+
+## (a) Hospital Births
+- **X:** Number of births in a given day
+- **Distribution:** Poisson
+- **Parameter:** lambda = 1.8 births/hour * 24 hours = 43.2 births/day
+- **PMF:** f(x) = (e^(-43.2) * 43.2^x)/x!
+- **Probability:** P(X > 8) = 1 - P(X <= 8)
+
+## (b) Cross-fertilization
+- **X:** Number of red flowered plants in five offspring
+- **Distribution:** Binomial
+- **Parameters:** n = 5, p = 0.25
+- **PMF:** f(x) = C(5,x) * 0.25^x * 0.75^(5-x)
+- **Probability:** P(X = 0) = 0.75^5
+
+## (c) Oil Drilling
+
+**i. First strike on third well:**
+- **X:** Number of wells drilled until first strike
+- **Distribution:** Geometric
+- **Parameter:** p = 0.20
+- **PMF:** f(x) = (1-p)^(x-1) * p
+- **Probability:** P(X = 3) = 0.8^2 * 0.2
+
+**ii. Third strike on seventh well:**
+- **X:** Number of wells drilled until third strike
+- **Distribution:** Negative Binomial
+- **Parameters:** r = 3, p = 0.20
+- **PMF:** f(x) = C(x-1, r-1) * p^r * (1-p)^(x-r)
+- **Probability:** P(X = 7) = C(6,2) * 0.2^3 * 0.8^4
