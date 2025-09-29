@@ -15,7 +15,7 @@ A comprehensive React-based calculator for the Game of Vampires mobile game. Thi
   - Aura management
   - Individual warden stats
 - **Scarlet Bond**: Bond management with affinity points and attribute bonuses
-- **AI-Powered Inventory**: Upload inventory screenshots and automatically detect items using GPT-4 Vision
+- **OCR Warden Import**: Upload screenshots of warden data for automatic parsing
 
 ## Getting Started
 
@@ -36,20 +36,13 @@ cd game-calculator
 npm install
 ```
 
-3. Set up environment variables:
-   - Create a `.env.local` file in the root directory
-   - Add your OpenAI API key:
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   ```
-   - Get your API key from: https://platform.openai.com/api-keys
 
-4. Run the development server:
+3. Run the development server:
 ```bash
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Usage
 

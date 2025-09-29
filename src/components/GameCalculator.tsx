@@ -262,38 +262,8 @@ export default function GameCalculator() {
   const [isProcessingInventory, setIsProcessingInventory] = useState(false)
   const [inventoryProgress, setInventoryProgress] = useState('')
   const [inventoryError, setInventoryError] = useState<string | null>(null)
+  
 
-  // Extract a region from image data and return as ImageData
-  const extractRegionImageData = (sourceImageData: ImageData, x: number, y: number, width: number, height: number): ImageData | null => {
-    try {
-      // Validate bounds
-      if (x < 0 || y < 0 || x + width > sourceImageData.width || y + height > sourceImageData.height) {
-        console.warn('Region bounds exceed source image dimensions')
-        return null
-      }
-      
-      // Create new image data for the region
-      const regionData = new Uint8ClampedArray(width * height * 4)
-      
-      // Copy pixel data from source to region
-      for (let row = 0; row < height; row++) {
-        for (let col = 0; col < width; col++) {
-          const srcIdx = ((y + row) * sourceImageData.width + (x + col)) * 4
-          const dstIdx = (row * width + col) * 4
-          
-          regionData[dstIdx] = sourceImageData.data[srcIdx]     // R
-          regionData[dstIdx + 1] = sourceImageData.data[srcIdx + 1] // G
-          regionData[dstIdx + 2] = sourceImageData.data[srcIdx + 2] // B
-          regionData[dstIdx + 3] = sourceImageData.data[srcIdx + 3] // A
-        }
-      }
-      
-      return new ImageData(regionData, width, height)
-    } catch (error) {
-      console.warn('Error extracting region image data:', error)
-      return null
-    }
-  }
 
   // Helper function to parse numbers with K/M suffixes
   const parseNumberWithSuffix = (value: string): number => {
@@ -659,9 +629,7 @@ export default function GameCalculator() {
     }
   }
 
-
-
-  // OCR processing function
+  // OCR processing function for warden data import
   const processImageWithOCR = async (file: File): Promise<string> => {
     setOcrProgress('Loading OCR engine...')
     
@@ -684,594 +652,6 @@ export default function GameCalculator() {
     }
   }
 
-  // Inventory image processing and item matching
-  const processInventoryImage = async (file: File): Promise<{
-    matchedItems: { [itemName: string]: number };
-    unmatchedRegions: any[];
-  }> => {
-    setInventoryProgress('Processing inventory image...')
-    
-    try {
-      // Create canvas to analyze the image
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      const img = new Image()
-      
-      return new Promise((resolve, reject) => {
-        img.onload = () => {
-          // Validate image dimensions
-          if (img.width === 0 || img.height === 0 || !img.width || !img.height) {
-            reject(new Error(`Invalid image dimensions: ${img.width}x${img.height}`))
-            return
-          }
-          
-          canvas.width = img.width
-          canvas.height = img.height
-          ctx?.drawImage(img, 0, 0)
-          
-          // Get image data for analysis
-          const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height)
-          if (!imageData) {
-            reject(new Error('Failed to get image data'))
-            return
-          }
-          
-          // Simple template matching approach
-          // This is a basic implementation - you can enhance it with more sophisticated algorithms
-          matchItemsInImage(imageData).then(matchedItems => {
-            resolve({
-              matchedItems,
-              unmatchedRegions: [] // Placeholder for future enhancement
-            })
-          }).catch(reject)
-        }
-        
-        img.onerror = () => reject(new Error('Failed to load image'))
-        img.src = URL.createObjectURL(file)
-      })
-    } finally {
-      setInventoryProgress('')
-    }
-  }
-
-  // Free OCR-based inventory analysis using Tesseract.js
-  const matchItemsInImage = async (imageData: ImageData): Promise<{ [itemName: string]: number }> => {
-    const matchedItems: { [itemName: string]: number } = {}
-    
-    try {
-      console.log('Starting free OCR-based inventory analysis...')
-      
-      // Load GoV assets for template matching
-      const assets = await loadGoVAssets()
-      
-      const { width, height } = imageData
-      
-      // Ignore bottom 1/4 of the image
-      const usableHeight = Math.floor(height * 0.75)
-      
-      // Calculate grid dimensions (5 columns)
-      const numColumns = 5
-      const itemWidth = Math.floor(width / numColumns)
-      const itemHeight = Math.floor(usableHeight / Math.ceil(usableHeight / itemWidth)) // Make items roughly square
-      
-      console.log(`Grid: ${numColumns} columns, item size: ${itemWidth}x${itemHeight}, usable height: ${usableHeight}`)
-      
-      // Create grid regions and analyze each one
-      for (let row = 0; row * itemHeight < usableHeight; row++) {
-        for (let col = 0; col < numColumns; col++) {
-          const x = col * itemWidth
-          const y = row * itemHeight
-          
-          // Skip if this would go outside usable area
-          if (y + itemHeight > usableHeight) break
-          
-          // Add some padding to avoid edges
-          const padding = 5
-          const regionX = x + padding
-          const regionY = y + padding
-          const regionWidth = itemWidth - (padding * 2)
-          const regionHeight = itemHeight - (padding * 2)
-          
-          try {
-            // Extract region image data
-            const regionImageData = extractRegionImageData(imageData, regionX, regionY, regionWidth, regionHeight)
-            if (!regionImageData) continue
-            
-            // Find best matching asset using template matching
-            const bestMatch = await findBestAssetMatch(regionImageData, assets)
-            if (bestMatch) {
-              const { name: itemName, count } = bestMatch
-              matchedItems[itemName] = (matchedItems[itemName] || 0) + count
-              console.log(`Matched ${itemName} at grid position (${row}, ${col}) with count ${count}`)
-            }
-          } catch (error) {
-            console.warn(`Error processing grid position (${row}, ${col}):`, error)
-            continue
-          }
-        }
-      }
-      
-      console.log(`Free OCR analysis found ${Object.keys(matchedItems).length} items:`, matchedItems)
-      
-    } catch (error) {
-      console.error('Error with free OCR analysis:', error)
-    }
-    
-    return matchedItems
-  }
-
-  // Load GoV assets for template matching
-  const loadGoVAssets = async (): Promise<Array<{ name: string; image: HTMLImageElement; data?: ImageData }>> => {
-    console.log('Loading GoV assets...') // Debug log
-    const assetNames = [
-      'AdvancedItemDonation2', 'AdvancedItemDonationPart', 'AdvancedLeague3', 'AffinityArmlet', 'AffinityLvl1', 'AffinityLvl2',
-      'AgneyiToken', 'AlchemyFormula', 'Allure1', 'Allure15(1)', 'Allure15(2)', 'Allure2', 'Allure3', 'Allure4', 'Allure5',
-      'AllureScript', 'AllyFlag', 'AmethystRing1', 'ArenaMedal', 'ArenaTrophy', 'ArenaTrophyPart', 'ArtLoverToken',
-      'Attraction1', 'Attraction2', 'Attraction3', 'Attraction4', 'AzureBouquet2', 'BackgroundFireworks', 'BackgroundWinter',
-      'BangBear', 'BanishmentStandardFlag', 'BanquetFavor', 'BanquetFavor2', 'Bat', 'Bat1', 'Bat100K', 'Bat2', 'Bat3', 'Bat4',
-      'Bat5', 'Bat6', 'Bat7', 'BatRandom', 'Bats5M', 'Beast', 'BlackPearlRing3', 'Blood', 'Blood1', 'Blood100K', 'Blood2',
-      'Blood3', 'Blood4', 'Blood5', 'Blood5M', 'Blood6', 'Blood7', 'BloodMoonEquip', 'BloodMoonMedal', 'BloodMoonRing',
-      'BloodMoonSuit', 'BloodOriginToken', 'BloodRandom', 'ChallengeFlag', 'CharmBottle2', 'CharmBox', 'CharmPhial1',
-      'ChoreExp', 'ChoreTag', 'CircusTicket', 'CircusTicketPart', 'CircusTicketRandomBox', 'CityBadge', 'CityBadgePart',
-      'CityBadgeRandomBox', 'ConclaveStandardFlag', 'ConclaveStandardFlagPart', 'CourtyardLevel', 'CourtyardPoints',
-      'CrateOfDrinks', 'CulannToken', 'DailyAttractionBox', 'DailySecretPack', 'DarkSunEquip', 'DarkSunMedal', 'DarkSunRing',
-      'DarkSunSuit', 'DeluxeGiftBox2', 'Diamond', 'Dominance1', 'Dominance2', 'Dominance3', 'Dominance4', 'DominanceBox',
-      'DraculaVaultStygianCoin', 'DuskMedal', 'DuskRing', 'DuskSuit', 'EffigyOfRobustness', 'ExquisiteSilk',
-      'FallenStarEquip', 'FallenStarMedal', 'FallenStarRing', 'FallenStarSuit', 'FamiliarFood', 'GiftBox1',
-      'GrandBanquetDecor', 'GrandBanquetInvitation', 'GuardianFlag', 'GuildEXPChest1', 'GuildEXPChest2', 'GuildEXPChest3',
-      'GuildEXPChest4', 'GuildWealth', 'HelaToken', 'HuntFlag', 'ImpeccableCashmere', 'IndigoBouquet3', 'Intellect1',
-      'Intellect15(1)', 'Intellect15(2)', 'Intellect2', 'Intellect3', 'Intellect4', 'Intellect5', 'IntellectScript',
-      'InterLeague2', 'Intimacy1', 'Intimacy2', 'Intimacy3', 'Intimacy4', 'IntimacyBag', 'IntimacyCase', 'IntimacyIcon2',
-      'IntimacyPurse', 'Inventoryicon', 'ItemDonation1', 'ItemDonationPart', 'LoudSpeaker', 'LuxuryBanquetDecor',
-      'LuxuryBanquetInvitation', 'MacabrianCoin', 'MacabrianCoinPart', 'MacabrianCoinRandomBox', 'MidnightEquip',
-      'MidnightMedal', 'MidnightRing', 'MidnightSuit', 'MirageMirror', 'MutationPotion1', 'MutationPotion2', 'MutationPotion3',
-      'Mystery1', 'Mystery15(1)', 'Mystery15(2)', 'Mystery2', 'Mystery3', 'Mystery4', 'Mystery5', 'Nectar', 'Nectar1',
-      'Nectar100K', 'Nectar2', 'Nectar3', 'Nectar4', 'Nectar5', 'Nectar5M', 'Nectar6', 'Nectar7', 'NectarRandom',
-      'NewSummonCoin', 'NewSummonCoinPart', 'NightfallEquip', 'NightfallMedal', 'NightfallRing', 'NightfallSuit',
-      'NoviceLeague1', 'Plazma', 'PocketWatch', 'PremiumGiftBox3', 'PressCard', 'Prestige1', 'Prestige2', 'Purple',
-      'RandomRingBox', 'RandomScriptPart', 'RandomScroll', 'RematchFlag', 'RenameCard', 'ResourceCollectorCard',
-      'RingOfChange', 'RoseBouquet1', 'RubyRing2', 'SanctuaryStandardFlag', 'Skill4WIP', 'Skill500', 'Skill5WIP',
-      'Skill6WIP', 'Skill8WIP', 'SkillElixir1', 'SkillElixir2', 'SkillElixir3', 'SkillElixir4', 'SkillElixirRandom100',
-      'SkillElixirRandom1000', 'SkillElixirRandom50', 'SolidarityStandardFlag', 'SophisticatedSatin', 'Spirit1',
-      'Spirit15(1)', 'Spirit15(2)', 'Spirit2', 'Spirit3', 'Spirit4', 'Spirit5', 'SpiritScript', 'Strength1',
-      'Strength15(1)', 'Strength15(2)', 'Strength2', 'Strength3', 'Strength4', 'Strength6', 'StrengthScript',
-      'SupremacyBadge', 'SupremacyBadgePart', 'SupremacyBadgeRandomBox', 'Talent1', 'Talent2', 'Talent3', 'Talent4',
-      'TalentRandom5', 'TalentRandomStar', 'TalentScroll1', 'TalentScroll100', 'TalentScroll1Star', 'TalentScroll2',
-      'TalentScroll200', 'TalentScroll2Star', 'TalentScroll3', 'TalentScroll3Star', 'TalentScroll4', 'TalentScroll4Star',
-      'TalentScroll5', 'TalentScroll50', 'TalentScroll5Star', 'TalentScroll6', 'TalentScroll6Star', 'TalentScroll7',
-      'TourMap', 'TwilightEquip', 'TwilightMedal', 'TwilightRing', 'TwilightSuit', 'ValiantSlate', 'Vito'
-    ]
-    
-    const assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }> = []
-    
-    for (const assetName of assetNames) {
-      try {
-        const image = new Image()
-        image.crossOrigin = 'anonymous'
-        
-        // Create a promise to wait for the image to load
-        await new Promise((resolve, reject) => {
-          image.onload = resolve
-          image.onerror = reject
-          image.src = `/GoVAssets/${assetName}.PNG`
-        })
-        
-        // Validate image dimensions before creating canvas
-        if (image.width === 0 || image.height === 0 || !image.width || !image.height) {
-          console.warn(`Asset ${assetName} has invalid dimensions: ${image.width}x${image.height}`)
-          continue
-        }
-        
-        // Convert image to ImageData for comparison
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')!
-        canvas.width = image.width
-        canvas.height = image.height
-        ctx.drawImage(image, 0, 0)
-        
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        
-        assets.push({
-          name: assetName,
-          image,
-          data: imageData
-        })
-        console.log(`Loaded asset: ${assetName}`) // Debug log
-      } catch (error) {
-        console.warn(`Failed to load asset ${assetName}:`, error)
-      }
-    }
-    
-    console.log(`Total assets loaded: ${assets.length}`) // Debug log
-    return assets
-  }
-
-  // Find the best matching asset for a region and extract count
-  const findBestAssetMatch = async (
-    regionImageData: ImageData, 
-    assets: Array<{ name: string; image: HTMLImageElement; data?: ImageData }>
-  ): Promise<{ name: string; confidence: number; count: number } | null> => {
-    if (assets.length === 0) return null
-    
-    // Validate region dimensions
-    if (!regionImageData || regionImageData.width <= 0 || regionImageData.height <= 0) {
-      console.warn('Invalid region dimensions:', regionImageData)
-      return null
-    }
-    
-    let bestMatch: { name: string; confidence: number; count: number } | null = null
-    let bestConfidence = 0
-    
-    // Extract count number from the region using OCR
-    const count = await extractCountWithOCR(regionImageData)
-    
-    // Compare against each asset
-    for (const asset of assets) {
-      if (!asset.data) continue
-      
-      const confidence = calculateImageSimilarity(regionImageData, asset.data)
-      
-      if (confidence > bestConfidence && confidence > 0.15) { // Lower threshold for free OCR approach
-        bestConfidence = confidence
-        bestMatch = { name: asset.name, confidence, count }
-        console.log(`Matched ${asset.name} with confidence ${confidence.toFixed(3)}`)
-      }
-    }
-    
-    return bestMatch
-  }
-
-  // Preprocess an ImageData for OCR: scale up, grayscale, increase contrast, and threshold
-  const preprocessImageDataForOCR = (source: ImageData): ImageData => {
-    // Scale up to improve OCR accuracy
-    const scaleFactor = 2
-    const scaledWidth = source.width * scaleFactor
-    const scaledHeight = source.height * scaleFactor
-    
-    const tempCanvas = document.createElement('canvas')
-    const tempCtx = tempCanvas.getContext('2d')!
-    tempCanvas.width = scaledWidth
-    tempCanvas.height = scaledHeight
-    
-    // Draw original onto scaled canvas
-    const srcCanvas = document.createElement('canvas')
-    const srcCtx = srcCanvas.getContext('2d')!
-    srcCanvas.width = source.width
-    srcCanvas.height = source.height
-    srcCtx.putImageData(source, 0, 0)
-    tempCtx.imageSmoothingEnabled = false
-    tempCtx.drawImage(srcCanvas, 0, 0, source.width, source.height, 0, 0, scaledWidth, scaledHeight)
-    
-    // Get scaled image data
-    const scaled = tempCtx.getImageData(0, 0, scaledWidth, scaledHeight)
-    const data = scaled.data
-    
-    // Convert to grayscale and increase contrast, then threshold
-    // Contrast factor: 1.4 (0=no change). Threshold ~ 170.
-    const contrast = 1.4
-    const threshold = 170
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i]
-      const g = data[i + 1]
-      const b = data[i + 2]
-      // Luma grayscale
-      let v = Math.round(0.2126 * r + 0.7152 * g + 0.0722 * b)
-      // Contrast around mid-point 128
-      v = Math.min(255, Math.max(0, Math.round((v - 128) * contrast + 128)))
-      // Threshold to binary
-      const bin = v >= threshold ? 255 : 0
-      data[i] = bin
-      data[i + 1] = bin
-      data[i + 2] = bin
-      // keep alpha
-    }
-    
-    return scaled
-  }
-
-  // Extract count using OCR from the bottom right corner
-  const extractCountWithOCR = async (regionImageData: ImageData): Promise<number> => {
-    try {
-      const width = regionImageData.width
-      const height = regionImageData.height
-      
-      // Look at the bottom right corner (last 20% of width and height)
-      const cornerWidth = Math.max(20, Math.floor(width * 0.2))
-      const cornerHeight = Math.max(20, Math.floor(height * 0.2))
-      const cornerX = width - cornerWidth
-      const cornerY = height - cornerHeight
-      
-      // Extract the corner region
-      const cornerData = extractRegionImageData(regionImageData, cornerX, cornerY, cornerWidth, cornerHeight)
-      if (!cornerData) return 1
-      
-      // Preprocess for OCR and convert to image
-      const preprocessed = preprocessImageDataForOCR(cornerData)
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')!
-      canvas.width = preprocessed.width
-      canvas.height = preprocessed.height
-      ctx.putImageData(preprocessed, 0, 0)
-      const imageDataUrl = canvas.toDataURL('image/png')
-      
-      // Dynamically import Tesseract.js to avoid SSR issues
-      const Tesseract = await import('tesseract.js')
-      
-      // Use Tesseract.js for OCR
-      const { data: { text } } = await Tesseract.recognize(imageDataUrl, 'eng', {
-        logger: m => console.log('OCR progress:', m)
-      })
-      
-      // Extract numbers from the text
-      const numbers = text.match(/\d+/g)
-      if (numbers && numbers.length > 0) {
-        const count = parseInt(numbers[0])
-        if (count > 0 && count <= 999) {
-          console.log(`OCR detected count: ${count}`)
-          return count
-        }
-      }
-      
-      return 1
-    } catch (error) {
-      console.warn('OCR failed, using fallback:', error)
-      return extractCountFromRegion(regionImageData)
-    }
-  }
-
-  // Extract count number from a region using conservative approach (fallback)
-  const extractCountFromRegion = (regionImageData: ImageData): number => {
-    const width = regionImageData.width
-    const height = regionImageData.height
-    
-    // Look at the bottom right corner (last 20% of width and height)
-    const cornerWidth = Math.max(10, Math.floor(width * 0.2))
-    const cornerHeight = Math.max(10, Math.floor(height * 0.2))
-    const startX = width - cornerWidth
-    const startY = height - cornerHeight
-    
-    // Extract the corner region
-    const cornerData = new Uint8ClampedArray(cornerWidth * cornerHeight * 4)
-    for (let y = 0; y < cornerHeight; y++) {
-      for (let x = 0; x < cornerWidth; x++) {
-        const srcIdx = ((startY + y) * width + (startX + x)) * 4
-        const dstIdx = (y * cornerWidth + x) * 4
-        cornerData[dstIdx] = regionImageData.data[srcIdx]     // R
-        cornerData[dstIdx + 1] = regionImageData.data[srcIdx + 1] // G
-        cornerData[dstIdx + 2] = regionImageData.data[srcIdx + 2] // B
-        cornerData[dstIdx + 3] = regionImageData.data[srcIdx + 3] // A
-      }
-    }
-    
-    // Simple heuristic: look for bright/white pixels that could be numbers
-    let brightPixels = 0
-    let totalPixels = 0
-    
-    for (let i = 0; i < cornerData.length; i += 4) {
-      const r = cornerData[i]
-      const g = cornerData[i + 1]
-      const b = cornerData[i + 2]
-      const a = cornerData[i + 3]
-      
-      if (a > 128) { // Non-transparent pixel
-        totalPixels++
-        // Check if pixel is bright (could be white/yellow text)
-        if (r > 200 && g > 200 && b > 150) {
-          brightPixels++
-        }
-      }
-    }
-    
-    if (totalPixels === 0) return 1
-    
-    const brightnessRatio = brightPixels / totalPixels
-    
-    // If there are enough bright pixels, try to estimate the number
-    if (brightnessRatio > 0.1) {
-      // Simple estimation based on brightness ratio and corner size
-      const estimatedCount = Math.max(1, Math.floor(brightnessRatio * 20))
-      return Math.min(estimatedCount, 999) // Cap at reasonable number
-    }
-    
-    return 1
-  }
-
-  // Detect number in a specific area of the image
-  const detectNumberInArea = (data: Uint8ClampedArray, width: number, height: number, x: number, y: number, w: number, h: number): number => {
-    // Simple heuristic: look for bright pixels that might form numbers
-    let brightPixels = 0
-    let totalPixels = 0
-    
-    for (let dy = 0; dy < h && y + dy < height; dy++) {
-      for (let dx = 0; dx < w && x + dx < width; dx++) {
-        const idx = ((y + dy) * width + (x + dx)) * 4
-        const r = data[idx]
-        const g = data[idx + 1]
-        const b = data[idx + 2]
-        const alpha = data[idx + 3]
-        
-        if (alpha > 128) { // Not transparent
-          totalPixels++
-          const brightness = (r + g + b) / 3
-          if (brightness > 200) { // Bright pixel (likely text)
-            brightPixels++
-          }
-        }
-      }
-    }
-    
-    if (totalPixels === 0) return 0
-    
-    const brightnessRatio = brightPixels / totalPixels
-    
-    // Estimate number based on brightness ratio and area size
-    if (brightnessRatio > 0.1 && w > 10 && h > 10) {
-      // This is a very rough estimation - in a real implementation,
-      // you'd use actual OCR or more sophisticated pattern recognition
-      const estimatedNumber = Math.min(999, Math.max(1, Math.floor(brightnessRatio * 100)))
-      return estimatedNumber
-    }
-    
-    return 0
-  }
-
-  // Calculate similarity between two images using improved algorithm
-  const calculateImageSimilarity = (img1: ImageData, img2: ImageData): number => {
-    // Resize both images to the same size for comparison
-    const targetSize = 32 // Standardize to 32x32 for comparison
-    const resized1 = resizeImageData(img1, targetSize, targetSize)
-    const resized2 = resizeImageData(img2, targetSize, targetSize)
-    
-    let totalDiff = 0
-    let totalPixels = 0
-    let govAssetPixels = 0
-    
-    for (let y = 0; y < targetSize; y++) {
-      for (let x = 0; x < targetSize; x++) {
-        const idx = (y * targetSize + x) * 4
-        
-        // Only compare pixels where the GoV asset (img1) is NOT transparent
-        // This allows matching transparent GoV assets against colored inventory backgrounds
-        if (resized1.data[idx + 3] < 128) {
-          continue
-        }
-        
-        govAssetPixels++
-        
-        // Compare RGB values with weighted importance
-        const diffR = Math.abs(resized1.data[idx] - resized2.data[idx])
-        const diffG = Math.abs(resized1.data[idx + 1] - resized2.data[idx + 1])
-        const diffB = Math.abs(resized1.data[idx + 2] - resized2.data[idx + 2])
-        
-        // Weight colors differently (green is often more important for game items)
-        const weightedDiff = (diffR * 0.3 + diffG * 0.4 + diffB * 0.3)
-        totalDiff += weightedDiff
-        totalPixels++
-      }
-    }
-    
-    if (totalPixels === 0) return 0
-    
-    // Convert to similarity score (0 = completely different, 1 = identical)
-    const avgDiff = totalDiff / totalPixels
-    const similarity = Math.max(0, 1 - (avgDiff / 255))
-    
-    // Boost similarity based on how much of the GoV asset we could compare
-    const coverageBonus = Math.min(1, govAssetPixels / (targetSize * targetSize * 0.1))
-    
-    return (similarity * 0.9 + coverageBonus * 0.1)
-  }
-
-  // Helper function to resize ImageData
-  const resizeImageData = (imageData: ImageData, newWidth: number, newHeight: number): ImageData => {
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')!
-    canvas.width = newWidth
-    canvas.height = newHeight
-    
-    // Create a temporary canvas with original image
-    const tempCanvas = document.createElement('canvas')
-    const tempCtx = tempCanvas.getContext('2d')!
-    tempCanvas.width = imageData.width
-    tempCanvas.height = imageData.height
-    tempCtx.putImageData(imageData, 0, 0)
-    
-    // Draw resized image
-    ctx.drawImage(tempCanvas, 0, 0, newWidth, newHeight)
-    
-    return ctx.getImageData(0, 0, newWidth, newHeight)
-  }
-
-  // Basic edge detection (simplified)
-  const detectEdges = (data: Uint8ClampedArray, width: number, height: number): Uint8ClampedArray => {
-    const edges = new Uint8ClampedArray(data.length)
-    
-    for (let y = 1; y < height - 1; y++) {
-      for (let x = 1; x < width - 1; x++) {
-        const idx = (y * width + x) * 4
-        
-        // Simple Sobel edge detection
-        const gx = Math.abs(data[idx + 4] - data[idx - 4]) + 
-                   Math.abs(data[idx + 4 + width * 4] - data[idx - 4 + width * 4])
-        const gy = Math.abs(data[idx + width * 4] - data[idx - width * 4]) + 
-                   Math.abs(data[idx + 4 + width * 4] - data[idx - 4 + width * 4])
-        
-        const magnitude = Math.sqrt(gx * gx + gy * gy)
-        const edgeValue = magnitude > 50 ? 255 : 0
-        
-        edges[idx] = edgeValue
-        edges[idx + 1] = edgeValue
-        edges[idx + 2] = edgeValue
-        edges[idx + 3] = 255
-      }
-    }
-    
-    return edges
-  }
-
-  // Find potential item regions in the image
-  const findPotentialItemRegions = (edges: Uint8ClampedArray, width: number, height: number): any[] => {
-    const regions: any[] = []
-    const visited = new Set<number>()
-    
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = y * width + x
-        if (edges[idx * 4] > 0 && !visited.has(idx)) {
-          // Found an edge pixel, flood fill to find the region
-          const region = floodFill(edges, width, height, x, y, visited)
-          const regionWidth = region.maxX - region.minX
-          const regionHeight = region.maxY - region.minY
-          
-          // Only add regions with valid dimensions and item-like characteristics
-          if (region.pixels.length > 100 && regionWidth > 0 && regionHeight > 0 && 
-              regionWidth >= 15 && regionHeight >= 15 && 
-              regionWidth <= 300 && regionHeight <= 300) {
-            regions.push({
-              id: regions.length,
-              x: region.minX,
-              y: region.minY,
-              width: regionWidth,
-              height: regionHeight,
-              pixels: region.pixels
-            })
-          }
-        }
-      }
-    }
-    
-    return regions
-  }
-
-  // Flood fill algorithm to find connected regions
-  const floodFill = (edges: Uint8ClampedArray, width: number, height: number, startX: number, startY: number, visited: Set<number>) => {
-    const stack: [number, number][] = [[startX, startY]]
-    const pixels: [number, number][] = []
-    let minX = startX, maxX = startX, minY = startY, maxY = startY
-    
-    while (stack.length > 0) {
-      const [x, y] = stack.pop()!
-      const idx = y * width + x
-      
-      if (x < 0 || x >= width || y < 0 || y >= height || visited.has(idx) || edges[idx * 4] === 0) {
-        continue
-      }
-      
-      visited.add(idx)
-      pixels.push([x, y])
-      
-      minX = Math.min(minX, x)
-      maxX = Math.max(maxX, x)
-      minY = Math.min(minY, y)
-      maxY = Math.max(maxY, y)
-      
-      // Add neighboring pixels to stack
-      stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1])
-    }
-    
-    return { pixels, minX, maxX, minY, maxY }
-  }
-
   // Handle inventory image upload
   const handleInventoryImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -1289,27 +669,22 @@ export default function GameCalculator() {
         setInventoryProgress(`Processing image ${i + 1}/${files.length}: ${file.name}`)
         
         try {
-          const result = await processInventoryImage(file)
-          console.log('Processing result:', result) // Debug log
+          // For now, just add the image to inventoryImages without AI processing
+          const imageUrl = URL.createObjectURL(file)
+          const itemName = file.name.replace(/\.[^/.]+$/, "") // Remove file extension
           
-          // Update inventory with matched items
-          Object.entries(result.matchedItems).forEach(([itemName, count]) => {
-            if (newInventory[itemName]) {
-              newInventory[itemName].count += count
-              newInventory[itemName].lastUpdated = new Date().toISOString()
-            } else {
-              newInventory[itemName] = {
-                count,
-                lastUpdated: new Date().toISOString()
-              }
+          setInventoryImages(prev => ({
+            ...prev,
+            [itemName]: imageUrl
+          }))
+          
+          // Add to inventory if not already present
+          if (!newInventory[itemName]) {
+            newInventory[itemName] = {
+              count: 1,
+              lastUpdated: new Date().toISOString()
             }
-            
-            // Set the GoV asset image URL for each matched item
-            setInventoryImages(prev => ({
-              ...prev,
-              [itemName]: `/GoVAssets/${itemName}.PNG`
-            }))
-          })
+          }
           
         } catch (error) {
           console.error(`Failed to process ${file.name}:`, error)
@@ -1689,11 +1064,6 @@ export default function GameCalculator() {
       return newInventory
     })
     
-    setInventoryImages(prev => {
-      const newImages = { ...prev }
-      delete newImages[itemName]
-      return newImages
-    })
   }
 
   // Helper function to group items by type (for better organization)
@@ -2041,6 +1411,7 @@ export default function GameCalculator() {
       optimizedBondLevels,
       talents,
       inventory,
+      inventoryImages,
       timestamp: new Date().toISOString()
     }
     
@@ -2140,6 +1511,7 @@ export default function GameCalculator() {
           }
         })
         setInventory(parsedData.inventory || {})
+        setInventoryImages(parsedData.inventoryImages || {})
         
         alert(`Data loaded successfully! (Saved: ${new Date(parsedData.timestamp).toLocaleString()})`)
       } else {
@@ -2683,6 +2055,7 @@ export default function GameCalculator() {
           setScarletBondAffinity(parsedData.scarletBondAffinity || {})
           setOptimizedBondLevels(parsedData.optimizedBondLevels || {})
           setInventory(parsedData.inventory || {})
+          setInventoryImages(parsedData.inventoryImages || {})
         }
       }
     } catch (error) {
@@ -7478,6 +6851,40 @@ export default function GameCalculator() {
                   <TabsTrigger value="warden-equip" className="data-[state=active]:bg-red-600">Warden Equipment</TabsTrigger>
                 </TabsList>
 
+                {/* Inventory Image Upload */}
+                <Card className="bg-gray-800/50 border-gray-600 mt-4">
+                  <CardHeader>
+                    <CardTitle className="text-blue-400">📸 Upload Inventory Images</CardTitle>
+                    <div className="text-sm text-gray-300">
+                      Upload images of your inventory items to track them visually
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <input
+                          type="file"
+                          multiple
+                          accept=".png,.jpg,.jpeg"
+                          onChange={handleInventoryImageUpload}
+                          disabled={isProcessingInventory}
+                          className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
+                        />
+                      </div>
+                      {isProcessingInventory && (
+                        <div className="text-yellow-400">
+                          {inventoryProgress || "Processing images..."}
+                        </div>
+                      )}
+                      {inventoryError && (
+                        <div className="text-red-400 text-sm">
+                          {inventoryError}
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
                  {/* All Items Tab */}
                  <TabsContent value="all" className="mt-4">
               <Card className="bg-gray-800/50 border-gray-600">
@@ -7497,7 +6904,7 @@ export default function GameCalculator() {
                            {Object.entries(inventory).map(([itemName, itemData]) => (
                              <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                                <img
-                                 src={`/InventoryAssets/${getItemCategory(itemName)}/${itemName}.PNG`}
+                                 src={inventoryImages[itemName] || `/InventoryAssets/${getItemCategory(itemName)}/${itemName}.PNG`}
                                  alt={itemName}
                                  className="w-20 h-20 object-contain"
                                  onError={(e) => {
