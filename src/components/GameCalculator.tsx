@@ -652,6 +652,193 @@ export default function GameCalculator() {
     }
   }
 
+  // Preprocess an ImageData for OCR: scale up, grayscale, increase contrast, and threshold
+  const preprocessImageDataForOCR = (source: ImageData): ImageData => {
+    // Scale up to improve OCR accuracy
+    const scaleFactor = 2
+    const scaledWidth = source.width * scaleFactor
+    const scaledHeight = source.height * scaleFactor
+    
+    const tempCanvas = document.createElement('canvas')
+    const tempCtx = tempCanvas.getContext('2d')!
+    tempCanvas.width = scaledWidth
+    tempCanvas.height = scaledHeight
+    
+    // Draw original onto scaled canvas
+    const srcCanvas = document.createElement('canvas')
+    const srcCtx = srcCanvas.getContext('2d')!
+    srcCanvas.width = source.width
+    srcCanvas.height = source.height
+    srcCtx.putImageData(source, 0, 0)
+    tempCtx.imageSmoothingEnabled = false
+    tempCtx.drawImage(srcCanvas, 0, 0, source.width, source.height, 0, 0, scaledWidth, scaledHeight)
+    
+    // Get scaled image data
+    const scaled = tempCtx.getImageData(0, 0, scaledWidth, scaledHeight)
+    const data = scaled.data
+    
+    // Convert to grayscale and increase contrast, then threshold
+    // Contrast factor: 1.4 (0=no change). Threshold ~ 170.
+    const contrast = 1.4
+    const threshold = 170
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i]
+      const g = data[i + 1]
+      const b = data[i + 2]
+      // Luma grayscale
+      let v = Math.round(0.2126 * r + 0.7152 * g + 0.0722 * b)
+      // Contrast around mid-point 128
+      v = Math.min(255, Math.max(0, Math.round((v - 128) * contrast + 128)))
+      // Threshold to binary
+      const bin = v >= threshold ? 255 : 0
+      data[i] = bin
+      data[i + 1] = bin
+      data[i + 2] = bin
+      // keep alpha
+    }
+    
+    return scaled
+  }
+
+  // Extract count using OCR from the bottom right corner
+  const extractCountWithOCR = async (regionImageData: ImageData): Promise<number> => {
+    try {
+      const width = regionImageData.width
+      const height = regionImageData.height
+      
+      // Look at the bottom right corner (last 20% of width and height)
+      const cornerWidth = Math.max(20, Math.floor(width * 0.2))
+      const cornerHeight = Math.max(20, Math.floor(height * 0.2))
+      const cornerX = width - cornerWidth
+      const cornerY = height - cornerHeight
+      
+      // Extract the corner region
+      const cornerData = extractRegionImageData(regionImageData, cornerX, cornerY, cornerWidth, cornerHeight)
+      if (!cornerData) return 1
+      
+      // Preprocess for OCR and convert to image
+      const preprocessed = preprocessImageDataForOCR(cornerData)
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')!
+      canvas.width = preprocessed.width
+      canvas.height = preprocessed.height
+      ctx.putImageData(preprocessed, 0, 0)
+      const imageDataUrl = canvas.toDataURL('image/png')
+      
+      // Dynamically import Tesseract.js to avoid SSR issues
+      const Tesseract = await import('tesseract.js')
+      
+      // Use Tesseract.js for OCR
+      const { data: { text } } = await Tesseract.recognize(imageDataUrl, 'eng', {
+        logger: m => console.log('OCR progress:', m)
+      })
+      
+      // Extract numbers from the text
+      const numbers = text.match(/\d+/g)
+      if (numbers && numbers.length > 0) {
+        const count = parseInt(numbers[0])
+        if (count > 0 && count <= 999) {
+          console.log(`OCR detected count: ${count}`)
+          return count
+        }
+      }
+      
+      return 1
+    } catch (error) {
+      console.warn('OCR failed, using fallback:', error)
+      return extractCountFromRegion(regionImageData)
+    }
+  }
+
+  // Extract count number from a region using conservative approach (fallback)
+  const extractCountFromRegion = (regionImageData: ImageData): number => {
+    const width = regionImageData.width
+    const height = regionImageData.height
+    
+    // Look at the bottom right corner (last 20% of width and height)
+    const cornerWidth = Math.max(10, Math.floor(width * 0.2))
+    const cornerHeight = Math.max(10, Math.floor(height * 0.2))
+    const startX = width - cornerWidth
+    const startY = height - cornerHeight
+    
+    // Extract the corner region
+    const cornerData = new Uint8ClampedArray(cornerWidth * cornerHeight * 4)
+    for (let y = 0; y < cornerHeight; y++) {
+      for (let x = 0; x < cornerWidth; x++) {
+        const srcIdx = ((startY + y) * width + (startX + x)) * 4
+        const dstIdx = (y * cornerWidth + x) * 4
+        cornerData[dstIdx] = regionImageData.data[srcIdx]     // R
+        cornerData[dstIdx + 1] = regionImageData.data[srcIdx + 1] // G
+        cornerData[dstIdx + 2] = regionImageData.data[srcIdx + 2] // B
+        cornerData[dstIdx + 3] = regionImageData.data[srcIdx + 3] // A
+      }
+    }
+    
+    // Simple heuristic: look for bright/white pixels that could be numbers
+    let brightPixels = 0
+    let totalPixels = 0
+    
+    for (let i = 0; i < cornerData.length; i += 4) {
+      const r = cornerData[i]
+      const g = cornerData[i + 1]
+      const b = cornerData[i + 2]
+      const a = cornerData[i + 3]
+      
+      if (a > 128) { // Non-transparent pixel
+        totalPixels++
+        // Check if pixel is bright (could be white/yellow text)
+        if (r > 200 && g > 200 && b > 150) {
+          brightPixels++
+        }
+      }
+    }
+    
+    if (totalPixels === 0) return 1
+    
+    const brightnessRatio = brightPixels / totalPixels
+    
+    // If there are enough bright pixels, try to estimate the number
+    if (brightnessRatio > 0.1) {
+      // Simple estimation based on brightness ratio and corner size
+      const estimatedCount = Math.max(1, Math.floor(brightnessRatio * 20))
+      return Math.min(estimatedCount, 999) // Cap at reasonable number
+    }
+    
+    return 1
+  }
+
+  // Extract a region from image data and return as ImageData
+  const extractRegionImageData = (sourceImageData: ImageData, x: number, y: number, width: number, height: number): ImageData | null => {
+    try {
+      // Validate bounds
+      if (x < 0 || y < 0 || x + width > sourceImageData.width || y + height > sourceImageData.height) {
+        console.warn('Region bounds exceed source image dimensions')
+        return null
+      }
+      
+      // Create new image data for the region
+      const regionData = new Uint8ClampedArray(width * height * 4)
+      
+      // Copy pixel data from source to region
+      for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
+          const srcIdx = ((y + row) * sourceImageData.width + (x + col)) * 4
+          const dstIdx = (row * width + col) * 4
+          
+          regionData[dstIdx] = sourceImageData.data[srcIdx]     // R
+          regionData[dstIdx + 1] = sourceImageData.data[srcIdx + 1] // G
+          regionData[dstIdx + 2] = sourceImageData.data[srcIdx + 2] // B
+          regionData[dstIdx + 3] = sourceImageData.data[srcIdx + 3] // A
+        }
+      }
+      
+      return new ImageData(regionData, width, height)
+    } catch (error) {
+      console.warn('Error extracting region image data:', error)
+      return null
+    }
+  }
+
   // Handle inventory image upload
   const handleInventoryImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
