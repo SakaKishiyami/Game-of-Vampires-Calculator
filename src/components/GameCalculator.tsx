@@ -263,8 +263,6 @@ export default function GameCalculator() {
   const [inventoryProgress, setInventoryProgress] = useState('')
   const [inventoryError, setInventoryError] = useState<string | null>(null)
   
-
-
   // Helper function to parse numbers with K/M suffixes
   const parseNumberWithSuffix = (value: string): number => {
     const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()
@@ -2391,6 +2389,12 @@ export default function GameCalculator() {
                     'intellectLevel', 'intellectPercent', 'spiritLevel', 'spiritPercent')
     }
     
+    // If warden has "Balance" type, add all attributes equally
+    if (wardenData.some(attr => attr === 'Balance')) {
+      bondTypes.push('strengthLevel', 'strengthPercent', 'allureLevel', 'allurePercent', 
+                    'intellectLevel', 'intellectPercent', 'spiritLevel', 'spiritPercent')
+    }
+    
     // Track temp levels to allow multi-level upgrades in a single run
     const tempCurrentLevels: Record<string, number> = {}
     bondTypes.forEach(bondType => {
@@ -2511,6 +2515,12 @@ export default function GameCalculator() {
     
     // If warden has "All" type, add all attributes
     if (wardenData.some(attr => attr === 'All')) {
+      bondTypes.push('strengthLevel', 'strengthPercent', 'allureLevel', 'allurePercent', 
+                    'intellectLevel', 'intellectPercent', 'spiritLevel', 'spiritPercent')
+    }
+    
+    // If warden has "Balance" type, add all attributes equally
+    if (wardenData.some(attr => attr === 'Balance')) {
       bondTypes.push('strengthLevel', 'strengthPercent', 'allureLevel', 'allurePercent', 
                     'intellectLevel', 'intellectPercent', 'spiritLevel', 'spiritPercent')
     }
