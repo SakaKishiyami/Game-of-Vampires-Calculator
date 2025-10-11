@@ -23,6 +23,29 @@ import UserMenu from "@/components/UserMenu"
 import { getCurrentUser, supabase } from "@/lib/supabase"
 
 export default function GameCalculator() {
+  // Helper function to handle number input changes
+  const handleNumberInputChange = (value: string, setter: (value: number) => void) => {
+    // Allow empty string, only convert to number on blur or when doing calculations
+    if (value === '' || value === '-') {
+      return // Keep as string for now
+    }
+    const numValue = parseInt(value) || 0
+    setter(numValue)
+  }
+
+  // Helper function to get display value (show empty string if 0, otherwise show the number)
+  const getDisplayValue = (value: number): string => {
+    return value === 0 ? '' : value.toString()
+  }
+
+  // Helper function to get calculation value (treat empty as 0)
+  const getCalculationValue = (value: string | number): number => {
+    if (typeof value === 'string') {
+      return value === '' ? 0 : parseInt(value) || 0
+    }
+    return value || 0
+  }
+
   // Base attributes
   const [baseAttributes, setBaseAttributes] = useState({
     strength: 0,
@@ -4412,8 +4435,20 @@ export default function GameCalculator() {
                 type="number"
                 min="0"
                 max="12"
-                value={vipLevel}
-                onChange={(e) => setVipLevel(Number.parseInt(e.target.value) || 0)}
+                value={getDisplayValue(vipLevel)}
+                onChange={(e) => {
+                  const value = e.target.value
+                  if (value === '' || value === '-') {
+                    return
+                  }
+                  const numValue = parseInt(value) || 0
+                  setVipLevel(numValue)
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value
+                  const numValue = value === '' ? 0 : parseInt(value) || 0
+                  setVipLevel(numValue)
+                }}
                 className="w-20 bg-gray-800 border-gray-600 text-white"
               />
             </div>
@@ -4494,13 +4529,27 @@ export default function GameCalculator() {
                   <Label className={`capitalize ${getAttributeColor(attr)}`}>{attr}</Label>
                   <Input
                     type="number"
-                    value={baseAttributes[attr]}
-                    onChange={(e) =>
+                    value={getDisplayValue(baseAttributes[attr])}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      if (value === '' || value === '-') {
+                        // Allow empty or minus sign, don't update state yet
+                        return
+                      }
+                      const numValue = parseInt(value) || 0
                       setBaseAttributes((prev) => ({
                         ...prev,
-                        [attr]: Number.parseInt(e.target.value) || 0,
+                        [attr]: numValue,
                       }))
-                    }
+                    }}
+                    onBlur={(e) => {
+                      const value = e.target.value
+                      const numValue = value === '' ? 0 : parseInt(value) || 0
+                      setBaseAttributes((prev) => ({
+                        ...prev,
+                        [attr]: numValue,
+                      }))
+                    }}
                     className="mt-2 bg-gray-700 border-gray-600 text-white"
                   />
                   <div className="text-sm text-gray-400 mt-1">
@@ -5026,13 +5075,26 @@ export default function GameCalculator() {
                           <Label className="text-white">{seal}</Label>
                           <Input
                             type="number"
-                            value={level}
-                            onChange={(e) =>
+                            value={getDisplayValue(level)}
+                            onChange={(e) => {
+                              const value = e.target.value
+                              if (value === '' || value === '-') {
+                                return
+                              }
+                              const numValue = parseInt(value) || 0
                               setConclave((prev) => ({
                                 ...prev,
-                                [seal]: Number.parseInt(e.target.value) || 0,
+                                [seal]: numValue,
                               }))
-                            }
+                            }}
+                            onBlur={(e) => {
+                              const value = e.target.value
+                              const numValue = value === '' ? 0 : parseInt(value) || 0
+                              setConclave((prev) => ({
+                                ...prev,
+                                [seal]: numValue,
+                              }))
+                            }}
                             className="mt-2 bg-gray-700 border-gray-600 text-white"
                           />
                         </div>
@@ -5053,13 +5115,26 @@ export default function GameCalculator() {
                       <Label className="text-white">Saved Conclave Seals</Label>
                       <Input
                         type="number"
-                        value={conclaveUpgrade.savedSeals}
-                        onChange={(e) =>
+                        value={getDisplayValue(conclaveUpgrade.savedSeals)}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          if (value === '' || value === '-') {
+                            return
+                          }
+                          const numValue = parseInt(value) || 0
                           setConclaveUpgrade((prev) => ({
                             ...prev,
-                            savedSeals: Number.parseInt(e.target.value) || 0,
+                            savedSeals: numValue,
                           }))
-                        }
+                        }}
+                        onBlur={(e) => {
+                          const value = e.target.value
+                          const numValue = value === '' ? 0 : parseInt(value) || 0
+                          setConclaveUpgrade((prev) => ({
+                            ...prev,
+                            savedSeals: numValue,
+                          }))
+                        }}
                         className="mt-2 bg-gray-700 border-gray-600 text-white"
                       />
                     </div>
@@ -5179,13 +5254,26 @@ export default function GameCalculator() {
                     <Label className="text-white">Current Points</Label>
                     <Input
                       type="number"
-                      value={courtyard.currentPoints}
-                      onChange={(e) =>
+                      value={getDisplayValue(courtyard.currentPoints)}
+                      onChange={(e) => {
+                        const value = e.target.value
+                        if (value === '' || value === '-') {
+                          return
+                        }
+                        const numValue = parseInt(value) || 0
                         setCourtyard((prev) => ({
                           ...prev,
-                          currentPoints: Number.parseInt(e.target.value) || 0,
+                          currentPoints: numValue,
                         }))
-                      }
+                      }}
+                      onBlur={(e) => {
+                        const value = e.target.value
+                        const numValue = value === '' ? 0 : parseInt(value) || 0
+                        setCourtyard((prev) => ({
+                          ...prev,
+                          currentPoints: numValue,
+                        }))
+                      }}
                       className="mt-2 bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
@@ -5229,9 +5317,25 @@ export default function GameCalculator() {
                               <Label className="text-white text-sm">{bookName}</Label>
                               <Input
                                 type="number"
-                                value={count}
+                                value={getDisplayValue(count)}
                                 onChange={(e) => {
-                                  const newCount = Number.parseInt(e.target.value) || 0
+                                  const value = e.target.value
+                                  if (value === '' || value === '-') {
+                                    return
+                                  }
+                                  const newCount = parseInt(value) || 0
+                                  setBooks((prev) => ({
+                                    ...prev,
+                                    [category]: {
+                                      ...prev[category as keyof BooksState],
+                                      [bookName]: newCount,
+                                    },
+                                  }))
+                                  syncBooksToInventory(category, bookName, newCount)
+                                }}
+                                onBlur={(e) => {
+                                  const value = e.target.value
+                                  const newCount = value === '' ? 0 : parseInt(value) || 0
                                   setBooks((prev) => ({
                                     ...prev,
                                     [category]: {
@@ -5275,9 +5379,22 @@ export default function GameCalculator() {
                         <Label className="text-gray-300">Random Talent Scroll (5-1000 exp)</Label>
                         <Input
                           type="number"
-                          value={talents.randomTalentScroll.count}
+                          value={getDisplayValue(talents.randomTalentScroll.count)}
                           onChange={(e) => {
-                            const newCount = parseInt(e.target.value) || 0
+                            const value = e.target.value
+                            if (value === '' || value === '-') {
+                              return
+                            }
+                            const newCount = parseInt(value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              randomTalentScroll: { ...prev.randomTalentScroll, count: newCount }
+                            }))
+                            syncTalentsToInventory('randomTalentScroll', newCount)
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.value
+                            const newCount = value === '' ? 0 : parseInt(value) || 0
                             setTalents(prev => ({
                               ...prev,
                               randomTalentScroll: { ...prev.randomTalentScroll, count: newCount }
@@ -5294,9 +5411,22 @@ export default function GameCalculator() {
                         <Label className="text-gray-300">Talent Scroll Lvl 4 (41-80 exp)</Label>
                         <Input
                           type="number"
-                          value={talents.talentScrollLvl4.count}
+                          value={getDisplayValue(talents.talentScrollLvl4.count)}
                           onChange={(e) => {
-                            const newCount = parseInt(e.target.value) || 0
+                            const value = e.target.value
+                            if (value === '' || value === '-') {
+                              return
+                            }
+                            const newCount = parseInt(value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount }
+                            }))
+                            syncTalentsToInventory('talentScrollLvl4', newCount)
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.value
+                            const newCount = value === '' ? 0 : parseInt(value) || 0
                             setTalents(prev => ({
                               ...prev,
                               talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount }
@@ -5313,9 +5443,22 @@ export default function GameCalculator() {
                         <Label className="text-gray-300">Talent Scroll Lvl 3 (21-40 exp)</Label>
                         <Input
                           type="number"
-                          value={talents.talentScrollLvl3.count}
+                          value={getDisplayValue(talents.talentScrollLvl3.count)}
                           onChange={(e) => {
-                            const newCount = parseInt(e.target.value) || 0
+                            const value = e.target.value
+                            if (value === '' || value === '-') {
+                              return
+                            }
+                            const newCount = parseInt(value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              talentScrollLvl3: { ...prev.talentScrollLvl3, count: newCount }
+                            }))
+                            syncTalentsToInventory('talentScrollLvl3', newCount)
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.value
+                            const newCount = value === '' ? 0 : parseInt(value) || 0
                             setTalents(prev => ({
                               ...prev,
                               talentScrollLvl3: { ...prev.talentScrollLvl3, count: newCount }
@@ -5332,9 +5475,22 @@ export default function GameCalculator() {
                         <Label className="text-gray-300">Talent Scroll Lvl 2 (6-20 exp)</Label>
                         <Input
                           type="number"
-                          value={talents.talentScrollLvl2.count}
+                          value={getDisplayValue(talents.talentScrollLvl2.count)}
                           onChange={(e) => {
-                            const newCount = parseInt(e.target.value) || 0
+                            const value = e.target.value
+                            if (value === '' || value === '-') {
+                              return
+                            }
+                            const newCount = parseInt(value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              talentScrollLvl2: { ...prev.talentScrollLvl2, count: newCount }
+                            }))
+                            syncTalentsToInventory('talentScrollLvl2', newCount)
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.value
+                            const newCount = value === '' ? 0 : parseInt(value) || 0
                             setTalents(prev => ({
                               ...prev,
                               talentScrollLvl2: { ...prev.talentScrollLvl2, count: newCount }
@@ -5351,9 +5507,22 @@ export default function GameCalculator() {
                         <Label className="text-gray-300">Talent Scroll Lvl 1 (1-5 exp)</Label>
                         <Input
                           type="number"
-                          value={talents.talentScrollLvl1.count}
+                          value={getDisplayValue(talents.talentScrollLvl1.count)}
                           onChange={(e) => {
-                            const newCount = parseInt(e.target.value) || 0
+                            const value = e.target.value
+                            if (value === '' || value === '-') {
+                              return
+                            }
+                            const newCount = parseInt(value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              talentScrollLvl1: { ...prev.talentScrollLvl1, count: newCount }
+                            }))
+                            syncTalentsToInventory('talentScrollLvl1', newCount)
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.value
+                            const newCount = value === '' ? 0 : parseInt(value) || 0
                             setTalents(prev => ({
                               ...prev,
                               talentScrollLvl1: { ...prev.talentScrollLvl1, count: newCount }
@@ -5376,9 +5545,22 @@ export default function GameCalculator() {
                         <Label className="text-gray-300">Basic Talent Scroll (50 exp)</Label>
                         <Input
                           type="number"
-                          value={talents.basicTalentScroll.count}
+                          value={getDisplayValue(talents.basicTalentScroll.count)}
                           onChange={(e) => {
-                            const newCount = parseInt(e.target.value) || 0
+                            const value = e.target.value
+                            if (value === '' || value === '-') {
+                              return
+                            }
+                            const newCount = parseInt(value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              basicTalentScroll: { ...prev.basicTalentScroll, count: newCount }
+                            }))
+                            syncTalentsToInventory('basicTalentScroll', newCount)
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.value
+                            const newCount = value === '' ? 0 : parseInt(value) || 0
                             setTalents(prev => ({
                               ...prev,
                               basicTalentScroll: { ...prev.basicTalentScroll, count: newCount }
@@ -5394,9 +5576,22 @@ export default function GameCalculator() {
                         <Label className="text-gray-300">Fine Talent Scroll (100 exp)</Label>
                         <Input
                           type="number"
-                          value={talents.fineTalentScroll.count}
+                          value={getDisplayValue(talents.fineTalentScroll.count)}
                           onChange={(e) => {
-                            const newCount = parseInt(e.target.value) || 0
+                            const value = e.target.value
+                            if (value === '' || value === '-') {
+                              return
+                            }
+                            const newCount = parseInt(value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              fineTalentScroll: { ...prev.fineTalentScroll, count: newCount }
+                            }))
+                            syncTalentsToInventory('fineTalentScroll', newCount)
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.value
+                            const newCount = value === '' ? 0 : parseInt(value) || 0
                             setTalents(prev => ({
                               ...prev,
                               fineTalentScroll: { ...prev.fineTalentScroll, count: newCount }
@@ -5412,9 +5607,22 @@ export default function GameCalculator() {
                         <Label className="text-gray-300">Superior Talent Scroll (200 exp)</Label>
                         <Input
                           type="number"
-                          value={talents.superiorTalentScroll.count}
+                          value={getDisplayValue(talents.superiorTalentScroll.count)}
                           onChange={(e) => {
-                            const newCount = parseInt(e.target.value) || 0
+                            const value = e.target.value
+                            if (value === '' || value === '-') {
+                              return
+                            }
+                            const newCount = parseInt(value) || 0
+                            setTalents(prev => ({
+                              ...prev,
+                              superiorTalentScroll: { ...prev.superiorTalentScroll, count: newCount }
+                            }))
+                            syncTalentsToInventory('superiorTalentScroll', newCount)
+                          }}
+                          onBlur={(e) => {
+                            const value = e.target.value
+                            const newCount = value === '' ? 0 : parseInt(value) || 0
                             setTalents(prev => ({
                               ...prev,
                               superiorTalentScroll: { ...prev.superiorTalentScroll, count: newCount }
@@ -5636,11 +5844,26 @@ export default function GameCalculator() {
                                   <Label className="text-gray-300">Number of Attempts:</Label>
                                   <Input
                                     type="number"
-                                    value={script.quantity}
-                                    onChange={(e) => setTalents(prev => ({
-                                      ...prev,
-                                      [scriptKey]: { ...prev[scriptKey], quantity: parseInt(e.target.value) || 0 }
-                                    }))}
+                                    value={getDisplayValue(script.quantity)}
+                                    onChange={(e) => {
+                                      const value = e.target.value
+                                      if (value === '' || value === '-') {
+                                        return
+                                      }
+                                      const quantity = parseInt(value) || 0
+                                      setTalents(prev => ({
+                                        ...prev,
+                                        [scriptKey]: { ...prev[scriptKey], quantity }
+                                      }))
+                                    }}
+                                    onBlur={(e) => {
+                                      const value = e.target.value
+                                      const quantity = value === '' ? 0 : parseInt(value) || 0
+                                      setTalents(prev => ({
+                                        ...prev,
+                                        [scriptKey]: { ...prev[scriptKey], quantity }
+                                      }))
+                                    }}
                                     className="bg-gray-700 border-gray-600 text-white w-24"
                                     min="0"
                                     placeholder="0"
@@ -5792,13 +6015,26 @@ export default function GameCalculator() {
                                 type="number"
                                 min="0"
                                 max={groupKey === "noir" || groupKey === "hunt" ? 4 : 5}
-                                value={wardenCounts[groupKey as keyof typeof wardenCounts]}
-                                onChange={(e) =>
+                                value={getDisplayValue(wardenCounts[groupKey as keyof typeof wardenCounts])}
+                                onChange={(e) => {
+                                  const value = e.target.value
+                                  if (value === '' || value === '-') {
+                                    return
+                                  }
+                                  const numValue = parseInt(value) || 0
                                   setWardenCounts((prev) => ({
                                     ...prev,
-                                    [groupKey]: Number.parseInt(e.target.value) || 0,
+                                    [groupKey]: numValue,
                                   }))
-                                }
+                                }}
+                                onBlur={(e) => {
+                                  const value = e.target.value
+                                  const numValue = value === '' ? 0 : parseInt(value) || 0
+                                  setWardenCounts((prev) => ({
+                                    ...prev,
+                                    [groupKey]: numValue,
+                                  }))
+                                }}
                                 className="w-20 mt-1 bg-gray-600 border-gray-500 text-white"
                               />
                             </div>
@@ -5871,8 +6107,20 @@ export default function GameCalculator() {
                               type="number"
                               min="0"
                               max="12"
-                              value={vipLevel}
-                              onChange={(e) => setVipLevel(Number.parseInt(e.target.value) || 0)}
+                              value={getDisplayValue(vipLevel)}
+                              onChange={(e) => {
+                                const value = e.target.value
+                                if (value === '' || value === '-') {
+                                  return
+                                }
+                                const numValue = parseInt(value) || 0
+                                setVipLevel(numValue)
+                              }}
+                              onBlur={(e) => {
+                                const value = e.target.value
+                                const numValue = value === '' ? 0 : parseInt(value) || 0
+                                setVipLevel(numValue)
+                              }}
                               className="w-20 bg-gray-600 border-gray-500 text-white"
                             />
                             <span className="text-gray-300 text-sm">
@@ -6286,9 +6534,27 @@ export default function GameCalculator() {
                                               <Label className="text-sm text-gray-300">Total</Label>
                                               <Input
                                                 type="number"
-                                                value={attrData.total}
+                                                value={getDisplayValue(attrData.total)}
                                                 onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  const value = e.target.value
+                                                  if (value === '' || value === '-') {
+                                                    return
+                                                  }
+                                                  const newValue = parseInt(value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        total: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                onBlur={(e) => {
+                                                  const value = e.target.value
+                                                  const newValue = value === '' ? 0 : parseInt(value) || 0
                                                   setUploadedWardenData(prev => ({
                                                     ...prev,
                                                     [wardenName]: {
@@ -6307,9 +6573,27 @@ export default function GameCalculator() {
                                               <Label className="text-sm text-gray-300">Talent Bonus</Label>
                                               <Input
                                                 type="number"
-                                                value={attrData.talentBonus}
+                                                value={getDisplayValue(attrData.talentBonus)}
                                                 onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  const value = e.target.value
+                                                  if (value === '' || value === '-') {
+                                                    return
+                                                  }
+                                                  const newValue = parseInt(value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        talentBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                onBlur={(e) => {
+                                                  const value = e.target.value
+                                                  const newValue = value === '' ? 0 : parseInt(value) || 0
                                                   setUploadedWardenData(prev => ({
                                                     ...prev,
                                                     [wardenName]: {
@@ -6328,9 +6612,27 @@ export default function GameCalculator() {
                                               <Label className="text-sm text-gray-300">Book Bonus</Label>
                                               <Input
                                                 type="number"
-                                                value={attrData.bookBonus}
+                                                value={getDisplayValue(attrData.bookBonus)}
                                                 onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  const value = e.target.value
+                                                  if (value === '' || value === '-') {
+                                                    return
+                                                  }
+                                                  const newValue = parseInt(value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        bookBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                onBlur={(e) => {
+                                                  const value = e.target.value
+                                                  const newValue = value === '' ? 0 : parseInt(value) || 0
                                                   setUploadedWardenData(prev => ({
                                                     ...prev,
                                                     [wardenName]: {
@@ -6349,9 +6651,27 @@ export default function GameCalculator() {
                                               <Label className="text-sm text-gray-300">Scarlet Bond Bonus</Label>
                                               <Input
                                                 type="number"
-                                                value={attrData.scarletBondBonus}
+                                                value={getDisplayValue(attrData.scarletBondBonus)}
                                                 onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  const value = e.target.value
+                                                  if (value === '' || value === '-') {
+                                                    return
+                                                  }
+                                                  const newValue = parseInt(value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        scarletBondBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                onBlur={(e) => {
+                                                  const value = e.target.value
+                                                  const newValue = value === '' ? 0 : parseInt(value) || 0
                                                   setUploadedWardenData(prev => ({
                                                     ...prev,
                                                     [wardenName]: {
@@ -6370,9 +6690,27 @@ export default function GameCalculator() {
                                               <Label className="text-sm text-gray-300">Presence Bonus</Label>
                                               <Input
                                                 type="number"
-                                                value={attrData.presenceBonus}
+                                                value={getDisplayValue(attrData.presenceBonus)}
                                                 onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  const value = e.target.value
+                                                  if (value === '' || value === '-') {
+                                                    return
+                                                  }
+                                                  const newValue = parseInt(value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        presenceBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                onBlur={(e) => {
+                                                  const value = e.target.value
+                                                  const newValue = value === '' ? 0 : parseInt(value) || 0
                                                   setUploadedWardenData(prev => ({
                                                     ...prev,
                                                     [wardenName]: {
@@ -6391,9 +6729,27 @@ export default function GameCalculator() {
                                               <Label className="text-sm text-gray-300">Aura Bonus</Label>
                                               <Input
                                                 type="number"
-                                                value={attrData.auraBonus}
+                                                value={getDisplayValue(attrData.auraBonus)}
                                                 onChange={(e) => {
-                                                  const newValue = Number.parseInt(e.target.value) || 0
+                                                  const value = e.target.value
+                                                  if (value === '' || value === '-') {
+                                                    return
+                                                  }
+                                                  const newValue = parseInt(value) || 0
+                                                  setUploadedWardenData(prev => ({
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...prev[wardenName],
+                                                      [attr]: {
+                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                        auraBonus: newValue
+                                                      }
+                                                    }
+                                                  }))
+                                                }}
+                                                onBlur={(e) => {
+                                                  const value = e.target.value
+                                                  const newValue = value === '' ? 0 : parseInt(value) || 0
                                                   setUploadedWardenData(prev => ({
                                                     ...prev,
                                                     [wardenName]: {
