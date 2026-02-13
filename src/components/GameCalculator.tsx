@@ -7964,13 +7964,6 @@ export default function GameCalculator() {
                   Vercel
                 </a>
               </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                Source on 
-                <a href="https://github.com/SakaKishiyami/Game-of-Vampires-Calculator" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
-                  GitHub
-                </a>
-              </span>
             </div>
             
             <div className="text-xs text-gray-600">
