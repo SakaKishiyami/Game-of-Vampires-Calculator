@@ -23,6 +23,9 @@ import UserMenu from "@/components/UserMenu"
 import { getCurrentUser, supabase } from "@/lib/supabase"
 
 export default function GameCalculator() {
+  // Tab state
+  const [activeTab, setActiveTab] = useState("aura-bonuses")
+
   // Helper function to handle number input changes
   const handleNumberInputChange = (value: string, setter: (value: number) => void) => {
     // Allow empty string, only convert to number on blur or when doing calculations
@@ -4584,7 +4587,7 @@ export default function GameCalculator() {
         </div>
 
         {/* Main Tabs */}
-        <Tabs defaultValue="aura-bonuses" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-9 bg-gray-800 mb-6">
             <TabsTrigger value="aura-bonuses" className="data-[state=active]:bg-red-600">
               Aura Bonuses
@@ -6860,7 +6863,7 @@ export default function GameCalculator() {
                                   <CardContent className="p-2">
                                     <div className="flex gap-2">
                                       {/* Warden Image */}
-                                      <div className="w-32 h-full flex-shrink-0 flex items-center justify-center">
+                                      <div className="w-[90px] h-full flex-shrink-0 flex items-center justify-center">
                                         <img 
                                           src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                           alt={warden.name}
@@ -7175,7 +7178,7 @@ export default function GameCalculator() {
                                 } else {
                                   // Single lover - center the image
                                   return (
-                                    <div className="w-full h-full flex items-center justify-center">
+                                    <div className="w-full h-full flex items-center justify-center overflow-hidden">
                                         <img 
                                           src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`}
                                           alt={bond.lover}
