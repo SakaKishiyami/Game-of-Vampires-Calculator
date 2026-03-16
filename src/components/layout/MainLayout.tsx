@@ -129,9 +129,12 @@ export function MainLayout({ children }: MainLayoutProps) {
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-red-400/90">Game of Vampires</p>
-              <p className="text-sm text-gray-200">
+            <div className="flex flex-col">
+              <p className="text-xs uppercase tracking-[0.3em] text-red-500">Game of Vampires</p>
+              <p className="text-lg md:text-xl font-semibold text-red-100 leading-tight">
+                Game of Vampires Calculator
+              </p>
+              <p className="text-xs text-gray-500">
                 {pathname === "/"
                   ? "Main Menu"
                   : navItems.find((item) => pathname.startsWith(item.href))?.label ?? "Calculator"}

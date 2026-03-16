@@ -23,7 +23,7 @@ export default function ConclaveTab() {
           <CardTitle className="text-red-400">Current Seal Levels</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className={`grid gap-4 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2'}`}>
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-4">
             {Object.entries(conclave)
               .filter(([seal]) => seal !== "Conclave Points")
               .map(([seal, level]) => (
@@ -65,7 +65,7 @@ export default function ConclaveTab() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div>
+            <div className="max-w-xs">
               <Label className="text-white">Saved Conclave Seals</Label>
               <Input
                 type="number"
@@ -89,7 +89,7 @@ export default function ConclaveTab() {
                     savedSeals: numValue,
                   }))
                 }}
-                className="mt-2 bg-gray-700 border-gray-600 text-white"
+                className="mt-2 bg-gray-700 border-gray-600 text-white w-40"
               />
             </div>
 

@@ -4295,29 +4295,9 @@ export default function GameCalculator() {
       <div className="max-w-7xl mx-auto">
         {/* Header with User Menu */}
         <div className="flex justify-between items-center mb-8">
-          <div className="flex-1"></div> {/* Left spacer */}
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-2 text-red-400">Game of Vampires Calculator</h1>
-            <p className="text-sm text-gray-400">
-              Created by <span className="text-purple-400 font-semibold">@saka_kishiyami</span> on Discord
-            </p>
-          </div>
-          <div className="flex-1 flex justify-end">
-            <UserMenu 
-              user={user} 
-              onUserChange={setUser}
-              currentData={getCurrentData()}
-              onLoadCloudData={loadCloudData}
-              onSaveData={saveData}
-              onLoadLocalData={loadData}
-              onExportData={exportData}
-              onImportData={importData}
-              autoLoadCloudSaves={autoLoadCloudSaves}
-              onToggleAutoLoadCloudSaves={toggleAutoLoadCloudSaves}
-              onCompareData={compareData}
-              dataLoadPreference={dataLoadPreference}
-              onResetDataPreference={resetDataPreference}
-            />
+          <div className="flex-1" />
+          <div className="text-right text-xs text-gray-500">
+            Created by <span className="text-purple-400 font-semibold">@saka_kishiyami</span> on Discord
           </div>
         </div>
 
@@ -5987,13 +5967,6 @@ export default function GameCalculator() {
                       Summons/Acquired
                     </Button>
                     <Button
-                      variant={activeWardenTab === "auras" ? "default" : "outline"}
-                      onClick={() => setActiveWardenTab("auras")}
-                      className="bg-red-600 hover:bg-red-700"
-                    >
-                      Auras
-                    </Button>
-                    <Button
                       variant={activeWardenTab === "stats" ? "default" : "outline"}
                       onClick={() => setActiveWardenTab("stats")}
                       className="bg-red-600 hover:bg-red-700"
@@ -6050,15 +6023,15 @@ export default function GameCalculator() {
                           </CardHeader>
                           {wardenCounts[groupKey as keyof typeof wardenCounts] > 0 && (
                             <CardContent>
-                              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {wardens.map((warden) => (
-                                  <div key={warden.name} className="flex items-center gap-2 p-2 bg-gray-600/50 border border-gray-500 rounded">
-                                    {/* Warden Image */}
-                                    <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
+                                  <div key={warden.name} className="flex items-stretch gap-3 p-2 bg-gray-600/50 border border-gray-500 rounded">
+                                    {/* Warden Image - full height column */}
+                                    <div className="w-24 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
                                       <img 
                                         src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                         alt={warden.name}
-                                        className="max-w-full max-h-full object-contain"
+                                        className="w-full h-full object-contain"
                                         onError={(e) => {
                                           (e.target as HTMLImageElement).style.display = 'none';
                                         }}
@@ -6072,7 +6045,7 @@ export default function GameCalculator() {
                                       !selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name) &&
                                       selectedWardens[groupKey as keyof typeof selectedWardens]?.length >= wardenCounts[groupKey as keyof typeof wardenCounts]
                                     }
-                                      className={`p-4 h-auto flex flex-col items-start flex-1 ${
+                                      className={`p-4 h-auto flex flex-col items-start flex-1 text-left ${
                                       selectedWardens[groupKey as keyof typeof selectedWardens]?.includes(warden.name)
                                         ? "bg-red-600 hover:bg-red-700"
                                         : "bg-gray-600 hover:bg-gray-500"
@@ -6101,498 +6074,192 @@ export default function GameCalculator() {
                     </div>
                   )}
 
-                  {/* Auras Tab */}
-                  {activeWardenTab === "auras" && (
-                    <div className="space-y-6">
-                      {/* VIP Level Control */}
-                      <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
-                          <CardTitle className="text-yellow-400">VIP Level Control</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex items-center gap-4">
-                            <Label className="text-white">Current VIP Level:</Label>
-                            <Input
-                              type="number"
-                              min="0"
-                              max="12"
-                              value={getDisplayValue(vipLevel)}
-                              onChange={(e) => {
-                                const value = e.target.value
-                                if (value === '' || value === '-') {
-                                  return
-                                }
-                                const numValue = parseInt(value) || 0
-                                setVipLevel(numValue)
-                              }}
-                              onBlur={(e) => {
-                                const value = e.target.value
-                                const numValue = value === '' ? 0 : parseInt(value) || 0
-                                setVipLevel(numValue)
-                              }}
-                              className="w-20 bg-gray-600 border-gray-500 text-white"
-                            />
-                            <span className="text-gray-300 text-sm">
-                              (Controls which VIP wardens are visible)
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Special Wardens & Paid Packs */}
-                      <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
-                          <CardTitle className="text-purple-400">Special Wardens & Paid Packs</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="flex items-center space-x-2">
-                              <Checkbox id="nyx-aura" checked={hasNyx} onCheckedChange={setHasNyx} />
-                              <Label htmlFor="nyx-aura" className="text-yellow-400">Nyx</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Checkbox id="dracula-aura" checked={hasDracula} onCheckedChange={setHasDracula} />
-                              <Label htmlFor="dracula-aura" className="text-red-400">Dracula</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Checkbox id="victor-aura" checked={hasVictor} onCheckedChange={setHasVictor} />
-                              <Label htmlFor="victor-aura" className="text-green-400">Victor (Paid Pack)</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Checkbox id="frederick-aura" checked={hasFrederick} onCheckedChange={setHasFrederick} />
-                              <Label htmlFor="frederick-aura" className="text-blue-400">Frederick (Paid Pack)</Label>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Wild Hunt Wardens */}
-                      <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
-                          <CardTitle className="text-green-400">Wild Hunt Wardens (Macabrian Coins)</CardTitle>
-                          <div className="text-sm text-gray-300">Cost: 490 coins per warden to max (Level 20)</div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="grid grid-cols-2 gap-4">
-                            {Object.entries(auras.wildHunt).map(([wardenName, wardenData]) => (
-                              <div key={wardenName} className="space-y-2">
-                                <Label className="text-white font-semibold">{wardenName}</Label>
-                                <div className="text-sm text-gray-300">{wardenData.type}</div>
-                                <div className="flex items-center gap-2">
-                                  <Label className="text-sm text-gray-300">Level:</Label>
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    max="20"
-                                    value={wardenData.current}
-                                    onChange={(e) =>
-                                      setAuras((prev) => ({
-                                        ...prev,
-                                        wildHunt: {
-                                          ...prev.wildHunt,
-                                          [wardenName]: {
-                                            ...prev.wildHunt[wardenName],
-                                            current: Number.parseInt(e.target.value) || 1,
-                                          },
-                                        },
-                                      }))
-                                    }
-                                    className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
-                                  />
-                                  <span className="text-sm text-gray-400">
-                                    ({wardenData.baseValue + (wardenData.current - 1) * wardenData.increment}%)
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Monster Noir Wardens */}
-                      <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
-                          <CardTitle className="text-purple-400">Monster Noir Wardens (City Badges)</CardTitle>
-                          <div className="text-sm text-gray-300">Cost: 500 badges per warden to max (Level 20)</div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="grid grid-cols-2 gap-4">
-                            {Object.entries(auras.monsterNoir).map(([wardenName, wardenData]) => (
-                              <div key={wardenName} className="space-y-2">
-                                <Label className="text-white font-semibold">{wardenName}</Label>
-                                <div className="text-sm text-gray-300">{wardenData.type}</div>
-                                <div className="flex items-center gap-2">
-                                  <Label className="text-sm text-gray-300">Level:</Label>
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    max="20"
-                                    value={wardenData.current}
-                                    onChange={(e) =>
-                                      setAuras((prev) => ({
-                                        ...prev,
-                                        monsterNoir: {
-                                          ...prev.monsterNoir,
-                                          [wardenName]: {
-                                            ...prev.monsterNoir[wardenName],
-                                            current: Number.parseInt(e.target.value) || 1,
-                                          },
-                                        },
-                                      }))
-                                    }
-                                    className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
-                                  />
-                                  <span className="text-sm text-gray-400">
-                                    ({wardenData.baseValue + (wardenData.current - 1) * wardenData.increment}%)
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Bloody Tyrants Wardens */}
-                      <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
-                          <CardTitle className="text-red-400">Bloody Tyrants Wardens (Supremacy Badges)</CardTitle>
-                          <div className="text-sm text-gray-300">Cost: 500 badges per warden to max (Level 20)</div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="grid grid-cols-2 gap-4">
-                            {Object.entries(auras.bloodyTyrants).map(([wardenName, wardenData]) => (
-                              <div key={wardenName} className="space-y-2">
-                                <Label className="text-white font-semibold">{wardenName}</Label>
-                                <div className="text-sm text-gray-300">{wardenData.type}</div>
-                                <div className="flex items-center gap-2">
-                                  <Label className="text-sm text-gray-300">Level:</Label>
-                                  <Input
-                                    type="number"
-                                    min={wardenName === "Maria" ? "1" : "1"}
-                                    max="20"
-                                    value={wardenData.current}
-                                    onChange={(e) =>
-                                      setAuras((prev) => ({
-                                        ...prev,
-                                        bloodyTyrants: {
-                                          ...prev.bloodyTyrants,
-                                          [wardenName]: {
-                                            ...prev.bloodyTyrants[wardenName],
-                                            current: Number.parseInt(e.target.value) || 1,
-                                          },
-                                        },
-                                      }))
-                                    }
-                                    className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
-                                  />
-                                  <span className="text-sm text-gray-400">
-                                    ({wardenData.baseValue + (wardenData.current - 1) * wardenData.increment}%)
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Cirque du Macabre Wardens */}
-                      <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
-                          <CardTitle className="text-orange-400">Cirque du Macabre Wardens (Circus Tickets)</CardTitle>
-                          <div className="text-sm text-gray-300">Cost: 500 tickets per warden to max (Level 20)</div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="grid grid-cols-2 gap-4">
-                            {Object.entries(auras.cirque).map(([wardenName, wardenData]) => (
-                              <div key={wardenName} className="space-y-2">
-                                <Label className="text-white font-semibold">{wardenName}</Label>
-                                <div className="text-sm text-gray-300">{wardenData.type}</div>
-                                <div className="flex items-center gap-2">
-                                  <Label className="text-sm text-gray-300">Level:</Label>
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    max="20"
-                                    value={wardenData.current}
-                                    onChange={(e) =>
-                                      setAuras((prev) => ({
-                                        ...prev,
-                                        cirque: {
-                                          ...prev.cirque,
-                                          [wardenName]: {
-                                            ...prev.cirque[wardenName],
-                                            current: Number.parseInt(e.target.value) || 1,
-                                          },
-                                        },
-                                      }))
-                                    }
-                                    className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
-                                  />
-                                  <span className="text-sm text-gray-400">
-                                    ({wardenData.baseValue + (wardenData.current - 1) * wardenData.increment}%)
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* VIP Wardens */}
-                      {vipLevel > 0 && (
-                        <Card className="bg-gray-700/50 border-yellow-500">
-                          <CardHeader>
-                            <CardTitle className="text-yellow-400">VIP Wardens</CardTitle>
-                            <div className="text-sm text-gray-300">Available based on your VIP level: {vipLevel}</div>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="grid grid-cols-2 gap-4">
-                              {Object.entries(auras.vip)
-                                .filter(([_, wardenData]) => vipLevel >= wardenData.vipRequired)
-                                .map(([wardenName, wardenData]) => (
-                                <div key={wardenName} className="space-y-2">
-                                  <Label className="text-white font-semibold">{wardenName} (VIP {wardenData.vipRequired})</Label>
-                                  {wardenData.talents ? (
-                                    <>
-                                      <div className="text-sm text-gray-300">{wardenData.talents.type}</div>
-                                      <div className="text-sm text-yellow-400">Talents: {wardenData.talents.current}%</div>
-                                      <div className="text-sm text-gray-300">{wardenData.books.type}</div>
-                                      <div className="text-sm text-yellow-400">Books: {wardenData.books.current}%</div>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <div className="text-sm text-gray-300">{wardenData.type}</div>
-                                      <div className="text-sm text-yellow-400">Value: {wardenData.current}%</div>
-                                    </>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-
-                      {/* Paid Pack Wardens */}
-                      {(hasVictor || hasFrederick) && (
-                        <Card className="bg-gray-700/50 border-green-500">
-                          <CardHeader>
-                            <CardTitle className="text-green-400">Paid Pack Wardens</CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="grid grid-cols-2 gap-4">
-                              {hasVictor && (
-                                <div className="space-y-2">
-                                  <Label className="text-white font-semibold">Victor</Label>
-                                  <div className="text-sm text-gray-300">{auras.paidPacks.Victor.type}</div>
-                                  <div className="text-sm text-green-400">Value: {auras.paidPacks.Victor.current}%</div>
-                                </div>
-                              )}
-                              {hasFrederick && (
-                                <div className="space-y-2">
-                                  <Label className="text-white font-semibold">Frederick</Label>
-                                  <div className="text-sm text-gray-300">{auras.paidPacks.Frederick.talents.type}</div>
-                                  <div className="text-sm text-blue-400">Talents: {auras.paidPacks.Frederick.talents.current}%</div>
-                                  <div className="text-sm text-gray-300">{auras.paidPacks.Frederick.books.type}</div>
-                                  <div className="flex items-center gap-2">
-                                    <Label className="text-sm text-gray-300">Books Level:</Label>
-                                    <Input
-                                      type="number"
-                                      min="1"
-                                      max="20"
-                                      value={auras.paidPacks.Frederick.books.current}
-                                      onChange={(e) =>
-                                        setAuras((prev) => ({
-                                          ...prev,
-                                          paidPacks: {
-                                            ...prev.paidPacks,
-                                            Frederick: {
-                                              ...prev.paidPacks.Frederick,
-                                              books: {
-                                                ...prev.paidPacks.Frederick.books,
-                                                current: Number.parseInt(e.target.value) || 1,
-                                              },
-                                            },
-                                          },
-                                        }))
-                                      }
-                                      className="w-16 bg-gray-600 border-gray-500 text-white text-sm"
-                                    />
-                                    <span className="text-sm text-gray-400">
-                                      ({auras.paidPacks.Frederick.books.baseValue + (auras.paidPacks.Frederick.books.current - 1) * auras.paidPacks.Frederick.books.increment}%)
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-
-                      {/* Special Wardens */}
-                      {(hasNyx || hasDracula) && (
-                        <Card className="bg-gray-700/50 border-purple-500">
-                          <CardHeader>
-                            <CardTitle className="text-purple-400">Special Wardens</CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="grid grid-cols-2 gap-4">
-                              {hasDracula && (
-                                <div className="space-y-2">
-                                  <Label className="text-white font-semibold">Dracula</Label>
-                                  <div className="text-sm text-gray-300">{auras.special.Dracula.talents.type}</div>
-                                  <div className="text-sm text-red-400">Talents: {auras.special.Dracula.talents.current}%</div>
-                                  <div className="text-sm text-gray-300">{auras.special.Dracula.books.type}</div>
-                                  <div className="text-sm text-red-400">Books: {auras.special.Dracula.books.current}%</div>
-                                  <div className="text-xs text-gray-400">Cost: ~1530 Blood Origin Necklaces</div>
-                                </div>
-                              )}
-                              {hasNyx && (
-                                <div className="space-y-2">
-                                  <Label className="text-white font-semibold">Nyx</Label>
-                                  <div className="text-sm text-gray-300">{auras.special.Nyx.talents.type}</div>
-                                  <div className="text-sm text-yellow-400">Talents: {auras.special.Nyx.talents.current}%</div>
-                                  <div className="text-sm text-gray-300">{auras.special.Nyx.books.type}</div>
-                                  <div className="text-sm text-yellow-400">Books: {auras.special.Nyx.books.current}%</div>
-                                  <div className="text-xs text-gray-400">Cost: ~720 Arena Trophies</div>
-                                </div>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </div>
-                  )}
-
                   {/* Warden Stats Tab */}
                   {activeWardenTab === "stats" && (
                     <div className="space-y-4">
-                      {/* Upload Section */}
-                      <Card className="bg-gray-700/50 border-gray-600">
-                        <CardHeader>
-                          <CardTitle className="text-blue-400">Upload Warden Data</CardTitle>
-                          <div className="text-sm text-gray-300">
-                            Upload files named after your wardens containing their attribute breakdowns:
-                            <ul className="mt-2 list-disc list-inside">
-                              <li><strong>Screenshots (PNG/JPG):</strong> "Diana.png", "Scarlet.jpg" - Uses OCR to extract text</li>
-                              <li><strong>Text files:</strong> "Diana.txt", "Scarlet.json" - Parses text directly</li>
-                            </ul>
-                            The parser will automatically extract total attributes and all bonus breakdowns.
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-4">
-                            <div>
-                              <input
-                                type="file"
-                                multiple
-                                accept=".txt,.json,.csv,.png,.jpg,.jpeg"
-                                onChange={handleFileUpload}
-                                disabled={isUploading}
-                                className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
-                              />
-                            </div>
-                            {isUploading && (
-                              <div className="text-yellow-400">
-                                {ocrProgress || "Uploading and parsing files..."}
-                              </div>
-                            )}
-                            {uploadError && (
-                              <div className="text-red-400 text-sm">
-                                {uploadError}
-                              </div>
-                            )}
-                            {Object.keys(uploadedWardenData).length > 0 && (
-                              <div className="text-green-400 text-sm">
-                                Successfully uploaded data for: {Object.keys(uploadedWardenData).join(', ')}
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
+                      <Tabs defaultValue="overview" className="w-full">
+                        <TabsList className="mb-4 bg-gray-800">
+                          <TabsTrigger value="overview" className="data-[state=active]:bg-red-600">
+                            Overview
+                          </TabsTrigger>
+                          <TabsTrigger value="detailed" className="data-[state=active]:bg-red-600">
+                            Detailed (OCR)
+                          </TabsTrigger>
+                        </TabsList>
 
-                      {/* Uploaded Warden Data Section */}
-                      {Object.keys(uploadedWardenData).length > 0 && (
-                        <div className="space-y-4">
-                          <h3 className="text-xl font-semibold text-white">Uploaded Warden Data</h3>
-                          {Object.entries(uploadedWardenData).map(([wardenName, data]) => (
-                            <Card key={wardenName} className="bg-gray-800/70 border-gray-600">
-                              <CardHeader className="py-3">
-                                <CardTitle className="flex items-center justify-between gap-3">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded bg-gray-900 flex items-center justify-center overflow-hidden">
-                                      <img
-                                        src={`/Gov/Wardens/BaseWardens/${wardenName}.png`}
-                                        alt={wardenName}
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                          (e.target as HTMLImageElement).style.display = 'none';
-                                        }}
-                                      />
+                        <TabsContent value="overview" className="space-y-4">
+                          <Card className="bg-gray-700/50 border-gray-600">
+                            <CardHeader>
+                              <CardTitle className="text-white">Warden Overview</CardTitle>
+                              <p className="text-sm text-gray-300">
+                                High-level view of uploaded wardens. Use the Detailed tab for full attribute breakdowns.
+                              </p>
+                            </CardHeader>
+                            <CardContent>
+                              {Object.keys(uploadedWardenData).length === 0 ? (
+                                <p className="text-sm text-gray-400">
+                                  No OCR data yet. Switch to the Detailed tab to upload screenshots or text files.
+                                </p>
+                              ) : (
+                                <div className="space-y-2">
+                                  {Object.entries(uploadedWardenData).map(([wardenName, data]) => (
+                                    <div
+                                      key={wardenName}
+                                      className="flex items-center justify-between rounded bg-gray-800/70 border border-gray-700 px-3 py-2 text-sm"
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <span className="text-white">{wardenName}</span>
+                                        <span className="text-xs text-gray-500">
+                                          Total:{' '}
+                                          {data.totalAttributes >= 1000000 
+                                            ? `${(data.totalAttributes / 1000000).toFixed(2)}M` 
+                                            : data.totalAttributes >= 1000 
+                                              ? `${(data.totalAttributes / 1000).toFixed(2)}K` 
+                                              : data.totalAttributes.toLocaleString()}
+                                        </span>
+                                      </div>
+                                      <div className="flex gap-2 text-[11px] text-gray-300">
+                                        <span>Str: {data.strength.total.toLocaleString()}</span>
+                                        <span>All: {data.allure.total.toLocaleString()}</span>
+                                        <span>Int: {data.intellect.total.toLocaleString()}</span>
+                                        <span>Spi: {data.spirit.total.toLocaleString()}</span>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <span className="block text-white text-sm">{wardenName}</span>
-                                      <span className="block text-[11px] text-gray-400">
-                                        Total:{' '}
-                                        {data.totalAttributes >= 1000000 
-                                          ? `${(data.totalAttributes / 1000000).toFixed(2)}M` 
-                                          : data.totalAttributes >= 1000 
-                                            ? `${(data.totalAttributes / 1000).toFixed(2)}K` 
-                                            : data.totalAttributes.toLocaleString()}
-                                      </span>
-                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+
+                        <TabsContent value="detailed" className="space-y-4">
+                          {/* Upload Section */}
+                          <Card className="bg-gray-700/50 border-gray-600">
+                            <CardHeader>
+                              <CardTitle className="text-blue-400">Upload Warden Data</CardTitle>
+                              <div className="text-sm text-gray-300">
+                                Upload files named after your wardens containing their attribute breakdowns:
+                                <ul className="mt-2 list-disc list-inside">
+                                  <li><strong>Screenshots (PNG/JPG):</strong> "Diana.png", "Scarlet.jpg" - Uses OCR to extract text</li>
+                                  <li><strong>Text files:</strong> "Diana.txt", "Scarlet.json" - Parses text directly</li>
+                                </ul>
+                                The parser will automatically extract total attributes and all bonus breakdowns.
+                              </div>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-4">
+                                <div>
+                                  <input
+                                    type="file"
+                                    multiple
+                                    accept=".txt,.json,.csv,.png,.jpg,.jpeg"
+                                    onChange={handleFileUpload}
+                                    disabled={isUploading}
+                                    className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
+                                  />
+                                </div>
+                                {isUploading && (
+                                  <div className="text-yellow-400">
+                                    {ocrProgress || "Uploading and parsing files..."}
                                   </div>
-                                </CardTitle>
-                              </CardHeader>
-                              <CardContent className="pt-2">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                  {["strength", "allure", "intellect", "spirit"].map((attr) => {
-                                    const attrData = data[attr as keyof typeof data]
-                                    if (typeof attrData === 'object' && attrData.total !== undefined) {
-                                      return (
-                                        <div key={attr} className="space-y-3">
-                                          <div className={`font-semibold capitalize ${getAttributeColor(attr)} text-lg`}>
-                                            {attr}
-                                          </div>
-                                          <div className="space-y-2">
-                                            <div>
-                                              <Label className="text-sm text-gray-300">Total</Label>
-                                              <Input
-                                                type="number"
-                                                value={getDisplayValue(attrData.total)}
-                                                onChange={(e) => {
-                                                  const value = e.target.value
-                                                  if (value === '' || value === '-') {
-                                                    return
-                                                  }
-                                                  const newValue = parseInt(value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        total: newValue
+                                )}
+                                {uploadError && (
+                                  <div className="text-red-400 text-sm">
+                                    {uploadError}
+                                  </div>
+                                )}
+                                {Object.keys(uploadedWardenData).length > 0 && (
+                                  <div className="text-green-400 text-sm">
+                                    Successfully uploaded data for: {Object.keys(uploadedWardenData).join(', ')}
+                                  </div>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Uploaded Warden Data Section */}
+                          {Object.keys(uploadedWardenData).length > 0 && (
+                            <div className="space-y-4">
+                              <h3 className="text-xl font-semibold text-white">Uploaded Warden Data</h3>
+                              {Object.entries(uploadedWardenData).map(([wardenName, data]) => (
+                                <Card key={wardenName} className="bg-gray-800/70 border-gray-600">
+                                  <CardHeader className="py-3">
+                                    <CardTitle className="flex items-center justify-between gap-3">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded bg-gray-900 flex items-center justify-center overflow-hidden">
+                                          <img
+                                            src={`/Gov/Wardens/BaseWardens/${wardenName}.png`}
+                                            alt={wardenName}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                              (e.target as HTMLImageElement).style.display = 'none';
+                                            }}
+                                          />
+                                        </div>
+                                        <div>
+                                          <span className="block text-white text-sm">{wardenName}</span>
+                                          <span className="block text-[11px] text-gray-400">
+                                            Total:{' '}
+                                            {data.totalAttributes >= 1000000 
+                                              ? `${(data.totalAttributes / 1000000).toFixed(2)}M` 
+                                              : data.totalAttributes >= 1000 
+                                                ? `${(data.totalAttributes / 1000).toFixed(2)}K` 
+                                                : data.totalAttributes.toLocaleString()}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </CardTitle>
+                                  </CardHeader>
+                                  <CardContent className="pt-2">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                      {["strength", "allure", "intellect", "spirit"].map((attr) => {
+                                        const attrData = data[attr as keyof typeof data]
+                                        if (typeof attrData === 'object' && attrData.total !== undefined) {
+                                          return (
+                                            <div key={attr} className="space-y-3">
+                                              <div className={`font-semibold capitalize ${getAttributeColor(attr)} text-lg`}>
+                                                {attr}
+                                              </div>
+                                              <div className="space-y-2">
+                                                <div>
+                                                  <Label className="text-sm text-gray-300">Total</Label>
+                                                  <Input
+                                                    type="number"
+                                                    value={getDisplayValue(attrData.total)}
+                                                    onChange={(e) => {
+                                                      const value = e.target.value
+                                                      if (value === '' || value === '-') {
+                                                        return
                                                       }
-                                                    }
-                                                  }))
-                                                }}
-                                                onBlur={(e) => {
-                                                  const value = e.target.value
-                                                  const newValue = value === '' ? 0 : parseInt(value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: {
-                                                        ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
-                                                        total: newValue
-                                                      }
-                                                    }
-                                                  }))
-                                                }}
-                                                className="mt-1 bg-gray-600 border-gray-500 text-white"
-                                              />
-                                            </div>
+                                                      const newValue = parseInt(value) || 0
+                                                      setUploadedWardenData(prev => ({
+                                                        ...prev,
+                                                        [wardenName]: {
+                                                          ...prev[wardenName],
+                                                          [attr]: {
+                                                            ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                            total: newValue
+                                                          }
+                                                        }
+                                                      }))
+                                                    }}
+                                                    onBlur={(e) => {
+                                                      const value = e.target.value
+                                                      const newValue = value === '' ? 0 : parseInt(value) || 0
+                                                      setUploadedWardenData(prev => ({
+                                                        ...prev,
+                                                        [wardenName]: {
+                                                          ...prev[wardenName],
+                                                          [attr]: {
+                                                            ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]],
+                                                            total: newValue
+                                                          }
+                                                        }
+                                                      }))
+                                                    }}
+                                                    className="mt-1 bg-gray-600 border-gray-500 text-white"
+                                                  />
+                                                </div>
                                             <div>
                                               <Label className="text-sm text-gray-300">Talent Bonus</Label>
                                               <Input
