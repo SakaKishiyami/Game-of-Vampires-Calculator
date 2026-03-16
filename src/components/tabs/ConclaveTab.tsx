@@ -7,9 +7,12 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { getDisplayValue } from '@/utils/helpers'
 import { calculateConclaveUpgrades, calculateTotalConclaveBonus } from '@/utils/calculators/conclaveCalculations'
+import { useCalculatorSettings } from '@/components/layout/MainLayout'
 
 export default function ConclaveTab() {
   const { conclave, setConclave, conclaveUpgrade, setConclaveUpgrade, books, wardenCounts } = useGameCalculator()
+  const { density } = useCalculatorSettings()
+  const compact = density === 'compact'
 
   const upgradePreview = calculateConclaveUpgrades(conclave, conclaveUpgrade, books, wardenCounts)
 
@@ -20,7 +23,7 @@ export default function ConclaveTab() {
           <CardTitle className="text-red-400">Current Seal Levels</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4">
+          <div className={`grid gap-4 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2'}`}>
             {Object.entries(conclave)
               .filter(([seal]) => seal !== "Conclave Points")
               .map(([seal, level]) => (
@@ -92,7 +95,7 @@ export default function ConclaveTab() {
 
             <div>
               <Label className="text-white text-lg block mb-3">Select Seals to Upgrade:</Label>
-              <div className="grid grid-cols-2 gap-4">
+              <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2'}`}>
                 {Object.entries(conclaveUpgrade.upgradeSeals).map(([seal, checked]) => (
                   <div key={seal} className="flex items-center space-x-2">
                     <Checkbox

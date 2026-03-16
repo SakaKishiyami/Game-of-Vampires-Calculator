@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { attributeOrder, getAttributeColor } from '@/utils/helpers'
 import { calculateDynamicAuraLevels, calculateAuraBonuses } from '@/utils/calculators/auraCalculations'
+import { useCalculatorSettings } from '@/components/layout/MainLayout'
 
 export default function AuraBonusesTab() {
   const {
@@ -22,6 +23,8 @@ export default function AuraBonusesTab() {
     hasHela,
     inventory
   } = useGameCalculator()
+  const { density } = useCalculatorSettings()
+  const compact = density === 'compact'
 
   const dynamicAuras = calculateDynamicAuraLevels(auras, selectedWardens, hasAgneyi, hasCulann, hasHela, inventory)
   const auraBonuses = calculateAuraBonuses(
@@ -49,9 +52,9 @@ export default function AuraBonusesTab() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-6">
+          <div className={`grid gap-4 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2'}`}>
             {/* Talent Bonuses */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <h3 className="text-lg font-semibold text-yellow-400">Talent Bonuses</h3>
               <div className="space-y-3">
                 {attributeOrder.map((attribute) => (
@@ -68,7 +71,7 @@ export default function AuraBonusesTab() {
             </div>
 
             {/* Book Bonuses */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <h3 className="text-lg font-semibold text-blue-400">Book Bonuses</h3>
               <div className="space-y-3">
                 {attributeOrder.map((attribute) => (
@@ -104,7 +107,7 @@ export default function AuraBonusesTab() {
                 Selected: {(selectedWardens.hunt || []).length}/4 | 
                 Base Level: {(selectedWardens.hunt || []).length > 0 ? 9 + Math.max(0, (selectedWardens.hunt || []).length - 1) : 0}
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`}>
                 {Object.entries(dynamicAuras.wildHunt).map(([wardenName, wardenData]: [string, any]) => {
                   const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
                   const isSelected = (selectedWardens.hunt || []).includes(wardenName)
@@ -170,7 +173,7 @@ export default function AuraBonusesTab() {
                 Selected: {(selectedWardens.noir || []).length}/4 | 
                 Base Level: {(selectedWardens.noir || []).length > 0 ? 9 + Math.max(0, (selectedWardens.noir || []).length - 1) : 0}
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`}>
                 {Object.entries(dynamicAuras.monsterNoir).map(([wardenName, wardenData]: [string, any]) => {
                   const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
                   const isSelected = (selectedWardens.noir || []).includes(wardenName)
@@ -236,7 +239,7 @@ export default function AuraBonusesTab() {
                 Selected: {(selectedWardens.tyrants || []).length}/5 | 
                 Base Level: {(selectedWardens.tyrants || []).length > 0 ? 10 + Math.max(0, (selectedWardens.tyrants || []).length - 1) : 0}
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`}>
                 {Object.entries(dynamicAuras.bloodyTyrants).map(([wardenName, wardenData]: [string, any]) => {
                   const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
                   const isSelected = (selectedWardens.tyrants || []).includes(wardenName)
@@ -302,7 +305,7 @@ export default function AuraBonusesTab() {
                 Selected: {(selectedWardens.circus || []).length}/5 | 
                 Base Level: {(selectedWardens.circus || []).length > 0 ? 10 + Math.max(0, (selectedWardens.circus || []).length - 1) : 0}
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`}>
                 {Object.entries(dynamicAuras.cirque).map(([wardenName, wardenData]: [string, any]) => {
                   const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
                   const isSelected = (selectedWardens.circus || []).includes(wardenName)
@@ -375,7 +378,7 @@ export default function AuraBonusesTab() {
                     return "30%"
                   })()}
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className={`grid gap-3 ${compact ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-3'}`}>
                   {Object.entries(dynamicAuras.lovers || {}).map(([loverName, loverData]: [string, any]) => {
                     const isSelected = (loverName === "Agneyi" && hasAgneyi) || 
                                      (loverName === "Culann" && hasCulann) || 
@@ -404,7 +407,7 @@ export default function AuraBonusesTab() {
             {vipLevel > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-yellow-400 mb-3">VIP Wardens (VIP {vipLevel})</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`}>
                   {Object.entries(auras.vip)
                     .filter(([_, wardenData]: [string, any]) => vipLevel >= wardenData.vipRequired)
                     .map(([wardenName, wardenData]: [string, any]) => (

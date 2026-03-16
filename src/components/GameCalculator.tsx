@@ -5377,7 +5377,7 @@ export default function GameCalculator() {
                   {/* Random Talent Scrolls */}
                   <div className="space-y-3">
                     <h3 className="text-lg font-semibold text-white">Random Talent Scrolls</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                       <div className="space-y-2">
                         <Label className="text-gray-300">Random Talent Scroll (5-1000 exp)</Label>
                         <Input
@@ -5543,7 +5543,7 @@ export default function GameCalculator() {
                   {/* Fixed Talent Scrolls */}
                   <div className="space-y-3">
                     <h3 className="text-lg font-semibold text-white">Fixed Talent Scrolls</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                       <div className="space-y-2">
                         <Label className="text-gray-300">Basic Talent Scroll (50 exp)</Label>
                         <Input
@@ -5766,139 +5766,145 @@ export default function GameCalculator() {
                         </div>
                         
                         {/* Individual Script Controls */}
-                        {['strengthScript', 'allureScript', 'intellectScript', 'spiritScript'].map(scriptKey => {
-                          const script = talents[scriptKey];
-                          const results = calculateScriptResults(script);
-                          const attributeName = scriptKey.replace('Script', '');
-                          
-                          return (
-                            <div key={scriptKey} className="space-y-4">
-                              <h3 className="text-lg font-semibold text-white capitalize">{attributeName} Script</h3>
-                              
-                              {/* Warden Level Input */}
-                              <div className="flex items-center space-x-4">
-                                <Label className="text-gray-300">Warden Level:</Label>
-                                <Input
-                                  type="number"
-                                  value={script.wardenLevel}
-                                  onChange={(e) => setTalents(prev => ({
-                                    ...prev,
-                                    [scriptKey]: { ...prev[scriptKey], wardenLevel: parseInt(e.target.value) || 1 }
-                                  }))}
-                                  className="bg-gray-700 border-gray-600 text-white w-24"
-                                  min="1"
-                                  max="500"
-                                />
-                                <div className="text-gray-400 text-sm">
-                                  Dom per star: {(() => {
-                                    const levelData = domIncreasePerStarData.find(data => script.wardenLevel >= data.level) || domIncreasePerStarData[domIncreasePerStarData.length - 1];
-                                    return levelData.constant.toLocaleString();
-                                  })()}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {['strengthScript', 'allureScript', 'intellectScript', 'spiritScript'].map(scriptKey => {
+                            const script = talents[scriptKey];
+                            const results = calculateScriptResults(script);
+                            const attributeName = scriptKey.replace('Script', '');
+                            
+                            return (
+                              <div key={scriptKey} className="space-y-3 p-3 rounded-lg bg-gray-800/60 border border-gray-700">
+                                <h3 className={`text-base font-semibold capitalize ${getAttributeColor(attributeName)}`}>
+                                  {attributeName} Script
+                                </h3>
+                                
+                                {/* Warden Level & Dom per star (single line) */}
+                                <div className="flex flex-wrap items-center gap-3">
+                                  <div className="flex items-center gap-2">
+                                    <Label className="text-gray-300 text-xs">Warden Lv.</Label>
+                                    <Input
+                                      type="number"
+                                      value={script.wardenLevel}
+                                      onChange={(e) => setTalents(prev => ({
+                                        ...prev,
+                                        [scriptKey]: { ...prev[scriptKey], wardenLevel: parseInt(e.target.value) || 1 }
+                                      }))}
+                                      className="bg-gray-700 border-gray-600 text-white w-20 h-8 text-xs"
+                                      min="1"
+                                      max="500"
+                                    />
+                                  </div>
+                                  <div className="text-gray-400 text-xs">
+                                    Dom/star: {(() => {
+                                      const levelData = domIncreasePerStarData.find(data => script.wardenLevel >= data.level) || domIncreasePerStarData[domIncreasePerStarData.length - 1];
+                                      return levelData.constant.toLocaleString();
+                                    })()}
+                                  </div>
                                 </div>
-                              </div>
-                              
-                              {/* Star Selection (Radio Buttons) */}
-                              <div className="space-y-3">
-                                <Label className="text-gray-300">Select Script Star Level:</Label>
-                                <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-                                  <div className="flex items-center space-x-2">
-                                    <input
-                                      type="radio"
-                                      id={`${scriptKey}-none`}
-                                      name={`${scriptKey}-star`}
-                                      checked={script.selectedStar === 0}
-                                      onChange={() => setTalents(prev => ({
+                                
+                                {/* Star Selection (compact chips) */}
+                                <div className="space-y-1">
+                                  <Label className="text-gray-300 text-xs">Star level:</Label>
+                                  <div className="flex flex-wrap gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => setTalents(prev => ({
                                         ...prev,
                                         [scriptKey]: { ...prev[scriptKey], selectedStar: 0, quantity: 0 }
                                       }))}
-                                      className="text-red-600"
-                                    />
-                                    <Label htmlFor={`${scriptKey}-none`} className="text-gray-300">
+                                      className={`px-2 py-1 rounded-full text-[11px] border ${
+                                        script.selectedStar === 0
+                                          ? 'bg-gray-200 text-gray-900 border-gray-300'
+                                          : 'bg-gray-800 text-gray-300 border-gray-600'
+                                      }`}
+                                    >
                                       None
-                                    </Label>
-                                  </div>
-                                  {[1, 2, 3, 4, 5, 6].map(star => {
-                                    const successRate = [100, 83.3, 66.6, 50, 33.3, 16.6][star - 1];
-                                    return (
-                                      <div key={star} className="flex items-center space-x-2">
-                                        <input
-                                          type="radio"
-                                          id={`${scriptKey}-${star}`}
-                                          name={`${scriptKey}-star`}
-                                          checked={script.selectedStar === star}
-                                          onChange={() => setTalents(prev => ({
+                                    </button>
+                                    {[1, 2, 3, 4, 5, 6].map(star => {
+                                      const successRate = [100, 83.3, 66.6, 50, 33.3, 16.6][star - 1];
+                                      const isActive = script.selectedStar === star;
+                                      return (
+                                        <button
+                                          key={star}
+                                          type="button"
+                                          onClick={() => setTalents(prev => ({
                                             ...prev,
                                             [scriptKey]: { ...prev[scriptKey], selectedStar: star }
                                           }))}
-                                          className="text-red-600"
-                                        />
-                                        <Label htmlFor={`${scriptKey}-${star}`} className="text-gray-300">
-                                          {star}★ ({successRate}%)
-                                        </Label>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                              
-                              {/* Quantity Input */}
-                              {script.selectedStar > 0 && (
-                                <div className="flex items-center space-x-4">
-                                  <Label className="text-gray-300">Number of Attempts:</Label>
-                                  <Input
-                                    type="number"
-                                    value={getDisplayValue(script.quantity)}
-                                    onChange={(e) => {
-                                      const value = e.target.value
-                                      if (value === '' || value === '-') {
-                                        return
-                                      }
-                                      const quantity = parseInt(value) || 0
-                                      setTalents(prev => ({
-                                        ...prev,
-                                        [scriptKey]: { ...prev[scriptKey], quantity }
-                                      }))
-                                    }}
-                                    onBlur={(e) => {
-                                      const value = e.target.value
-                                      const quantity = value === '' ? 0 : parseInt(value) || 0
-                                      setTalents(prev => ({
-                                        ...prev,
-                                        [scriptKey]: { ...prev[scriptKey], quantity }
-                                      }))
-                                    }}
-                                    className="bg-gray-700 border-gray-600 text-white w-24"
-                                    min="0"
-                                    placeholder="0"
-                                  />
-                                  <div className="text-gray-400 text-sm">
-                                    (How many {script.selectedStar}★ attempts)
+                                          className={`px-2 py-1 rounded-full text-[11px] border ${
+                                            isActive
+                                              ? 'bg-red-600 text-white border-red-500'
+                                              : 'bg-gray-800 text-gray-300 border-gray-600'
+                                          }`}
+                                        >
+                                          {star}★ {successRate}%
+                                        </button>
+                                      );
+                                    })}
                                   </div>
                                 </div>
-                              )}
-                              
-                              {/* Results Display */}
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-3 bg-gray-700/30 rounded">
-                                <div>
-                                  <div className="text-gray-400 text-xs">Total Attempts</div>
-                                  <div className="text-white">{results.attempts}</div>
-                                </div>
-                                <div>
-                                  <div className="text-gray-400 text-xs">Expected Upgrades</div>
-                                  <div className="text-white">{results.expectedUpgrades}</div>
-                                </div>
-                                <div>
-                                  <div className="text-gray-400 text-xs">Stars Gained</div>
-                                  <div className="text-white">{results.expectedStars}</div>
-                                </div>
-                                <div>
-                                  <div className="text-gray-400 text-xs">Dom Bonus</div>
-                                  <div className="text-green-400">+{getStarBonus(script.wardenLevel, results.expectedStars).toLocaleString()}</div>
+                                
+                                {/* Quantity Input */}
+                                {script.selectedStar > 0 && (
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <Label className="text-gray-300 text-xs">Attempts:</Label>
+                                    <Input
+                                      type="number"
+                                      value={getDisplayValue(script.quantity)}
+                                      onChange={(e) => {
+                                        const value = e.target.value
+                                        if (value === '' || value === '-') {
+                                          return
+                                        }
+                                        const quantity = parseInt(value) || 0
+                                        setTalents(prev => ({
+                                          ...prev,
+                                          [scriptKey]: { ...prev[scriptKey], quantity }
+                                        }))
+                                      }}
+                                      onBlur={(e) => {
+                                        const value = e.target.value
+                                        const quantity = value === '' ? 0 : parseInt(value) || 0
+                                        setTalents(prev => ({
+                                          ...prev,
+                                          [scriptKey]: { ...prev[scriptKey], quantity }
+                                        }))
+                                      }}
+                                      className="bg-gray-700 border-gray-600 text-white w-20 h-8 text-xs"
+                                      min="0"
+                                      placeholder="0"
+                                    />
+                                    <div className="text-gray-400 text-[11px]">
+                                      {script.selectedStar}★ rolls
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {/* Results Display */}
+                                <div className="grid grid-cols-2 gap-3 p-2 bg-gray-700/30 rounded">
+                                  <div>
+                                    <div className="text-gray-400 text-[11px]">Attempts</div>
+                                    <div className="text-sm text-white">{results.attempts}</div>
+                                  </div>
+                                  <div>
+                                    <div className="text-gray-400 text-[11px]">Upgrades (avg)</div>
+                                    <div className="text-sm text-white">{results.expectedUpgrades}</div>
+                                  </div>
+                                  <div>
+                                    <div className="text-gray-400 text-[11px]">Stars (avg)</div>
+                                    <div className="text-sm text-white">{results.expectedStars}</div>
+                                  </div>
+                                  <div>
+                                    <div className="text-gray-400 text-[11px]">Dom Bonus</div>
+                                    <div className="text-green-400 text-sm">
+                                      +{getStarBonus(script.wardenLevel, results.expectedStars).toLocaleString()}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                         
                         {/* Total Script Results */}
                         <div className="mt-6 p-4 bg-gray-700/50 rounded-lg">
@@ -6044,11 +6050,11 @@ export default function GameCalculator() {
                           </CardHeader>
                           {wardenCounts[groupKey as keyof typeof wardenCounts] > 0 && (
                             <CardContent>
-                              <div className="grid grid-cols-2 gap-3">
+                              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
                                 {wardens.map((warden) => (
                                   <div key={warden.name} className="flex items-center gap-2 p-2 bg-gray-600/50 border border-gray-500 rounded">
                                     {/* Warden Image */}
-                                    <div className="w-32 h-32 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
+                                    <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
                                       <img 
                                         src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
                                         alt={warden.name}
@@ -6509,21 +6515,36 @@ export default function GameCalculator() {
                         <div className="space-y-4">
                           <h3 className="text-xl font-semibold text-white">Uploaded Warden Data</h3>
                           {Object.entries(uploadedWardenData).map(([wardenName, data]) => (
-                            <Card key={wardenName} className="bg-gray-700/50 border-gray-600">
-                              <CardHeader>
-                                <CardTitle className="flex items-center gap-3">
-                                  <span className="text-white">{wardenName}</span>
-                                  <span className="text-yellow-400 text-sm">
-                                    Total: {data.totalAttributes >= 1000000 
-                                      ? `${(data.totalAttributes / 1000000).toFixed(2)}M` 
-                                      : data.totalAttributes >= 1000 
-                                        ? `${(data.totalAttributes / 1000).toFixed(2)}K` 
-                                        : data.totalAttributes.toLocaleString()}
-                                  </span>
+                            <Card key={wardenName} className="bg-gray-800/70 border-gray-600">
+                              <CardHeader className="py-3">
+                                <CardTitle className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded bg-gray-900 flex items-center justify-center overflow-hidden">
+                                      <img
+                                        src={`/Gov/Wardens/BaseWardens/${wardenName}.png`}
+                                        alt={wardenName}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          (e.target as HTMLImageElement).style.display = 'none';
+                                        }}
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="block text-white text-sm">{wardenName}</span>
+                                      <span className="block text-[11px] text-gray-400">
+                                        Total:{' '}
+                                        {data.totalAttributes >= 1000000 
+                                          ? `${(data.totalAttributes / 1000000).toFixed(2)}M` 
+                                          : data.totalAttributes >= 1000 
+                                            ? `${(data.totalAttributes / 1000).toFixed(2)}K` 
+                                            : data.totalAttributes.toLocaleString()}
+                                      </span>
+                                    </div>
+                                  </div>
                                 </CardTitle>
                               </CardHeader>
-                              <CardContent>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                              <CardContent className="pt-2">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                   {["strength", "allure", "intellect", "spirit"].map((attr) => {
                                     const attrData = data[attr as keyof typeof data]
                                     if (typeof attrData === 'object' && attrData.total !== undefined) {

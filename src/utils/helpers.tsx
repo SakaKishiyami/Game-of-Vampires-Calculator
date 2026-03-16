@@ -97,8 +97,9 @@ export const attributeOrder: string[] = ['strength', 'allure', 'intellect', 'spi
 
 /**
  * Book category order
+ * Balanced is treated as the "Mystery" book line for UI purposes.
  */
-export const bookCategoryOrder = ['Strength', 'Allure', 'Intellect', 'Spirit'] as const
+export const bookCategoryOrder = ['Balanced', 'Strength', 'Allure', 'Intellect', 'Spirit'] as const
 
 /**
  * Get attribute background color class
