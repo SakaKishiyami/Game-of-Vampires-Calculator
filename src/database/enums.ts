@@ -5,22 +5,27 @@
 // Used for type safety and space optimization
 // =====================================================
 
-// Familiar Tier Enum (S, A, B, C, D)
+// Familiar Grade Enum (D → C → B → A → S → SS, worst to best)
 export enum FamiliarTier {
-  S = 0,
-  A = 1,
+  D = 0,
+  C = 1,
   B = 2,
-  C = 3,
-  D = 4
+  A = 3,
+  S = 4,
+  SS = 5
 }
 
 export const FamiliarTierMaxLevel: Record<FamiliarTier, number> = {
-  [FamiliarTier.S]: 50,
-  [FamiliarTier.A]: 40,
-  [FamiliarTier.B]: 30,
+  [FamiliarTier.D]: 10,
   [FamiliarTier.C]: 20,
-  [FamiliarTier.D]: 10
+  [FamiliarTier.B]: 30,
+  [FamiliarTier.A]: 40,
+  [FamiliarTier.S]: 50,
+  [FamiliarTier.SS]: 60
 };
+
+/** Display order for grades (D, C, B, A, S, SS) */
+export const FAMILIAR_GRADE_ORDER: string[] = ['D', 'C', 'B', 'A', 'S', 'SS']
 
 // Familiar Type Enum (placeholder - add actual types)
 export enum FamiliarType {
