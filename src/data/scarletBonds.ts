@@ -1,5 +1,4 @@
 // Scarlet bond data and level progression
-
 // Scarlet bond data with correct wardens and their attributes
 export const scarletBondData = [
   { lover: "April/Axel", warden: "Diana", type: "All", vip: 12, main: 0, mainPercent: 0 },

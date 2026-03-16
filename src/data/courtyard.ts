@@ -1,7 +1,6 @@
 // Courtyard level data based on the provided table
 // cost = points needed to upgrade, points = attribute increase amount
 // For singles: flat value, for dual: x2, for all: x4
-
 export const courtyardLevels = [
   { level: 1, cost: 10, points: 500 },
   { level: 2, cost: 10, points: 500 },

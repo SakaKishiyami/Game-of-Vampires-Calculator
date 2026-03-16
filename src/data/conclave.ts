@@ -1,4 +1,4 @@
-[
+export const conclaveLevels = [
   { level: 1, cost: 5300, warden: 50, books: 0.01 },
   { level: 2, cost: 5420, warden: 75, books: 0 },
   { level: 3, cost: 5540, warden: 100, books: 0.01 },
