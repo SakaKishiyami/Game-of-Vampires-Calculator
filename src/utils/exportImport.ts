@@ -4,6 +4,9 @@ import { GameCalculatorState } from '@/types'
 
 const CURRENT_VERSION = '1.0.0'
 
+/** Key used for localStorage and sessionStorage (match calculator save/load) */
+export const STORAGE_KEY = 'gameCalculatorData'
+
 /**
  * Export game calculator state to JSON file
  */

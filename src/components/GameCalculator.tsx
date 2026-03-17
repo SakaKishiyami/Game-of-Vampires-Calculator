@@ -21,10 +21,42 @@ import { domIncreasePerStarData } from "@/data/talent_stars"
 // Auth components
 import UserMenu from "@/components/UserMenu"
 import { getCurrentUser, supabase } from "@/lib/supabase"
+// Tab components – use context (single source of truth)
+import { useGameCalculator } from "@/context/GameCalculatorContext"
+import AuraBonusesTab from "@/components/tabs/AuraBonusesTab"
+import BooksTab from "@/components/tabs/BooksTab"
+import ConclaveTab from "@/components/tabs/ConclaveTab"
+import CourtyardTab from "@/components/tabs/CourtyardTab"
+import DataTab from "@/components/tabs/DataTab"
 
 export default function GameCalculator() {
-  // Tab state
   const [activeTab, setActiveTab] = useState("aura-bonuses")
+  // Use context so tab components and inline tabs share the same state
+  const {
+    baseAttributes, setBaseAttributes, vipLevel, setVipLevel, lordLevel, setLordLevel,
+    books, setBooks, conclave, setConclave, conclaveUpgrade, setConclaveUpgrade,
+    courtyard, setCourtyard, wardenCounts, setWardenCounts, selectedWardens, setSelectedWardens,
+    wardenSkins, setWardenSkins, wardenStats, setWardenStats, uploadedWardenData, setUploadedWardenData,
+    hasNyx, setHasNyx, hasDracula, setHasDracula, hasVictor, setHasVictor, hasFrederick, setHasFrederick,
+    hasAgneyi, setHasAgneyi, hasCulann, setHasCulann, hasHela, setHasHela,
+    inventory, setInventory, inventoryImages, setInventoryImages,
+    scarletBond, setScarletBond, scarletBondAffinity, setScarletBondAffinity, optimizedBondLevels, setOptimizedBondLevels,
+    domIncreasePerStar, setDomIncreasePerStar, auras, setAuras,
+    talentScrolls, setTalentScrolls, talentScripts, setTalentScripts, talents, setTalents,
+    activeWardenTab, setActiveWardenTab, isUploading, setIsUploading, uploadError, setUploadError, ocrProgress, setOcrProgress,
+    isProcessingInventory, setIsProcessingInventory, inventoryProgress, setInventoryProgress, inventoryError, setInventoryError,
+    exportGameData, getExportState, importGameData,
+  } = useGameCalculator()
+  // Handlers (defined below) use the state/setters from context above
+
+  const [inventoryItemsPerRow, setInventoryItemsPerRow] = useState(4)
+  const inventoryGridCols: Record<number, string> = {
+    2: 'grid-cols-2',
+    3: 'grid-cols-3',
+    4: 'grid-cols-4',
+    5: 'grid-cols-5',
+    6: 'grid-cols-6',
+  }
 
   // Helper function to handle number input changes
   const handleNumberInputChange = (value: string, setter: (value: number) => void) => {
@@ -48,100 +80,6 @@ export default function GameCalculator() {
     }
     return value || 0
   }
-
-  // Base attributes
-  const [baseAttributes, setBaseAttributes] = useState({
-    strength: 0,
-    allure: 0,
-    intellect: 0,
-    spirit: 0,
-  })
-
-  // VIP and Lord Level
-  const [vipLevel, setVipLevel] = useState(0)
-  const [lordLevel, setLordLevel] = useState("Fledgling 1")
-
-  const [books, setBooks] = useState<BooksState>(initialBooks);
-
-  // Book bonus values are now imported from @/data/books
-
-  // Conclave
-  const [conclave, setConclave] = useState({
-    "Seal of Strength": 0,
-    "Seal of Allure": 0,
-    "Seal of Intellect": 0,
-    "Seal of Spirit": 0,
-  })
-
-  // Conclave seal upgrade settings
-  const [conclaveUpgrade, setConclaveUpgrade] = useState({
-    savedSeals: 0,
-    upgradeSeals: {
-      "Seal of Strength": true,
-      "Seal of Allure": true,
-      "Seal of Intellect": true,
-      "Seal of Spirit": true,
-    }
-  })
-
-  // Dom increase per star data
-  const [domIncreasePerStar, setDomIncreasePerStar] = useState({
-    domIncreasePerStarData,
-    currentStrengthStars: 0,
-    currentAllureStars: 0,
-    currentIntellectStars: 0,
-    currentSpiritStars: 0,
-    currentTotalStars: 0,
-    currentTotalDomGain: 0,
-    currentTotalStrengthDomGain: 0,
-    currentTotalAllureDomGain: 0,
-    currentTotalIntellectDomGain: 0,
-    currentTotalSpiritDomGain: 0,
-    newStrengthStars: 0,
-    newAllureStars: 0,
-    newIntellectStars: 0,
-    newSpiritStars: 0,
-    newTotalStars: 0,
-    newTotalDomGain: 0,
-    newTotalStrengthDomGain: 0,
-    newTotalAllureDomGain: 0,
-    newTotalIntellectDomGain: 0,
-    newTotalSpiritDomGain: 0,
-  })
-
-  // Courtyard
-  const [courtyard, setCourtyard] = useState({
-    currentLevel: 1,
-    currentPoints: 0,
-  })
-
-  // Warden collections
-  const [wardenCounts, setWardenCounts] = useState({
-    circus: 0,
-    tyrants: 0,
-    noir: 0,
-    hunt: 0,
-  })
-
-  // Selected wardens
-  const [selectedWardens, setSelectedWardens] = useState({
-    circus: [],
-    tyrants: [],
-    noir: [],
-    hunt: [],
-  })
-
-  // Special wardens
-  const [hasNyx, setHasNyx] = useState(false)
-  const [hasDracula, setHasDracula] = useState(false)
-
-  // All wardens with their skins
-  const [wardenSkins, setWardenSkins] = useState<{
-    [wardenName: string]: {
-      [skinName: string]: boolean;
-    };
-  }>({})
-
 
   // Comprehensive warden list (excluding VIP and banner wardens)
   const allWardens = [
@@ -213,82 +151,6 @@ export default function GameCalculator() {
     { name: "Candace", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
   ]
 
-  // Warden stats
-  const [wardenStats, setWardenStats] = useState({})
-  
-  // Uploaded warden data with full attribute breakdowns
-  const [uploadedWardenData, setUploadedWardenData] = useState<{
-    [wardenName: string]: {
-      totalAttributes: number;
-      strength: {
-        total: number;
-        talentBonus: number;
-        bookBonus: number;
-        scarletBondBonus: number;
-        presenceBonus: number;
-        auraBonus: number;
-        conclaveBonus: number;
-        avatarBonus: number;
-        familiarBonus: number;
-      };
-      allure: {
-        total: number;
-        talentBonus: number;
-        bookBonus: number;
-        scarletBondBonus: number;
-        presenceBonus: number;
-        auraBonus: number;
-        conclaveBonus: number;
-        avatarBonus: number;
-        familiarBonus: number;
-      };
-      intellect: {
-        total: number;
-        talentBonus: number;
-        bookBonus: number;
-        scarletBondBonus: number;
-        presenceBonus: number;
-        auraBonus: number;
-        conclaveBonus: number;
-        avatarBonus: number;
-        familiarBonus: number;
-      };
-      spirit: {
-        total: number;
-        talentBonus: number;
-        bookBonus: number;
-        scarletBondBonus: number;
-        presenceBonus: number;
-        auraBonus: number;
-        conclaveBonus: number;
-        avatarBonus: number;
-        familiarBonus: number;
-      };
-    }
-  }>({})
-
-  // Upload state
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadError, setUploadError] = useState<string | null>(null)
-  const [ocrProgress, setOcrProgress] = useState<string>('')
-
-  // Inventory system state
-  const [inventory, setInventory] = useState<{
-    [itemName: string]: {
-      count: number;
-      lastUpdated: string;
-      imageUrl?: string;
-    }
-  }>({})
-  
-  const [inventoryImages, setInventoryImages] = useState<{
-    [itemName: string]: string;
-  }>({})
-  
-  const [isProcessingInventory, setIsProcessingInventory] = useState(false)
-  const [inventoryProgress, setInventoryProgress] = useState('')
-  const [inventoryError, setInventoryError] = useState<string | null>(null)
-  
   // Helper function to parse numbers with K/M suffixes
   const parseNumberWithSuffix = (value: string): number => {
     const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()
@@ -1452,45 +1314,7 @@ export default function GameCalculator() {
     }
   }
 
-  // Scarlet bond - per attribute inputs
-  const [scarletBond, setScarletBond] = useState<{
-    [key: string]: {
-      strengthLevel?: number
-      strengthPercent?: number
-      allureLevel?: number
-      allurePercent?: number
-      intellectLevel?: number
-      intellectPercent?: number
-      spiritLevel?: number
-      spiritPercent?: number
-    }
-  }>({})
-  const [scarletBondAffinity, setScarletBondAffinity] = useState({})
-
-  // Optimized bond levels (for DOM calculation)
-  const [optimizedBondLevels, setOptimizedBondLevels] = useState<{
-    [key: string]: {
-      strengthLevel?: number
-      strengthPercent?: number
-      allureLevel?: number
-      allurePercent?: number
-      intellectLevel?: number
-      intellectPercent?: number
-      spiritLevel?: number
-      spiritPercent?: number
-    }
-  }>({})
-
-  // Additional Special Wardens (extending existing Nyx/Dracula)
-  const [hasVictor, setHasVictor] = useState(false)
-  const [hasFrederick, setHasFrederick] = useState(false)
-
-  // Lovers (need to be summoned)
-  const [hasAgneyi, setHasAgneyi] = useState(false)
-  const [hasCulann, setHasCulann] = useState(false)
-  const [hasHela, setHasHela] = useState(false)
-
-  // Summonable characters (can be summoned with coins)
+  // Summonable characters (can be summoned with coins) – not in context; keep local
   const [hasFrances, setHasFrances] = useState(false)
   const [hasRaven, setHasRaven] = useState(false)
   const [hasMary, setHasMary] = useState(false)
@@ -1518,43 +1342,6 @@ export default function GameCalculator() {
   const [hasLucy, setHasLucy] = useState(false)
   const [hasRuna, setHasRuna] = useState(false)
 
-  // Talent Scrolls and Scripts
-  const [talents, setTalents] = useState({
-    // Random Talent Scrolls (with ranges)
-    randomTalentScroll: { count: 0, exp: 502.5 }, // Average of 5-1000 at ~40th percentile
-    talentScrollLvl4: { count: 0, exp: 60.5 }, // Average of 41-80 at ~40th percentile  
-    talentScrollLvl3: { count: 0, exp: 30.5 }, // Average of 21-40 at ~40th percentile
-    talentScrollLvl2: { count: 0, exp: 13 }, // Average of 6-20 at ~40th percentile
-    talentScrollLvl1: { count: 0, exp: 3 }, // Average of 1-5 at ~40th percentile
-    
-    // Fixed Talent Scrolls
-    basicTalentScroll: { count: 0, exp: 50 },
-    fineTalentScroll: { count: 0, exp: 100 },
-    superiorTalentScroll: { count: 0, exp: 200 },
-    
-    // Attribute Scripts (select one star level and quantity)
-    strengthScript: {
-      selectedStar: 0, // 0 means none selected, 1-6 for star levels
-      quantity: 0,
-      wardenLevel: 1
-    },
-    allureScript: {
-      selectedStar: 0,
-      quantity: 0,
-      wardenLevel: 1
-    },
-    intellectScript: {
-      selectedStar: 0,
-      quantity: 0,
-      wardenLevel: 1
-    },
-    spiritScript: {
-      selectedStar: 0,
-      quantity: 0,
-      wardenLevel: 1
-    }
-  })
-
   // Authentication state
   const [user, setUser] = useState<User | null>(null)
   const [autoLoadCloudSaves, setAutoLoadCloudSaves] = useState(true)
@@ -1564,9 +1351,6 @@ export default function GameCalculator() {
     local: { data: any; size: number; timestamp?: string } | null;
     cloud: { data: any; size: number; timestamp?: string } | null;
   }>({ local: null, cloud: null })
-
-  // Auras - Comprehensive warden data structure (imported from @/data/auras)
-  const [auras, setAuras] = useState(initialAuras)
 
   // Save/Load functionality
   const saveData = () => {
@@ -2273,9 +2057,6 @@ export default function GameCalculator() {
       console.error('Failed to load auto-saved data:', error)
     }
   }, [])
-
-  // Active warden subtab
-  const [activeWardenTab, setActiveWardenTab] = useState("summons")
 
   // Warden data (imported from @/data/wardens)
   // const wardenGroups is imported
@@ -4600,749 +4381,22 @@ export default function GameCalculator() {
 
           {/* Aura Bonuses Tab */}
           <TabsContent value="aura-bonuses">
-            <div className="space-y-6">
-              {/* Current Aura Bonuses Display */}
-              <Card className="bg-gray-800/50 border-gray-600">
-                <CardHeader>
-                  <CardTitle className="text-red-400">Current Aura Bonuses</CardTitle>
-                  <div className="text-sm text-gray-300">
-                    Showing current percentage bonuses from all aura sources (base 100% + aura bonuses)
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-6">
-                    {/* Talent Bonuses */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-yellow-400">Talent Bonuses</h3>
-                      <div className="space-y-3">
-                        {attributeOrder.map((attribute) => (
-                          <div key={attribute} className="flex justify-between items-center p-3 rounded bg-gray-700/50">
-                            <span className={`capitalize font-medium ${getAttributeColor(attribute)}`}>
-                              {attribute} Talents
-                            </span>
-                            <span className="text-xl font-bold text-white">
-                              {auraBonuses.talents[attribute].toFixed(1)}%
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Book Bonuses */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-blue-400">Book Bonuses</h3>
-                      <div className="space-y-3">
-                        {attributeOrder.map((attribute) => (
-                          <div key={attribute} className="flex justify-between items-center p-3 rounded bg-gray-700/50">
-                            <span className={`capitalize font-medium ${getAttributeColor(attribute)}`}>
-                              {attribute} Books
-                            </span>
-                            <span className="text-xl font-bold text-white">
-                              {auraBonuses.books[attribute].toFixed(1)}%
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Aura Breakdown by Source */}
-              <Card className="bg-gray-800/50 border-gray-600">
-                <CardHeader>
-                  <CardTitle className="text-red-400">Aura Sources Breakdown</CardTitle>
-                  <div className="text-sm text-gray-300">
-                    Detailed breakdown of bonuses from each aura source
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    {/* Wild Hunt */}
-                    <div>
-                      <h3 className="text-lg font-semibold text-green-400 mb-3">Wild Hunt Wardens (Talent Bonuses)</h3>
-                      <div className="text-sm text-gray-300 mb-3">
-                        Selected: {(selectedWardens.hunt || []).length}/4 | 
-                        Base Level: {(selectedWardens.hunt || []).length > 0 ? 9 + Math.max(0, (selectedWardens.hunt || []).length - 1) : 0}
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        {Object.entries(dynamicAuras.wildHunt).map(([wardenName, wardenData]) => {
-                          const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
-                          const isSelected = (selectedWardens.hunt || []).includes(wardenName)
-                          const secondaryAura = auras.secondaryAuras?.wildHunt[wardenName]
-                          const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
-                          return (
-                            <div key={wardenName} className={`p-3 rounded ${isSelected ? 'bg-green-500/20 border border-green-500/30' : 'bg-gray-700/30'}`}>
-                              <div className="flex justify-between items-center mb-2">
-                                <div>
-                                  <span className={`font-medium ${isSelected ? 'text-green-300' : 'text-gray-500'}`}>{wardenName}</span>
-                                  <div className="text-xs text-gray-400">{wardenData.type}</div>
-                                  <div className="text-xs text-gray-400">Primary: Level {wardenData.current}/{wardenData.max}</div>
-                                </div>
-                                <span className={`text-lg font-bold ${isSelected ? 'text-green-400' : 'text-gray-500'}`}>
-                                  +{currentBonus}%
-                                </span>
-                              </div>
-                              {secondaryAura && (
-                                <div className="border-t border-gray-600 pt-2">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <Label className="text-xs text-gray-300">Secondary Aura:</Label>
-                                      <Input
-                                        type="number"
-                                        min="0"
-                                        max="20"
-                                        value={secondaryAura.current}
-                                        onChange={(e) =>
-                                          setAuras((prev) => ({
-                                            ...prev,
-                                            secondaryAuras: {
-                                              ...prev.secondaryAuras,
-                                              wildHunt: {
-                                                ...prev.secondaryAuras.wildHunt,
-                                                [wardenName]: {
-                                                  ...prev.secondaryAuras.wildHunt[wardenName],
-                                                  current: Number.parseInt(e.target.value) || 0,
-                                                },
-                                              },
-                                            },
-                                          }))
-                                        }
-                                        className="w-16 h-6 text-xs bg-gray-600 border-gray-500 text-white"
-                                      />
-                                      <span className="text-xs text-gray-400">/20</span>
-                                    </div>
-                                    <span className="text-sm font-semibold text-yellow-400">
-                                      +{secondaryBonus}%
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Monster Noir */}
-                    <div>
-                      <h3 className="text-lg font-semibold text-purple-400 mb-3">Monster Noir Wardens (Book Bonuses)</h3>
-                      <div className="text-sm text-gray-300 mb-3">
-                        Selected: {(selectedWardens.noir || []).length}/4 | 
-                        Base Level: {(selectedWardens.noir || []).length > 0 ? 9 + Math.max(0, (selectedWardens.noir || []).length - 1) : 0}
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        {Object.entries(dynamicAuras.monsterNoir).map(([wardenName, wardenData]) => {
-                          const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
-                          const isSelected = (selectedWardens.noir || []).includes(wardenName)
-                          const secondaryAura = auras.secondaryAuras?.monsterNoir[wardenName]
-                          const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
-                          return (
-                            <div key={wardenName} className={`p-3 rounded ${isSelected ? 'bg-purple-500/20 border border-purple-500/30' : 'bg-gray-700/30'}`}>
-                              <div className="flex justify-between items-center mb-2">
-                                <div>
-                                  <span className={`font-medium ${isSelected ? 'text-purple-300' : 'text-gray-500'}`}>{wardenName}</span>
-                                  <div className="text-xs text-gray-400">{wardenData.type}</div>
-                                  <div className="text-xs text-gray-400">Primary: Level {wardenData.current}/{wardenData.max}</div>
-                                </div>
-                                <span className={`text-lg font-bold ${isSelected ? 'text-purple-400' : 'text-gray-500'}`}>
-                                  +{currentBonus}%
-                                </span>
-                              </div>
-                              {secondaryAura && (
-                                <div className="border-t border-gray-600 pt-2">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <Label className="text-xs text-gray-300">Secondary Aura:</Label>
-                                      <Input
-                                        type="number"
-                                        min="0"
-                                        max="20"
-                                        value={secondaryAura.current}
-                                        onChange={(e) =>
-                                          setAuras((prev) => ({
-                                            ...prev,
-                                            secondaryAuras: {
-                                              ...prev.secondaryAuras,
-                                              monsterNoir: {
-                                                ...prev.secondaryAuras.monsterNoir,
-                                                [wardenName]: {
-                                                  ...prev.secondaryAuras.monsterNoir[wardenName],
-                                                  current: Number.parseInt(e.target.value) || 0,
-                                                },
-                                              },
-                                            },
-                                          }))
-                                        }
-                                        className="w-16 h-6 text-xs bg-gray-600 border-gray-500 text-white"
-                                      />
-                                      <span className="text-xs text-gray-400">/20</span>
-                                    </div>
-                                    <span className="text-sm font-semibold text-yellow-400">
-                                      +{secondaryBonus}%
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Bloody Tyrants */}
-                    <div>
-                      <h3 className="text-lg font-semibold text-red-400 mb-3">Bloody Tyrants Wardens (Book Bonuses)</h3>
-                      <div className="text-sm text-gray-300 mb-3">
-                        Selected: {(selectedWardens.tyrants || []).length}/5 | 
-                        Base Level: {(selectedWardens.tyrants || []).length > 0 ? 10 + Math.max(0, (selectedWardens.tyrants || []).length - 1) : 0}
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        {Object.entries(dynamicAuras.bloodyTyrants).map(([wardenName, wardenData]) => {
-                          const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
-                          const isSelected = (selectedWardens.tyrants || []).includes(wardenName)
-                          const secondaryAura = auras.secondaryAuras?.bloodyTyrants[wardenName]
-                          const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
-                          return (
-                            <div key={wardenName} className={`p-3 rounded ${isSelected ? 'bg-red-500/20 border border-red-500/30' : 'bg-gray-700/30'}`}>
-                              <div className="flex justify-between items-center mb-2">
-                                <div>
-                                  <span className={`font-medium ${isSelected ? 'text-red-300' : 'text-gray-500'}`}>{wardenName}</span>
-                                  <div className="text-xs text-gray-400">{wardenData.type}</div>
-                                  <div className="text-xs text-gray-400">Primary: Level {wardenData.current}/{wardenData.max}</div>
-                                </div>
-                                <span className={`text-lg font-bold ${isSelected ? 'text-red-400' : 'text-gray-500'}`}>
-                                  +{currentBonus}%
-                                </span>
-                              </div>
-                              {secondaryAura && (
-                                <div className="border-t border-gray-600 pt-2">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <Label className="text-xs text-gray-300">Secondary Aura:</Label>
-                                      <Input
-                                        type="number"
-                                        min="0"
-                                        max="20"
-                                        value={secondaryAura.current}
-                                        onChange={(e) =>
-                                          setAuras((prev) => ({
-                                            ...prev,
-                                            secondaryAuras: {
-                                              ...prev.secondaryAuras,
-                                              bloodyTyrants: {
-                                                ...prev.secondaryAuras.bloodyTyrants,
-                                                [wardenName]: {
-                                                  ...prev.secondaryAuras.bloodyTyrants[wardenName],
-                                                  current: Number.parseInt(e.target.value) || 0,
-                                                },
-                                              },
-                                            },
-                                          }))
-                                        }
-                                        className="w-16 h-6 text-xs bg-gray-600 border-gray-500 text-white"
-                                      />
-                                      <span className="text-xs text-gray-400">/20</span>
-                                    </div>
-                                    <span className="text-sm font-semibold text-yellow-400">
-                                      +{secondaryBonus}%
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Cirque du Macabre */}
-                    <div>
-                      <h3 className="text-lg font-semibold text-orange-400 mb-3">Cirque du Macabre Wardens (Book Bonuses)</h3>
-                      <div className="text-sm text-gray-300 mb-3">
-                        Selected: {(selectedWardens.circus || []).length}/5 | 
-                        Base Level: {(selectedWardens.circus || []).length > 0 ? 10 + Math.max(0, (selectedWardens.circus || []).length - 1) : 0}
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        {Object.entries(dynamicAuras.cirque).map(([wardenName, wardenData]) => {
-                          const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
-                          const isSelected = (selectedWardens.circus || []).includes(wardenName)
-                          const secondaryAura = auras.secondaryAuras?.cirque[wardenName]
-                          const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
-                          return (
-                            <div key={wardenName} className={`p-3 rounded ${isSelected ? 'bg-orange-500/20 border border-orange-500/30' : 'bg-gray-700/30'}`}>
-                              <div className="flex justify-between items-center mb-2">
-                                <div>
-                                  <span className={`font-medium ${isSelected ? 'text-orange-300' : 'text-gray-500'}`}>{wardenName}</span>
-                                  <div className="text-xs text-gray-400">{wardenData.type}</div>
-                                  <div className="text-xs text-gray-400">Primary: Level {wardenData.current}/{wardenData.max}</div>
-                                </div>
-                                <span className={`text-lg font-bold ${isSelected ? 'text-orange-400' : 'text-gray-500'}`}>
-                                  +{currentBonus}%
-                                </span>
-                              </div>
-                              {secondaryAura && (
-                                <div className="border-t border-gray-600 pt-2">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <Label className="text-xs text-gray-300">Secondary Aura:</Label>
-                                      <Input
-                                        type="number"
-                                        min="0"
-                                        max="20"
-                                        value={secondaryAura.current}
-                                        onChange={(e) =>
-                                          setAuras((prev) => ({
-                                            ...prev,
-                                            secondaryAuras: {
-                                              ...prev.secondaryAuras,
-                                              cirque: {
-                                                ...prev.secondaryAuras.cirque,
-                                                [wardenName]: {
-                                                  ...prev.secondaryAuras.cirque[wardenName],
-                                                  current: Number.parseInt(e.target.value) || 0,
-                                                },
-                                              },
-                                            },
-                                          }))
-                                        }
-                                        className="w-16 h-6 text-xs bg-gray-600 border-gray-500 text-white"
-                                      />
-                                      <span className="text-xs text-gray-400">/20</span>
-                                    </div>
-                                    <span className="text-sm font-semibold text-yellow-400">
-                                      +{secondaryBonus}%
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Lovers (if any are active) */}
-                    {(hasAgneyi || hasCulann || hasHela) && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-pink-400 mb-3">Lovers (Scarlet Bond Bonuses)</h3>
-                        <div className="text-sm text-gray-300 mb-3">
-                          Summoned: {[hasAgneyi, hasCulann, hasHela].filter(Boolean).length}/3 | 
-                          Bonus Level: {(() => {
-                            const count = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
-                            if (count === 0) return "0%"
-                            if (count === 1) return "20%"
-                            if (count === 2) return "25%"
-                            return "30%"
-                          })()}
-                        </div>
-                        <div className="grid grid-cols-3 gap-4">
-                          {Object.entries(dynamicAuras.lovers || {}).map(([loverName, loverData]) => {
-                            const isSelected = (loverName === "Agneyi" && hasAgneyi) || 
-                                             (loverName === "Culann" && hasCulann) || 
-                                             (loverName === "Hela" && hasHela)
-                            const currentBonus = loverData.current
-                            return (
-                              <div key={loverName} className={`p-3 rounded ${isSelected ? 'bg-pink-500/20 border border-pink-500/30' : 'bg-gray-700/30'}`}>
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <span className={`font-medium ${isSelected ? 'text-pink-300' : 'text-gray-500'}`}>{loverName}</span>
-                                    <div className="text-xs text-gray-400">{loverData.type}</div>
-                                    <div className="text-xs text-gray-400">{isSelected ? 'Summoned' : 'Not Summoned'}</div>
-                                  </div>
-                                  <span className={`text-lg font-bold ${isSelected ? 'text-pink-400' : 'text-gray-500'}`}>
-                                    +{currentBonus}%
-                                  </span>
-                                </div>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* VIP Wardens (if any are active) */}
-                    {vipLevel > 0 && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-yellow-400 mb-3">VIP Wardens (VIP {vipLevel})</h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          {Object.entries(auras.vip)
-                            .filter(([_, wardenData]) => vipLevel >= wardenData.vipRequired)
-                            .map(([wardenName, wardenData]) => (
-                              <div key={wardenName} className="flex justify-between items-center p-3 rounded bg-gray-700/30">
-                                <div>
-                                  <span className="text-white font-medium">{wardenName}</span>
-                                  <div className="text-xs text-gray-400">VIP {wardenData.vipRequired} Required</div>
-                                  {wardenData.talents ? (
-                                    <div className="text-xs text-gray-400">
-                                      Talents: {wardenData.talents.current}% | Books: {wardenData.books.current}%
-                                    </div>
-                                  ) : (
-                                    <div className="text-xs text-gray-400">{wardenData.type}: {wardenData.current}%</div>
-                                  )}
-                                </div>
-                                <div className="text-right">
-                                  {wardenData.talents ? (
-                                    <>
-                                      <div className="text-sm font-bold text-yellow-400">T: +{wardenData.talents.current}%</div>
-                                      <div className="text-sm font-bold text-blue-400">B: +{wardenData.books.current}%</div>
-                                    </>
-                                  ) : (
-                                    <span className="text-lg font-bold text-yellow-400">
-                                      +{wardenData.current}%
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Special Wardens (if any are active) */}
-                    {(hasNyx || hasDracula) && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-purple-400 mb-3">Special Wardens</h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          {hasNyx && (
-                            <div className="flex justify-between items-center p-3 rounded bg-gray-700/30">
-                              <div>
-                                <span className="text-white font-medium">Nyx</span>
-                                <div className="text-xs text-gray-400">
-                                  Talents: {auras.special.Nyx.talents.current}% | Books: {auras.special.Nyx.books.current}%
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-sm font-bold text-yellow-400">T: +{auras.special.Nyx.talents.current}%</div>
-                                <div className="text-sm font-bold text-blue-400">B: +{auras.special.Nyx.books.current}%</div>
-                              </div>
-                            </div>
-                          )}
-                          {hasDracula && (
-                            <div className="flex justify-between items-center p-3 rounded bg-gray-700/30">
-                              <div>
-                                <span className="text-white font-medium">Dracula</span>
-                                <div className="text-xs text-gray-400">
-                                  Talents: {auras.special.Dracula.talents.current}% | Books: {auras.special.Dracula.books.current}%
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-sm font-bold text-yellow-400">T: +{auras.special.Dracula.talents.current}%</div>
-                                <div className="text-sm font-bold text-blue-400">B: +{auras.special.Dracula.books.current}%</div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <AuraBonusesTab />
           </TabsContent>
 
           {/* Conclave Tab */}
           <TabsContent value="conclave">
-            <div className="space-y-6">
-              {/* Current Seal Levels */}
-              <Card className="bg-gray-800/50 border-gray-600">
-                <CardHeader>
-                  <CardTitle className="text-red-400">Current Seal Levels</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
-                    {Object.entries(conclave)
-                      .filter(([seal]) => seal !== "Conclave Points")
-                      .map(([seal, level]) => (
-                        <div key={seal}>
-                          <Label className="text-white">{seal}</Label>
-                          <Input
-                            type="number"
-                            value={getDisplayValue(level)}
-                            onChange={(e) => {
-                              const value = e.target.value
-                              if (value === '' || value === '-') {
-                                return
-                              }
-                              const numValue = parseInt(value) || 0
-                              setConclave((prev) => ({
-                                ...prev,
-                                [seal]: numValue,
-                              }))
-                            }}
-                            onBlur={(e) => {
-                              const value = e.target.value
-                              const numValue = value === '' ? 0 : parseInt(value) || 0
-                              setConclave((prev) => ({
-                                ...prev,
-                                [seal]: numValue,
-                              }))
-                            }}
-                            className="mt-2 bg-gray-700 border-gray-600 text-white"
-                          />
-                        </div>
-                      ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Seal Upgrade Planning */}
-              <Card className="bg-gray-800/50 border-gray-600">
-                <CardHeader>
-                  <CardTitle className="text-red-400">Seal Upgrade Planning</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Saved Seals Input */}
-                    <div>
-                      <Label className="text-white">Saved Conclave Seals</Label>
-                      <Input
-                        type="number"
-                        value={getDisplayValue(conclaveUpgrade.savedSeals)}
-                        onChange={(e) => {
-                          const value = e.target.value
-                          if (value === '' || value === '-') {
-                            return
-                          }
-                          const numValue = parseInt(value) || 0
-                          setConclaveUpgrade((prev) => ({
-                            ...prev,
-                            savedSeals: numValue,
-                          }))
-                        }}
-                        onBlur={(e) => {
-                          const value = e.target.value
-                          const numValue = value === '' ? 0 : parseInt(value) || 0
-                          setConclaveUpgrade((prev) => ({
-                            ...prev,
-                            savedSeals: numValue,
-                          }))
-                        }}
-                        className="mt-2 bg-gray-700 border-gray-600 text-white"
-                      />
-                    </div>
-
-                    {/* Seal Selection Checkboxes */}
-                    <div>
-                      <Label className="text-white text-lg block mb-3">Select Seals to Upgrade:</Label>
-                      <div className="grid grid-cols-2 gap-4">
-                        {Object.entries(conclaveUpgrade.upgradeSeals).map(([seal, checked]) => (
-                          <div key={seal} className="flex items-center space-x-2">
-                            <Checkbox
-                              checked={checked}
-                              onCheckedChange={(checked) =>
-                                setConclaveUpgrade((prev) => ({
-                                  ...prev,
-                                  upgradeSeals: {
-                                    ...prev.upgradeSeals,
-                                    [seal]: checked as boolean,
-                                  }
-                                }))
-                              }
-                              className="border-gray-400"
-                            />
-                            <Label className="text-white">{seal}</Label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Upgrade Preview */}
-                    {conclaveUpgrade.savedSeals > 0 && (() => {
-                      const upgradePreview = calculateConclaveUpgrades()
-                      return upgradePreview.upgrades.length > 0 ? (
-                        <div className="border border-gray-600 rounded p-4 bg-gray-900/50">
-                          <h3 className="text-yellow-400 font-semibold mb-3">Optimal Upgrade Strategy</h3>
-                          <div className="space-y-3 text-sm">
-                            <div className="grid grid-cols-2 gap-4 mb-3">
-                              <p className="text-white">
-                                <span className="text-blue-400">Total Cost:</span> {upgradePreview.totalCost.toLocaleString()} seals
-                              </p>
-                              <p className="text-white">
-                                <span className="text-green-400">Total DOM Gain:</span> {upgradePreview.upgrades.reduce((sum, u) => sum + u.domGain, 0).toLocaleString()}
-                              </p>
-                            </div>
-                            {upgradePreview.upgrades
-                              .sort((a, b) => {
-                                // First sort by seal type (maintain attribute order)
-                                const aIndex = ["Seal of Strength", "Seal of Allure", "Seal of Intellect", "Seal of Spirit"].indexOf(a.sealType)
-                                const bIndex = ["Seal of Strength", "Seal of Allure", "Seal of Intellect", "Seal of Spirit"].indexOf(b.sealType)
-                                if (aIndex !== bIndex) return aIndex - bIndex
-                                // Then by target level (ascending)
-                                return a.targetLevel - b.targetLevel
-                              })
-                              .map((upgrade, index) => (
-                                <div key={index} className="border-l-2 border-blue-500 pl-3">
-                                  <div className="flex justify-between items-start mb-1">
-                                    <p className="text-green-400 font-medium">{upgrade.sealType}</p>
-                                    <p className="text-yellow-400 text-xs">
-                                      {upgrade.efficiency.toFixed(1)} DOM/seal
-                                    </p>
-                                  </div>
-                                  <p className="text-gray-300">
-                                    Level {upgrade.currentLevel} → {upgrade.targetLevel} 
-                                    (Cost: {upgrade.cost.toLocaleString()})
-                                  </p>
-                                  <p className="text-gray-300">
-                                    +{upgrade.wardenBonus.toLocaleString()} warden DOM, 
-                                    +{upgrade.bookMultiplier.toFixed(1)}% book multiplier
-                                  </p>
-                                  <p className="text-blue-300 text-xs">
-                                    Total DOM gain: {upgrade.domGain.toLocaleString()}
-                                  </p>
-                                </div>
-                              ))}
-                            <div className="border-t border-gray-600 pt-2 mt-3">
-                              <p className="text-gray-400 text-xs">
-                                ✨ Upgrades are ordered by attribute (Strength → Allure → Intellect → Spirit) then by level
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="border border-gray-600 rounded p-4 bg-gray-900/50">
-                          <p className="text-gray-400">No upgrades possible with current seal count</p>
-                        </div>
-                      )
-                    })()}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <ConclaveTab />
           </TabsContent>
 
           {/* Courtyard Tab */}
           <TabsContent value="courtyard">
-            <Card className="bg-gray-800/50 border-gray-600">
-              <CardHeader>
-                <CardTitle className="text-red-400">Courtyard</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <Label className="text-white">Current Level</Label>
-                    <Input
-                      type="number"
-                      value={courtyard.currentLevel}
-                      onChange={(e) =>
-                        setCourtyard((prev) => ({
-                          ...prev,
-                          currentLevel: Number.parseInt(e.target.value) || 1,
-                        }))
-                      }
-                      className="mt-2 bg-gray-700 border-gray-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-white">Current Points</Label>
-                    <Input
-                      type="number"
-                      value={getDisplayValue(courtyard.currentPoints)}
-                      onChange={(e) => {
-                        const value = e.target.value
-                        if (value === '' || value === '-') {
-                          return
-                        }
-                        const numValue = parseInt(value) || 0
-                        setCourtyard((prev) => ({
-                          ...prev,
-                          currentPoints: numValue,
-                        }))
-                      }}
-                      onBlur={(e) => {
-                        const value = e.target.value
-                        const numValue = value === '' ? 0 : parseInt(value) || 0
-                        setCourtyard((prev) => ({
-                          ...prev,
-                          currentPoints: numValue,
-                        }))
-                      }}
-                      className="mt-2 bg-gray-700 border-gray-600 text-white"
-                    />
-                  </div>
-                </div>
-                <div className="text-center p-4 bg-gray-700 rounded">
-                  <div className="text-xl font-bold text-green-400">Projected Level: {projectedLevel}</div>
-                  <div className="text-sm text-gray-300 mt-2">Based on current points and selected wardens</div>
-                </div>
-              </CardContent>
-            </Card>
+            <CourtyardTab />
           </TabsContent>
 
           {/* Books Tab */}
           <TabsContent value="books">
-            <Card className="bg-gray-800/50 border-gray-600">
-              <CardHeader>
-                <CardTitle className="text-red-400">Books</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  {bookCategoryOrder.map((category) => {
-                    const bookCollection = books[category as keyof BooksState]
-                    return (
-                    <Card key={category} className={`${getAttributeBg(category)} border`}>
-                      <CardHeader>
-                        <CardTitle className={`${getAttributeColor(category)} font-semibold`}>{category} Books</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {Object.entries(bookCollection)
-                            .sort((a, b) => {
-                              // Extract numbers from book names for proper numerical sorting
-                              const getNumber = (name: string) => {
-                                const match = name.match(/(\d+)/)
-                                return match ? parseInt(match[1]) : 0
-                              }
-                              return getNumber(a[0]) - getNumber(b[0])
-                            })
-                            .map(([bookName, count]) => (
-                            <div key={bookName}>
-                              <Label className="text-white text-sm">{bookName}</Label>
-                              <Input
-                                type="number"
-                                value={getDisplayValue(count)}
-                                onChange={(e) => {
-                                  const value = e.target.value
-                                  if (value === '' || value === '-') {
-                                    return
-                                  }
-                                  const newCount = parseInt(value) || 0
-                                  setBooks((prev) => ({
-                                    ...prev,
-                                    [category]: {
-                                      ...prev[category as keyof BooksState],
-                                      [bookName]: newCount,
-                                    },
-                                  }))
-                                  syncBooksToInventory(category, bookName, newCount)
-                                }}
-                                onBlur={(e) => {
-                                  const value = e.target.value
-                                  const newCount = value === '' ? 0 : parseInt(value) || 0
-                                  setBooks((prev) => ({
-                                    ...prev,
-                                    [category]: {
-                                      ...prev[category as keyof BooksState],
-                                      [bookName]: newCount,
-                                    },
-                                  }))
-                                  syncBooksToInventory(category, bookName, newCount)
-                                }}
-                                className="mt-1 bg-gray-700 border-gray-600 text-white"
-                              />
-                              <div className="text-xs text-gray-400 mt-1">
-                                Bonus: +{(count as number) * (bookBonuses[category as keyof typeof bookBonuses]?.[bookName as keyof typeof bookBonuses[typeof category]] || 0)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                    )
-                  })}
-                </div>
-              </CardContent>
-            </Card>
+            <BooksTab />
           </TabsContent>
 
           {/* Talents Tab */}
@@ -6656,6 +5710,8 @@ export default function GameCalculator() {
                           </div>
                         </CardContent>
                       </Card>
+                        </TabsContent>
+                      </Tabs>
                     </div>
                   )}
                 </div>
@@ -7095,42 +6151,54 @@ export default function GameCalculator() {
                   <TabsTrigger value="warden-equip" className="data-[state=active]:bg-red-600">Warden Equipment</TabsTrigger>
                 </TabsList>
 
-                {/* Inventory Image Upload */}
-                <Card className="bg-gray-800/50 border-gray-600 mt-4">
-                  <CardHeader>
-                    <CardTitle className="text-blue-400">📸 Upload Inventory Images</CardTitle>
-                    <div className="text-sm text-gray-300">
-                      Upload images of your inventory items to track them visually
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div>
-                        <input
-                          type="file"
-                          multiple
-                          accept=".png,.jpg,.jpeg"
-                          onChange={handleInventoryImageUpload}
-                          disabled={isProcessingInventory}
-                          className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
-                        />
-                      </div>
-                      {isProcessingInventory && (
-                        <div className="text-yellow-400">
-                          {inventoryProgress || "Processing images..."}
-                        </div>
-                      )}
-                      {inventoryError && (
-                        <div className="text-red-400 text-sm">
-                          {inventoryError}
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Items per row – applies to all inventory grids */}
+                <div className="flex items-center gap-3 mt-4 flex-wrap">
+                  <Label className="text-sm text-gray-300">Items per row:</Label>
+                  <select
+                    value={inventoryItemsPerRow}
+                    onChange={(e) => setInventoryItemsPerRow(Number(e.target.value))}
+                    className="bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm"
+                  >
+                    {[2, 3, 4, 5, 6].map((n) => (
+                      <option key={n} value={n}>{n}</option>
+                    ))}
+                  </select>
+                </div>
 
-                 {/* All Items Tab */}
+                 {/* All Items Tab – only here we show the upload */}
                  <TabsContent value="all" className="mt-4">
+                  <Card className="bg-gray-800/50 border-gray-600 mb-4">
+                    <CardHeader>
+                      <CardTitle className="text-blue-400">📸 Upload Inventory Images</CardTitle>
+                      <div className="text-sm text-gray-300">
+                        Upload images of your inventory items to track them visually (only on this tab).
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <input
+                            type="file"
+                            multiple
+                            accept=".png,.jpg,.jpeg"
+                            onChange={handleInventoryImageUpload}
+                            disabled={isProcessingInventory}
+                            className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:bg-gray-500"
+                          />
+                        </div>
+                        {isProcessingInventory && (
+                          <div className="text-yellow-400">
+                            {inventoryProgress || "Processing images..."}
+                          </div>
+                        )}
+                        {inventoryError && (
+                          <div className="text-red-400 text-sm">
+                            {inventoryError}
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
               <Card className="bg-gray-800/50 border-gray-600">
                 <CardHeader>
                        <CardTitle className="text-green-400">All Items</CardTitle>
@@ -7144,7 +6212,7 @@ export default function GameCalculator() {
                            No items in inventory
                          </div>
                        ) : (
-                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                         <div className={`grid gap-4 ${inventoryGridCols[inventoryItemsPerRow]}`}>
                            {Object.entries(inventory).map(([itemName, itemData]) => (
                              <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                                <img
@@ -7197,7 +6265,7 @@ export default function GameCalculator() {
                         {Object.entries(groupItemsByType(getItemsByCategory('Resources'))).map(([type, items]) => (
                           <div key={type}>
                             <h3 className="text-lg font-semibold text-blue-400 mb-4">{type}</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                      <div className={`grid gap-4 ${inventoryGridCols[inventoryItemsPerRow]}`}>
                               {items.map((itemName) => (
                           <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                             <img 
@@ -7254,7 +6322,7 @@ export default function GameCalculator() {
                             <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
                               {type}
                             </h3>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            <div className={`grid gap-4 ${inventoryGridCols[inventoryItemsPerRow]}`}>
                               {items.map((itemName) => (
                                 <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                                   <img 
@@ -7311,7 +6379,7 @@ export default function GameCalculator() {
                             <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
                               {type}
                             </h3>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            <div className={`grid gap-4 ${inventoryGridCols[inventoryItemsPerRow]}`}>
                               {items.map((itemName) => (
                                 <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                                   <img 
@@ -7362,7 +6430,7 @@ export default function GameCalculator() {
                       <CardTitle className="text-green-400">Familiar Items</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                      <div className={`grid gap-4 ${inventoryGridCols[inventoryItemsPerRow]}`}>
                         {getItemsByCategory('FamiliarItems').map((itemName) => (
                           <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                             <img 
@@ -7416,7 +6484,7 @@ export default function GameCalculator() {
                             <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
                               {type}
                             </h3>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            <div className={`grid gap-4 ${inventoryGridCols[inventoryItemsPerRow]}`}>
                               {items.map((itemName) => (
                                 <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                                   <img 
@@ -7473,7 +6541,7 @@ export default function GameCalculator() {
                             <h3 className="text-lg font-semibold text-blue-400 mb-4 border-b border-gray-600 pb-2">
                               {setName}
                             </h3>
-                            <div className={`grid gap-4 ${setName === 'Dusk' ? 'grid-cols-4 justify-start' : 'grid-cols-4'}`}>
+                            <div className={`grid gap-4 ${inventoryGridCols[inventoryItemsPerRow]} ${setName === 'Dusk' ? 'justify-start' : ''}`}>
                               {items.map((itemName) => (
                                 <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                                   <img 
@@ -7522,115 +6590,7 @@ export default function GameCalculator() {
 
           {/* Data Tab */}
           <TabsContent value="data">
-            <div className="space-y-6">
-              {/* Current Modifiers */}
-              <Card className="bg-gray-800/50 border-gray-600">
-                <CardHeader>
-                  <CardTitle className="text-red-400">Current Modifiers & Multipliers</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-yellow-400 font-semibold mb-3">Book Multipliers</h3>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <p className="text-white">
-                          <span className="text-blue-400">Strength Books:</span>{" "}
-                                                          {calculateTotalConclaveBonus().bookMultipliers.strength.toFixed(1)}%
-                        </p>
-                        <p className="text-white">
-                          <span className="text-blue-400">Allure Books:</span>{" "}
-                                                          {calculateTotalConclaveBonus().bookMultipliers.allure.toFixed(1)}%
-                        </p>
-                        <p className="text-white">
-                          <span className="text-blue-400">Intellect Books:</span>{" "}
-                                                          {calculateTotalConclaveBonus().bookMultipliers.intellect.toFixed(1)}%
-                        </p>
-                        <p className="text-white">
-                          <span className="text-blue-400">Spirit Books:</span>{" "}
-                                                          {calculateTotalConclaveBonus().bookMultipliers.spirit.toFixed(1)}%
-                        </p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-yellow-400 font-semibold mb-3">Warden Bonuses (per warden)</h3>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <p className="text-white">
-                          <span className="text-green-400">Strength Wardens:</span>{" "}
-                          +{calculateTotalConclaveBonus().wardenBonuses.strength.toLocaleString()} DOM each
-                        </p>
-                        <p className="text-white">
-                          <span className="text-green-400">Allure Wardens:</span>{" "}
-                          +{calculateTotalConclaveBonus().wardenBonuses.allure.toLocaleString()} DOM each
-                        </p>
-                        <p className="text-white">
-                          <span className="text-green-400">Intellect Wardens:</span>{" "}
-                          +{calculateTotalConclaveBonus().wardenBonuses.intellect.toLocaleString()} DOM each
-                        </p>
-                        <p className="text-white">
-                          <span className="text-green-400">Spirit Wardens:</span>{" "}
-                          +{calculateTotalConclaveBonus().wardenBonuses.spirit.toLocaleString()} DOM each
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-gray-600 pt-4">
-                      <h3 className="text-yellow-400 font-semibold mb-3">How Conclave Bonuses Work</h3>
-                      <div className="text-sm text-gray-300 space-y-2">
-                        <p>
-                          <span className="text-blue-400 font-medium">Book Multipliers:</span> All book DOM 
-                          is multiplied by the percentage shown. For balanced books (Encyclopedia/Arcana), 
-                          the highest multiplier of all attributes is used.
-                        </p>
-                        <p>
-                          <span className="text-green-400 font-medium">Warden Bonuses:</span> Each warden 
-                          you own adds the shown DOM amount for each matching attribute. Balance wardens 
-                          get bonuses for all four attributes.
-                        </p>
-                        <p>
-                          <span className="text-yellow-400 font-medium">Note:</span> These bonuses are 
-                          automatically included in your total DOM calculation above.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Upgrade Impact Preview */}
-              {conclaveUpgrade.savedSeals > 0 && (
-                <Card className="bg-gray-800/50 border-gray-600">
-                  <CardHeader>
-                    <CardTitle className="text-red-400">Potential Upgrade Impact</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-yellow-400 font-semibold mb-3">After Upgrades</h3>
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                          <p className="text-white">
-                            <span className="text-blue-400">Strength Books:</span>{" "}
-                                                            {calculateConclaveUpgrades().bookMultipliers.strength.toFixed(1)}%
-                          </p>
-                          <p className="text-white">
-                            <span className="text-blue-400">Allure Books:</span>{" "}
-                                                            {calculateConclaveUpgrades().bookMultipliers.allure.toFixed(1)}%
-                          </p>
-                          <p className="text-white">
-                            <span className="text-blue-400">Intellect Books:</span>{" "}
-                                                            {calculateConclaveUpgrades().bookMultipliers.intellect.toFixed(1)}%
-                          </p>
-                          <p className="text-white">
-                            <span className="text-blue-400">Spirit Books:</span>{" "}
-                                                            {calculateConclaveUpgrades().bookMultipliers.spirit.toFixed(1)}%
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+            <DataTab />
           </TabsContent>
         </Tabs>
         

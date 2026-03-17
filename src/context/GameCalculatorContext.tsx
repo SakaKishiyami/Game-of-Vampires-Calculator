@@ -118,6 +118,7 @@ interface GameCalculatorContextType {
   
   // Export/Import
   exportGameData: () => void
+  getExportState: () => Partial<GameCalculatorState>
   importGameData: (data: Partial<GameCalculatorState>) => void
   
   // Helper functions
@@ -340,6 +341,46 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     
     const { exportGameData: exportFn } = require('@/utils/exportImport')
     exportFn(state)
+  }, [
+    baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade,
+    courtyard, wardenCounts, selectedWardens, wardenSkins, wardenStats,
+    uploadedWardenData, inventory, inventoryImages, scarletBond,
+    scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
+    hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
+    hasHela, auras, talentScrolls, talentScripts
+  ])
+
+  const getExportState = useCallback((): Partial<GameCalculatorState> => {
+    return {
+    baseAttributes,
+    vipLevel,
+    lordLevel,
+    books,
+    conclave,
+    conclaveUpgrade,
+    courtyard,
+    wardenCounts,
+    selectedWardens,
+    wardenSkins,
+    wardenStats,
+    uploadedWardenData,
+    inventory,
+    inventoryImages,
+    scarletBond,
+    scarletBondAffinity,
+    optimizedBondLevels,
+    domIncreasePerStar,
+    hasNyx,
+    hasDracula,
+    hasVictor,
+    hasFrederick,
+    hasAgneyi,
+    hasCulann,
+    hasHela,
+    auras,
+    talentScrolls,
+    talentScripts,
+    }
   }, [
     baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade,
     courtyard, wardenCounts, selectedWardens, wardenSkins, wardenStats,
@@ -1033,6 +1074,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     talentScripts,
     setTalentScripts,
     exportGameData,
+    getExportState,
     importGameData,
     syncBooksToInventory,
     syncTalentsToInventory,
