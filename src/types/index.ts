@@ -208,4 +208,6 @@ export interface GameCalculatorState {
   // Talent scrolls and scripts
   talentScrolls: any
   talentScripts: any
+  // Familiars
+  familiars: any
 }

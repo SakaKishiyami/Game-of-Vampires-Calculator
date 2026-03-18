@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react'
 import { initialBooks, type BooksState } from '@/data/books'
+import { createInitialFamiliarsState, type FamiliarsState } from '@/data/familiars'
 import { initialAuras } from '@/data/auras'
 import { domIncreasePerStarData } from '@/data/talent_stars'
 import { wardenGroups, wardenAttributes } from '@/data/wardens'
@@ -87,6 +88,10 @@ interface GameCalculatorContextType {
   // Summonable characters (simplified - can expand later)
   summonableCharacters: { [key: string]: boolean }
   setSummonableCharacter: (name: string, value: boolean) => void
+  
+  // Familiars
+  familiars: FamiliarsState
+  setFamiliars: React.Dispatch<React.SetStateAction<FamiliarsState>>
   
   // Inventory
   inventory: Inventory
@@ -241,6 +246,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Inventory
+  const [familiars, setFamiliars] = useState<FamiliarsState>(createInitialFamiliarsState())
   const [inventory, setInventory] = useState<Inventory>({})
   const [inventoryImages, setInventoryImages] = useState<InventoryImages>({})
 
@@ -337,6 +343,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       auras,
       talentScrolls,
       talentScripts,
+      familiars,
     }
     
     const { exportGameData: exportFn } = require('@/utils/exportImport')
@@ -347,7 +354,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     uploadedWardenData, inventory, inventoryImages, scarletBond,
     scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
     hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
-    hasHela, auras, talentScrolls, talentScripts
+    hasHela, auras, talentScrolls, talentScripts, familiars
   ])
 
   const getExportState = useCallback((): Partial<GameCalculatorState> => {
@@ -380,6 +387,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     auras,
     talentScrolls,
     talentScripts,
+    familiars,
     }
   }, [
     baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade,
@@ -387,7 +395,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     uploadedWardenData, inventory, inventoryImages, scarletBond,
     scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
     hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
-    hasHela, auras, talentScrolls, talentScripts
+    hasHela, auras, talentScrolls, talentScripts, familiars
   ])
 
   const importGameData = useCallback((data: Partial<GameCalculatorState>) => {
@@ -419,6 +427,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     if (data.auras) setAuras(data.auras)
     if (data.talentScrolls) setTalentScrolls(data.talentScrolls)
     if (data.talentScripts) setTalentScripts(data.talentScripts)
+    if ((data as any).familiars) setFamiliars((data as any).familiars)
   }, [])
 
   // Helper function to sync inventory items with other systems
@@ -1067,6 +1076,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     setHasHela,
     summonableCharacters,
     setSummonableCharacter,
+    familiars,
+    setFamiliars,
     inventory,
     setInventory,
     inventoryImages,

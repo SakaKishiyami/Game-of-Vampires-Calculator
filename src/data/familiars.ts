@@ -1,148 +1,278 @@
 /**
- * Familiar system data and schema.
- * - Baby familiars upgrade into adult; each has normal and mutated states.
- * - Every familiar belongs to a nest (1–4 types per nest); nest bonuses by grade (D–SS).
- * - Image paths: fill in when PNGs are ready (e.g. /familiars/{id}/baby.png, baby_mutated.png, adult.png, adult_mutated.png).
+ * Familiar system data.
+ * Each familiar belongs to a nest. Nests grant attribute bonuses
+ * based on how many familiars in the nest are owned / upgraded.
+ *
+ * Image paths point to /FamiliarAssets/{Base|Exclusive}/{Name}/{Name}{B|BM|A|AM}.png
+ *   B = Baby, BM = Baby Mutation, A = Adult, AM = Adult Mutation
  */
 
-import { FAMILIAR_GRADE_ORDER } from '@/database/enums'
-
-// --- Grades (D, C, B, A, S, SS) ---
 export type FamiliarGrade = 'D' | 'C' | 'B' | 'A' | 'S' | 'SS'
-export const FAMILIAR_GRADES: FamiliarGrade[] = [...FAMILIAR_GRADE_ORDER] as FamiliarGrade[]
+export const FAMILIAR_GRADES: FamiliarGrade[] = ['D', 'C', 'B', 'A', 'S', 'SS']
 
-// --- Core type / Bond type / Rarity (extend as game data is finalized) ---
-export type FamiliarCoreType = string
-export type FamiliarBondType = string
-export type FamiliarRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
+export type FamiliarAttribute = 'Loyalty' | 'Ferocity' | 'Tenacity' | 'Instinct' | 'Mischief'
+export const ALL_FAMILIAR_ATTRIBUTES: FamiliarAttribute[] = ['Loyalty', 'Ferocity', 'Tenacity', 'Instinct', 'Mischief']
 
-/** Single familiar type definition (one species/type). */
 export interface FamiliarDefinition {
   id: string
   name: string
-  /** Nest this familiar belongs to (1–4 types per nest). */
-  nestId: string
-  coreType: FamiliarCoreType
-  bondType: FamiliarBondType
-  rarity: FamiliarRarity
-  /** Optional image paths; add when PNGs are ready. */
-  images?: {
-    baby?: string
-    babyMutated?: string
+  nestId: string | null
+  folder: 'Base' | 'Exclusive'
+  images: {
+    baby: string
+    babyMutation: string
     adult?: string
-    adultMutated?: string
+    adultMutation?: string
   }
 }
 
-/** Nest: group of 1–4 familiar types that share bonuses. */
+export interface NestLevel {
+  requirement: string
+  bonuses: Partial<Record<FamiliarAttribute, number>>
+}
+
 export interface NestDefinition {
   id: string
   name: string
-  /** Familiar type IDs in this nest. */
-  familiarTypeIds: string[]
+  familiarIds: string[]
+  levels: NestLevel[]
 }
 
-/** One owned instance of a familiar (baby or adult, normal or mutated, at a grade). */
-export interface UserFamiliarInstance {
-  definitionId: string
+export interface FamiliarOwnedState {
+  owned: boolean
   grade: FamiliarGrade
-  isAdult: boolean
-  isMutated: boolean
 }
 
-/** Per-type summary for inventory display. */
-export interface FamiliarTypeSummary {
-  definition: FamiliarDefinition
-  nest: NestDefinition
-  owned: number
-  adultCount: number
-  babyCount: number
-  mutatedCount: number
-  normalCount: number
-  bestGrade: FamiliarGrade | null
-}
+export type FamiliarsState = Record<string, FamiliarOwnedState>
 
-// --- Placeholder nests (replace with real game data) ---
-export const nests: NestDefinition[] = [
-  { id: 'nest-1', name: 'Shadow Hollow', familiarTypeIds: ['gloomcap', 'shadowfang'] },
-  { id: 'nest-2', name: 'Sunken Grove', familiarTypeIds: ['gloomcap', 'mossling', 'rootkin'] },
-  { id: 'nest-3', name: 'Frost Den', familiarTypeIds: ['frostbite', 'icewhisk'] },
-  { id: 'nest-4', name: 'Ember Roost', familiarTypeIds: ['emberwing', 'cinderpup', 'flamecrest', 'ashling'] },
-]
-
-// --- Placeholder familiar definitions (replace with full list and real image paths) ---
-export const familiarDefinitions: FamiliarDefinition[] = [
-  { id: 'gloomcap', name: 'Gloomcap', nestId: 'nest-1', coreType: 'Fungal', bondType: 'Shadow', rarity: 'common' },
-  { id: 'shadowfang', name: 'Shadowfang', nestId: 'nest-1', coreType: 'Beast', bondType: 'Shadow', rarity: 'uncommon' },
-  { id: 'mossling', name: 'Mossling', nestId: 'nest-2', coreType: 'Plant', bondType: 'Nature', rarity: 'common' },
-  { id: 'rootkin', name: 'Rootkin', nestId: 'nest-2', coreType: 'Plant', bondType: 'Nature', rarity: 'rare' },
-  { id: 'frostbite', name: 'Frostbite', nestId: 'nest-3', coreType: 'Elemental', bondType: 'Frost', rarity: 'uncommon' },
-  { id: 'icewhisk', name: 'Icewhisk', nestId: 'nest-3', coreType: 'Beast', bondType: 'Frost', rarity: 'rare' },
-  { id: 'emberwing', name: 'Emberwing', nestId: 'nest-4', coreType: 'Elemental', bondType: 'Flame', rarity: 'common' },
-  { id: 'cinderpup', name: 'Cinderpup', nestId: 'nest-4', coreType: 'Beast', bondType: 'Flame', rarity: 'uncommon' },
-  { id: 'flamecrest', name: 'Flamecrest', nestId: 'nest-4', coreType: 'Avian', bondType: 'Flame', rarity: 'rare' },
-  { id: 'ashling', name: 'Ashling', nestId: 'nest-4', coreType: 'Elemental', bondType: 'Flame', rarity: 'epic' },
-]
-
-// --- Helpers ---
-const nestById = new Map(nests.map((n) => [n.id, n]))
-const familiarById = new Map(familiarDefinitions.map((f) => [f.id, f]))
-
-export function getNestById(id: string): NestDefinition | undefined {
-  return nestById.get(id)
-}
-
-export function getFamiliarById(id: string): FamiliarDefinition | undefined {
-  return familiarById.get(id)
-}
-
-export function getFamiliarsByNest(nestId: string): FamiliarDefinition[] {
-  return familiarDefinitions.filter((f) => f.nestId === nestId)
-}
-
-/** Unique core types and bond types from current definitions (for filters). */
-export function getUniqueCoreTypes(): FamiliarCoreType[] {
-  const set = new Set(familiarDefinitions.map((f) => f.coreType))
-  return Array.from(set).sort()
-}
-
-export function getUniqueBondTypes(): FamiliarBondType[] {
-  const set = new Set(familiarDefinitions.map((f) => f.bondType))
-  return Array.from(set).sort()
-}
-
-/** Build per-type summary from user's owned instances. */
-export function buildFamiliarSummaries(
-  instances: UserFamiliarInstance[]
-): FamiliarTypeSummary[] {
-  const byType = new Map<string, UserFamiliarInstance[]>()
-  for (const i of instances) {
-    if (!byType.has(i.definitionId)) byType.set(i.definitionId, [])
-    byType.get(i.definitionId)!.push(i)
+// ---------------------------------------------------------------------------
+// Image path helpers
+// ---------------------------------------------------------------------------
+function basePaths(name: string): FamiliarDefinition['images'] {
+  const dir = `/FamiliarAssets/Base/${name}`
+  return {
+    baby: `${dir}/${name}B.png`,
+    babyMutation: `${dir}/${name}BM.png`,
+    adult: `${dir}/${name}A.png`,
+    adultMutation: `${dir}/${name}AM.png`,
   }
+}
 
-  return familiarDefinitions.map((definition) => {
-    const list = byType.get(definition.id) ?? []
-    const nest = getNestById(definition.nestId)
-    if (!nest) throw new Error(`Missing nest ${definition.nestId}`)
-    const adultCount = list.filter((x) => x.isAdult).length
-    const mutatedCount = list.filter((x) => x.isMutated).length
-    const gradeOrder = FAMILIAR_GRADES as readonly string[]
-    const bestGrade =
-      list.length > 0
-        ? (list.reduce((best, x) =>
-            gradeOrder.indexOf(x.grade) > gradeOrder.indexOf(best) ? x.grade : best
-          ) as FamiliarGrade)
-        : null
-    return {
-      definition,
-      nest,
-      owned: list.length,
-      adultCount,
-      babyCount: list.length - adultCount,
-      mutatedCount,
-      normalCount: list.length - mutatedCount,
-      bestGrade,
+function exclusivePaths(name: string, hasAdult = false): FamiliarDefinition['images'] {
+  const dir = `/FamiliarAssets/Exclusive/${name}`
+  return {
+    baby: `${dir}/${name}B.png`,
+    babyMutation: `${dir}/${name}BM.png`,
+    ...(hasAdult
+      ? { adult: `${dir}/${name}A.png`, adultMutation: `${dir}/${name}AM.png` }
+      : {}),
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Standard nest bonus pattern (shared by all non-Mythborn nests)
+// ---------------------------------------------------------------------------
+const standardNestLevels: NestLevel[] = [
+  { requirement: 'Own 2', bonuses: { Loyalty: 1, Ferocity: 1 } },
+  { requirement: '3 at C', bonuses: { Tenacity: 1, Instinct: 1, Mischief: 1 } },
+  { requirement: '3 at B', bonuses: { Loyalty: 1, Ferocity: 1, Tenacity: 1 } },
+  { requirement: '4 at A', bonuses: { Loyalty: 1, Instinct: 1, Mischief: 1 } },
+  { requirement: '4 at S', bonuses: { Ferocity: 1, Tenacity: 1, Instinct: 1 } },
+]
+
+const mythbornNestLevels: NestLevel[] = [
+  { requirement: '2 at A', bonuses: { Loyalty: 1, Ferocity: 1, Tenacity: 1, Instinct: 1, Mischief: 1 } },
+  { requirement: '2 at S', bonuses: { Loyalty: 1, Ferocity: 1, Tenacity: 1, Instinct: 1, Mischief: 1 } },
+  { requirement: '4 at S', bonuses: { Loyalty: 1, Ferocity: 1, Tenacity: 1, Instinct: 1, Mischief: 1 } },
+]
+
+// ---------------------------------------------------------------------------
+// Nest definitions
+// ---------------------------------------------------------------------------
+export const nests: NestDefinition[] = [
+  {
+    id: 'hollowmoor',
+    name: 'Hollowmoor',
+    familiarIds: ['gremlin', 'gargoyle', 'purraoh', 'gravehart'],
+    levels: standardNestLevels,
+  },
+  {
+    id: 'briargrove',
+    name: 'Briargrove',
+    familiarIds: ['gloomcap', 'pricklesaur', 'pixie', 'sungazer'],
+    levels: standardNestLevels,
+  },
+  {
+    id: 'shadewoods',
+    name: 'Shadewoods',
+    familiarIds: ['griphalkin', 'psychopomp', 'wraithwolf', 'imp'],
+    levels: standardNestLevels,
+  },
+  {
+    id: 'mistglen',
+    name: 'Mistglen',
+    familiarIds: ['zombunny', 'inkfeather', 'faefox', 'strixhorn'],
+    levels: standardNestLevels,
+  },
+  {
+    id: 'mythborn',
+    name: 'Mythborn',
+    familiarIds: ['peryton', 'ripplegleam', 'wyvern', 'clawbear'],
+    levels: mythbornNestLevels,
+  },
+  {
+    id: 'barrowhaunt',
+    name: 'Barrowhaunt',
+    familiarIds: ['gravescourge', 'frankenpug', 'faeree'],
+    levels: standardNestLevels,
+  },
+  {
+    id: 'sylvanshore',
+    name: 'Sylvanshore',
+    familiarIds: ['lilypaddle'],
+    levels: standardNestLevels,
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Familiar definitions
+// ---------------------------------------------------------------------------
+export const familiarDefinitions: FamiliarDefinition[] = [
+  // Hollowmoor
+  { id: 'gremlin', name: 'Gremlin', nestId: 'hollowmoor', folder: 'Base', images: basePaths('Gremlin') },
+  { id: 'gargoyle', name: 'Gargoyle', nestId: 'hollowmoor', folder: 'Base', images: basePaths('Gargoyle') },
+  { id: 'purraoh', name: 'Purraoh', nestId: 'hollowmoor', folder: 'Base', images: basePaths('Purraoh') },
+  { id: 'gravehart', name: 'Gravehart', nestId: 'hollowmoor', folder: 'Base', images: basePaths('Gravehart') },
+
+  // Briargrove
+  { id: 'gloomcap', name: 'Gloomcap', nestId: 'briargrove', folder: 'Base', images: basePaths('Gloomcap') },
+  { id: 'pricklesaur', name: 'Pricklesaur', nestId: 'briargrove', folder: 'Base', images: basePaths('Pricklesaur') },
+  { id: 'pixie', name: 'Pixie', nestId: 'briargrove', folder: 'Base', images: basePaths('Pixie') },
+  { id: 'sungazer', name: 'Sungazer', nestId: 'briargrove', folder: 'Base', images: basePaths('Sungazer') },
+
+  // Shadewoods
+  { id: 'griphalkin', name: 'Griphalkin', nestId: 'shadewoods', folder: 'Base', images: basePaths('Griphalkin') },
+  { id: 'psychopomp', name: 'Psychopomp', nestId: 'shadewoods', folder: 'Base', images: basePaths('Psychopomp') },
+  { id: 'wraithwolf', name: 'Wraithwolf', nestId: 'shadewoods', folder: 'Base', images: basePaths('Wraithwolf') },
+  { id: 'imp', name: 'Imp', nestId: 'shadewoods', folder: 'Base', images: basePaths('Imp') },
+
+  // Mistglen
+  { id: 'zombunny', name: 'Zombunny', nestId: 'mistglen', folder: 'Base', images: basePaths('Zombunny') },
+  { id: 'inkfeather', name: 'Inkfeather', nestId: 'mistglen', folder: 'Base', images: basePaths('Inkfeather') },
+  { id: 'faefox', name: 'Faefox', nestId: 'mistglen', folder: 'Base', images: basePaths('Faefox') },
+  { id: 'strixhorn', name: 'Strixhorn', nestId: 'mistglen', folder: 'Base', images: basePaths('Strixhorn') },
+
+  // Mythborn (exclusive)
+  { id: 'peryton', name: 'Peryton', nestId: 'mythborn', folder: 'Exclusive', images: exclusivePaths('Peryton') },
+  { id: 'ripplegleam', name: 'Ripplegleam', nestId: 'mythborn', folder: 'Exclusive', images: exclusivePaths('Ripplegleam') },
+  { id: 'wyvern', name: 'Wyvern', nestId: 'mythborn', folder: 'Exclusive', images: exclusivePaths('Wyvern') },
+  { id: 'clawbear', name: 'Clawbear', nestId: 'mythborn', folder: 'Exclusive', images: exclusivePaths('Clawbear') },
+
+  // Barrowhaunt
+  { id: 'gravescourge', name: 'Gravescourge', nestId: 'barrowhaunt', folder: 'Base', images: basePaths('Gravescourge') },
+  { id: 'frankenpug', name: 'Frankenpug', nestId: 'barrowhaunt', folder: 'Base', images: basePaths('Frankenpug') },
+  { id: 'faeree', name: 'Faeree', nestId: 'barrowhaunt', folder: 'Base', images: basePaths('Faeree') },
+
+  // Sylvanshore
+  { id: 'lilypaddle', name: 'Lilypaddle', nestId: 'sylvanshore', folder: 'Base', images: basePaths('Lilypaddle') },
+
+  // No nest (base)
+  { id: 'boar', name: 'Boar', nestId: null, folder: 'Base', images: basePaths('Boar') },
+  { id: 'flower', name: 'Flower', nestId: null, folder: 'Base', images: basePaths('Flower') },
+  { id: 'frog', name: 'Frog', nestId: null, folder: 'Base', images: basePaths('Frog') },
+  { id: 'ghostdog', name: 'Ghostdog', nestId: null, folder: 'Base', images: basePaths('Ghostdog') },
+  { id: 'mechanicbat', name: 'MechanicBat', nestId: null, folder: 'Base', images: basePaths('MechanicBat') },
+  { id: 'otter', name: 'Otter', nestId: null, folder: 'Base', images: basePaths('Otter') },
+  { id: 'sprout', name: 'Sprout', nestId: null, folder: 'Base', images: basePaths('Sprout') },
+  { id: 'squirrel', name: 'Squirrel', nestId: null, folder: 'Base', images: basePaths('Squirrel') },
+
+  // No nest (exclusive)
+  { id: 'chicken', name: 'Chicken', nestId: null, folder: 'Exclusive', images: exclusivePaths('Chicken') },
+  { id: 'cyberus', name: 'Cyberus', nestId: null, folder: 'Exclusive', images: exclusivePaths('Cyberus') },
+  { id: 'unicorn', name: 'Unicorn', nestId: null, folder: 'Exclusive', images: exclusivePaths('Unicorn') },
+]
+
+// ---------------------------------------------------------------------------
+// Lookup helpers
+// ---------------------------------------------------------------------------
+const nestMap = new Map(nests.map(n => [n.id, n]))
+const familiarMap = new Map(familiarDefinitions.map(f => [f.id, f]))
+
+export function getNestById(id: string) { return nestMap.get(id) }
+export function getFamiliarById(id: string) { return familiarMap.get(id) }
+export function getFamiliarsByNest(nestId: string) {
+  return familiarDefinitions.filter(f => f.nestId === nestId)
+}
+
+// ---------------------------------------------------------------------------
+// Initial state (all not-owned, default grade D)
+// ---------------------------------------------------------------------------
+export function createInitialFamiliarsState(): FamiliarsState {
+  const state: FamiliarsState = {}
+  for (const f of familiarDefinitions) {
+    state[f.id] = { owned: false, grade: 'D' }
+  }
+  return state
+}
+
+// ---------------------------------------------------------------------------
+// Nest level calculation
+// ---------------------------------------------------------------------------
+function gradeIndex(g: FamiliarGrade): number {
+  return FAMILIAR_GRADES.indexOf(g)
+}
+
+function parseRequirement(req: string): { type: 'own'; count: number } | { type: 'grade'; count: number; minGrade: FamiliarGrade } {
+  const ownMatch = req.match(/^Own (\d+)$/)
+  if (ownMatch) return { type: 'own', count: parseInt(ownMatch[1]) }
+  const gradeMatch = req.match(/^(\d+) at (\w+)$/)
+  if (gradeMatch) return { type: 'grade', count: parseInt(gradeMatch[1]), minGrade: gradeMatch[2] as FamiliarGrade }
+  return { type: 'own', count: 999 }
+}
+
+export function getNestLevel(nest: NestDefinition, familiarsState: FamiliarsState): number {
+  let achievedLevel = 0
+  for (let i = 0; i < nest.levels.length; i++) {
+    const req = parseRequirement(nest.levels[i].requirement)
+    const familiarStates = nest.familiarIds.map(id => familiarsState[id]).filter(Boolean)
+
+    if (req.type === 'own') {
+      const ownedCount = familiarStates.filter(s => s.owned).length
+      if (ownedCount >= req.count) achievedLevel = i + 1
+      else break
+    } else {
+      const atGradeCount = familiarStates.filter(
+        s => s.owned && gradeIndex(s.grade) >= gradeIndex(req.minGrade)
+      ).length
+      if (atGradeCount >= req.count) achievedLevel = i + 1
+      else break
     }
-  })
+  }
+  return achievedLevel
+}
+
+export function getNestBonuses(nest: NestDefinition, level: number): Record<FamiliarAttribute, number> {
+  const totals: Record<FamiliarAttribute, number> = {
+    Loyalty: 0, Ferocity: 0, Tenacity: 0, Instinct: 0, Mischief: 0
+  }
+  for (let i = 0; i < Math.min(level, nest.levels.length); i++) {
+    for (const [attr, val] of Object.entries(nest.levels[i].bonuses)) {
+      totals[attr as FamiliarAttribute] += val as number
+    }
+  }
+  return totals
+}
+
+export function getTotalFamiliarBonuses(familiarsState: FamiliarsState): Record<FamiliarAttribute, number> {
+  const totals: Record<FamiliarAttribute, number> = {
+    Loyalty: 0, Ferocity: 0, Tenacity: 0, Instinct: 0, Mischief: 0
+  }
+  for (const nest of nests) {
+    const level = getNestLevel(nest, familiarsState)
+    const bonuses = getNestBonuses(nest, level)
+    for (const attr of ALL_FAMILIAR_ATTRIBUTES) {
+      totals[attr] += bonuses[attr]
+    }
+  }
+  return totals
 }
