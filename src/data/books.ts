@@ -19,6 +19,7 @@ export const initialBooks: BooksState = {
     "Warfare II": 0,
     "Warfare III": 0,
     "Warfare IV": 0,
+    "Warfare V": 0,
     "Combat I": 0,
     "Combat II": 0
   },
@@ -28,6 +29,7 @@ export const initialBooks: BooksState = {
     "Glamor II": 0,
     "Glamor III": 0,
     "Glamor IV": 0,
+    "Glamor V": 0,
     "Beauty I": 0,
     "Beauty II": 0
   },
@@ -37,6 +39,7 @@ export const initialBooks: BooksState = {
     "Alchemy II": 0,
     "Alchemy III": 0,
     "Alchemy IV": 0,
+    "Alchemy V": 0,
     "History I": 0,
     "History II": 0
   },
@@ -46,6 +49,7 @@ export const initialBooks: BooksState = {
     "Occult II": 0,
     "Occult III": 0,
     "Occult IV": 0,
+    "Occult V": 0,
     "Mysticism I": 0,
     "Mysticism II": 0
   },
@@ -68,6 +72,7 @@ export const bookBonuses = {
     "Warfare II": 400,
     "Warfare III": 1000,
     "Warfare IV": 5000,
+    "Warfare V": 10000,
     "Combat I": 1500,
     "Combat II": 15000
   },
@@ -77,6 +82,7 @@ export const bookBonuses = {
     "Glamor II": 400,
     "Glamor III": 1000,
     "Glamor IV": 5000,
+    "Glamor V": 10000,
     "Beauty I": 1500,
     "Beauty II": 15000
   },
@@ -86,6 +92,7 @@ export const bookBonuses = {
     "Alchemy II": 400,
     "Alchemy III": 1000,
     "Alchemy IV": 5000,
+    "Alchemy V": 10000,
     "History I": 1500,
     "History II": 15000
   },
@@ -95,6 +102,7 @@ export const bookBonuses = {
     "Occult II": 400,
     "Occult III": 1000,
     "Occult IV": 5000,
+    "Occult V": 10000,
     "Mysticism I": 1500,
     "Mysticism II": 15000
   },

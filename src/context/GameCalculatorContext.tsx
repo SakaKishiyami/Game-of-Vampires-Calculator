@@ -451,6 +451,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Warfare III": newCount } }))
     } else if (itemName === 'Strength4') {
       setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Warfare IV": newCount } }))
+    } else if (itemName === 'Strength6') {
+      setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Warfare V": newCount } }))
     } else if (itemName === 'Strength15(1)') {
       setBooks(prev => ({ ...prev, Strength: { ...prev.Strength, "Combat I": newCount } }))
     } else if (itemName === 'Strength15(2)') {
@@ -463,6 +465,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Glamor III": newCount } }))
     } else if (itemName === 'Allure4') {
       setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Glamor IV": newCount } }))
+    } else if (itemName === 'Allure5') {
+      setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Glamor V": newCount } }))
     } else if (itemName === 'Allure15(1)') {
       setBooks(prev => ({ ...prev, Allure: { ...prev.Allure, "Beauty I": newCount } }))
     } else if (itemName === 'Allure15(2)') {
@@ -475,6 +479,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "Alchemy III": newCount } }))
     } else if (itemName === 'Intellect4') {
       setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "Alchemy IV": newCount } }))
+    } else if (itemName === 'Intellect5') {
+      setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "Alchemy V": newCount } }))
     } else if (itemName === 'Intellect15(1)') {
       setBooks(prev => ({ ...prev, Intellect: { ...prev.Intellect, "History I": newCount } }))
     } else if (itemName === 'Intellect15(2)') {
@@ -487,6 +493,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Occult III": newCount } }))
     } else if (itemName === 'Spirit4') {
       setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Occult IV": newCount } }))
+    } else if (itemName === 'Spirit5') {
+      setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Occult V": newCount } }))
     } else if (itemName === 'Spirit15(1)') {
       setBooks(prev => ({ ...prev, Spirit: { ...prev.Spirit, "Mysticism I": newCount } }))
     } else if (itemName === 'Spirit15(2)') {
@@ -529,6 +537,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       else if (bookName === 'Warfare II') inventoryItemName = 'Strength2'
       else if (bookName === 'Warfare III') inventoryItemName = 'Strength3'
       else if (bookName === 'Warfare IV') inventoryItemName = 'Strength4'
+      else if (bookName === 'Warfare V') inventoryItemName = 'Strength6'
       else if (bookName === 'Combat I') inventoryItemName = 'Strength15(1)'
       else if (bookName === 'Combat II') inventoryItemName = 'Strength15(2)'
     } else if (category === 'Allure') {
@@ -536,6 +545,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       else if (bookName === 'Glamor II') inventoryItemName = 'Allure2'
       else if (bookName === 'Glamor III') inventoryItemName = 'Allure3'
       else if (bookName === 'Glamor IV') inventoryItemName = 'Allure4'
+      else if (bookName === 'Glamor V') inventoryItemName = 'Allure5'
       else if (bookName === 'Beauty I') inventoryItemName = 'Allure15(1)'
       else if (bookName === 'Beauty II') inventoryItemName = 'Allure15(2)'
     } else if (category === 'Intellect') {
@@ -543,6 +553,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       else if (bookName === 'Alchemy II') inventoryItemName = 'Intellect2'
       else if (bookName === 'Alchemy III') inventoryItemName = 'Intellect3'
       else if (bookName === 'Alchemy IV') inventoryItemName = 'Intellect4'
+      else if (bookName === 'Alchemy V') inventoryItemName = 'Intellect5'
       else if (bookName === 'History I') inventoryItemName = 'Intellect15(1)'
       else if (bookName === 'History II') inventoryItemName = 'Intellect15(2)'
     } else if (category === 'Spirit') {
@@ -550,6 +561,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       else if (bookName === 'Occult II') inventoryItemName = 'Spirit2'
       else if (bookName === 'Occult III') inventoryItemName = 'Spirit3'
       else if (bookName === 'Occult IV') inventoryItemName = 'Spirit4'
+      else if (bookName === 'Occult V') inventoryItemName = 'Spirit5'
       else if (bookName === 'Mysticism I') inventoryItemName = 'Spirit15(1)'
       else if (bookName === 'Mysticism II') inventoryItemName = 'Spirit15(2)'
     } else if (category === 'Balanced') {
