@@ -208,6 +208,7 @@ export default function WardensTab() {
     wardenSkins, setWardenSkins, wardenStats, setWardenStats,
     uploadedWardenData, setUploadedWardenData,
     hasNyx, setHasNyx, hasDracula, setHasDracula,
+    hasVictor, setHasVictor, hasFrederick, setHasFrederick,
     activeWardenTab, setActiveWardenTab,
     isUploading, setIsUploading, uploadError, setUploadError,
     ocrProgress, setOcrProgress,
@@ -302,43 +303,32 @@ export default function WardensTab() {
         {/* Special Wardens */}
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-white mb-3">Special Wardens</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className={`flex items-center gap-3 p-3 rounded border ${hasNyx ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-gray-700/30 border-gray-600'}`}>
-              <img
-                src="/Gov/Wardens/BaseWardens/Nyx.png"
-                alt="Nyx"
-                className="w-14 h-14 object-contain rounded flex-shrink-0"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-              />
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <Checkbox id="nyx" checked={hasNyx} onCheckedChange={setHasNyx} />
-                  <Label htmlFor="nyx" className="text-yellow-400 font-semibold text-base cursor-pointer">Nyx</Label>
+          <div className="flex flex-wrap gap-3">
+            {([
+              { name: "Nyx", id: "nyx", checked: hasNyx, onChange: setHasNyx, type: "Balance" },
+              { name: "Dracula", id: "dracula", checked: hasDracula, onChange: setHasDracula, type: "Balance" },
+              { name: "Victor", id: "victor", checked: hasVictor, onChange: setHasVictor, type: "Balance" },
+              { name: "Frederick", id: "frederick", checked: hasFrederick, onChange: setHasFrederick, type: "Allure" },
+            ] as const).map((warden) => (
+              <div
+                key={warden.id}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 border ${
+                  warden.checked ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-gray-700/50 border-gray-600'
+                }`}
+              >
+                <img
+                  src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
+                  alt={warden.name}
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
+                <div>
+                  <Label htmlFor={warden.id} className="text-yellow-400 font-medium cursor-pointer">{warden.name}</Label>
+                  <div className={`text-xs ${getAttributeColor(warden.type)}`}>{warden.type}</div>
                 </div>
-                <div className="flex gap-1 mt-1">
-                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">Balance</span>
-                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">All Attributes</span>
-                </div>
+                <Checkbox id={warden.id} checked={warden.checked} onCheckedChange={warden.onChange} />
               </div>
-            </div>
-            <div className={`flex items-center gap-3 p-3 rounded border ${hasDracula ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-gray-700/30 border-gray-600'}`}>
-              <img
-                src="/Gov/Wardens/BaseWardens/Dracula.png"
-                alt="Dracula"
-                className="w-14 h-14 object-contain rounded flex-shrink-0"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-              />
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <Checkbox id="dracula" checked={hasDracula} onCheckedChange={setHasDracula} />
-                  <Label htmlFor="dracula" className="text-yellow-400 font-semibold text-base cursor-pointer">Dracula</Label>
-                </div>
-                <div className="flex gap-1 mt-1">
-                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">Balance</span>
-                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">All Attributes</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 

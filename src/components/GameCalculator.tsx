@@ -23,7 +23,6 @@ import TalentsTab from "@/components/tabs/TalentsTab"
 import WardensTab from "@/components/tabs/WardensTab"
 import ScarletBondTab from "@/components/tabs/ScarletBondTab"
 import InventoryTab from "@/components/tabs/InventoryTab"
-import FamiliarsTab from "@/components/tabs/FamiliarsTab"
 import { getDisplayValue, getAttributeColor } from "@/utils/helpers"
 
 export default function GameCalculator() {
@@ -1000,7 +999,7 @@ export default function GameCalculator() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-10 bg-gray-800 mb-6">
+          <TabsList className="grid w-full grid-cols-9 bg-gray-800 mb-6">
             <TabsTrigger value="aura-bonuses" className="data-[state=active]:bg-red-600">
               Aura Bonuses
             </TabsTrigger>
@@ -1018,9 +1017,6 @@ export default function GameCalculator() {
             </TabsTrigger>
             <TabsTrigger value="wardens" className="data-[state=active]:bg-red-600">
               Wardens
-            </TabsTrigger>
-            <TabsTrigger value="familiars" className="data-[state=active]:bg-red-600">
-              Familiars
             </TabsTrigger>
             <TabsTrigger value="scarlet-bond" className="data-[state=active]:bg-red-600">
               Scarlet Bond
@@ -1061,11 +1057,6 @@ export default function GameCalculator() {
           {/* Wardens Tab */}
           <TabsContent value="wardens">
             <WardensTab />
-          </TabsContent>
-
-          {/* Familiars Tab */}
-          <TabsContent value="familiars">
-            <FamiliarsTab />
           </TabsContent>
 
           {/* Scarlet Bond Tab */}

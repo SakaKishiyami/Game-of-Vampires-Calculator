@@ -10,6 +10,16 @@
 export type FamiliarGrade = 'D' | 'C' | 'B' | 'A' | 'S' | 'SS'
 export const FAMILIAR_GRADES: FamiliarGrade[] = ['D', 'C', 'B', 'A', 'S', 'SS']
 
+// Max level per rank. Used to auto-switch Baby -> Adult.
+export const FAMILIAR_GRADE_MAX_LEVEL: Record<FamiliarGrade, number> = {
+  D: 10,
+  C: 20,
+  B: 30,
+  A: 40,
+  S: 50,
+  SS: 60,
+}
+
 export type FamiliarAttribute = 'Loyalty' | 'Ferocity' | 'Tenacity' | 'Instinct' | 'Mischief'
 export const ALL_FAMILIAR_ATTRIBUTES: FamiliarAttribute[] = ['Loyalty', 'Ferocity', 'Tenacity', 'Instinct', 'Mischief']
 
@@ -41,6 +51,9 @@ export interface NestDefinition {
 export interface FamiliarOwnedState {
   owned: boolean
   grade: FamiliarGrade
+  level: number
+  isAdult: boolean
+  isMutated: boolean
 }
 
 export type FamiliarsState = Record<string, FamiliarOwnedState>
@@ -210,7 +223,7 @@ export function getFamiliarsByNest(nestId: string) {
 export function createInitialFamiliarsState(): FamiliarsState {
   const state: FamiliarsState = {}
   for (const f of familiarDefinitions) {
-    state[f.id] = { owned: false, grade: 'D' }
+    state[f.id] = { owned: false, grade: 'D', level: 1, isAdult: false, isMutated: false }
   }
   return state
 }
