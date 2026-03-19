@@ -31,21 +31,22 @@ const ATTR_COLORS: Record<string, string> = {
 }
 
 const GRADE_BG: Record<FamiliarGrade, string> = {
-  D: 'bg-gray-700/60',
-  C: 'bg-green-700/50',
-  B: 'bg-blue-700/50',
-  A: 'bg-purple-700/50',
-  S: 'bg-amber-600/50',
-  SS: 'bg-red-600/50',
+  // D=turquoise, C=blue, B=purple, A=orange, S=red, SS=rainbow
+  D: 'bg-cyan-500/25',
+  C: 'bg-blue-500/25',
+  B: 'bg-purple-500/25',
+  A: 'bg-orange-500/25',
+  S: 'bg-red-500/25',
+  SS: 'bg-gradient-to-r from-red-500/25 via-yellow-500/25 via-lime-500/25 via-cyan-500/25 to-purple-500/25',
 }
 
 const GRADE_BORDER: Record<FamiliarGrade, string> = {
-  D: 'border-gray-500/40',
-  C: 'border-green-500/40',
-  B: 'border-blue-500/40',
-  A: 'border-purple-500/40',
-  S: 'border-amber-400/40',
-  SS: 'border-red-400/40',
+  D: 'border-cyan-300/45',
+  C: 'border-blue-300/45',
+  B: 'border-purple-300/45',
+  A: 'border-orange-300/45',
+  S: 'border-red-300/45',
+  SS: 'border-transparent ring-2 ring-white/35',
 }
 
 function rankIconSrc(grade: FamiliarGrade): string {
