@@ -1,3 +1,5 @@
+import type { FamiliarBondId } from './familiarBonds'
+
 /**
  * Familiar system data.
  * Each familiar belongs to a nest. Nests grant attribute bonuses
@@ -22,6 +24,21 @@ export const FAMILIAR_GRADE_MAX_LEVEL: Record<FamiliarGrade, number> = {
 
 export type FamiliarAttribute = 'Loyalty' | 'Ferocity' | 'Tenacity' | 'Instinct' | 'Mischief'
 export const ALL_FAMILIAR_ATTRIBUTES: FamiliarAttribute[] = ['Loyalty', 'Ferocity', 'Tenacity', 'Instinct', 'Mischief']
+
+export type FamiliarKnack =
+  | 'Gym'
+  | 'Conclave'
+  | 'Arena'
+  | 'League'
+  | 'Date'
+  | 'Crystal'
+  | 'Fishing'
+  | "Lover's Lodge"
+  | 'Workshop'
+  | 'Well'
+  | 'Mushroom'
+  | 'Dark Chasm'
+  | 'Other'
 
 export interface FamiliarDefinition {
   id: string
@@ -48,15 +65,22 @@ export interface NestDefinition {
   levels: NestLevel[]
 }
 
-export interface FamiliarOwnedState {
-  owned: boolean
+export interface FamiliarOwnedEntry {
+  id: string
   grade: FamiliarGrade
   level: number
   isAdult: boolean
   isMutated: boolean
+  // full familiar attribute values used for bond unlocking logic
+  attributes: Record<FamiliarAttribute, number>
+  mainAttributes: [FamiliarAttribute, FamiliarAttribute]
+  bondId: FamiliarBondId | null
+  // A-D: one knack, S/SS: two knacks (UI enforces this)
+  knacks: FamiliarKnack[]
 }
 
-export type FamiliarsState = Record<string, FamiliarOwnedState>
+// key: familiarDefinition.id, value: owned instances of that familiar type
+export type FamiliarsState = Record<string, FamiliarOwnedEntry[]>
 
 // ---------------------------------------------------------------------------
 // Image path helpers
@@ -223,7 +247,7 @@ export function getFamiliarsByNest(nestId: string) {
 export function createInitialFamiliarsState(): FamiliarsState {
   const state: FamiliarsState = {}
   for (const f of familiarDefinitions) {
-    state[f.id] = { owned: false, grade: 'D', level: 1, isAdult: false, isMutated: false }
+    state[f.id] = []
   }
   return state
 }
@@ -247,15 +271,23 @@ export function getNestLevel(nest: NestDefinition, familiarsState: FamiliarsStat
   let achievedLevel = 0
   for (let i = 0; i < nest.levels.length; i++) {
     const req = parseRequirement(nest.levels[i].requirement)
-    const familiarStates = nest.familiarIds.map(id => familiarsState[id]).filter(Boolean)
+    const bestGrades = nest.familiarIds
+      .map((id) => {
+        const entries = familiarsState[id] ?? []
+        if (entries.length === 0) return null
+        return entries.reduce((best, cur) =>
+          gradeIndex(cur.grade) > gradeIndex(best.grade) ? cur : best
+        ).grade
+      })
+      .filter(Boolean) as FamiliarGrade[]
 
     if (req.type === 'own') {
-      const ownedCount = familiarStates.filter(s => s.owned).length
+      const ownedCount = bestGrades.length
       if (ownedCount >= req.count) achievedLevel = i + 1
       else break
     } else {
-      const atGradeCount = familiarStates.filter(
-        s => s.owned && gradeIndex(s.grade) >= gradeIndex(req.minGrade)
+      const atGradeCount = bestGrades.filter(
+        (g) => gradeIndex(g) >= gradeIndex(req.minGrade)
       ).length
       if (atGradeCount >= req.count) achievedLevel = i + 1
       else break
