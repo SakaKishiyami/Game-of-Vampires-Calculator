@@ -1,11 +1,11 @@
 # Game of Vampires Calculator
 
-A comprehensive React-based calculator for the Game of Vampires mobile game. This calculator helps players track and optimize their character's attributes, wardens, books, conclave seals, courtyard levels, and scarlet bonds.
+Web app for tracking and optimizing Game of Vampires progression data in one place.
 
 ## Features
 
 - **Base Attributes**: Track Strength, Allure, Intellect, and Spirit
-- **VIP & Lord Level**: Set your VIP level (1-12) and Lord progression
+- **VIP & Lord Level**: Set your VIP level (1-14) and Lord progression
 - **Conclave**: Manage seal levels for all attributes
 - **Courtyard**: Track current level and points with projected level calculation
 - **Books**: Comprehensive book collection tracking with bonuses
@@ -16,15 +16,26 @@ A comprehensive React-based calculator for the Game of Vampires mobile game. Thi
   - Individual warden stats
 - **Scarlet Bond**: Bond management with affinity points and attribute bonuses
 - **OCR Warden Import**: Upload screenshots of warden data for automatic parsing
+- **Familiars**: Familiar tracking (active work in progress)
+- **Data/account-style**: for managing saved profile information
 
-## Getting Started
+## Tech Stack
+
+- `Next.js 14` + `React 18`
+- `TypeScript`
+- `Tailwind CSS`
+- `Radix UI`
+- `Supabase` (auth + data integration)
+- `Tesseract.js` (OCR flows)
+
+## Local Development
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm or yarn
+- Node.js 18+
+- npm
 
-### Installation
+### Setup
 
 1. Navigate to the project directory:
 ```bash
@@ -36,41 +47,21 @@ cd game-calculator
 npm install
 ```
 
+3. Environment variables:
+If `.env.local.example` is not present yet, create `.env.local` manually with your Supabase values:
 
-3. Run the development server:
+```env
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+### Run
+
 ```bash
 npm run dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## Usage
-
-1. **Set Base Attributes**: Enter your current base attribute values
-2. **Configure VIP/Lord Level**: Set your VIP level and Lord progression
-3. **Manage Conclave**: Set seal levels for attribute bonuses
-4. **Track Courtyard**: Enter current level and points to see projected level
-5. **Add Books**: Input your book collection counts for attribute bonuses
-6. **Configure Wardens**: 
-   - Select special wardens
-   - Set warden counts per group
-   - Choose specific wardens
-   - Configure auras
-   - Set individual warden stats
-7. **Manage Scarlet Bonds**: Set affinity points and attribute bonuses for bonds
-8. **AI Inventory Analysis**: 
-   - Go to the Inventory tab
-   - Upload a screenshot of your game inventory
-   - The AI will automatically detect items and their counts
-   - View your inventory with proper item images and quantities
-
-## Calculations
-
-The calculator automatically computes:
-- Total DOM (Dominance) from all sources
-- Attribute boosts as percentages
-- Projected courtyard levels
-- Optimal upgrade paths for scarlet bonds
 
 ## Technology Stack
 

@@ -8,7 +8,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   // Remove static export to enable API routes
-  // output: 'export', // This prevents API routes from working
+  // output: 'export', this prevents API routes from working
   trailingSlash: true,
   images: {
     unoptimized: true,

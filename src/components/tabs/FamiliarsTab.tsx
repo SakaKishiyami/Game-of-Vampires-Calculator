@@ -40,7 +40,7 @@ const GRADE_BG: Record<FamiliarGrade, string> = {
   B: 'bg-purple-500/25',
   A: 'bg-orange-500/25',
   S: 'bg-red-500/25',
-  SS: 'bg-pink-300/30',
+  SS: 'bg-pink-100/40',
 }
 
 const GRADE_BORDER: Record<FamiliarGrade, string> = {
@@ -49,7 +49,7 @@ const GRADE_BORDER: Record<FamiliarGrade, string> = {
   B: 'border-purple-300/45',
   A: 'border-orange-300/45',
   S: 'border-red-300/45',
-  SS: 'border-pink-200/60',
+  SS: 'border-pink-100/80',
 }
 
 function rankIconSrc(grade: FamiliarGrade): string {
