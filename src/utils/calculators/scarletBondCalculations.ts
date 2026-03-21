@@ -32,7 +32,6 @@ export function calculateScarletBondContribution(
   hasMaya: boolean,
   hasEmber: boolean,
   hasAsh: boolean,
-  hasNyx: boolean,
   inventory: Inventory
 ): ScarletBondContribution {
   const currentBond = scarletBond[bondKey] || {}
@@ -67,7 +66,6 @@ export function calculateScarletBondContribution(
   
   const s = resolveLoverSummonFlags(
     { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-    hasNyx,
     inventory
   )
   const attr = attribute as 'strength' | 'allure' | 'intellect' | 'spirit'

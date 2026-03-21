@@ -67,7 +67,7 @@ export const initialAuras = {
     "Hela": { current: 0, max: 35, type: "Allure Scarlet Bond % (Wild Hunt)", baseValue: 20, increment: 5 },
     "Dionysus": { current: 0, max: 35, type: "Intellect Scarlet Bond % (Wild Hunt · Artemis)", baseValue: 20, increment: 5 },
     "Maya": { current: 0, max: 35, type: "Spirit Scarlet Bond % (Monster Noir · Grendel)", baseValue: 20, increment: 5 },
-    "EmberAsh": { current: 0, max: 25, type: "All Scarlet Bond % (Nyx lovers)", baseValue: 25, increment: 0 }
+    "EmberAsh": { current: 0, max: 25, type: "All Scarlet Bond % (Ember & Ash)", baseValue: 25, increment: 0 }
   },
   // VIP Wardens
   vip: {

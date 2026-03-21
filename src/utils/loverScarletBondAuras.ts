@@ -9,25 +9,32 @@ export interface LoverSummonInput {
   hasMaya: boolean
   hasEmber: boolean
   hasAsh: boolean
-  hasNyx: boolean
 }
 
 export interface ResolvedLoverSummon extends LoverSummonInput {
-  /** Token fallback: 100+ tokens counts as summonable */
+  /** Token fallback: 100+ of each lover's token (e.g. HelaToken.png) */
   canAgneyi: boolean
   canCulann: boolean
   canHela: boolean
   canDionysus: boolean
   canMaya: boolean
+  /** Ember/Ash: 400 Heart of War tokens unlocks both for aura purposes */
   canEmber: boolean
   canAsh: boolean
 }
 
+export function heartOfWarCount(inventory: Inventory): number {
+  return (
+    (inventory['HeartOfWarToken']?.count || 0) +
+    (inventory['HeartOfWar']?.count || 0)
+  )
+}
+
 export function resolveLoverSummonFlags(
-  input: Omit<LoverSummonInput, 'hasNyx'>,
-  hasNyx: boolean,
+  input: LoverSummonInput,
   inventory: Inventory
 ): ResolvedLoverSummon {
+  const heartPair = heartOfWarCount(inventory) >= 400
   return {
     hasAgneyi: input.hasAgneyi,
     hasCulann: input.hasCulann,
@@ -36,14 +43,13 @@ export function resolveLoverSummonFlags(
     hasMaya: input.hasMaya,
     hasEmber: input.hasEmber,
     hasAsh: input.hasAsh,
-    hasNyx,
     canAgneyi: input.hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100,
     canCulann: input.hasCulann || (inventory['CulannToken']?.count || 0) >= 100,
     canHela: input.hasHela || (inventory['HelaToken']?.count || 0) >= 100,
     canDionysus: input.hasDionysus || (inventory['DionysusToken']?.count || 0) >= 100,
     canMaya: input.hasMaya || (inventory['MayaToken']?.count || 0) >= 100,
-    canEmber: input.hasEmber || (inventory['EmberToken']?.count || 0) >= 100,
-    canAsh: input.hasAsh || (inventory['AshToken']?.count || 0) >= 100,
+    canEmber: input.hasEmber || heartPair,
+    canAsh: input.hasAsh || heartPair,
   }
 }
 
@@ -77,7 +83,7 @@ export function monsterNoirTierFraction(s: ResolvedLoverSummon): number {
  * Per-attribute multiplier from lover scarlet-bond auras.
  * Wild Hunt: Agneyi→Strength, Hela→Allure, Dionysus→Intellect, Culann→Spirit (Finn).
  * Monster Noir: Maya→Spirit (Grendel), independent tier.
- * Ember/Ash (Nyx): +25% to all four attributes when Nyx + both lovers.
+ * Ember/Ash: +25% to all four attributes when both lovers are obtained (checkboxes or 400 Heart of War tokens).
  * When Wild Hunt and Monster Noir both boost Spirit (Culann + Maya), multipliers stack.
  */
 export function getLoverScarletBondAuraMultiplier(
@@ -95,7 +101,7 @@ export function getLoverScarletBondAuraMultiplier(
 
   if (attr === 'spirit' && s.canMaya) mult *= 1 + noir
 
-  if (s.hasNyx && s.canEmber && s.canAsh) mult *= 1.25
+  if (s.canEmber && s.canAsh) mult *= 1.25
 
   return mult
 }
@@ -122,7 +128,7 @@ export function getLoverAuraPercentDisplay(
     case 'Maya':
       return s.canMaya ? tierPercentFromCount(monsterNoirSummonedCount(s)) : 0
     case 'EmberAsh':
-      return s.hasNyx && s.canEmber && s.canAsh ? 25 : 0
+      return s.canEmber && s.canAsh ? 25 : 0
     default:
       return 0
   }

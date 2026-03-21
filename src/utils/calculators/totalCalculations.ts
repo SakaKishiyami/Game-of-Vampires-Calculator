@@ -37,7 +37,6 @@ export function calculateTotals(
   hasMaya: boolean,
   hasEmber: boolean,
   hasAsh: boolean,
-  hasNyx: boolean,
   inventory: Inventory,
   talentScrolls: any,
   talentScripts: any,
@@ -256,7 +255,6 @@ export function calculateTotals(
   // Apply lover aura bonuses to scarlet bond bonuses (additive layer: base already added above)
   const s = resolveLoverSummonFlags(
     { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-    hasNyx,
     inventory
   )
   calculateDynamicAuraLevels(
@@ -269,7 +267,6 @@ export function calculateTotals(
     hasMaya,
     hasEmber,
     hasAsh,
-    hasNyx,
     inventory
   )
 

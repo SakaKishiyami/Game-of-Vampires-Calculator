@@ -107,6 +107,8 @@ xcopy /E /I /Y "src\data\Gov" "public\Gov"
 ```
 Same-name female/male lovers use files like `RavenFemale.png` / `RavenMale.png` (see `src/utils/loverImagePaths.ts`).
 
+**Lover tokens (inventory):** most summonable lovers use **100** of their token (e.g. `HelaToken`). Ember/Ash use **400** combined Heart of War tokens (`HeartOfWarToken` or `HeartOfWar` in save data; asset filenames may change).
+
 ## Roadmap / TODO
 
 - **Admin / maintainer tools**: role-gated UI to add lovers (PNG + metadata), wardens, and inventory items without editing code.

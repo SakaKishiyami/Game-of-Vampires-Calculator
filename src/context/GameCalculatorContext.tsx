@@ -851,7 +851,6 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
                 
                 const s = resolveLoverSummonFlags(
                   { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-                  hasNyx,
                   inventory
                 )
                 const multiplier = getLoverScarletBondAuraMultiplier(attr, s)
@@ -897,7 +896,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       totalDom,
       domIncrease
     }
-  }, [baseAttributes, books, conclave, wardenStats, scarletBond, optimizedBondLevels, courtyard, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, hasNyx, inventory])
+  }, [baseAttributes, books, conclave, wardenStats, scarletBond, optimizedBondLevels, courtyard, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, inventory])
 
   // Calculate optimized scarlet bond bonuses
   const calculateOptimizedScarletBondBonuses = useCallback(() => {
@@ -980,7 +979,6 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
                 
                 const s = resolveLoverSummonFlags(
                   { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-                  hasNyx,
                   inventory
                 )
                 const multiplier = getLoverScarletBondAuraMultiplier(attr, s)
@@ -1011,7 +1009,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       currentIntellect,
       currentSpirit
     }
-  }, [scarletBond, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, hasNyx, inventory])
+  }, [scarletBond, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, inventory])
 
   // Calculate suggested scarlet bond increase (simplified - returns empty for now)
   const calculateSuggestedScarletBondIncrease = useCallback(() => {
@@ -1035,7 +1033,6 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     hasMaya,
     hasEmber,
     hasAsh,
-    hasNyx,
     inventory
   )
   const computedAuraBonuses = calculateAuraBonuses(

@@ -228,92 +228,55 @@ function OwnedFamiliarCard({
   )
 }
 
-function NestCardReadOnly({ nest, familiars }: { nest: NestDefinition; familiars: Record<string, any> }) {
+/** Levels + active bonuses only (no duplicate familiar row — familiars live in parent). */
+function NestLevelsAndBonuses({ nest, familiars }: { nest: NestDefinition; familiars: Record<string, FamiliarOwnedEntry[]> }) {
   const level = getNestLevel(nest, familiars)
   const bonuses = getNestBonuses(nest, level)
-  const maxLevel = nest.levels.length
-  const nestFamiliars = familiarDefinitions.filter((f) => f.nestId === nest.id)
-  const isExclusive = nest.id === 'mythborn'
 
   return (
-    <Card
-      className={`border ${
-        isExclusive
-          ? 'bg-gradient-to-b from-amber-950/30 to-gray-900/60 border-amber-500/30'
-          : 'bg-gray-900/60 border-gray-700'
-      }`}
-    >
-      <CardHeader className="py-3 px-4">
-        <div className="flex items-center justify-between gap-3">
-          <CardTitle className={`text-sm font-semibold ${isExclusive ? 'text-amber-400' : 'text-white'}`}>
-            {nest.name}
-            {isExclusive && (
-              <span className="ml-2 text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">
-                Exclusive
-              </span>
-            )}
-          </CardTitle>
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] text-gray-400">Nest Lv</span>
-            <span className={`text-sm font-bold ${level > 0 ? 'text-amber-400' : 'text-gray-500'}`}>
-              {level}/{maxLevel}
-            </span>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="px-4 pb-3 pt-0 space-y-3">
-        <div className={`flex flex-wrap gap-2 justify-start`}>
-          {nestFamiliars.map((f) => (
-            <div key={f.id} className="w-16">
-              <FamiliarSquare familiar={f} state={(familiars[f.id] ?? [])[0] ?? null} />
-            </div>
-          ))}
-        </div>
-
-        <div className="space-y-1">
-          <div className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Levels</div>
-          <div className="flex flex-wrap gap-1">
-            {nest.levels.map((lv, i) => {
-              const achieved = i < level
-              const grade = getRankFromRequirement(lv.requirement)
-              return (
-                <div
-                  key={i}
-                  className={`text-[10px] px-2 py-0.5 rounded flex items-center gap-2 ${
-                    achieved
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                      : 'bg-gray-800/60 text-gray-500 border border-gray-700/30'
-                  }`}
-                >
-                  {grade ? (
-                    <img src={rankIconSrc(grade)} alt={`${grade} rank`} className="w-4 h-4 object-contain" />
-                  ) : (
-                    <span className="w-4 h-4" />
-                  )}
-                  <span>
-                    Lv{i + 1}: {lv.requirement}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {level > 0 && (
-          <div className="space-y-1">
-            <div className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Active Bonuses</div>
-            <div className="flex flex-wrap gap-2">
-              {ALL_FAMILIAR_ATTRIBUTES.filter((a) => bonuses[a] > 0).map((attr) => (
-                <span key={attr} className={`text-[11px] ${ATTR_COLORS[attr]}`}>
-                  {attr} +{bonuses[attr]}
+    <div className="space-y-3 pt-1 border-t border-gray-700/50">
+      <div className="space-y-1">
+        <div className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Levels</div>
+        <div className="flex flex-wrap gap-1.5">
+          {nest.levels.map((lv, i) => {
+            const achieved = i < level
+            const grade = getRankFromRequirement(lv.requirement)
+            return (
+              <div
+                key={i}
+                className={`text-[10px] px-2 py-0.5 rounded flex items-center gap-2 ${
+                  achieved
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    : 'bg-gray-800/60 text-gray-500 border border-gray-700/30'
+                }`}
+              >
+                {grade ? (
+                  <img src={rankIconSrc(grade)} alt={`${grade} rank`} className="w-4 h-4 object-contain shrink-0" />
+                ) : (
+                  <span className="w-4 h-4 shrink-0" />
+                )}
+                <span>
+                  Lv{i + 1}: {lv.requirement}
                 </span>
-              ))}
-            </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {level > 0 && (
+        <div className="space-y-1">
+          <div className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Active Bonuses</div>
+          <div className="flex flex-wrap gap-2">
+            {ALL_FAMILIAR_ATTRIBUTES.filter((a) => bonuses[a] > 0).map((attr) => (
+              <span key={attr} className={`text-[11px] ${ATTR_COLORS[attr]}`}>
+                {attr} +{bonuses[attr]}
+              </span>
+            ))}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -523,43 +486,80 @@ export default function FamiliarsTab() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {nests.map((nest) => (
-                <Card key={nest.id} className="bg-gray-900/60 border-gray-700">
-                  <CardHeader className="py-3 px-4">
-                    <CardTitle className="text-sm text-gray-100">{nest.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-4 pb-3 pt-0 space-y-3">
-                    <div className="flex flex-wrap gap-2">
-                      {nest.familiarIds.map((fid) => {
-                        const fam = familiarDefinitions.find((x) => x.id === fid)
-                        if (!fam) return null
-                        const best = (familiars[fid] ?? [])[0] ?? null
-                        return (
-                          <div key={fid} className="flex flex-col items-center gap-1">
-                            <FamiliarSquare familiar={fam} state={best} />
-                            <div className="flex gap-1">
-                              <button
-                                onClick={() => stepNestProgress(fid, -1)}
-                                className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-200"
-                              >
-                                ◀
-                              </button>
-                              <button
-                                onClick={() => stepNestProgress(fid, 1)}
-                                className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-200"
-                              >
-                                ▶
-                              </button>
+              {nests.map((nest) => {
+                const isExclusive = nest.id === 'mythborn'
+                const nestLv = getNestLevel(nest, familiars)
+                const maxLv = nest.levels.length
+                return (
+                  <Card
+                    key={nest.id}
+                    className={`border overflow-hidden ${
+                      isExclusive
+                        ? 'bg-gradient-to-b from-amber-950/30 to-gray-900/60 border-amber-500/30'
+                        : 'bg-gray-900/60 border-gray-700'
+                    }`}
+                  >
+                    <CardHeader className="py-3 px-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <CardTitle
+                          className={`text-sm font-semibold ${isExclusive ? 'text-amber-400' : 'text-white'}`}
+                        >
+                          {nest.name}
+                          {isExclusive && (
+                            <span className="ml-2 text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">
+                              Exclusive
+                            </span>
+                          )}
+                        </CardTitle>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className="text-[10px] text-gray-400">Nest Lv</span>
+                          <span className={`text-sm font-bold ${nestLv > 0 ? 'text-amber-400' : 'text-gray-500'}`}>
+                            {nestLv}/{maxLv}
+                          </span>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="px-4 pb-3 pt-0 space-y-3">
+                      {/* Single horizontal row: portrait → arrows → name; no second row */}
+                      <div className="flex flex-nowrap gap-4 sm:gap-5 items-start justify-start overflow-x-auto pb-1 -mx-1 px-1">
+                        {nest.familiarIds.map((fid) => {
+                          const fam = familiarDefinitions.find((x) => x.id === fid)
+                          if (!fam) return null
+                          const best = (familiars[fid] ?? [])[0] ?? null
+                          return (
+                            <div
+                              key={fid}
+                              className="flex flex-col items-center gap-1.5 w-[4.75rem] sm:w-[5rem] shrink-0"
+                            >
+                              <FamiliarSquare familiar={fam} state={best} />
+                              <div className="flex gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => stepNestProgress(fid, -1)}
+                                  className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-200 hover:bg-gray-700"
+                                >
+                                  ◀
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => stepNestProgress(fid, 1)}
+                                  className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-200 hover:bg-gray-700"
+                                >
+                                  ▶
+                                </button>
+                              </div>
+                              <div className="text-[10px] text-gray-300 text-center leading-tight line-clamp-2 w-full">
+                                {fam.name}
+                              </div>
                             </div>
-                            <div className="text-[10px] text-gray-300">{fam.name}</div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                    <NestCardReadOnly nest={nest} familiars={familiars} />
-                  </CardContent>
-                </Card>
-              ))}
+                          )
+                        })}
+                      </div>
+                      <NestLevelsAndBonuses nest={nest} familiars={familiars} />
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
           </TabsContent>
 

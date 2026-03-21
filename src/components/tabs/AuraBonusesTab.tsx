@@ -40,7 +40,6 @@ export default function AuraBonusesTab() {
     hasMaya,
     hasEmber,
     hasAsh,
-    hasNyx,
     inventory
   )
   const auraBonuses = calculateAuraBonuses(
@@ -234,7 +233,7 @@ export default function AuraBonusesTab() {
                       (loverName === 'Hela' && hasHela) ||
                       (loverName === 'Dionysus' && hasDionysus) ||
                       (loverName === 'Maya' && hasMaya) ||
-                      (loverName === 'EmberAsh' && hasEmber && hasAsh && hasNyx)
+                      (loverName === 'EmberAsh' && hasEmber && hasAsh)
                     const imgSrc =
                       loverName === 'EmberAsh'
                         ? '/Gov/Lovers/BaseLovers/Ember.png'

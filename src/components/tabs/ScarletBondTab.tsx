@@ -9,10 +9,98 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { getAttributeColor, getAttributeBg } from '@/utils/helpers'
 import { scarletBondData, scarletBondLevels, getOffSingle } from '@/data/scarletBonds'
 import { wardenAttributes } from '@/data/wardens'
-import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier, wildHuntSummonedCount, monsterNoirSummonedCount, tierPercentFromCount } from '@/utils/loverScarletBondAuras'
+import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier, wildHuntSummonedCount, monsterNoirSummonedCount, tierPercentFromCount, heartOfWarCount } from '@/utils/loverScarletBondAuras'
 import { getLoverPortraitSrcs } from '@/utils/loverImagePaths'
+import { cn } from '@/lib/utils'
 
 const attributeOrder = ['strength', 'allure', 'intellect', 'spirit'] as const
+
+function getAttributeRingClass(attr: string): string {
+  switch (attr.toLowerCase()) {
+    case 'strength': return 'ring-red-500'
+    case 'allure': return 'ring-purple-500'
+    case 'intellect': return 'ring-green-500'
+    case 'spirit': return 'ring-blue-500'
+    case 'all': return 'ring-amber-400'
+    default: return 'ring-gray-500'
+  }
+}
+
+type LoverAttr = 'strength' | 'allure' | 'intellect' | 'spirit' | 'all'
+
+function LoverSummonPickCard({
+  loverName,
+  wardenName,
+  attrKey,
+  imgCandidates,
+  checked,
+  setChecked,
+  tokenHint,
+}: {
+  loverName: string
+  wardenName: string
+  attrKey: LoverAttr
+  imgCandidates: string[]
+  checked: boolean
+  setChecked: (v: boolean) => void
+  tokenHint: string
+}) {
+  const ring = getAttributeRingClass(attrKey)
+  const toggle = () => setChecked(!checked)
+  const attrBadge =
+    attrKey === 'all' ? (
+      <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-200">All attributes</span>
+    ) : (
+      <span className={`text-xs px-2 py-0.5 rounded capitalize ${getAttributeBg(attrKey)} ${getAttributeColor(attrKey)}`}>
+        {attrKey}
+      </span>
+    )
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={toggle}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          toggle()
+        }
+      }}
+      className={cn(
+        'flex items-stretch rounded-lg overflow-hidden border min-h-[118px] cursor-pointer transition-all select-none text-left w-full',
+        checked
+          ? cn('ring-2 ring-offset-2 ring-offset-gray-900 border-transparent', ring, attrKey === 'all' ? 'bg-amber-500/15' : '')
+          : 'border-gray-600 bg-gray-800/40 hover:bg-gray-800/70',
+        checked && attrKey !== 'all' && getAttributeBg(attrKey)
+      )}
+    >
+      <div className="w-[100px] sm:w-[112px] flex-shrink-0 bg-gray-900/90 flex items-center justify-center p-2 border-r border-gray-700/80">
+        <LoverPortraitThumb
+          candidates={imgCandidates}
+          label={loverName}
+          imgClassName="w-full h-full min-h-[100px] max-h-[120px] object-contain"
+          emptyClassName="w-full min-h-[100px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-2"
+        />
+      </div>
+      <div className="flex-1 flex items-stretch p-3 min-w-0 gap-2">
+        <div onClick={(e) => e.stopPropagation()} className="shrink-0 pt-0.5">
+          <Checkbox
+            checked={checked}
+            onCheckedChange={(v) => setChecked(v === true)}
+            className="border-gray-400"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5 min-w-0 flex-1 justify-center">
+          <span className={cn('font-semibold text-sm leading-tight', checked ? 'text-white' : 'text-gray-400')}>{loverName}</span>
+          <span className="text-sm text-gray-300 leading-tight">{wardenName}</span>
+          <div className="flex flex-wrap gap-1">{attrBadge}</div>
+          <span className="text-[10px] text-gray-500 leading-snug">{tokenHint}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function LoverPortraitThumb({
   candidates,
@@ -54,13 +142,11 @@ export default function ScarletBondTab() {
     hasMaya, setHasMaya,
     hasEmber, setHasEmber,
     hasAsh, setHasAsh,
-    hasNyx,
     inventory,
   } = useGameCalculator()
 
   const summonState = resolveLoverSummonFlags(
     { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-    hasNyx,
     inventory
   )
 
@@ -90,7 +176,6 @@ export default function ScarletBondTab() {
 
     const s = resolveLoverSummonFlags(
       { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-      hasNyx,
       inventory
     )
     const attr = attribute as 'strength' | 'allure' | 'intellect' | 'spirit'
@@ -226,7 +311,6 @@ export default function ScarletBondTab() {
 
       const s = resolveLoverSummonFlags(
         { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-        hasNyx,
         inventory
       )
 
@@ -342,87 +426,93 @@ export default function ScarletBondTab() {
         <div className="space-y-4">
           {/* Lovers Section */}
           <Card className="bg-gray-700/50 border-gray-600">
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle className="text-pink-400">Lovers (Need to be Summoned)</CardTitle>
-              <div className="text-sm text-gray-300">
-                Wild Hunt and Monster Noir tiers are <strong>independent</strong>: 1/2/3/4 lovers in a set → 20%/25%/30%/35% to scarlet bonds for that set&apos;s attributes.
-                Ember/Ash (with Nyx) add up to +25% on <strong>all four</strong> attributes.
-              </div>
+              <p className="text-xs text-gray-500">
+                Click a row to toggle. Wild Hunt tier {tierPercentFromCount(wildHuntSummonedCount(summonState))}% · Monster Noir tier{' '}
+                {tierPercentFromCount(monsterNoirSummonedCount(summonState))}%
+              </p>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-8 pt-2">
               <div>
-                <div className="text-xs font-semibold text-green-300 mb-2">Wild Hunt (Rudra / Woden / Artemis / Finn)</div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {([
-                    { id: 'agneyi', label: 'Agneyi', sub: 'Rudra · Str', checked: hasAgneyi, set: setHasAgneyi, color: 'text-red-300' },
-                    { id: 'hela', label: 'Hela', sub: 'Woden · Allure', checked: hasHela, set: setHasHela, color: 'text-pink-300' },
-                    { id: 'dionysus', label: 'Dionysus', sub: 'Artemis · Int', checked: hasDionysus, set: setHasDionysus, color: 'text-cyan-300' },
-                    { id: 'culann', label: 'Culann', sub: 'Finn · Spirit', checked: hasCulann, set: setHasCulann, color: 'text-green-300' },
-                  ] as const).map((row) => (
-                    <div key={row.id} className="flex flex-col gap-1 p-2 rounded-lg bg-gray-800/60 border border-gray-600/80">
-                      <div className="flex items-start gap-2">
-                        <Checkbox
-                          id={row.id}
-                          checked={row.checked}
-                          onCheckedChange={(v) => row.set(v === true)}
-                          className="border-gray-400 mt-1"
-                        />
-                        <div className="min-w-0">
-                          <Label htmlFor={row.id} className={`${row.color} font-medium text-sm`}>{row.label}</Label>
-                          <div className="text-[10px] text-gray-500">{row.sub}</div>
-                        </div>
-                      </div>
-                      <LoverPortraitThumb candidates={getLoverPortraitSrcs(row.label).flat()} label={row.label} />
-                    </div>
-                  ))}
-                </div>
-                <div className="text-xs text-gray-400 mt-2">
-                  Wild Hunt tier: {tierPercentFromCount(wildHuntSummonedCount(summonState))}% (from {wildHuntSummonedCount(summonState)}/4 summoned)
+                <div className="text-xs font-semibold text-green-300 mb-3">Wild Hunt (Rudra / Woden / Artemis / Finn)</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+                  <LoverSummonPickCard
+                    loverName="Agneyi"
+                    wardenName="Rudra"
+                    attrKey="strength"
+                    imgCandidates={getLoverPortraitSrcs('Agneyi').flat()}
+                    checked={hasAgneyi}
+                    setChecked={setHasAgneyi}
+                    tokenHint={`AgneyiToken in inventory: ${inventory['AgneyiToken']?.count ?? 0}/100`}
+                  />
+                  <LoverSummonPickCard
+                    loverName="Hela"
+                    wardenName="Woden"
+                    attrKey="allure"
+                    imgCandidates={getLoverPortraitSrcs('Hela').flat()}
+                    checked={hasHela}
+                    setChecked={setHasHela}
+                    tokenHint={`HelaToken in inventory: ${inventory['HelaToken']?.count ?? 0}/100`}
+                  />
+                  <LoverSummonPickCard
+                    loverName="Dionysus"
+                    wardenName="Artemis"
+                    attrKey="intellect"
+                    imgCandidates={getLoverPortraitSrcs('Dionysus').flat()}
+                    checked={hasDionysus}
+                    setChecked={setHasDionysus}
+                    tokenHint={`DionysusToken in inventory: ${inventory['DionysusToken']?.count ?? 0}/100`}
+                  />
+                  <LoverSummonPickCard
+                    loverName="Culann"
+                    wardenName="Finn"
+                    attrKey="spirit"
+                    imgCandidates={getLoverPortraitSrcs('Culann').flat()}
+                    checked={hasCulann}
+                    setChecked={setHasCulann}
+                    tokenHint={`CulannToken in inventory: ${inventory['CulannToken']?.count ?? 0}/100`}
+                  />
                 </div>
               </div>
 
               <div>
-                <div className="text-xs font-semibold text-purple-300 mb-2">Monster Noir (Grendel line — more coming)</div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="flex flex-col gap-1 p-2 rounded-lg bg-gray-800/60 border border-gray-600/80">
-                    <div className="flex items-start gap-2">
-                      <Checkbox id="maya" checked={hasMaya} onCheckedChange={(v) => setHasMaya(v === true)} className="border-gray-400 mt-1" />
-                      <div>
-                        <Label htmlFor="maya" className="text-purple-200 font-medium text-sm">Maya</Label>
-                        <div className="text-[10px] text-gray-500">Grendel · Spirit</div>
-                      </div>
-                    </div>
-                    <LoverPortraitThumb candidates={getLoverPortraitSrcs('Maya').flat()} label="Maya" />
-                  </div>
-                </div>
-                <div className="text-xs text-gray-400 mt-2">
-                  Monster Noir tier: {tierPercentFromCount(monsterNoirSummonedCount(summonState))}% (from {monsterNoirSummonedCount(summonState)}/4 — only Maya in data for now)
+                <div className="text-xs font-semibold text-purple-300 mb-3">Monster Noir</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+                  <LoverSummonPickCard
+                    loverName="Maya"
+                    wardenName="Grendel"
+                    attrKey="spirit"
+                    imgCandidates={getLoverPortraitSrcs('Maya').flat()}
+                    checked={hasMaya}
+                    setChecked={setHasMaya}
+                    tokenHint={`MayaToken in inventory: ${inventory['MayaToken']?.count ?? 0}/100`}
+                  />
                 </div>
               </div>
 
               <div>
-                <div className="text-xs font-semibold text-amber-300 mb-2">Nyx · Ember / Ash</div>
-                <div className="grid grid-cols-2 gap-3 max-w-md">
-                  <div className="flex flex-col gap-1 p-2 rounded-lg bg-gray-800/60 border border-gray-600/80">
-                    <div className="flex items-start gap-2">
-                      <Checkbox id="ember" checked={hasEmber} onCheckedChange={(v) => setHasEmber(v === true)} className="border-gray-400 mt-1" />
-                      <Label htmlFor="ember" className="text-amber-200 font-medium text-sm">Ember</Label>
-                    </div>
-                    <LoverPortraitThumb candidates={getLoverPortraitSrcs('Ember').flat()} label="Ember" />
-                  </div>
-                  <div className="flex flex-col gap-1 p-2 rounded-lg bg-gray-800/60 border border-gray-600/80">
-                    <div className="flex items-start gap-2">
-                      <Checkbox id="ash" checked={hasAsh} onCheckedChange={(v) => setHasAsh(v === true)} className="border-gray-400 mt-1" />
-                      <Label htmlFor="ash" className="text-amber-200 font-medium text-sm">Ash</Label>
-                    </div>
-                    <LoverPortraitThumb candidates={getLoverPortraitSrcs('Ash').flat()} label="Ash" />
-                  </div>
+                <div className="text-xs font-semibold text-amber-300 mb-3">Ember / Ash</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl">
+                  <LoverSummonPickCard
+                    loverName="Ember"
+                    wardenName="Nyx"
+                    attrKey="all"
+                    imgCandidates={getLoverPortraitSrcs('Ember').flat()}
+                    checked={hasEmber}
+                    setChecked={setHasEmber}
+                    tokenHint={`Heart of War tokens: ${heartOfWarCount(inventory)}/400 (counts toward both). PNG name may change later.`}
+                  />
+                  <LoverSummonPickCard
+                    loverName="Ash"
+                    wardenName="Nyx"
+                    attrKey="all"
+                    imgCandidates={getLoverPortraitSrcs('Ash').flat()}
+                    checked={hasAsh}
+                    setChecked={setHasAsh}
+                    tokenHint={`Heart of War tokens: ${heartOfWarCount(inventory)}/400 (counts toward both). PNG name may change later.`}
+                  />
                 </div>
-                <div className="text-xs text-gray-400 mt-1">Requires <strong>Nyx</strong> unlocked + both lovers for +25% on Str/Allure/Int/Spirit scarlet bonds.</div>
-              </div>
-
-              <div className="mt-2 text-center">
-                <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">Many summonable with coins / tokens</span>
               </div>
             </CardContent>
           </Card>

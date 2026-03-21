@@ -29,12 +29,10 @@ export function calculateLoverAuraLevels(
   hasMaya: boolean,
   hasEmber: boolean,
   hasAsh: boolean,
-  hasNyx: boolean,
   inventory: Inventory
 ) {
   const s = resolveLoverSummonFlags(
     { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-    hasNyx,
     inventory
   )
   const loverAuras = JSON.parse(JSON.stringify({ ...initialAuras.lovers, ...(auras.lovers || {}) }))
@@ -59,7 +57,6 @@ export function calculateDynamicAuraLevels(
   hasMaya: boolean,
   hasEmber: boolean,
   hasAsh: boolean,
-  hasNyx: boolean,
   inventory: Inventory
 ) {
   const dynamicAuras = JSON.parse(JSON.stringify(auras))
@@ -73,7 +70,6 @@ export function calculateDynamicAuraLevels(
     hasMaya,
     hasEmber,
     hasAsh,
-    hasNyx,
     inventory
   )
   
@@ -175,7 +171,6 @@ export function calculateAuraBonuses(
     hasMaya,
     hasEmber,
     hasAsh,
-    hasNyx,
     inventory
   )
   const bonuses: AuraBonuses = {
