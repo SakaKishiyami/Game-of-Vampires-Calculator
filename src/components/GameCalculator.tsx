@@ -34,6 +34,7 @@ export default function GameCalculator() {
     wardenStats, setWardenStats, uploadedWardenData, setUploadedWardenData,
     hasNyx, setHasNyx, hasDracula, setHasDracula, hasVictor, setHasVictor, hasFrederick, setHasFrederick,
     hasAgneyi, setHasAgneyi, hasCulann, setHasCulann, hasHela, setHasHela,
+    hasDionysus, setHasDionysus, hasMaya, setHasMaya, hasEmber, setHasEmber, hasAsh, setHasAsh,
     inventory, setInventory, inventoryImages, setInventoryImages,
     scarletBond, setScarletBond, scarletBondAffinity, setScarletBondAffinity, optimizedBondLevels, setOptimizedBondLevels,
     domIncreasePerStar, setDomIncreasePerStar, auras, setAuras,
@@ -99,6 +100,10 @@ export default function GameCalculator() {
       hasAgneyi,
       hasCulann,
       hasHela,
+      hasDionysus,
+      hasMaya,
+      hasEmber,
+      hasAsh,
       hasFrances,
       hasRaven,
       hasMary,
@@ -169,6 +174,10 @@ export default function GameCalculator() {
         setHasAgneyi(parsedData.hasAgneyi || false)
         setHasCulann(parsedData.hasCulann || false)
         setHasHela(parsedData.hasHela || false)
+        setHasDionysus(parsedData.hasDionysus || false)
+        setHasMaya(parsedData.hasMaya || false)
+        setHasEmber(parsedData.hasEmber || false)
+        setHasAsh(parsedData.hasAsh || false)
         setHasFrances(parsedData.hasFrances || false)
         setHasRaven(parsedData.hasRaven || false)
         setHasMary(parsedData.hasMary || false)
@@ -263,6 +272,10 @@ export default function GameCalculator() {
       hasAgneyi,
       hasCulann,
       hasHela,
+      hasDionysus,
+      hasMaya,
+      hasEmber,
+      hasAsh,
       hasFrances,
       hasRaven,
       hasMary,
@@ -344,6 +357,10 @@ export default function GameCalculator() {
         setHasAgneyi(importedData.hasAgneyi || false)
         setHasCulann(importedData.hasCulann || false)
         setHasHela(importedData.hasHela || false)
+        setHasDionysus(importedData.hasDionysus || false)
+        setHasMaya(importedData.hasMaya || false)
+        setHasEmber(importedData.hasEmber || false)
+        setHasAsh(importedData.hasAsh || false)
         setHasFrances(importedData.hasFrances || false)
         setHasRaven(importedData.hasRaven || false)
         setHasMary(importedData.hasMary || false)
@@ -496,6 +513,10 @@ export default function GameCalculator() {
       hasAgneyi,
       hasCulann,
       hasHela,
+      hasDionysus,
+      hasMaya,
+      hasEmber,
+      hasAsh,
       talents,
       inventory,
       timestamp: new Date().toISOString(),
@@ -526,6 +547,10 @@ export default function GameCalculator() {
     if (data.hasAgneyi !== undefined) setHasAgneyi(data.hasAgneyi)
     if (data.hasCulann !== undefined) setHasCulann(data.hasCulann)
     if (data.hasHela !== undefined) setHasHela(data.hasHela)
+    if (data.hasDionysus !== undefined) setHasDionysus(data.hasDionysus)
+    if (data.hasMaya !== undefined) setHasMaya(data.hasMaya)
+    if (data.hasEmber !== undefined) setHasEmber(data.hasEmber)
+    if (data.hasAsh !== undefined) setHasAsh(data.hasAsh)
     if (data.hasFrances !== undefined) setHasFrances(data.hasFrances)
     if (data.hasRaven !== undefined) setHasRaven(data.hasRaven)
     if (data.hasMary !== undefined) setHasMary(data.hasMary)
@@ -667,6 +692,10 @@ export default function GameCalculator() {
           hasAgneyi,
           hasCulann,
           hasHela,
+          hasDionysus,
+          hasMaya,
+          hasEmber,
+          hasAsh,
           auras,
           wardenStats,
           scarletBond,
@@ -681,7 +710,7 @@ export default function GameCalculator() {
     }, 30000)
 
     return () => clearInterval(autoSaveInterval)
-  }, [baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade, domIncreasePerStar, courtyard, wardenCounts, selectedWardens, hasNyx, hasDracula, hasVictor, hasFrederick, auras, wardenStats, scarletBond, scarletBondAffinity, optimizedBondLevels, inventory])
+  }, [baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade, domIncreasePerStar, courtyard, wardenCounts, selectedWardens, hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, wardenStats, scarletBond, scarletBondAffinity, optimizedBondLevels, inventory])
 
   // Load auto-saved data on component mount
   React.useEffect(() => {
@@ -849,7 +878,7 @@ export default function GameCalculator() {
               <Input
                 type="number"
                 min="0"
-                max="12"
+                max="14"
                 value={getDisplayValue(vipLevel)}
                 onChange={(e) => {
                   const value = e.target.value

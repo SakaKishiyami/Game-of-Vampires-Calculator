@@ -1,6 +1,7 @@
 // Aura calculation functions
 import type { SelectedWardens, Inventory } from '@/types'
 import { initialAuras } from '@/data/auras'
+import { resolveLoverSummonFlags, getLoverAuraPercentDisplay } from '@/utils/loverScarletBondAuras'
 
 export interface AuraBonuses {
   talents: {
@@ -24,41 +25,27 @@ export function calculateLoverAuraLevels(
   hasAgneyi: boolean,
   hasCulann: boolean,
   hasHela: boolean,
+  hasDionysus: boolean,
+  hasMaya: boolean,
+  hasEmber: boolean,
+  hasAsh: boolean,
+  hasNyx: boolean,
   inventory: Inventory
 ) {
-  const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
-  const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
-  const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
-  const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-  const loverAuras = JSON.parse(JSON.stringify(auras.lovers))
-  
-  Object.entries(loverAuras).forEach(([loverName, loverData]: [string, any]) => {
-    let shouldHave = false
-    switch (loverName) {
-      case "Agneyi":
-        shouldHave = hasAgneyi
-        break
-      case "Culann":
-        shouldHave = hasCulann
-        break
-      case "Hela":
-        shouldHave = hasHela
-        break
-    }
-    
-    if (shouldHave && loverCount > 0) {
-      if (loverCount === 1) {
-        loverAuras[loverName].current = 20
-      } else if (loverCount === 2) {
-        loverAuras[loverName].current = 25
-      } else if (loverCount === 3) {
-        loverAuras[loverName].current = 30
-      }
-    } else {
-      loverAuras[loverName].current = 0
-    }
-  })
-  
+  const s = resolveLoverSummonFlags(
+    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+    hasNyx,
+    inventory
+  )
+  const loverAuras = JSON.parse(JSON.stringify({ ...initialAuras.lovers, ...(auras.lovers || {}) }))
+
+  loverAuras.Agneyi.current = getLoverAuraPercentDisplay('Agneyi', s)
+  loverAuras.Culann.current = getLoverAuraPercentDisplay('Culann', s)
+  loverAuras.Hela.current = getLoverAuraPercentDisplay('Hela', s)
+  if (loverAuras.Dionysus) loverAuras.Dionysus.current = getLoverAuraPercentDisplay('Dionysus', s)
+  if (loverAuras.Maya) loverAuras.Maya.current = getLoverAuraPercentDisplay('Maya', s)
+  if (loverAuras.EmberAsh) loverAuras.EmberAsh.current = getLoverAuraPercentDisplay('EmberAsh', s)
+
   return loverAuras
 }
 
@@ -68,11 +55,27 @@ export function calculateDynamicAuraLevels(
   hasAgneyi: boolean,
   hasCulann: boolean,
   hasHela: boolean,
+  hasDionysus: boolean,
+  hasMaya: boolean,
+  hasEmber: boolean,
+  hasAsh: boolean,
+  hasNyx: boolean,
   inventory: Inventory
 ) {
   const dynamicAuras = JSON.parse(JSON.stringify(auras))
   
-  dynamicAuras.lovers = calculateLoverAuraLevels(auras, hasAgneyi, hasCulann, hasHela, inventory)
+  dynamicAuras.lovers = calculateLoverAuraLevels(
+    auras,
+    hasAgneyi,
+    hasCulann,
+    hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
+    hasNyx,
+    inventory
+  )
   
   // Wild Hunt Wardens
   const selectedWildHunt = selectedWardens.hunt || []
@@ -156,9 +159,25 @@ export function calculateAuraBonuses(
   hasAgneyi: boolean,
   hasCulann: boolean,
   hasHela: boolean,
+  hasDionysus: boolean,
+  hasMaya: boolean,
+  hasEmber: boolean,
+  hasAsh: boolean,
   inventory: Inventory
 ): AuraBonuses {
-  const dynamicAuras = calculateDynamicAuraLevels(auras, selectedWardens, hasAgneyi, hasCulann, hasHela, inventory)
+  const dynamicAuras = calculateDynamicAuraLevels(
+    auras,
+    selectedWardens,
+    hasAgneyi,
+    hasCulann,
+    hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
+    hasNyx,
+    inventory
+  )
   const bonuses: AuraBonuses = {
     talents: {
       strength: 100,
@@ -373,6 +392,8 @@ export function calculateAuraBonuses(
           case "Damian":
           case "Vance":
           case "Diana":
+          case "Thanatos":
+          case "Mara":
             bonuses.talents.all += wardenData.talents.current
             bonuses.books.all += wardenData.books.current
             break

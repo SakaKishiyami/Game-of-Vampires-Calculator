@@ -95,6 +95,32 @@ game-calculator/
 └── tsconfig.json
 ```
 
+## Game assets (`/Gov/...` images)
+
+Lover and warden portraits are loaded from **`public/Gov/...`** (e.g. `public/Gov/Lovers/BaseLovers/RavenFemale.png`).
+
+If your images live under `src/data/Gov`, copy them into `public` so the dev server can serve them:
+
+```powershell
+# Windows PowerShell (from repo root)
+xcopy /E /I /Y "src\data\Gov" "public\Gov"
+```
+
+Same-name female/male lovers use files like `RavenFemale.png` / `RavenMale.png` (see `src/utils/loverImagePaths.ts`).
+
+## Scarlet bond lovers (quick reference)
+
+- **Wild Hunt** (Agneyi, Hela, Dionysus, Culann): tiers **1→4** summoned in the set → **20% / 25% / 30% / 35%** to scarlet bonds for that set’s attributes (Str / Allure / Int / Spirit respectively).
+- **Monster Noir** (e.g. Maya for Grendel): **independent** tier track; only Maya is in data until more release.
+- **Ember/Ash (Nyx)**: with **Nyx** + both lovers, **+25%** to all four attributes’ scarlet bond totals.
+- **VIP 13–14**: Thanatos and Mara add **12%** all-talents and **12%** all-books when VIP is high enough (see `src/data/auras.ts`).
+
+## Roadmap / TODO
+
+- **Admin / maintainer tools**: role-gated UI to add lovers (PNG + metadata), wardens, and inventory items without editing code.
+- **Google Drive** export/import: wire OAuth + file pickers (steps TBD when you’re ready).
+- **Discord / Vercel auth**: re-verify Supabase OAuth redirect URLs and provider settings after deployments.
+
 ## Contributing
 
 Feel free to submit issues and enhancement requests!

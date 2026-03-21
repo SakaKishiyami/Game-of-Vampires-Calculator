@@ -11,6 +11,7 @@ import { courtyardLevels } from '@/data/courtyard'
 import { conclaveLevels } from '@/data/conclave'
 import { bookBonuses } from '@/data/books'
 import { calculateDynamicAuraLevels, calculateAuraBonuses } from '@/utils/calculators/auraCalculations'
+import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier } from '@/utils/loverScarletBondAuras'
 import { calculateTotalConclaveBonus, calculateConclaveUpgrades } from '@/utils/calculators/conclaveCalculations'
 import { calculateCourtyardDom } from '@/utils/calculators/courtyardCalculations'
 import { formatItemName, getItemCategory, getItemsByCategory, groupItemsByType, renderStars, getDisplayValue } from '@/utils/helpers'
@@ -84,6 +85,14 @@ interface GameCalculatorContextType {
   setHasCulann: React.Dispatch<React.SetStateAction<boolean>>
   hasHela: boolean
   setHasHela: React.Dispatch<React.SetStateAction<boolean>>
+  hasDionysus: boolean
+  setHasDionysus: React.Dispatch<React.SetStateAction<boolean>>
+  hasMaya: boolean
+  setHasMaya: React.Dispatch<React.SetStateAction<boolean>>
+  hasEmber: boolean
+  setHasEmber: React.Dispatch<React.SetStateAction<boolean>>
+  hasAsh: boolean
+  setHasAsh: React.Dispatch<React.SetStateAction<boolean>>
   
   // Summonable characters (simplified - can expand later)
   summonableCharacters: { [key: string]: boolean }
@@ -238,6 +247,10 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   const [hasAgneyi, setHasAgneyi] = useState(false)
   const [hasCulann, setHasCulann] = useState(false)
   const [hasHela, setHasHela] = useState(false)
+  const [hasDionysus, setHasDionysus] = useState(false)
+  const [hasMaya, setHasMaya] = useState(false)
+  const [hasEmber, setHasEmber] = useState(false)
+  const [hasAsh, setHasAsh] = useState(false)
 
   // Summonable characters
   const [summonableCharacters, setSummonableCharacters] = useState<{ [key: string]: boolean }>({})
@@ -340,6 +353,10 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       hasAgneyi,
       hasCulann,
       hasHela,
+      hasDionysus,
+      hasMaya,
+      hasEmber,
+      hasAsh,
       auras,
       talentScrolls,
       talentScripts,
@@ -354,7 +371,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     uploadedWardenData, inventory, inventoryImages, scarletBond,
     scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
     hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
-    hasHela, auras, talentScrolls, talentScripts, familiars
+    hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars
   ])
 
   const getExportState = useCallback((): Partial<GameCalculatorState> => {
@@ -384,6 +401,10 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     hasAgneyi,
     hasCulann,
     hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
     auras,
     talentScrolls,
     talentScripts,
@@ -395,7 +416,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     uploadedWardenData, inventory, inventoryImages, scarletBond,
     scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
     hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
-    hasHela, auras, talentScrolls, talentScripts, familiars
+    hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars
   ])
 
   const importGameData = useCallback((data: Partial<GameCalculatorState>) => {
@@ -424,6 +445,10 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     if (data.hasAgneyi !== undefined) setHasAgneyi(data.hasAgneyi)
     if (data.hasCulann !== undefined) setHasCulann(data.hasCulann)
     if (data.hasHela !== undefined) setHasHela(data.hasHela)
+    if (data.hasDionysus !== undefined) setHasDionysus(data.hasDionysus)
+    if (data.hasMaya !== undefined) setHasMaya(data.hasMaya)
+    if (data.hasEmber !== undefined) setHasEmber(data.hasEmber)
+    if (data.hasAsh !== undefined) setHasAsh(data.hasAsh)
     if (data.auras) setAuras(data.auras)
     if (data.talentScrolls) setTalentScrolls(data.talentScrolls)
     if (data.talentScripts) setTalentScripts(data.talentScripts)
@@ -824,21 +849,12 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
                   flatBonus = levelData.single || 0
                 }
                 
-                // Apply lover bonuses
-                let multiplier = 1.0
-                const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
-                const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
-                const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
-                const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
-                const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-                
-                if ((attr === 'strength' && canSummonAgneyi) || 
-                    (attr === 'intellect' && canSummonCulann) || 
-                    (attr === 'spirit' && canSummonHela)) {
-                  if (loverCount === 1) multiplier = 1.2
-                  else if (loverCount === 2) multiplier = 1.25
-                  else if (loverCount === 3) multiplier = 1.3
-                }
+                const s = resolveLoverSummonFlags(
+                  { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+                  hasNyx,
+                  inventory
+                )
+                const multiplier = getLoverScarletBondAuraMultiplier(attr, s)
                 
                 const attrTotal = flatBonus * multiplier
                 if (percent > 0) {
@@ -881,7 +897,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       totalDom,
       domIncrease
     }
-  }, [baseAttributes, books, conclave, wardenStats, scarletBond, optimizedBondLevels, courtyard, hasAgneyi, hasCulann, hasHela, inventory])
+  }, [baseAttributes, books, conclave, wardenStats, scarletBond, optimizedBondLevels, courtyard, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, hasNyx, inventory])
 
   // Calculate optimized scarlet bond bonuses
   const calculateOptimizedScarletBondBonuses = useCallback(() => {
@@ -962,19 +978,12 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
                   flatBonus = levelData.single || 0
                 }
                 
-                let multiplier = 1.0
-                const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
-                const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
-                const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
-                const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-                
-                if ((attr === 'strength' && canSummonAgneyi) || 
-                    (attr === 'intellect' && canSummonCulann) || 
-                    (attr === 'spirit' && canSummonHela)) {
-                  if (loverCount === 1) multiplier = 1.2
-                  else if (loverCount === 2) multiplier = 1.25
-                  else if (loverCount === 3) multiplier = 1.3
-                }
+                const s = resolveLoverSummonFlags(
+                  { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+                  hasNyx,
+                  inventory
+                )
+                const multiplier = getLoverScarletBondAuraMultiplier(attr, s)
                 
                 const attrTotal = Math.round(flatBonus * multiplier)
                 if (attr === 'strength') currentStrength += attrTotal
@@ -1002,7 +1011,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       currentIntellect,
       currentSpirit
     }
-  }, [scarletBond, hasAgneyi, hasCulann, hasHela, inventory])
+  }, [scarletBond, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, hasNyx, inventory])
 
   // Calculate suggested scarlet bond increase (simplified - returns empty for now)
   const calculateSuggestedScarletBondIncrease = useCallback(() => {
@@ -1016,7 +1025,19 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Calculate dynamic auras and aura bonuses
-  const computedDynamicAuras = calculateDynamicAuraLevels(auras, selectedWardens, hasAgneyi, hasCulann, hasHela, inventory)
+  const computedDynamicAuras = calculateDynamicAuraLevels(
+    auras,
+    selectedWardens,
+    hasAgneyi,
+    hasCulann,
+    hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
+    hasNyx,
+    inventory
+  )
   const computedAuraBonuses = calculateAuraBonuses(
     auras,
     selectedWardens,
@@ -1028,6 +1049,10 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     hasAgneyi,
     hasCulann,
     hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
     inventory
   )
   const computedTotals = calculateTotals()
@@ -1074,6 +1099,14 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     setHasCulann,
     hasHela,
     setHasHela,
+    hasDionysus,
+    setHasDionysus,
+    hasMaya,
+    setHasMaya,
+    hasEmber,
+    setHasEmber,
+    hasAsh,
+    setHasAsh,
     summonableCharacters,
     setSummonableCharacter,
     familiars,

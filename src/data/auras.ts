@@ -60,12 +60,14 @@ export const initialAuras = {
       "Dominique": { current: 0, max: 20, type: "All Books %", baseValue: 0, increment: 0.5 }
     }
   },
-  // Lovers - special aura system (20% base, +5% for each additional, 30% for all 3)
-  // These increase ALL lover scarlet bond bonuses for their respective attribute by x%
+  // Lovers - Wild Hunt (4) & Monster Noir tiers are computed dynamically (20/25/30/35%)
   lovers: {
-    "Agneyi": { current: 0, max: 30, type: "Strength Scarlet Bond %", baseValue: 20, increment: 5 },
-    "Culann": { current: 0, max: 30, type: "Intellect Scarlet Bond %", baseValue: 20, increment: 5 },
-    "Hela": { current: 0, max: 30, type: "Spirit Scarlet Bond %", baseValue: 20, increment: 5 }
+    "Agneyi": { current: 0, max: 35, type: "Strength Scarlet Bond % (Wild Hunt)", baseValue: 20, increment: 5 },
+    "Culann": { current: 0, max: 35, type: "Spirit Scarlet Bond % (Wild Hunt · Finn)", baseValue: 20, increment: 5 },
+    "Hela": { current: 0, max: 35, type: "Allure Scarlet Bond % (Wild Hunt)", baseValue: 20, increment: 5 },
+    "Dionysus": { current: 0, max: 35, type: "Intellect Scarlet Bond % (Wild Hunt · Artemis)", baseValue: 20, increment: 5 },
+    "Maya": { current: 0, max: 35, type: "Spirit Scarlet Bond % (Monster Noir · Grendel)", baseValue: 20, increment: 5 },
+    "EmberAsh": { current: 0, max: 25, type: "All Scarlet Bond % (Nyx lovers)", baseValue: 25, increment: 0 }
   },
   // VIP Wardens
   vip: {
@@ -92,6 +94,16 @@ export const initialAuras = {
       talents: { current: 12, max: 12, type: "All Talent %" },
       books: { current: 12, max: 12, type: "All Books %" },
       vipRequired: 12 
+    },
+    "Thanatos": {
+      talents: { current: 12, max: 12, type: "All Talent % (Memento Mori)" },
+      books: { current: 12, max: 12, type: "All Books % (Death comes for all)" },
+      vipRequired: 13
+    },
+    "Mara": {
+      talents: { current: 12, max: 12, type: "All Talent % (Frozen heart)" },
+      books: { current: 12, max: 12, type: "All Books % (Eternal winter)" },
+      vipRequired: 14
     }
   },
   // Paid Pack Wardens

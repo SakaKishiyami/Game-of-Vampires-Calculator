@@ -7,6 +7,7 @@ import { wardenAttributes } from '@/data/wardens'
 import { calculateTotalConclaveBonus } from './conclaveCalculations'
 import { calculateCourtyardDom, calculateMaxCourtyardLevel } from './courtyardCalculations'
 import { calculateDynamicAuraLevels } from './auraCalculations'
+import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier } from '@/utils/loverScarletBondAuras'
 import { calculateScriptResults, getStarBonus, calculateTalentScrollStars } from './talentCalculations'
 
 export interface TotalCalculationResult {
@@ -32,6 +33,11 @@ export function calculateTotals(
   hasAgneyi: boolean,
   hasCulann: boolean,
   hasHela: boolean,
+  hasDionysus: boolean,
+  hasMaya: boolean,
+  hasEmber: boolean,
+  hasAsh: boolean,
+  hasNyx: boolean,
   inventory: Inventory,
   talentScrolls: any,
   talentScripts: any,
@@ -247,84 +253,51 @@ export function calculateTotals(
     }
   })
 
-  // Apply lover aura bonuses to scarlet bond bonuses
-  const dynamicAuras = calculateDynamicAuraLevels(auras, selectedWardens, hasAgneyi, hasCulann, hasHela, inventory)
-  if (dynamicAuras.lovers) {
-    Object.entries(dynamicAuras.lovers).forEach(([loverName, loverData]: [string, any]) => {
-      const multiplier = loverData.current / 100
-      
-      if (multiplier > 0) {
-        switch (loverName) {
-          case "Agneyi": // Strength
-            Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
-              if (bond) {
-                const optimizedBond = optimizedBondLevels[bondKey] || bond
-                const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
-                if (bondData && optimizedBond.strengthLevel) {
-                  const levelData = scarletBondLevels.find(l => l.level === optimizedBond.strengthLevel)
-                  if (levelData) {
-                    let flatBonus = 0
-                    if (bondData.type === 'All') {
-                      flatBonus = levelData.all || 0
-                    } else if (bondData.type === 'Dual') {
-                      flatBonus = levelData.dual || 0
-                    } else {
-                      flatBonus = levelData.single || 0
-                    }
-                    totalStrength += flatBonus * multiplier
-                  }
-                }
-              }
-            })
-            break
-          case "Culann": // Intellect
-            Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
-              if (bond) {
-                const optimizedBond = optimizedBondLevels[bondKey] || bond
-                const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
-                if (bondData && optimizedBond.intellectLevel) {
-                  const levelData = scarletBondLevels.find(l => l.level === optimizedBond.intellectLevel)
-                  if (levelData) {
-                    let flatBonus = 0
-                    if (bondData.type === 'All') {
-                      flatBonus = levelData.all || 0
-                    } else if (bondData.type === 'Dual') {
-                      flatBonus = levelData.dual || 0
-                    } else {
-                      flatBonus = levelData.single || 0
-                    }
-                    totalIntellect += flatBonus * multiplier
-                  }
-                }
-              }
-            })
-            break
-          case "Hela": // Spirit
-            Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
-              if (bond) {
-                const optimizedBond = optimizedBondLevels[bondKey] || bond
-                const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
-                if (bondData && optimizedBond.spiritLevel) {
-                  const levelData = scarletBondLevels.find(l => l.level === optimizedBond.spiritLevel)
-                  if (levelData) {
-                    let flatBonus = 0
-                    if (bondData.type === 'All') {
-                      flatBonus = levelData.all || 0
-                    } else if (bondData.type === 'Dual') {
-                      flatBonus = levelData.dual || 0
-                    } else {
-                      flatBonus = levelData.single || 0
-                    }
-                    totalSpirit += flatBonus * multiplier
-                  }
-                }
-              }
-            })
-            break
-        }
-      }
+  // Apply lover aura bonuses to scarlet bond bonuses (additive layer: base already added above)
+  const s = resolveLoverSummonFlags(
+    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+    hasNyx,
+    inventory
+  )
+  calculateDynamicAuraLevels(
+    auras,
+    selectedWardens,
+    hasAgneyi,
+    hasCulann,
+    hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
+    hasNyx,
+    inventory
+  )
+
+  Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
+    if (!bond) return
+    const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
+    if (!bondData) return
+    const optimizedBond = optimizedBondLevels[bondKey] || bond
+    ;(['strength', 'allure', 'intellect', 'spirit'] as const).forEach((attr) => {
+      const level = optimizedBond[`${attr}Level`] || 0
+      if (!level) return
+      const levelData = scarletBondLevels.find(l => l.level === level)
+      if (!levelData) return
+      let flatBonus = 0
+      if (bondData.type === 'All') flatBonus = levelData.all || 0
+      else if (bondData.type === 'Dual') flatBonus = levelData.dual || 0
+      else flatBonus = levelData.single || 0
+      const pct = (optimizedBond[`${attr}Percent`] || 0) / 100
+      const baseTotal = flatBonus * (1 + pct)
+      const m = getLoverScarletBondAuraMultiplier(attr, s)
+      const extra = baseTotal * (m - 1)
+      if (extra <= 0) return
+      if (attr === 'strength') totalStrength += extra
+      else if (attr === 'allure') totalAllure += extra
+      else if (attr === 'intellect') totalIntellect += extra
+      else totalSpirit += extra
     })
-  }
+  })
 
   // Add talent script bonuses
   if (talentScripts) {

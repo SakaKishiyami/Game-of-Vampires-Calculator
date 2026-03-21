@@ -176,6 +176,10 @@ export interface GameCalculatorState {
   hasAgneyi: boolean
   hasCulann: boolean
   hasHela: boolean
+  hasDionysus?: boolean
+  hasMaya?: boolean
+  hasEmber?: boolean
+  hasAsh?: boolean
   // Summonable characters
   hasFrances: boolean
   hasRaven: boolean

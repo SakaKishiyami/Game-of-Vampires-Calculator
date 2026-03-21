@@ -91,4 +91,6 @@ export const wardenAttributes = {
   "Edward": ["Intellect"],
   "Sarasvati": ["Intellect"],
   "Lucian": ["Spirit"],
+  "Thanatos": ["Balance"],
+  "Mara": ["Balance"],
 };

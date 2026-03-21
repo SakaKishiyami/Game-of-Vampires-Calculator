@@ -2,6 +2,7 @@
 import type { ScarletBondLevel, Inventory } from '@/types'
 import { scarletBondData, scarletBondLevels, getOffSingle } from '@/data/scarletBonds'
 import { wardenAttributes } from '@/data/wardens'
+import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier } from '@/utils/loverScarletBondAuras'
 
 export interface ScarletBondContribution {
   flatBonus: number
@@ -27,6 +28,11 @@ export function calculateScarletBondContribution(
   hasAgneyi: boolean,
   hasCulann: boolean,
   hasHela: boolean,
+  hasDionysus: boolean,
+  hasMaya: boolean,
+  hasEmber: boolean,
+  hasAsh: boolean,
+  hasNyx: boolean,
   inventory: Inventory
 ): ScarletBondContribution {
   const currentBond = scarletBond[bondKey] || {}
@@ -59,21 +65,13 @@ export function calculateScarletBondContribution(
     percentBonus = percentageValue * flatBonus
   }
   
-  let loverMultiplier = 1
-  const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
-  const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
-  const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
-  
-  if (attribute === 'strength' && canSummonAgneyi) {
-    const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-    loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
-  } else if (attribute === 'intellect' && canSummonCulann) {
-    const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-    loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
-  } else if (attribute === 'spirit' && canSummonHela) {
-    const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-    loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
-  }
+  const s = resolveLoverSummonFlags(
+    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+    hasNyx,
+    inventory
+  )
+  const attr = attribute as 'strength' | 'allure' | 'intellect' | 'spirit'
+  const loverMultiplier = getLoverScarletBondAuraMultiplier(attr, s)
   
   const totalBonus = (flatBonus + percentBonus) * loverMultiplier
   

@@ -21,12 +21,28 @@ export default function AuraBonusesTab() {
     hasAgneyi,
     hasCulann,
     hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
     inventory
   } = useGameCalculator()
   const { density } = useCalculatorSettings()
   const compact = density === 'compact'
 
-  const dynamicAuras = calculateDynamicAuraLevels(auras, selectedWardens, hasAgneyi, hasCulann, hasHela, inventory)
+  const dynamicAuras = calculateDynamicAuraLevels(
+    auras,
+    selectedWardens,
+    hasAgneyi,
+    hasCulann,
+    hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
+    hasNyx,
+    inventory
+  )
   const auraBonuses = calculateAuraBonuses(
     auras,
     selectedWardens,
@@ -38,6 +54,10 @@ export default function AuraBonusesTab() {
     hasAgneyi,
     hasCulann,
     hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
     inventory
   )
 
@@ -200,39 +220,40 @@ export default function AuraBonusesTab() {
             })}
 
             {/* Lovers (if any are active) */}
-            {(hasAgneyi || hasCulann || hasHela) && (
+            {(hasAgneyi || hasCulann || hasHela || hasDionysus || hasMaya || hasEmber || hasAsh) && (
               <div>
                 <h3 className="text-lg font-semibold text-pink-400 mb-3">Lovers (Scarlet Bond Bonuses)</h3>
                 <div className="text-sm text-gray-300 mb-3">
-                  Summoned: {[hasAgneyi, hasCulann, hasHela].filter(Boolean).length}/3 |{' '}
-                  Bonus Level: {(() => {
-                    const count = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
-                    if (count === 0) return "0%"
-                    if (count === 1) return "20%"
-                    if (count === 2) return "25%"
-                    return "30%"
-                  })()}
+                  Wild Hunt: {[hasAgneyi, hasCulann, hasHela, hasDionysus].filter(Boolean).length}/4 · Monster Noir: {[hasMaya].filter(Boolean).length}/4 · Ember/Ash: {hasEmber && hasAsh ? 'on' : 'off'}
                 </div>
                 <div className={`grid gap-2 ${compact ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-3'}`}>
                   {Object.entries(dynamicAuras.lovers || {}).map(([loverName, loverData]: [string, any]) => {
-                    const isSelected = (loverName === "Agneyi" && hasAgneyi) ||
-                                     (loverName === "Culann" && hasCulann) ||
-                                     (loverName === "Hela" && hasHela)
+                    const isSelected =
+                      (loverName === 'Agneyi' && hasAgneyi) ||
+                      (loverName === 'Culann' && hasCulann) ||
+                      (loverName === 'Hela' && hasHela) ||
+                      (loverName === 'Dionysus' && hasDionysus) ||
+                      (loverName === 'Maya' && hasMaya) ||
+                      (loverName === 'EmberAsh' && hasEmber && hasAsh && hasNyx)
+                    const imgSrc =
+                      loverName === 'EmberAsh'
+                        ? '/Gov/Lovers/BaseLovers/Ember.png'
+                        : `/Gov/Lovers/BaseLovers/${loverName}.png`
                     return (
                       <div key={loverName} className={`p-2 rounded flex items-center gap-2 ${isSelected ? 'bg-pink-500/20 border border-pink-500/30' : 'bg-gray-700/30'}`}>
                         <img
-                          src={`/Gov/Lovers/BaseLovers/${loverName}.png`}
+                          src={imgSrc}
                           alt={loverName}
                           className="w-7 h-7 rounded-full object-cover flex-shrink-0"
                           onError={(e) => {
                             const img = e.target as HTMLImageElement
-                            if (!img.src.includes('.PNG')) img.src = `/Gov/Lovers/BaseLovers/${loverName}.PNG`
+                            if (!img.src.includes('.PNG')) img.src = imgSrc.replace('.png', '.PNG')
                             else img.style.display = 'none'
                           }}
                         />
                         <div className="flex-1 min-w-0">
                           <span className={`font-medium text-xs ${isSelected ? 'text-pink-300' : 'text-gray-500'}`}>{loverName}</span>
-                          <div className="text-[10px] text-gray-400">{loverData.type} &middot; {isSelected ? 'Summoned' : 'Not Summoned'}</div>
+                          <div className="text-[10px] text-gray-400">{loverData.type} &middot; {isSelected ? 'Active' : 'Inactive'}</div>
                         </div>
                         <span className={`text-sm font-bold ${isSelected ? 'text-pink-400' : 'text-gray-500'}`}>
                           +{loverData.current}%

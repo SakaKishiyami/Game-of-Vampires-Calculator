@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from 'react'
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,8 +9,37 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { getAttributeColor, getAttributeBg } from '@/utils/helpers'
 import { scarletBondData, scarletBondLevels, getOffSingle } from '@/data/scarletBonds'
 import { wardenAttributes } from '@/data/wardens'
+import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier, wildHuntSummonedCount, monsterNoirSummonedCount, tierPercentFromCount } from '@/utils/loverScarletBondAuras'
+import { getLoverPortraitSrcs } from '@/utils/loverImagePaths'
 
 const attributeOrder = ['strength', 'allure', 'intellect', 'spirit'] as const
+
+function LoverPortraitThumb({
+  candidates,
+  label,
+  imgClassName,
+  emptyClassName,
+}: {
+  candidates: string[]
+  label: string
+  imgClassName?: string
+  emptyClassName?: string
+}) {
+  const [idx, setIdx] = useState(0)
+  const imgCls = imgClassName ?? 'w-14 h-14 rounded object-cover border border-gray-600'
+  const emptyCls = emptyClassName ?? 'w-14 h-14 rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[9px] text-gray-400 text-center p-1'
+  if (idx >= candidates.length) {
+    return <div className={emptyCls}>{label}</div>
+  }
+  return (
+    <img
+      src={candidates[idx]}
+      alt={label}
+      className={imgCls}
+      onError={() => setIdx((i) => i + 1)}
+    />
+  )
+}
 
 export default function ScarletBondTab() {
   const {
@@ -20,8 +50,19 @@ export default function ScarletBondTab() {
     hasAgneyi, setHasAgneyi,
     hasCulann, setHasCulann,
     hasHela, setHasHela,
+    hasDionysus, setHasDionysus,
+    hasMaya, setHasMaya,
+    hasEmber, setHasEmber,
+    hasAsh, setHasAsh,
+    hasNyx,
     inventory,
   } = useGameCalculator()
+
+  const summonState = resolveLoverSummonFlags(
+    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+    hasNyx,
+    inventory
+  )
 
   const calculateScarletBondContribution = (bondKey: string, attribute: string) => {
     const currentBond = scarletBond[bondKey] || {}
@@ -47,21 +88,13 @@ export default function ScarletBondTab() {
       percentBonus = (percentLevel / 100) * flatBonus
     }
 
-    let loverMultiplier = 1
-    const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
-    const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
-    const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
-
-    if (attribute === 'strength' && canSummonAgneyi) {
-      const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-      loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
-    } else if (attribute === 'intellect' && canSummonCulann) {
-      const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-      loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
-    } else if (attribute === 'spirit' && canSummonHela) {
-      const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-      loverMultiplier = loverCount === 1 ? 1.2 : loverCount === 2 ? 1.25 : 1.3
-    }
+    const s = resolveLoverSummonFlags(
+      { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+      hasNyx,
+      inventory
+    )
+    const attr = attribute as 'strength' | 'allure' | 'intellect' | 'spirit'
+    const loverMultiplier = getLoverScarletBondAuraMultiplier(attr, s)
 
     const totalBonus = (flatBonus + percentBonus) * loverMultiplier
     return {
@@ -190,14 +223,14 @@ export default function ScarletBondTab() {
       if (!bond) return
       const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
       if (!bondData) return
-      const wardenAttrs = wardenAttributes[bondData.warden as keyof typeof wardenAttributes] || []
 
-      const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
-      const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
-      const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
-      const loverCount = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
+      const s = resolveLoverSummonFlags(
+        { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+        hasNyx,
+        inventory
+      )
 
-      const processAttr = (attrKey: string, levelKey: string, percentKey: string, checker: string) => {
+      const processAttr = (attrKey: 'strength' | 'allure' | 'intellect' | 'spirit', levelKey: string, percentKey: string) => {
         if (!bond[levelKey] || bond[levelKey] <= 0) return 0
         const levelData = scarletBondLevels.find(l => l.level === bond[levelKey])
         if (!levelData) return 0
@@ -205,12 +238,7 @@ export default function ScarletBondTab() {
         if (bondData.type === 'All') flatBonus = levelData.all || 0
         else if (bondData.type === 'Dual') flatBonus = levelData.dual || 0
         else flatBonus = levelData.single || 0
-        let multiplier = 1.0
-        if (wardenAttrs.includes(checker)) {
-          if (loverCount === 1) multiplier = 1.2
-          else if (loverCount === 2) multiplier = 1.25
-          else if (loverCount === 3) multiplier = 1.3
-        }
+        const multiplier = getLoverScarletBondAuraMultiplier(attrKey, s)
         let total = Math.round(flatBonus * multiplier)
         if (bond[percentKey] && bond[percentKey] > 0) {
           total += Math.round(((bond[percentKey] || 0) / 100) * flatBonus * multiplier)
@@ -218,10 +246,10 @@ export default function ScarletBondTab() {
         return total
       }
 
-      currentStrength += processAttr('strength', 'strengthLevel', 'strengthPercent', 'Strength')
-      currentAllure += processAttr('allure', 'allureLevel', 'allurePercent', 'Allure')
-      currentIntellect += processAttr('intellect', 'intellectLevel', 'intellectPercent', 'Intellect')
-      currentSpirit += processAttr('spirit', 'spiritLevel', 'spiritPercent', 'Spirit')
+      currentStrength += processAttr('strength', 'strengthLevel', 'strengthPercent')
+      currentAllure += processAttr('allure', 'allureLevel', 'allurePercent')
+      currentIntellect += processAttr('intellect', 'intellectLevel', 'intellectPercent')
+      currentSpirit += processAttr('spirit', 'spiritLevel', 'spiritPercent')
     })
 
     return { currentStrength, currentAllure, currentIntellect, currentSpirit }
@@ -317,50 +345,84 @@ export default function ScarletBondTab() {
             <CardHeader>
               <CardTitle className="text-pink-400">Lovers (Need to be Summoned)</CardTitle>
               <div className="text-sm text-gray-300">
-                Select which lovers you have summoned. Each increases ALL lover scarlet bond bonuses for their attribute.
+                Wild Hunt and Monster Noir tiers are <strong>independent</strong>: 1/2/3/4 lovers in a set → 20%/25%/30%/35% to scarlet bonds for that set&apos;s attributes.
+                Ember/Ash (with Nyx) add up to +25% on <strong>all four</strong> attributes.
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="agneyi" checked={hasAgneyi} onCheckedChange={setHasAgneyi} className="border-gray-400" />
-                  <Label htmlFor="agneyi" className="text-red-400 font-medium">Agneyi (Strength Scarlet Bond Aura)</Label>
+            <CardContent className="space-y-6">
+              <div>
+                <div className="text-xs font-semibold text-green-300 mb-2">Wild Hunt (Rudra / Woden / Artemis / Finn)</div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {([
+                    { id: 'agneyi', label: 'Agneyi', sub: 'Rudra · Str', checked: hasAgneyi, set: setHasAgneyi, color: 'text-red-300' },
+                    { id: 'hela', label: 'Hela', sub: 'Woden · Allure', checked: hasHela, set: setHasHela, color: 'text-pink-300' },
+                    { id: 'dionysus', label: 'Dionysus', sub: 'Artemis · Int', checked: hasDionysus, set: setHasDionysus, color: 'text-cyan-300' },
+                    { id: 'culann', label: 'Culann', sub: 'Finn · Spirit', checked: hasCulann, set: setHasCulann, color: 'text-green-300' },
+                  ] as const).map((row) => (
+                    <div key={row.id} className="flex flex-col gap-1 p-2 rounded-lg bg-gray-800/60 border border-gray-600/80">
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id={row.id}
+                          checked={row.checked}
+                          onCheckedChange={(v) => row.set(v === true)}
+                          className="border-gray-400 mt-1"
+                        />
+                        <div className="min-w-0">
+                          <Label htmlFor={row.id} className={`${row.color} font-medium text-sm`}>{row.label}</Label>
+                          <div className="text-[10px] text-gray-500">{row.sub}</div>
+                        </div>
+                      </div>
+                      <LoverPortraitThumb candidates={getLoverPortraitSrcs(row.label).flat()} label={row.label} />
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="culann" checked={hasCulann} onCheckedChange={setHasCulann} className="border-gray-400" />
-                  <Label htmlFor="culann" className="text-green-400 font-medium">Culann (Intellect Scarlet Bond Aura)</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="hela" checked={hasHela} onCheckedChange={setHasHela} className="border-gray-400" />
-                  <Label htmlFor="hela" className="text-blue-400 font-medium">Hela (Spirit Scarlet Bond Aura)</Label>
+                <div className="text-xs text-gray-400 mt-2">
+                  Wild Hunt tier: {tierPercentFromCount(wildHuntSummonedCount(summonState))}% (from {wildHuntSummonedCount(summonState)}/4 summoned)
                 </div>
               </div>
+
+              <div>
+                <div className="text-xs font-semibold text-purple-300 mb-2">Monster Noir (Grendel line — more coming)</div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="flex flex-col gap-1 p-2 rounded-lg bg-gray-800/60 border border-gray-600/80">
+                    <div className="flex items-start gap-2">
+                      <Checkbox id="maya" checked={hasMaya} onCheckedChange={(v) => setHasMaya(v === true)} className="border-gray-400 mt-1" />
+                      <div>
+                        <Label htmlFor="maya" className="text-purple-200 font-medium text-sm">Maya</Label>
+                        <div className="text-[10px] text-gray-500">Grendel · Spirit</div>
+                      </div>
+                    </div>
+                    <LoverPortraitThumb candidates={getLoverPortraitSrcs('Maya').flat()} label="Maya" />
+                  </div>
+                </div>
+                <div className="text-xs text-gray-400 mt-2">
+                  Monster Noir tier: {tierPercentFromCount(monsterNoirSummonedCount(summonState))}% (from {monsterNoirSummonedCount(summonState)}/4 — only Maya in data for now)
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs font-semibold text-amber-300 mb-2">Nyx · Ember / Ash</div>
+                <div className="grid grid-cols-2 gap-3 max-w-md">
+                  <div className="flex flex-col gap-1 p-2 rounded-lg bg-gray-800/60 border border-gray-600/80">
+                    <div className="flex items-start gap-2">
+                      <Checkbox id="ember" checked={hasEmber} onCheckedChange={(v) => setHasEmber(v === true)} className="border-gray-400 mt-1" />
+                      <Label htmlFor="ember" className="text-amber-200 font-medium text-sm">Ember</Label>
+                    </div>
+                    <LoverPortraitThumb candidates={getLoverPortraitSrcs('Ember').flat()} label="Ember" />
+                  </div>
+                  <div className="flex flex-col gap-1 p-2 rounded-lg bg-gray-800/60 border border-gray-600/80">
+                    <div className="flex items-start gap-2">
+                      <Checkbox id="ash" checked={hasAsh} onCheckedChange={(v) => setHasAsh(v === true)} className="border-gray-400 mt-1" />
+                      <Label htmlFor="ash" className="text-amber-200 font-medium text-sm">Ash</Label>
+                    </div>
+                    <LoverPortraitThumb candidates={getLoverPortraitSrcs('Ash').flat()} label="Ash" />
+                  </div>
+                </div>
+                <div className="text-xs text-gray-400 mt-1">Requires <strong>Nyx</strong> unlocked + both lovers for +25% on Str/Allure/Int/Spirit scarlet bonds.</div>
+              </div>
+
               <div className="mt-2 text-center">
-                <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">Summonable with Coins</span>
-              </div>
-              <div className="mt-4 p-3 bg-gray-600/50 rounded">
-                <div className="text-sm text-gray-300">
-                  <strong>Lover Aura System:</strong>
-                  <ul className="list-disc list-inside mt-1 space-y-1">
-                    <li>1 Lover: +20% to ALL lover scarlet bond bonuses for their attribute</li>
-                    <li>2 Lovers: +25% to ALL lover scarlet bond bonuses for their attributes</li>
-                    <li>3 Lovers: +30% to ALL lover scarlet bond bonuses for their attributes</li>
-                  </ul>
-                </div>
-                <div className="text-sm text-yellow-400 mt-2">
-                  Currently: {[hasAgneyi, hasCulann, hasHela].filter(Boolean).length}/3 lovers summoned
-                  {(() => {
-                    const canSummonAgneyi = hasAgneyi || (inventory['AgneyiToken']?.count || 0) >= 100
-                    const canSummonCulann = hasCulann || (inventory['CulannToken']?.count || 0) >= 100
-                    const canSummonHela = hasHela || (inventory['HelaToken']?.count || 0) >= 100
-                    const tokenSummoned = [canSummonAgneyi, canSummonCulann, canSummonHela].filter(Boolean).length
-                    const checkboxSummoned = [hasAgneyi, hasCulann, hasHela].filter(Boolean).length
-                    if (tokenSummoned > checkboxSummoned) {
-                      return <div className="text-green-400 text-xs mt-1">(Can summon {tokenSummoned - checkboxSummoned} more with tokens)</div>
-                    }
-                    return null
-                  })()}
-                </div>
+                <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">Many summonable with coins / tokens</span>
               </div>
             </CardContent>
           </Card>
@@ -412,54 +474,19 @@ export default function ScarletBondTab() {
                   <div className="flex">
                     {/* Lover Images - Left Side */}
                     <div className="w-56 h-80 flex-shrink-0 flex">
-                      {(() => {
-                        if (bond.lover.includes('/')) {
-                          const names = bond.lover.split('/').map(s => s.trim())
-                          const sameName = names[0].toLowerCase() === names[1].toLowerCase()
-                          if (sameName) {
-                            return names.map((name, index) => {
-                              const base = name.toLowerCase()
-                              const genderSuffix = index === 0 ? 'female' : 'male'
-                              const imageName = `${base}${genderSuffix}`
-                              return (
-                                <div key={`${name}-${index}`} className="w-1/2 h-full flex items-center justify-center">
-                                  <img src={`/Gov/Lovers/BaseLovers/${imageName}.png`} alt={name}
-                                    className="w-full h-full object-contain"
-                                    onError={(e) => {
-                                      const img = e.target as HTMLImageElement
-                                      if (!img.src.includes('.PNG')) img.src = `/Gov/Lovers/BaseLovers/${imageName}.PNG`
-                                      else img.style.display = 'none'
-                                    }} />
-                                </div>
-                              )
-                            })
-                          }
-                          return names.map((name) => (
-                            <div key={name} className="w-1/2 h-full flex items-center justify-center">
-                              <img src={`/Gov/Lovers/BaseLovers/${name}.PNG`} alt={name}
-                                className="w-full h-full object-contain"
-                                onError={(e) => {
-                                  const img = e.target as HTMLImageElement
-                                  if (!img.src.includes('.png')) img.src = `/Gov/Lovers/BaseLovers/${name}.png`
-                                  else img.style.display = 'none'
-                                }} />
-                            </div>
-                          ))
-                        }
-                        return (
-                          <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                            <img src={`/Gov/Lovers/BaseLovers/${bond.lover}.PNG`} alt={bond.lover}
-                              className="w-full h-full object-contain"
-                              onError={(e) => {
-                                const img = e.target as HTMLImageElement
-                                if (!img.src.includes('.png')) img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.png`
-                                else if (!img.src.includes('.jpg')) img.src = `/Gov/Lovers/BaseLovers/${bond.lover}.jpg`
-                                else if (!img.src.includes('_')) img.src = `/Gov/Lovers/BaseLovers/${bond.lover.replace(/([A-Z])/g, '_$1').toLowerCase()}.PNG`
-                                else img.style.display = 'none'
-                              }} />
-                          </div>
-                        )
-                      })()}
+                      {getLoverPortraitSrcs(bond.lover).map((candidates, idx, arr) => (
+                        <div
+                          key={idx}
+                          className={`${arr.length > 1 ? 'w-1/2' : 'w-full'} h-full flex items-center justify-center p-1`}
+                        >
+                          <LoverPortraitThumb
+                            candidates={candidates}
+                            label={bond.lover}
+                            imgClassName="w-full h-full object-contain max-h-80"
+                            emptyClassName="w-full min-h-[120px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
+                          />
+                        </div>
+                      ))}
                     </div>
 
                     {/* Content - Right Side */}
