@@ -56,6 +56,32 @@ function rankIconSrc(grade: FamiliarGrade): string {
   return `/FamiliarAssets/Ranks/${grade}.png`
 }
 
+/** Knack picks use the same location art as bonds where names align. */
+function knackIconSrc(k: FamiliarKnack): string | null {
+  const map: Partial<Record<FamiliarKnack, string>> = {
+    Gym: 'Gym2.png',
+    Conclave: 'Conclave.png',
+    Arena: 'Arena.png',
+    League: 'League.png',
+    Date: 'Date.png',
+    Crystal: 'Crystal.png',
+    Fishing: 'Fishing.png',
+    "Lover's Lodge": "Lover'sLodge.png",
+    Workshop: 'Workshop1.png',
+    Well: 'Well.png',
+    Mushroom: 'Mushroom.png',
+    'Dark Chasm': 'DarkChasm.png',
+  }
+  const file = map[k]
+  return file ? `/FamiliarAssets/Bonds/${file}` : null
+}
+
+function bondIconSrcFromId(bondId: FamiliarBondId | null): string | null {
+  if (!bondId) return null
+  const def = familiarBondDefinitions.find((b) => b.id === bondId)
+  return def ? `/FamiliarAssets/Bonds/${def.assetFile}` : null
+}
+
 function getPreviewImageSrc(familiar: FamiliarDefinition, isAdult: boolean, isMutated: boolean): string | undefined {
   if (isAdult) {
     return isMutated
@@ -172,58 +198,90 @@ function FamiliarSquare({
   )
 }
 
-function OwnedFamiliarCard({
+/**
+ * Large roster / form preview: portrait with a left column — big rank, small knack icons, space, big bond.
+ * Icons only on the overlay (no rank/bond text on the art).
+ */
+function TrackerPortrait({
   familiar,
   state,
-  count,
-  onEditLatest,
-  onAddAnother,
-  onRemove,
+  className = '',
 }: {
-  familiar: FamiliarDefinition
-  state?: FamiliarOwnedEntry | null
-  count: number
-  onEditLatest: () => void
-  onAddAnother: () => void
-  onRemove: () => void
+  familiar: FamiliarDefinition | null
+  state: FamiliarOwnedEntry | null
+  className?: string
 }) {
-  const owned = !!state
-  return (
-    <div className="rounded-lg border border-gray-700/40 bg-gray-900/40 p-2">
-      <div className="flex flex-col items-center gap-2">
-        <FamiliarSquare familiar={familiar} state={state} />
-        <div className="text-[11px] text-gray-200 font-medium text-center">{familiar.name}</div>
-        {owned ? <div className="text-[10px] text-gray-400">{count} owned</div> : null}
-        {owned ? (
-          <div className="flex gap-1 pt-1">
-            <button
-              onClick={onEditLatest}
-              className="text-[10px] px-2 py-0.5 rounded-full font-medium transition-colors bg-blue-600/20 text-blue-200 hover:bg-blue-600/35"
-            >
-              Edit
-            </button>
-            <button
-              onClick={onAddAnother}
-              className="text-[10px] px-2 py-0.5 rounded-full font-medium transition-colors bg-green-600/20 text-green-200 hover:bg-green-600/35"
-            >
-              + Copy
-            </button>
-            <button
-              onClick={onRemove}
-              className="text-[10px] px-2 py-0.5 rounded-full font-medium transition-colors bg-red-600/20 text-red-200 hover:bg-red-600/35"
-            >
-              Remove
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={onAddAnother}
-            className="text-[10px] px-2 py-0.5 rounded-full font-medium transition-colors bg-green-600/20 text-green-200 hover:bg-green-600/35"
-          >
-            Add
-          </button>
-        )}
+  if (!familiar) {
+    return (
+      <div
+        className={`rounded-xl border-2 border-dashed border-gray-600 bg-gray-900/30 flex items-center justify-center text-gray-500 text-sm text-center px-2 w-[13rem] h-[13rem] sm:w-[15rem] sm:h-[15rem] ${className}`}
+      >
+        Pick a familiar
       </div>
+    )
+  }
+
+  const owned = !!state
+  const grade = state?.grade ?? 'D'
+  const isAdult = state?.isAdult ?? false
+  const isMutated = state?.isMutated ?? false
+  const bondSrc = bondIconSrcFromId(state?.bondId ?? null)
+  const knackSlots = state && (state.grade === 'S' || state.grade === 'SS') ? 2 : 1
+  const knackList = (state?.knacks ?? []).slice(0, knackSlots)
+
+  const bg = owned ? GRADE_BG[grade] : 'bg-gray-900/60'
+  const border = owned ? GRADE_BORDER[grade] : 'border-gray-700/60'
+  const imgSrc = owned ? getPreviewImageSrc(familiar, isAdult, isMutated) : familiar.images.baby
+
+  return (
+    <div
+      className={`relative rounded-xl border-2 overflow-hidden flex-shrink-0 ${bg} ${border} w-[13rem] h-[13rem] sm:w-[15rem] sm:h-[15rem] ${className}`}
+    >
+      {imgSrc ? (
+        <img
+          src={imgSrc}
+          alt={familiar.name}
+          className={`absolute inset-0 w-full h-full object-contain p-2 pl-[3.35rem] sm:pl-[3.75rem] ${owned ? '' : 'grayscale opacity-65'}`}
+          onError={(e) => {
+            ;(e.target as HTMLImageElement).style.display = 'none'
+          }}
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-4xl">?</div>
+      )}
+
+      {owned ? (
+        <div className="absolute left-0 top-0 bottom-0 w-[3.25rem] sm:w-[3.5rem] flex flex-col justify-between py-1.5 pl-1 pr-0.5 z-10 pointer-events-none">
+          <div className="flex flex-col items-start gap-1">
+            <img
+              src={rankIconSrc(grade)}
+              alt=""
+              className="w-[2.85rem] h-[2.85rem] sm:w-14 sm:h-14 object-contain drop-shadow-md"
+            />
+            {Array.from({ length: knackSlots }).map((_, i) => {
+              const k = knackList[i]
+              if (!k) return <div key={`k-${i}`} className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-black/25" />
+              const src = knackIconSrc(k)
+              return src ? (
+                <img key={`${k}-${i}`} src={src} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain drop-shadow" />
+              ) : (
+                <div
+                  key={`${k}-${i}`}
+                  className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-gray-700/80 border border-gray-600/50"
+                  title={k}
+                />
+              )
+            })}
+          </div>
+          <div className="min-h-[3rem] flex items-end">
+            {bondSrc ? (
+              <img src={bondSrc} alt="" className="w-[2.65rem] h-[2.65rem] sm:w-12 sm:h-12 object-contain drop-shadow-md" />
+            ) : (
+              <div className="w-[2.65rem] h-[2.65rem] sm:w-12 sm:h-12 rounded-md bg-black/20 border border-white/5" />
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -289,11 +347,6 @@ export default function FamiliarsTab() {
     []
   )
 
-  const nestWithoutNest = useMemo(
-    () => familiarDefinitions.filter((f) => f.nestId === null),
-    []
-  )
-
   const [selectedFamiliarId, setSelectedFamiliarId] = useState<string>(releasedFamiliars[0]?.id ?? '')
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
   const [mutationMode, setMutationMode] = useState<'normal' | 'mutated'>('normal')
@@ -307,7 +360,7 @@ export default function FamiliarsTab() {
   const [pickerOpen, setPickerOpen] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [rankFilter, setRankFilter] = useState<'all' | FamiliarGrade>('all')
-  const [bondFilter, setBondFilter] = useState<'all' | FamiliarBondId>('all')
+  const [bondFilter, setBondFilter] = useState<'all' | FamiliarBondId | 'none'>('all')
   const [knackFilter, setKnackFilter] = useState<'all' | FamiliarKnack>('all')
 
   useEffect(() => {
@@ -329,8 +382,42 @@ export default function FamiliarsTab() {
   const computedIsMutated = mutationMode === 'mutated'
   const knackSlots = selectedGrade === 'S' || selectedGrade === 'SS' ? 2 : 1
 
+  const previewEntry: FamiliarOwnedEntry | null = useMemo(() => {
+    if (!selectedFamiliar) return null
+    return {
+      id: 'preview',
+      grade: selectedGrade,
+      level: selectedLevel,
+      isAdult: computedIsAdult,
+      isMutated: computedIsMutated,
+      attributes: { ...attrValues },
+      mainAttributes: [mainAttr1, mainAttr2],
+      bondId: selectedBondId,
+      knacks: selectedKnacks.slice(0, knackSlots),
+    }
+  }, [
+    selectedFamiliar,
+    selectedGrade,
+    selectedLevel,
+    computedIsAdult,
+    computedIsMutated,
+    attrValues,
+    mainAttr1,
+    mainAttr2,
+    selectedBondId,
+    selectedKnacks,
+    knackSlots,
+  ])
+
   const scrollToAddForm = () => {
     document.getElementById('familiar-add-form')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+
+  const scrollToRoster = () => {
+    document.getElementById('familiar-roster')?.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     })
@@ -358,13 +445,20 @@ export default function FamiliarsTab() {
       ],
     }))
     setEditingEntryId(null)
-    scrollToAddForm()
+    scrollToRoster()
   }
 
   const removeFamiliar = (familiarId: string) => {
     setFamiliars((prev) => ({
       ...prev,
       [familiarId]: [],
+    }))
+  }
+
+  const removeEntry = (familiarId: string, entryId: string) => {
+    setFamiliars((prev) => ({
+      ...prev,
+      [familiarId]: (prev[familiarId] ?? []).filter((x: FamiliarOwnedEntry) => x.id !== entryId),
     }))
   }
 
@@ -429,8 +523,32 @@ export default function FamiliarsTab() {
 
   const totalBonuses = getTotalFamiliarBonuses(familiars)
   const hasAnyBonus = ALL_FAMILIAR_ATTRIBUTES.some((a) => totalBonuses[a] > 0)
-  const ownedCount = releasedFamiliars.reduce((sum, f) => sum + ((familiars[f.id] ?? []).length > 0 ? 1 : 0), 0)
-  const totalCount = releasedFamiliars.length
+  const totalCopies = useMemo(
+    () => Object.values(familiars).reduce((sum, arr) => sum + (arr?.length ?? 0), 0),
+    [familiars]
+  )
+
+  const filteredRoster = useMemo(() => {
+    const q = searchText.trim().toLowerCase()
+    const rows: { familiar: FamiliarDefinition; entry: FamiliarOwnedEntry }[] = []
+    for (const f of familiarDefinitions) {
+      for (const entry of familiars[f.id] ?? []) {
+        if (q && !f.name.toLowerCase().includes(q)) continue
+        if (rankFilter !== 'all' && entry.grade !== rankFilter) continue
+        if (bondFilter !== 'all') {
+          if (bondFilter === 'none' && entry.bondId !== null) continue
+          if (bondFilter !== 'none' && entry.bondId !== bondFilter) continue
+        }
+        if (knackFilter !== 'all' && !entry.knacks.includes(knackFilter)) continue
+        rows.push({ familiar: f, entry })
+      }
+    }
+    rows.sort(
+      (a, b) =>
+        a.familiar.name.localeCompare(b.familiar.name) || a.entry.id.localeCompare(b.entry.id)
+    )
+    return rows
+  }, [familiars, searchText, rankFilter, bondFilter, knackFilter])
 
   // bonds tab (local state for now)
   const [bondLevels, setBondLevels] = useState<Record<FamiliarBondId, number>>(() => {
@@ -444,9 +562,7 @@ export default function FamiliarsTab() {
       <CardHeader>
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="text-red-400">Familiars</CardTitle>
-          <div className="text-xs text-gray-400">
-            {ownedCount}/{totalCount} owned
-          </div>
+          <div className="text-xs text-gray-400">{totalCopies} in roster</div>
         </div>
       </CardHeader>
 
@@ -564,6 +680,119 @@ export default function FamiliarsTab() {
           </TabsContent>
 
           <TabsContent value="tracker" className="pt-4">
+            <Card id="familiar-roster" className="bg-gray-900/60 border-gray-700 mb-4">
+              <CardHeader className="py-3 px-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <CardTitle className="text-sm font-semibold text-gray-200">Your roster</CardTitle>
+                  <button
+                    type="button"
+                    onClick={scrollToAddForm}
+                    className="text-xs text-red-300 hover:text-red-200 underline text-left sm:text-right"
+                  >
+                    + Add / edit familiar (below)
+                  </button>
+                </div>
+              </CardHeader>
+              <CardContent className="px-4 pb-4 pt-0 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                  <input
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="Search..."
+                    className="bg-gray-800 border border-gray-700 text-white text-sm rounded px-2 py-2"
+                  />
+                  <select
+                    value={rankFilter}
+                    onChange={(e) => setRankFilter(e.target.value as 'all' | FamiliarGrade)}
+                    className="bg-gray-800 border border-gray-700 text-white text-sm rounded px-2 py-2"
+                  >
+                    <option value="all">All Ranks</option>
+                    {GRADE_ORDER.map((g) => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={bondFilter}
+                    onChange={(e) => setBondFilter(e.target.value as 'all' | FamiliarBondId | 'none')}
+                    className="bg-gray-800 border border-gray-700 text-white text-sm rounded px-2 py-2"
+                  >
+                    <option value="all">All Bonds</option>
+                    <option value="none">No bond</option>
+                    {familiarBondDefinitions.map((b) => (
+                      <option key={b.id} value={b.id}>{b.displayName}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={knackFilter}
+                    onChange={(e) => setKnackFilter(e.target.value as 'all' | FamiliarKnack)}
+                    className="bg-gray-800 border border-gray-700 text-white text-sm rounded px-2 py-2"
+                  >
+                    <option value="all">All Knacks</option>
+                    {KNACK_OPTIONS.map((k) => (
+                      <option key={k} value={k}>{k}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {filteredRoster.length === 0 ? (
+                  <div className="min-h-[12rem] rounded-xl border-2 border-dashed border-gray-600/80 bg-gray-950/40 flex flex-col items-center justify-center gap-2 px-4 text-center py-8">
+                    <p className="text-sm text-gray-400">Nothing tracked yet — roster is empty.</p>
+                    <p className="text-xs text-gray-500 max-w-sm">
+                      Use the form below to add familiars. You can add multiple copies of the same species (each with its own rank, bond, and knacks).
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="mt-2 border-gray-600 text-gray-200"
+                      onClick={scrollToAddForm}
+                    >
+                      Open add form
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+                    {filteredRoster.map(({ familiar: f, entry }) => (
+                      <div
+                        key={`${f.id}-${entry.id}`}
+                        className="rounded-xl border border-gray-700/60 bg-gray-950/30 p-3 flex flex-col items-center gap-2"
+                      >
+                        <TrackerPortrait familiar={f} state={entry} />
+                        <div className="text-sm font-medium text-gray-100 text-center leading-tight px-1">{f.name}</div>
+                        <div className="text-[11px] text-gray-500 text-center">
+                          Lv {entry.level}
+                          {entry.isAdult ? ' · Adult' : ''}
+                          {entry.isMutated ? ' · Mutated' : ''}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5 justify-center">
+                          <button
+                            type="button"
+                            onClick={() => editFamiliar(f.id, entry.id)}
+                            className="text-[10px] px-2 py-1 rounded-full bg-blue-600/25 text-blue-200 hover:bg-blue-600/40"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => addAnother(f.id)}
+                            className="text-[10px] px-2 py-1 rounded-full bg-green-600/20 text-green-200 hover:bg-green-600/35"
+                          >
+                            + Same species
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeEntry(f.id, entry.id)}
+                            className="text-[10px] px-2 py-1 rounded-full bg-red-600/20 text-red-200 hover:bg-red-600/35"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             <Card id="familiar-add-form" className="bg-gray-900/60 border-gray-700 mb-4">
               <CardHeader className="py-3 px-4">
                 <CardTitle className="text-sm font-semibold text-gray-200">Add / Upgrade Familiar</CardTitle>
@@ -573,26 +802,9 @@ export default function FamiliarsTab() {
                 <div className="flex flex-col md:flex-row md:items-start gap-4">
                   {/* Preview */}
                   <div className="flex-shrink-0">
-                    {selectedFamiliar ? (
-                      <div className="relative">
-                        <FamiliarSquare
-                          familiar={selectedFamiliar}
-                          state={{
-                            owned: true,
-                            grade: selectedGrade,
-                            level: selectedLevel,
-                            isAdult: computedIsAdult,
-                            isMutated: computedIsMutated,
-                          }}
-                          showStageLabel
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-16 h-16 bg-gray-800 rounded" />
-                    )}
-
-                    <div className="text-[10px] text-gray-500 mt-2">
-                      If Level == max, it auto-switches to Adult.
+                    <TrackerPortrait familiar={selectedFamiliar} state={previewEntry} />
+                    <div className="text-[10px] text-gray-500 mt-2 max-w-[15rem]">
+                      If level reaches max for rank, it counts as Adult. Preview matches roster cards.
                     </div>
                   </div>
 
@@ -841,118 +1053,6 @@ export default function FamiliarsTab() {
                 </div>
               </CardContent>
             </Card>
-
-            <Card className="bg-gray-900/60 border-gray-700 mb-4">
-              <CardContent className="py-3 px-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                  <input
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    placeholder="Search familiar..."
-                    className="bg-gray-800 border border-gray-700 text-white text-sm rounded px-2 py-2"
-                  />
-                  <select
-                    value={rankFilter}
-                    onChange={(e) => setRankFilter(e.target.value as any)}
-                    className="bg-gray-800 border border-gray-700 text-white text-sm rounded px-2 py-2"
-                  >
-                    <option value="all">All Ranks</option>
-                    {GRADE_ORDER.map((g) => (
-                      <option key={g} value={g}>{g}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={bondFilter}
-                    onChange={(e) => setBondFilter(e.target.value as any)}
-                    className="bg-gray-800 border border-gray-700 text-white text-sm rounded px-2 py-2"
-                  >
-                    <option value="all">All Bonds</option>
-                    {familiarBondDefinitions.map((b) => (
-                      <option key={b.id} value={b.id}>{b.displayName}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={knackFilter}
-                    onChange={(e) => setKnackFilter(e.target.value as any)}
-                    className="bg-gray-800 border border-gray-700 text-white text-sm rounded px-2 py-2"
-                  >
-                    <option value="all">All Knacks</option>
-                    {KNACK_OPTIONS.map((k) => (
-                      <option key={k} value={k}>{k}</option>
-                    ))}
-                  </select>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-semibold text-gray-200">Owned / Trackable Familiars</div>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {releasedFamiliars
-                  .filter((f) => f.name.toLowerCase().includes(searchText.toLowerCase()))
-                  .filter((f) => {
-                    const list = familiars[f.id] ?? []
-                    if (rankFilter === 'all') return true
-                    return list.some((x: FamiliarOwnedEntry) => x.grade === rankFilter)
-                  })
-                  .filter((f) => {
-                    const list = familiars[f.id] ?? []
-                    if (bondFilter === 'all') return true
-                    return list.some((x: FamiliarOwnedEntry) => x.bondId === bondFilter)
-                  })
-                  .filter((f) => {
-                    const list = familiars[f.id] ?? []
-                    if (knackFilter === 'all') return true
-                    return list.some((x: FamiliarOwnedEntry) => x.knacks.includes(knackFilter))
-                  })
-                  .map((f) => (
-                    <OwnedFamiliarCard
-                      key={f.id}
-                      familiar={f}
-                      state={(familiars[f.id] ?? [])[0] ?? null}
-                      count={(familiars[f.id] ?? []).length}
-                      onEditLatest={() => editFamiliar(f.id)}
-                      onAddAnother={() => addAnother(f.id)}
-                      onRemove={() => removeFamiliar(f.id)}
-                    />
-                  ))}
-              </div>
-
-              {nestWithoutNest.length > 0 && (
-                <Card className="bg-gray-900/40 border-gray-700/50">
-                  <CardHeader className="py-3 px-4">
-                    <CardTitle className="text-sm font-semibold text-gray-500 flex items-center gap-2">
-                      Coming Soon
-                      <span className="text-[10px] text-gray-600">(not yet in game)</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-4 pb-3 pt-0">
-                    <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-                      {nestWithoutNest.map((f) => (
-                        <div
-                          key={f.id}
-                          className="rounded-lg border p-2 bg-gray-900/30 border-gray-700/30 opacity-45 pointer-events-none select-none"
-                        >
-                          <div className="relative w-16 h-16 mx-auto flex items-center justify-center grayscale">
-                            <img
-                              src={f.images.baby}
-                              alt={f.name}
-                              className="w-full h-full object-contain"
-                              onError={(e) => {
-                                ;(e.target as HTMLImageElement).style.display = 'none'
-                              }}
-                            />
-                          </div>
-                          <div className="text-[10px] text-gray-500 mt-2 text-center truncate">{f.name}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
           </TabsContent>
 
           <TabsContent value="bonds" className="pt-4">
