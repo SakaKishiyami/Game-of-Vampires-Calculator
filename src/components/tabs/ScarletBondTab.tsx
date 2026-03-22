@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -102,6 +102,62 @@ function LoverSummonPickCard({
   )
 }
 
+function TrimmedImg({
+  src,
+  alt,
+  className,
+  onError,
+}: {
+  src: string
+  alt: string
+  className?: string
+  onError?: () => void
+}) {
+  const [trimmedSrc, setTrimmedSrc] = useState<string | null>(null)
+
+  useEffect(() => {
+    setTrimmedSrc(null)
+    const img = new Image()
+    img.onload = () => {
+      try {
+        const c = document.createElement('canvas')
+        c.width = img.naturalWidth
+        c.height = img.naturalHeight
+        const ctx = c.getContext('2d')
+        if (!ctx) { setTrimmedSrc(src); return }
+        ctx.drawImage(img, 0, 0)
+        const { data, width, height } = ctx.getImageData(0, 0, c.width, c.height)
+        let x0 = width, x1 = 0, y0 = height, y1 = 0
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            if (data[(y * width + x) * 4 + 3] > 10) {
+              if (x < x0) x0 = x
+              if (x > x1) x1 = x
+              if (y < y0) y0 = y
+              if (y > y1) y1 = y
+            }
+          }
+        }
+        if (x1 < x0 || y1 < y0) { setTrimmedSrc(src); return }
+        const tw = x1 - x0 + 1
+        const th = y1 - y0 + 1
+        const tc = document.createElement('canvas')
+        tc.width = tw
+        tc.height = th
+        tc.getContext('2d')!.drawImage(c, x0, y0, tw, th, 0, 0, tw, th)
+        setTrimmedSrc(tc.toDataURL())
+      } catch {
+        setTrimmedSrc(src)
+      }
+    }
+    img.onerror = () => onError?.()
+    img.src = src
+  }, [src])
+
+  if (!trimmedSrc) return null
+  return <img src={trimmedSrc} alt={alt} className={className} />
+}
+
 function LoverPortraitThumb({
   candidates,
   label,
@@ -120,7 +176,7 @@ function LoverPortraitThumb({
     return <div className={emptyCls}>{label}</div>
   }
   return (
-    <img
+    <TrimmedImg
       src={candidates[idx]}
       alt={label}
       className={imgCls}
@@ -599,11 +655,11 @@ export default function ScarletBondTab() {
                           <div key={slot.baseName} className={`${loverSlots.length > 1 ? 'w-1/2' : 'w-full'} flex flex-col`}>
                             <div className="flex-1 flex items-center justify-center overflow-hidden">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
-                                <img
+                                <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
                                   className="w-full h-full object-contain"
-                                  onError={(e) => { (e.target as HTMLImageElement).src = slot.baseImgCandidates[0] }}
+                                  onError={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: 'base' }))}
                                 />
                               ) : (
                                 <LoverPortraitThumb
