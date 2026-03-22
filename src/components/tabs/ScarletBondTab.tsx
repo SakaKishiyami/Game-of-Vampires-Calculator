@@ -502,25 +502,45 @@ export default function ScarletBondTab() {
 
               <div>
                 <div className="text-xs font-semibold text-amber-300 mb-3">Ember / Ash</div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl">
-                  <LoverSummonPickCard
-                    loverName="Ember"
-                    wardenName="Nyx"
-                    attrKey="all"
-                    imgCandidates={getLoverPortraitSrcs('Ember').flat()}
-                    checked={hasEmber}
-                    setChecked={setHasEmber}
-                    tokenHint={`Heart of War tokens: ${heartOfWarCount(inventory)}/400 (counts toward both). PNG name may change later.`}
-                  />
-                  <LoverSummonPickCard
-                    loverName="Ash"
-                    wardenName="Nyx"
-                    attrKey="all"
-                    imgCandidates={getLoverPortraitSrcs('Ash').flat()}
-                    checked={hasAsh}
-                    setChecked={setHasAsh}
-                    tokenHint={`Heart of War tokens: ${heartOfWarCount(inventory)}/400 (counts toward both). PNG name may change later.`}
-                  />
+                <div className="max-w-3xl">
+                  <div className="flex items-stretch rounded-lg overflow-hidden border border-gray-600 bg-gray-800/40 min-h-[118px]">
+                    {/* Both portraits side by side */}
+                    <div className="w-[100px] sm:w-[120px] flex-shrink-0 bg-gray-900/90 flex border-r border-gray-700/80">
+                      <div className="w-1/2 flex items-center justify-center p-1">
+                        <LoverPortraitThumb
+                          candidates={getLoverPortraitSrcs('Ember').flat()}
+                          label="Ember"
+                          imgClassName="w-full h-full min-h-[90px] max-h-[110px] object-contain"
+                          emptyClassName="w-full min-h-[90px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
+                        />
+                      </div>
+                      <div className="w-1/2 flex items-center justify-center p-1">
+                        <LoverPortraitThumb
+                          candidates={getLoverPortraitSrcs('Ash').flat()}
+                          label="Ash"
+                          imgClassName="w-full h-full min-h-[90px] max-h-[110px] object-contain"
+                          emptyClassName="w-full min-h-[90px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
+                        />
+                      </div>
+                    </div>
+                    {/* Info + checkboxes */}
+                    <div className="flex-1 flex flex-col justify-center p-3 gap-2">
+                      <span className="font-semibold text-sm text-white">Ember / Ash</span>
+                      <span className="text-sm text-gray-300">with Nyx</span>
+                      <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-200 w-fit">All attributes</span>
+                      <div className="flex gap-4 mt-1">
+                        <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                          <Checkbox checked={hasEmber} onCheckedChange={(v) => setHasEmber(v === true)} className="border-gray-400" />
+                          <span className="text-sm text-gray-300">Ember</span>
+                        </label>
+                        <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                          <Checkbox checked={hasAsh} onCheckedChange={(v) => setHasAsh(v === true)} className="border-gray-400" />
+                          <span className="text-sm text-gray-300">Ash</span>
+                        </label>
+                      </div>
+                      <span className="text-[10px] text-gray-500">{`Heart of War tokens: ${heartOfWarCount(inventory)}/400 (counts toward both)`}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
