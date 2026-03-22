@@ -26,7 +26,9 @@ import InventoryTab from "@/components/tabs/InventoryTab"
 import { getAttributeColor, nonNegativeIntInputProps } from "@/utils/helpers"
 
 export default function GameCalculator() {
-  const [activeTab, setActiveTab] = useState("aura-bonuses")
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') ?? "aura-bonuses")
+
+  useEffect(() => { localStorage.setItem('activeTab', activeTab) }, [activeTab])
   const {
     baseAttributes, setBaseAttributes, vipLevel, setVipLevel, lordLevel, setLordLevel,
     books, setBooks, conclave, setConclave, conclaveUpgrade, setConclaveUpgrade,

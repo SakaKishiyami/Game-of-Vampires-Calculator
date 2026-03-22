@@ -10,7 +10,7 @@ import { getAttributeColor, getAttributeBg, nonNegativeIntInputProps } from '@/u
 import { scarletBondData, scarletBondLevels, getOffSingle } from '@/data/scarletBonds'
 import { wardenAttributes } from '@/data/wardens'
 import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier, wildHuntSummonedCount, monsterNoirSummonedCount, tierPercentFromCount, heartOfWarCount } from '@/utils/loverScarletBondAuras'
-import { getLoverPortraitSrcs } from '@/utils/loverImagePaths'
+import { getLoverPortraitSrcs, getLoverSkinSlots } from '@/utils/loverImagePaths'
 import { cn } from '@/lib/utils'
 
 const attributeOrder = ['strength', 'allure', 'intellect', 'spirit'] as const
@@ -144,6 +144,8 @@ export default function ScarletBondTab() {
     hasAsh, setHasAsh,
     inventory,
     getWardenImageSrc,
+    loverOwnedSkins, setLoverOwnedSkins,
+    loverActiveSkins, setLoverActiveSkins,
   } = useGameCalculator()
 
   const summonState = resolveLoverSummonFlags(
@@ -566,24 +568,52 @@ export default function ScarletBondTab() {
             .map((bond) => {
               const wardenData = wardenAttributes[bond.warden as keyof typeof wardenAttributes]
               const bondKey = `${bond.lover}-${bond.warden}`
+              const loverSlots = getLoverSkinSlots(bond.lover)
               return (
                 <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                   <div className="flex">
-                    {/* Lover Images - Left Side */}
-                    <div className="w-56 h-80 flex-shrink-0 flex">
-                      {getLoverPortraitSrcs(bond.lover).map((candidates, idx, arr) => (
-                        <div
-                          key={idx}
-                          className={`${arr.length > 1 ? 'w-1/2' : 'w-full'} h-full flex items-center justify-center p-1`}
-                        >
-                          <LoverPortraitThumb
-                            candidates={candidates}
-                            label={bond.lover}
-                            imgClassName="w-full h-full object-contain max-h-80"
-                            emptyClassName="w-full min-h-[120px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
-                          />
-                        </div>
-                      ))}
+                    {/* Lover Images + Skin Switchers - Left Side */}
+                    <div className="w-56 flex-shrink-0 flex flex-col">
+                      <div className="flex flex-1 min-h-[200px]">
+                        {loverSlots.map((slot) => (
+                          <div key={slot.baseName} className={`${loverSlots.length > 1 ? 'w-1/2' : 'w-full'} flex flex-col`}>
+                            <div className="flex-1 flex items-center justify-center p-1">
+                              {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
+                                <img
+                                  src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
+                                  alt={slot.displayName}
+                                  className="w-full h-full object-contain max-h-72"
+                                  onError={(e) => { (e.target as HTMLImageElement).src = slot.baseImgCandidates[0] }}
+                                />
+                              ) : (
+                                <LoverPortraitThumb
+                                  candidates={slot.baseImgCandidates}
+                                  label={slot.displayName}
+                                  imgClassName="w-full h-full object-contain max-h-72"
+                                  emptyClassName="w-full min-h-[120px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
+                                />
+                              )}
+                            </div>
+                            {slot.skins.length > 0 && (
+                              <div className="px-1 pb-1">
+                                {loverSlots.length > 1 && <div className="text-[9px] text-gray-400 text-center mb-0.5">{slot.displayName}</div>}
+                                <div className="flex gap-0.5">
+                                  {(['base', ...slot.skins] as string[]).map((opt) => {
+                                    const active = loverActiveSkins[slot.baseName] ?? 'base'
+                                    const label = opt === 'base' ? 'Base' : opt.replace(/^.*Skin/, 'S')
+                                    return (
+                                      <label key={opt} className={`flex-1 text-center cursor-pointer text-[9px] py-0.5 rounded select-none ${active === opt ? 'bg-blue-600/60 text-white' : 'bg-gray-700/60 text-gray-400 hover:bg-gray-600/60'}`}>
+                                        <input type="radio" className="sr-only" name={`ls-${slot.baseName}`} value={opt} checked={active === opt} onChange={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: opt }))} />
+                                        {label}
+                                      </label>
+                                    )
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Content - Right Side */}
@@ -616,6 +646,42 @@ export default function ScarletBondTab() {
                             <div className="flex gap-1">
                               {wardenData.map((attr) => (
                                 <span key={attr} className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}>{attr}</span>
+                              ))}
+                            </div>
+                          )}
+                          {loverSlots.some((s) => s.skins.length > 0) && (
+                            <div className="flex gap-3 items-start">
+                              {loverSlots.filter((s) => s.skins.length > 0).map((slot) => (
+                                <div key={slot.baseName} className="flex flex-col gap-0.5">
+                                  {loverSlots.filter((s) => s.skins.length > 0).length > 1 && (
+                                    <div className="text-[9px] text-gray-400">{slot.displayName} Skins</div>
+                                  )}
+                                  <div className="flex gap-1">
+                                    {slot.skins.map((skinKey) => (
+                                      <div key={skinKey} className="flex flex-col items-center gap-0.5">
+                                        <img
+                                          src={`/Gov/SkinCards/LoverSkins/${skinKey}.png`}
+                                          className="w-10 h-10 object-contain"
+                                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                        />
+                                        <div className="flex items-center gap-0.5">
+                                          <Checkbox
+                                            id={`ls-own-${slot.baseName}-${skinKey}`}
+                                            checked={loverOwnedSkins[slot.baseName]?.[skinKey] || false}
+                                            onCheckedChange={() => setLoverOwnedSkins((prev) => ({
+                                              ...prev,
+                                              [slot.baseName]: { ...prev[slot.baseName], [skinKey]: !prev[slot.baseName]?.[skinKey] },
+                                            }))}
+                                            className="border-gray-400"
+                                          />
+                                          <Label htmlFor={`ls-own-${slot.baseName}-${skinKey}`} className="text-[9px] text-gray-300 cursor-pointer">
+                                            {skinKey.replace(/^.*Skin/, 'S')}
+                                          </Label>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
                               ))}
                             </div>
                           )}

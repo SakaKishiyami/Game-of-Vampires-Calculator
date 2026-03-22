@@ -59,6 +59,11 @@ export interface WardenSkins {
 // Maps warden name → active skin key ('base' or e.g. 'RudraSkin2')
 export type WardenActiveSkins = Record<string, string>
 
+// Lover skins owned: keyed by lover base name (e.g. 'RavenFemale') → skin key → owned
+export type LoverOwnedSkins = Record<string, Record<string, boolean>>
+// Maps lover base name → active skin key ('base' or e.g. 'AgneyiSkin1')
+export type LoverActiveSkins = Record<string, string>
+
 export interface Warden {
   name: string
   group: string

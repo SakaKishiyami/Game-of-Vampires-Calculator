@@ -208,9 +208,9 @@ function parseWardenData(content: string, fileName: string) {
 
 function getLevelStyle(level: number): { card: string; border: string } {
   if (level >= 401) return { card: 'bg-pink-900/40',    border: 'border-pink-400/50' }
-  if (level >= 351) return { card: 'bg-yellow-900/50',  border: 'border-yellow-500/60' }
+  if (level >= 351) return { card: 'bg-yellow-400/25',  border: 'border-yellow-300/70' }
   if (level >= 301) return { card: 'bg-red-900/60',     border: 'border-red-700/60' }
-  if (level >= 251) return { card: 'bg-orange-900/55',  border: 'border-orange-600/60' }
+  if (level >= 251) return { card: 'bg-yellow-900/50',  border: 'border-yellow-500/60' }
   if (level >= 201) return { card: 'bg-purple-900/60',  border: 'border-purple-700/60' }
   if (level >= 151) return { card: 'bg-blue-900/55',    border: 'border-blue-700/60' }
   if (level >= 101) return { card: 'bg-green-900/60',   border: 'border-green-700/60' }
