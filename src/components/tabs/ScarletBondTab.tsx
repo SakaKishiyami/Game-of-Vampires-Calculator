@@ -591,25 +591,25 @@ export default function ScarletBondTab() {
               const loverSlots = getLoverSkinSlots(bond.lover)
               return (
                 <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
-                  <div className="flex">
+                  <div className="flex items-stretch">
                     {/* Lover Images + Skin Switchers - Left Side */}
-                    <div className="w-56 flex-shrink-0 flex flex-col">
-                      <div className="flex h-52">
+                    <div className="w-80 flex-shrink-0 flex flex-col">
+                      <div className="flex flex-1">
                         {loverSlots.map((slot) => (
                           <div key={slot.baseName} className={`${loverSlots.length > 1 ? 'w-1/2' : 'w-full'} flex flex-col`}>
-                            <div className="flex-1 overflow-hidden">
+                            <div className="flex-1 flex items-center justify-center overflow-hidden">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <img
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
-                                  className="w-full h-full object-cover object-top"
+                                  className="w-full h-full object-contain"
                                   onError={(e) => { (e.target as HTMLImageElement).src = slot.baseImgCandidates[0] }}
                                 />
                               ) : (
                                 <LoverPortraitThumb
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
-                                  imgClassName="w-full h-full object-cover object-top"
+                                  imgClassName="w-full h-full object-contain"
                                   emptyClassName="w-full h-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
