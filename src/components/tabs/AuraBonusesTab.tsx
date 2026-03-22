@@ -25,7 +25,8 @@ export default function AuraBonusesTab() {
     hasMaya,
     hasEmber,
     hasAsh,
-    inventory
+    inventory,
+    getWardenImageSrc,
   } = useGameCalculator()
   const { density } = useCalculatorSettings()
   const compact = density === 'compact'
@@ -164,7 +165,7 @@ export default function AuraBonusesTab() {
                         <div key={wardenName} className={`p-2 rounded ${isSelected ? group.activeBg : 'bg-gray-700/30'}`}>
                           <div className="flex items-center gap-2 mb-1">
                             <img
-                              src={`/Gov/Wardens/BaseWardens/${wardenName}.png`}
+                              src={getWardenImageSrc(wardenName)}
                               alt={wardenName}
                               className="w-7 h-7 rounded-full object-cover flex-shrink-0"
                               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
@@ -270,7 +271,7 @@ export default function AuraBonusesTab() {
                     .map(([wardenName, wardenData]: [string, any]) => (
                       <div key={wardenName} className="flex items-center gap-2 p-2 rounded bg-gray-700/30">
                         <img
-                          src={`/Gov/Wardens/BaseWardens/${wardenName}.png`}
+                          src={getWardenImageSrc(wardenName)}
                           alt={wardenName}
                           className="w-7 h-7 rounded-full object-cover flex-shrink-0"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
@@ -302,7 +303,7 @@ export default function AuraBonusesTab() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {hasNyx && (
                     <div className="flex items-center gap-2 p-2 rounded bg-gray-700/30">
-                      <img src="/Gov/Wardens/BaseWardens/Nyx.png" alt="Nyx" className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                      <img src={getWardenImageSrc("Nyx")} alt="Nyx" className="w-7 h-7 rounded-full object-cover flex-shrink-0"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                       <div className="flex-1">
                         <span className="text-white font-medium text-xs">Nyx</span>
@@ -316,7 +317,7 @@ export default function AuraBonusesTab() {
                   )}
                   {hasDracula && (
                     <div className="flex items-center gap-2 p-2 rounded bg-gray-700/30">
-                      <img src="/Gov/Wardens/BaseWardens/Dracula.png" alt="Dracula" className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                      <img src={getWardenImageSrc("Dracula")} alt="Dracula" className="w-7 h-7 rounded-full object-cover flex-shrink-0"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                       <div className="flex-1">
                         <span className="text-white font-medium text-xs">Dracula</span>

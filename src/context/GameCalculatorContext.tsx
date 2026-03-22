@@ -23,6 +23,7 @@ import type {
   WardenCounts,
   SelectedWardens,
   WardenSkins,
+  WardenActiveSkins,
   WardenStats,
   UploadedWardenData,
   Inventory,
@@ -63,6 +64,9 @@ interface GameCalculatorContextType {
   setSelectedWardens: React.Dispatch<React.SetStateAction<SelectedWardens>>
   wardenSkins: WardenSkins
   setWardenSkins: React.Dispatch<React.SetStateAction<WardenSkins>>
+  wardenActiveSkins: WardenActiveSkins
+  setWardenActiveSkins: React.Dispatch<React.SetStateAction<WardenActiveSkins>>
+  getWardenImageSrc: (wardenName: string) => string
   wardenStats: WardenStats
   setWardenStats: React.Dispatch<React.SetStateAction<WardenStats>>
   uploadedWardenData: UploadedWardenData
@@ -234,6 +238,12 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   })
 
   const [wardenSkins, setWardenSkins] = useState<WardenSkins>({})
+  const [wardenActiveSkins, setWardenActiveSkins] = useState<WardenActiveSkins>({})
+  const getWardenImageSrc = (wardenName: string): string => {
+    const active = wardenActiveSkins[wardenName]
+    if (!active || active === 'base') return `/Gov/Wardens/BaseWardens/${wardenName}.png`
+    return `/Gov/Wardens/WardenSkins/${active}.png`
+  }
   const [wardenStats, setWardenStats] = useState<WardenStats>({})
   const [uploadedWardenData, setUploadedWardenData] = useState<UploadedWardenData>({})
 
@@ -1078,6 +1088,9 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     setSelectedWardens,
     wardenSkins,
     setWardenSkins,
+    wardenActiveSkins,
+    setWardenActiveSkins,
+    getWardenImageSrc,
     wardenStats,
     setWardenStats,
     uploadedWardenData,

@@ -38,6 +38,7 @@ export type FamiliarKnack =
   | 'Playing'
   | 'Repairing'
   | 'Security'
+  | 'Other'
 
 export interface FamiliarDefinition {
   id: string

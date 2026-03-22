@@ -143,6 +143,7 @@ export default function ScarletBondTab() {
     hasEmber, setHasEmber,
     hasAsh, setHasAsh,
     inventory,
+    getWardenImageSrc,
   } = useGameCalculator()
 
   const summonState = resolveLoverSummonFlags(
@@ -596,7 +597,7 @@ export default function ScarletBondTab() {
                                 <span className="text-gray-300 text-xs">with</span>
                                 <span className="text-white font-semibold text-xs">{bond.warden}</span>
                                 <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
-                                  <img src={`/Gov/Wardens/BaseWardens/${bond.warden}.png`} alt={bond.warden}
+                                  <img src={getWardenImageSrc(bond.warden)} alt={bond.warden}
                                     className="w-full h-full object-contain"
                                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                                 </div>

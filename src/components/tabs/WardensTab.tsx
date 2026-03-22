@@ -209,7 +209,8 @@ function parseWardenData(content: string, fileName: string) {
 export default function WardensTab() {
   const {
     wardenCounts, setWardenCounts, selectedWardens, setSelectedWardens,
-    wardenSkins, setWardenSkins, wardenStats, setWardenStats,
+    wardenSkins, setWardenSkins, wardenActiveSkins, setWardenActiveSkins, getWardenImageSrc,
+    wardenStats, setWardenStats,
     uploadedWardenData, setUploadedWardenData,
     hasNyx, setHasNyx, hasDracula, setHasDracula,
     hasVictor, setHasVictor, hasFrederick, setHasFrederick,
@@ -672,13 +673,28 @@ export default function WardensTab() {
                             <Card key={warden.name} className="bg-gray-600/50 border-gray-500">
                               <CardContent className="p-2">
                                 <div className="flex gap-2">
-                                  <div className="w-[90px] h-full flex-shrink-0 flex items-center justify-center">
+                                  <div className="w-[90px] flex-shrink-0 flex flex-col gap-1">
                                     <img
-                                      src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
+                                      src={getWardenImageSrc(warden.name)}
                                       alt={warden.name}
-                                      className="w-full h-full object-contain"
+                                      className="w-full flex-1 object-contain object-top"
+                                      style={{ minHeight: '7rem' }}
                                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                                     />
+                                    {warden.skins.length > 0 && (
+                                      <div className="flex gap-0.5">
+                                        {(['base', ...warden.skins] as string[]).map((opt) => {
+                                          const active = wardenActiveSkins[warden.name] ?? 'base'
+                                          const label = opt === 'base' ? 'Base' : opt.replace(`${warden.name}Skin`, 'S')
+                                          return (
+                                            <label key={opt} className={`flex-1 text-center cursor-pointer text-[10px] py-0.5 rounded select-none ${active === opt ? 'bg-blue-600/60 text-white' : 'bg-gray-700/60 text-gray-400 hover:bg-gray-600/60'}`}>
+                                              <input type="radio" className="sr-only" name={`ws-${warden.name}`} value={opt} checked={active === opt} onChange={() => setWardenActiveSkins(prev => ({ ...prev, [warden.name]: opt }))} />
+                                              {label}
+                                            </label>
+                                          )
+                                        })}
+                                      </div>
+                                    )}
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-2">
@@ -720,7 +736,7 @@ export default function WardensTab() {
                                           <div key={skin} className="flex flex-col items-center gap-1">
                                             <div className="w-16 h-16 flex items-center justify-center">
                                               <img
-                                                src={`/Gov/Wardens/WardenSkins/${skin}.png`}
+                                                src={`/Gov/SkinCards/WardenSkins/${skin}.png`}
                                                 alt={skin}
                                                 className="w-full h-full object-contain"
                                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}

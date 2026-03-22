@@ -56,6 +56,9 @@ export interface WardenSkins {
   }
 }
 
+// Maps warden name → active skin key ('base' or e.g. 'RudraSkin2')
+export type WardenActiveSkins = Record<string, string>
+
 export interface Warden {
   name: string
   group: string
