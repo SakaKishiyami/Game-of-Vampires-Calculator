@@ -28,19 +28,16 @@ export type FamiliarAttribute = 'Loyalty' | 'Ferocity' | 'Tenacity' | 'Instinct'
 export const ALL_FAMILIAR_ATTRIBUTES: FamiliarAttribute[] = ['Loyalty', 'Ferocity', 'Tenacity', 'Instinct', 'Mischief']
 
 export type FamiliarKnack =
-  | 'Gym'
-  | 'Conclave'
-  | 'Arena'
-  | 'League'
-  | 'Date'
-  | 'Crystal'
-  | 'Fishing'
-  | "Lover's Lodge"
-  | 'Workshop'
-  | 'Well'
-  | 'Mushroom'
-  | 'Dark Chasm'
-  | 'Other'
+  | 'Cleaning'
+  | 'Cooking'
+  | 'Crafting'
+  | 'Delivery'
+  | 'Entertaining'
+  | 'Foraging'
+  | 'Gardening'
+  | 'Playing'
+  | 'Repairing'
+  | 'Security'
 
 export interface FamiliarDefinition {
   id: string

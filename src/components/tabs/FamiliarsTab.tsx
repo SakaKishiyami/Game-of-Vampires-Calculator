@@ -61,24 +61,9 @@ function rankIconSrc(grade: FamiliarGrade): string {
   return `/FamiliarAssets/Ranks/${grade}.png`
 }
 
-/** Knack picks use the same location art as bonds where names align. */
 function knackIconSrc(k: FamiliarKnack): string | null {
-  const map: Partial<Record<FamiliarKnack, string>> = {
-    Gym: 'Gym2.png',
-    Conclave: 'Conclave.png',
-    Arena: 'Arena.png',
-    League: 'League.png',
-    Date: 'Date.png',
-    Crystal: 'Crystal.png',
-    Fishing: 'Fishing.png',
-    "Lover's Lodge": "Lover'sLodge.png",
-    Workshop: 'Workshop1.png',
-    Well: 'Well.png',
-    Mushroom: 'Mushroom.png',
-    'Dark Chasm': 'DarkChasm.png',
-  }
-  const file = map[k]
-  return file ? `/FamiliarAssets/Bonds/${file}` : null
+  if (k === 'Other') return null
+  return `/FamiliarAssets/Chores/Knacks/${k}.png`
 }
 
 function bondIconSrcFromId(bondId: FamiliarBondId | null): string | null {
@@ -97,18 +82,16 @@ function getPreviewImageSrc(familiar: FamiliarDefinition, isAdult: boolean, isMu
 }
 
 const KNACK_OPTIONS: FamiliarKnack[] = [
-  'Gym',
-  'Conclave',
-  'Arena',
-  'League',
-  'Date',
-  'Crystal',
-  'Fishing',
-  "Lover's Lodge",
-  'Workshop',
-  'Well',
-  'Mushroom',
-  'Dark Chasm',
+  'Cleaning',
+  'Cooking',
+  'Crafting',
+  'Delivery',
+  'Entertaining',
+  'Foraging',
+  'Gardening',
+  'Playing',
+  'Repairing',
+  'Security',
   'Other',
 ]
 
