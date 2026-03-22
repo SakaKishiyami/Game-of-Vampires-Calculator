@@ -79,7 +79,7 @@ function LoverSummonPickCard({
         <LoverPortraitThumb
           candidates={imgCandidates}
           label={loverName}
-          imgClassName="w-full h-full min-h-[100px] max-h-[120px] object-contain"
+          imgClassName="w-full h-full min-h-[100px] max-h-[120px] object-cover object-top"
           emptyClassName="w-full min-h-[100px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-2"
         />
       </div>
@@ -510,7 +510,7 @@ export default function ScarletBondTab() {
                         <LoverPortraitThumb
                           candidates={getLoverPortraitSrcs('Ember').flat()}
                           label="Ember"
-                          imgClassName="w-full h-full min-h-[90px] max-h-[110px] object-contain"
+                          imgClassName="w-full h-full min-h-[90px] max-h-[110px] object-cover object-top"
                           emptyClassName="w-full min-h-[90px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
                         />
                       </div>
@@ -518,7 +518,7 @@ export default function ScarletBondTab() {
                         <LoverPortraitThumb
                           candidates={getLoverPortraitSrcs('Ash').flat()}
                           label="Ash"
-                          imgClassName="w-full h-full min-h-[90px] max-h-[110px] object-contain"
+                          imgClassName="w-full h-full min-h-[90px] max-h-[110px] object-cover object-top"
                           emptyClassName="w-full min-h-[90px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
                         />
                       </div>
@@ -594,23 +594,23 @@ export default function ScarletBondTab() {
                   <div className="flex">
                     {/* Lover Images + Skin Switchers - Left Side */}
                     <div className="w-56 flex-shrink-0 flex flex-col">
-                      <div className="flex flex-1 min-h-[200px]">
+                      <div className="flex h-52">
                         {loverSlots.map((slot) => (
                           <div key={slot.baseName} className={`${loverSlots.length > 1 ? 'w-1/2' : 'w-full'} flex flex-col`}>
-                            <div className="flex-1 flex items-center justify-center p-1">
+                            <div className="flex-1 overflow-hidden">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <img
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
-                                  className="w-full h-full object-contain max-h-72"
+                                  className="w-full h-full object-cover object-top"
                                   onError={(e) => { (e.target as HTMLImageElement).src = slot.baseImgCandidates[0] }}
                                 />
                               ) : (
                                 <LoverPortraitThumb
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
-                                  imgClassName="w-full h-full object-contain max-h-72"
-                                  emptyClassName="w-full min-h-[120px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
+                                  imgClassName="w-full h-full object-cover object-top"
+                                  emptyClassName="w-full h-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
                             </div>
@@ -659,9 +659,6 @@ export default function ScarletBondTab() {
                             : bond.type === "Dual" ? "bg-purple-500/20 text-purple-400"
                             : "bg-blue-500/20 text-blue-400"
                           }`}>{bond.type}</span>
-                          {bond.vip === 0 && (
-                            <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">Summonable</span>
-                          )}
                           {wardenData && (
                             <div className="flex gap-1">
                               {wardenData.map((attr) => (
