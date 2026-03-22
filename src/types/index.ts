@@ -69,6 +69,7 @@ export interface Warden {
 
 export interface WardenStats {
   [wardenName: string]: {
+    level?: number
     strength?: number
     allure?: number
     intellect?: number

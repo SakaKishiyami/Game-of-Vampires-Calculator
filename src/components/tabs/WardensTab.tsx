@@ -206,6 +206,17 @@ function parseWardenData(content: string, fileName: string) {
   return { wardenName, data: { totalAttributes: calculatedTotal, ...attributeData } }
 }
 
+function getLevelStyle(level: number): { card: string; border: string } {
+  if (level >= 401) return { card: 'bg-pink-900/40',    border: 'border-pink-400/50' }
+  if (level >= 351) return { card: 'bg-yellow-900/50',  border: 'border-yellow-500/60' }
+  if (level >= 301) return { card: 'bg-red-900/60',     border: 'border-red-700/60' }
+  if (level >= 251) return { card: 'bg-orange-900/55',  border: 'border-orange-600/60' }
+  if (level >= 201) return { card: 'bg-purple-900/60',  border: 'border-purple-700/60' }
+  if (level >= 151) return { card: 'bg-blue-900/55',    border: 'border-blue-700/60' }
+  if (level >= 101) return { card: 'bg-green-900/60',   border: 'border-green-700/60' }
+  return                    { card: 'bg-gray-600/50',   border: 'border-gray-500' }
+}
+
 export default function WardensTab() {
   const {
     wardenCounts, setWardenCounts, selectedWardens, setSelectedWardens,
@@ -666,11 +677,17 @@ export default function WardensTab() {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {allWardens.map((warden) => {
+                        {[...allWardens].sort((a, b) => {
+                          const tot = (n: string) => (['strength', 'allure', 'intellect', 'spirit'] as const).reduce((s, k) => s + (wardenStats[n]?.[k] || 0), 0)
+                          return tot(b.name) - tot(a.name)
+                        }).map((warden) => {
                           const isSelected = selectedWardens[warden.group as keyof typeof selectedWardens]?.includes(warden.name) ||
                             warden.name === "Nyx" || warden.name === "Dracula"
+                          const level = wardenStats[warden.name]?.level ?? 0
+                          const { card: cardBg, border: cardBorder } = getLevelStyle(level)
+                          const total = (['strength', 'allure', 'intellect', 'spirit'] as const).reduce((s, k) => s + (wardenStats[warden.name]?.[k] || 0), 0)
                           return (
-                            <Card key={warden.name} className="bg-gray-600/50 border-gray-500">
+                            <Card key={warden.name} className={`${cardBg} ${cardBorder}`}>
                               <CardContent className="p-2">
                                 <div className="flex gap-2">
                                   <div className="w-[90px] flex-shrink-0 flex flex-col gap-1">
@@ -697,20 +714,37 @@ export default function WardensTab() {
                                     )}
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-2">
+                                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                                       <span className="text-white font-semibold text-sm">{warden.name}</span>
                                       {isSelected && (
-                                        <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">Owned</span>
+                                        <span className="text-xs px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">Owned</span>
                                       )}
+                                      <div className="flex items-center gap-1 ml-auto">
+                                        <span className="text-[10px] text-gray-400">Lv</span>
+                                        <Input
+                                          placeholder="0"
+                                          className="w-12 h-5 text-xs bg-gray-700/60 border-gray-600 text-white px-1"
+                                          {...nonNegativeIntInputProps(level, (value) =>
+                                            setWardenStats((prev) => ({
+                                              ...prev,
+                                              [warden.name]: { ...prev[warden.name], level: value },
+                                            }))
+                                          )}
+                                        />
+                                      </div>
                                     </div>
-                                    <div className="flex gap-1 mb-2">
+                                    <div className="flex gap-1 mb-2 flex-wrap">
                                       {warden.attributes.map((attr) => (
-                                        <span key={attr} className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}>
+                                        <span key={attr} className={`text-xs px-1.5 py-0.5 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}>
                                           {attr}
                                         </span>
                                       ))}
                                     </div>
                                     <div className="space-y-1">
+                                      <div className="flex items-center gap-1">
+                                        <span className="text-xs w-12 text-gray-300">Total</span>
+                                        <span className="w-16 h-6 text-xs text-white flex items-center font-semibold">{total > 0 ? total.toLocaleString() : '—'}</span>
+                                      </div>
                                       {(['strength', 'allure', 'intellect', 'spirit'] as const).map((attr) => (
                                         <div key={attr} className="flex items-center gap-1">
                                           <span className={`text-xs w-12 ${getAttributeColor(attr)}`}>{attr.charAt(0).toUpperCase()}</span>
