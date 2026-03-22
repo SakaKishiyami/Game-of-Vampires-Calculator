@@ -1,5 +1,6 @@
 // Helper utility functions
 import React from 'react'
+import type { ChangeEvent } from 'react'
 
 /**
  * Handle number input changes - allows empty string for better UX
@@ -8,11 +9,58 @@ export function handleNumberInputChange(
   value: string,
   setter: (value: number) => void
 ): void {
-  if (value === '' || value === '-') {
-    return // Keep as string for now
+  if (value === '') {
+    setter(0)
+    return
+  }
+  if (value === '-') {
+    return
   }
   const numValue = parseInt(value) || 0
   setter(numValue)
+}
+
+export type NonNegativeIntInputOptions = {
+  /** When true (default), value 0 displays as blank so you can clear and re-type */
+  zeroShowsEmpty?: boolean
+}
+
+/**
+ * Text-based numeric input props: you can clear the field; empty commits as 0 on change/blur.
+ * Prefer over type="number" when the default "0" while typing is annoying.
+ */
+export function nonNegativeIntInputProps(
+  value: number,
+  onCommit: (n: number) => void,
+  options?: NonNegativeIntInputOptions
+): {
+  type: 'text'
+  inputMode: 'numeric'
+  autoComplete: 'off'
+  value: string
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
+  onBlur: (e: ChangeEvent<HTMLInputElement>) => void
+} {
+  const zeroShowsEmpty = options?.zeroShowsEmpty !== false
+  const display = zeroShowsEmpty && value === 0 ? '' : String(value)
+  return {
+    type: 'text' as const,
+    inputMode: 'numeric' as const,
+    autoComplete: 'off' as const,
+    value: display,
+    onChange: (e: ChangeEvent<HTMLInputElement>) => {
+      const v = e.target.value.trim()
+      if (v === '') {
+        onCommit(0)
+        return
+      }
+      const n = parseInt(v, 10)
+      if (!Number.isNaN(n)) onCommit(Math.max(0, n))
+    },
+    onBlur: (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.value.trim() === '') onCommit(0)
+    },
+  }
 }
 
 /**

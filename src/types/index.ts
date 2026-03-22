@@ -1,5 +1,9 @@
 // Core game types and interfaces
 
+import type { BookCollection, BooksState } from '@/data/books'
+
+export type { BookCollection, BooksState }
+
 export type Attribute = 'strength' | 'allure' | 'intellect' | 'spirit'
 export type AttributeOrder = Attribute[]
 
@@ -152,7 +156,7 @@ export interface GameCalculatorState {
   baseAttributes: BaseAttributes
   vipLevel: number
   lordLevel: string
-  books: any // BooksState from books.ts
+  books: BooksState
   conclave: ConclaveState
   conclaveUpgrade: ConclaveUpgrade
   courtyard: CourtyardState

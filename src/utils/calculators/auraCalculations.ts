@@ -443,14 +443,16 @@ export function calculateAuraBonuses(
       strength: bonuses.talents.strength + bonuses.talents.all - 100,
       allure: bonuses.talents.allure + bonuses.talents.all - 100,
       intellect: bonuses.talents.intellect + bonuses.talents.all - 100,
-      spirit: bonuses.talents.spirit + bonuses.talents.all - 100
+      spirit: bonuses.talents.spirit + bonuses.talents.all - 100,
+      all: 0,
     },
     books: {
       strength: bonuses.books.strength + bonuses.books.all - 100,
       allure: bonuses.books.allure + bonuses.books.all - 100,
       intellect: bonuses.books.intellect + bonuses.books.all - 100,
-      spirit: bonuses.books.spirit + bonuses.books.all - 100
-    }
+      spirit: bonuses.books.spirit + bonuses.books.all - 100,
+      all: 0,
+    },
   }
 
   return finalBonuses

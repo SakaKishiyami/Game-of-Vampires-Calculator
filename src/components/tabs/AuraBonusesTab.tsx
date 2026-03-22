@@ -4,7 +4,7 @@ import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { attributeOrder, getAttributeColor } from '@/utils/helpers'
+import { attributeOrder, getAttributeColor, nonNegativeIntInputProps } from '@/utils/helpers'
 import { calculateDynamicAuraLevels, calculateAuraBonuses } from '@/utils/calculators/auraCalculations'
 import { useCalculatorSettings } from '@/components/layout/MainLayout'
 
@@ -183,12 +183,9 @@ export default function AuraBonusesTab() {
                                 <div className="flex items-center gap-1">
                                   <Label className="text-[11px] text-gray-300">2nd:</Label>
                                   <Input
-                                    type="number"
-                                    min="0"
-                                    max="20"
-                                    value={secondaryAura.current}
-                                    onChange={(e) =>
-                                      setAuras((prev) => ({
+                                    className="w-14 h-5 text-[11px] bg-gray-600 border-gray-500 text-white"
+                                    {...nonNegativeIntInputProps(secondaryAura.current, (n) =>
+                                      setAuras((prev: any) => ({
                                         ...prev,
                                         secondaryAuras: {
                                           ...prev.secondaryAuras,
@@ -196,13 +193,12 @@ export default function AuraBonusesTab() {
                                             ...prev.secondaryAuras[group.secondaryKey],
                                             [wardenName]: {
                                               ...prev.secondaryAuras[group.secondaryKey][wardenName],
-                                              current: Number.parseInt(e.target.value) || 0,
+                                              current: Math.min(20, Math.max(0, n)),
                                             },
                                           },
                                         },
                                       }))
-                                    }
-                                    className="w-14 h-5 text-[11px] bg-gray-600 border-gray-500 text-white"
+                                    )}
                                   />
                                   <span className="text-[11px] text-gray-400">/20</span>
                                 </div>

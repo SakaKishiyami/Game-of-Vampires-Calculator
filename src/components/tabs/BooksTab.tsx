@@ -3,7 +3,7 @@
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { getDisplayValue, getAttributeColor, getAttributeBg, bookCategoryOrder } from '@/utils/helpers'
+import { getAttributeColor, getAttributeBg, bookCategoryOrder, nonNegativeIntInputProps } from '@/utils/helpers'
 import { bookBonuses } from '@/data/books'
 import type { BooksState } from '@/data/books'
 import { BookOpen, Flame, Heart, Brain, CloudMoon } from 'lucide-react'
@@ -127,34 +127,16 @@ export default function BooksTab() {
                               <div className="text-[11px] text-gray-300 leading-tight truncate">{bookName}</div>
                               <div className="flex items-center gap-1.5">
                                 <Input
-                                  type="number"
-                                  value={getDisplayValue(count)}
-                                  onChange={(e) => {
-                                    const value = e.target.value
-                                    if (value === '' || value === '-') {
-                                      return
-                                    }
-                                    const newCount = parseInt(value) || 0
-                                    setBooks((prev) => ({
-                                      ...prev,
-                                      [category]: {
-                                        ...prev[category],
-                                        [bookName]: newCount,
-                                      },
-                                    }))
-                                  }}
-                                  onBlur={(e) => {
-                                    const value = e.target.value
-                                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                                    setBooks((prev) => ({
-                                      ...prev,
-                                      [category]: {
-                                        ...prev[category],
-                                        [bookName]: newCount,
-                                      },
-                                    }))
-                                  }}
                                   className="bg-gray-800 border-gray-600 text-white h-7 text-xs w-16"
+                                  {...nonNegativeIntInputProps(count as number, (newCount) =>
+                                    setBooks((prev) => ({
+                                      ...prev,
+                                      [category]: {
+                                        ...prev[category],
+                                        [bookName]: newCount,
+                                      },
+                                    }))
+                                  )}
                                 />
                                 <span className="text-[10px] text-gray-400 whitespace-nowrap">
                                   +{(count as number) * (bookBonuses[category as keyof typeof bookBonuses]?.[bookName as keyof typeof bookBonuses[typeof category]] || 0)}

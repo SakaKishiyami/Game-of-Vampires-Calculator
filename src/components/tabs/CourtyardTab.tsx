@@ -5,7 +5,7 @@ import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { getDisplayValue } from '@/utils/helpers'
+import { nonNegativeIntInputProps } from '@/utils/helpers'
 import { calculateMaxCourtyardLevel } from '@/utils/calculators/courtyardCalculations'
 
 export default function CourtyardTab() {
@@ -37,28 +37,13 @@ export default function CourtyardTab() {
           <div>
             <Label className="text-white">Current Points</Label>
             <Input
-              type="number"
-              value={getDisplayValue(courtyard.currentPoints)}
-              onChange={(e) => {
-                const value = e.target.value
-                if (value === '' || value === '-') {
-                  return
-                }
-                const numValue = parseInt(value) || 0
-                setCourtyard((prev) => ({
-                  ...prev,
-                  currentPoints: numValue,
-                }))
-              }}
-              onBlur={(e) => {
-                const value = e.target.value
-                const numValue = value === '' ? 0 : parseInt(value) || 0
-                setCourtyard((prev) => ({
-                  ...prev,
-                  currentPoints: numValue,
-                }))
-              }}
               className="mt-2 bg-gray-700 border-gray-600 text-white"
+              {...nonNegativeIntInputProps(courtyard.currentPoints, (numValue) =>
+                setCourtyard((prev) => ({
+                  ...prev,
+                  currentPoints: numValue,
+                }))
+              )}
             />
           </div>
           <div className="flex flex-col justify-center rounded-lg bg-gray-900/60 px-4 py-3">

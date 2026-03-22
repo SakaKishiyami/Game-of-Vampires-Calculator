@@ -23,7 +23,7 @@ import TalentsTab from "@/components/tabs/TalentsTab"
 import WardensTab from "@/components/tabs/WardensTab"
 import ScarletBondTab from "@/components/tabs/ScarletBondTab"
 import InventoryTab from "@/components/tabs/InventoryTab"
-import { getDisplayValue, getAttributeColor } from "@/utils/helpers"
+import { getAttributeColor, nonNegativeIntInputProps } from "@/utils/helpers"
 
 export default function GameCalculator() {
   const [activeTab, setActiveTab] = useState("aura-bonuses")
@@ -876,24 +876,8 @@ export default function GameCalculator() {
             <div className="flex items-center gap-2">
               <Label className="text-white whitespace-nowrap">VIP Level:</Label>
               <Input
-                type="number"
-                min="0"
-                max="14"
-                value={getDisplayValue(vipLevel)}
-                onChange={(e) => {
-                  const value = e.target.value
-                  if (value === '' || value === '-') {
-                    return
-                  }
-                  const numValue = parseInt(value) || 0
-                  setVipLevel(numValue)
-                }}
-                onBlur={(e) => {
-                  const value = e.target.value
-                  const numValue = value === '' ? 0 : parseInt(value) || 0
-                  setVipLevel(numValue)
-                }}
                 className="w-20 bg-gray-800 border-gray-600 text-white"
+                {...nonNegativeIntInputProps(vipLevel, (n) => setVipLevel(Math.min(14, Math.max(0, n))))}
               />
             </div>
             <div className="flex items-center gap-2">
@@ -972,28 +956,10 @@ export default function GameCalculator() {
                 <CardContent className="p-4">
                   <Label className={`capitalize ${getAttributeColor(attr)}`}>{attr}</Label>
                   <Input
-                    type="number"
-                    value={getDisplayValue(baseAttributes[attr])}
-                    onChange={(e) => {
-                      const value = e.target.value
-                      if (value === '' || value === '-') {
-                        return
-                      }
-                      const numValue = parseInt(value) || 0
-                      setBaseAttributes((prev) => ({
-                        ...prev,
-                        [attr]: numValue,
-                      }))
-                    }}
-                    onBlur={(e) => {
-                      const value = e.target.value
-                      const numValue = value === '' ? 0 : parseInt(value) || 0
-                      setBaseAttributes((prev) => ({
-                        ...prev,
-                        [attr]: numValue,
-                      }))
-                    }}
                     className="mt-2 bg-gray-700 border-gray-600 text-white"
+                    {...nonNegativeIntInputProps(baseAttributes[attr], (n) =>
+                      setBaseAttributes((prev) => ({ ...prev, [attr]: n }))
+                    )}
                   />
                   <div className="text-sm text-gray-400 mt-1">
                     Total: {totals[`total${attr.charAt(0).toUpperCase() + attr.slice(1)}` as keyof typeof totals]?.toLocaleString() || 0}

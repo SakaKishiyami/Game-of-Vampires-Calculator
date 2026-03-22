@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { getDisplayValue } from '@/utils/helpers'
+import { nonNegativeIntInputProps } from '@/utils/helpers'
 import { calculateConclaveUpgrades, calculateTotalConclaveBonus } from '@/utils/calculators/conclaveCalculations'
 import { useCalculatorSettings } from '@/components/layout/MainLayout'
 
@@ -30,28 +30,13 @@ export default function ConclaveTab() {
                 <div key={seal}>
                   <Label className="text-white">{seal}</Label>
                   <Input
-                    type="number"
-                    value={getDisplayValue(level)}
-                    onChange={(e) => {
-                      const value = e.target.value
-                      if (value === '' || value === '-') {
-                        return
-                      }
-                      const numValue = parseInt(value) || 0
-                      setConclave((prev) => ({
-                        ...prev,
-                        [seal]: numValue,
-                      }))
-                    }}
-                    onBlur={(e) => {
-                      const value = e.target.value
-                      const numValue = value === '' ? 0 : parseInt(value) || 0
-                      setConclave((prev) => ({
-                        ...prev,
-                        [seal]: numValue,
-                      }))
-                    }}
                     className="mt-2 bg-gray-700 border-gray-600 text-white"
+                    {...nonNegativeIntInputProps(level, (numValue) =>
+                      setConclave((prev) => ({
+                        ...prev,
+                        [seal]: numValue,
+                      }))
+                    )}
                   />
                 </div>
               ))}
@@ -68,28 +53,13 @@ export default function ConclaveTab() {
             <div className="max-w-xs">
               <Label className="text-white">Saved Conclave Seals</Label>
               <Input
-                type="number"
-                value={getDisplayValue(conclaveUpgrade.savedSeals)}
-                onChange={(e) => {
-                  const value = e.target.value
-                  if (value === '' || value === '-') {
-                    return
-                  }
-                  const numValue = parseInt(value) || 0
-                  setConclaveUpgrade((prev) => ({
-                    ...prev,
-                    savedSeals: numValue,
-                  }))
-                }}
-                onBlur={(e) => {
-                  const value = e.target.value
-                  const numValue = value === '' ? 0 : parseInt(value) || 0
-                  setConclaveUpgrade((prev) => ({
-                    ...prev,
-                    savedSeals: numValue,
-                  }))
-                }}
                 className="mt-2 bg-gray-700 border-gray-600 text-white w-40"
+                {...nonNegativeIntInputProps(conclaveUpgrade.savedSeals, (numValue) =>
+                  setConclaveUpgrade((prev) => ({
+                    ...prev,
+                    savedSeals: numValue,
+                  }))
+                )}
               />
             </div>
 

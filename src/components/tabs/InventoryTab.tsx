@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getDisplayValue, formatItemName, getItemCategory, getItemsByCategory, groupItemsByType } from '@/utils/helpers'
+import { nonNegativeIntInputProps, formatItemName, getItemCategory, getItemsByCategory, groupItemsByType } from '@/utils/helpers'
 
 function organizeEquipmentBySets(items: string[]): { [setName: string]: string[] } {
   const sets: { [setName: string]: string[] } = {}
@@ -105,9 +105,10 @@ export default function InventoryTab() {
       <div className="flex items-center space-x-2">
         <Button size="sm" onClick={() => updateInventoryItem(itemName, Math.max(0, (inventory[itemName]?.count || 0) - 1))}
           className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6">-</Button>
-        <input type="number" value={inventory[itemName]?.count || 0}
-          onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
-          className="w-16 text-center text-sm font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-1 py-1" />
+        <input
+          className="w-16 text-center text-sm font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-1 py-1"
+          {...nonNegativeIntInputProps(inventory[itemName]?.count ?? 0, (n) => updateInventoryItem(itemName, n))}
+        />
         <Button size="sm" onClick={() => updateInventoryItem(itemName, (inventory[itemName]?.count || 0) + 1)}
           className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6">+</Button>
       </div>
@@ -177,9 +178,10 @@ export default function InventoryTab() {
                       <div className="flex items-center space-x-2">
                         <Button size="sm" onClick={() => updateInventoryItem(itemName, Math.max(0, itemData.count - 1))}
                           className="bg-red-600 hover:bg-red-700 text-xs px-2 py-1 h-6">-</Button>
-                        <input type="number" value={itemData.count}
-                          onChange={(e) => updateInventoryItem(itemName, Math.max(0, parseInt(e.target.value) || 0))}
-                          className="w-16 text-center text-sm font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-1 py-1" />
+                        <input
+                          className="w-16 text-center text-sm font-bold text-yellow-400 bg-gray-800 border border-gray-600 rounded px-1 py-1"
+                          {...nonNegativeIntInputProps(itemData.count, (n) => updateInventoryItem(itemName, n))}
+                        />
                         <Button size="sm" onClick={() => updateInventoryItem(itemName, itemData.count + 1)}
                           className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1 h-6">+</Button>
                       </div>

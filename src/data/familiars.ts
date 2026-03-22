@@ -2,8 +2,10 @@ import type { FamiliarBondId } from './familiarBonds'
 
 /**
  * Familiar system data.
- * Each familiar belongs to a nest. Nests grant attribute bonuses
- * based on how many familiars in the nest are owned / upgraded.
+ * Each familiar belongs to a nest. Nests grant attribute bonuses based on how many
+ * familiars in that nest are owned / upgraded. Those bonuses apply only to familiars
+ * in that nest — they are not pooled globally (e.g. Shadewoods nest bonuses affect
+ * Imp and other Shadewoods familiars only, not Hollowmoor or other nests).
  *
  * Image paths point to /FamiliarAssets/{Base|Exclusive}/{Name}/{Name}{B|BM|A|AM}.png
  *   B = Baby, BM = Baby Mutation, A = Adult, AM = Adult Mutation
@@ -308,16 +310,25 @@ export function getNestBonuses(nest: NestDefinition, level: number): Record<Fami
   return totals
 }
 
-export function getTotalFamiliarBonuses(familiarsState: FamiliarsState): Record<FamiliarAttribute, number> {
-  const totals: Record<FamiliarAttribute, number> = {
-    Loyalty: 0, Ferocity: 0, Tenacity: 0, Instinct: 0, Mischief: 0
+/**
+ * Attribute bonuses from this familiar's nest only (same values shown under that nest's
+ * "Active Bonuses"). Familiars with no nest get no nest bonuses.
+ */
+export function getNestBonusesForFamiliar(
+  familiarId: string,
+  familiarsState: FamiliarsState
+): Record<FamiliarAttribute, number> {
+  const zero: Record<FamiliarAttribute, number> = {
+    Loyalty: 0,
+    Ferocity: 0,
+    Tenacity: 0,
+    Instinct: 0,
+    Mischief: 0,
   }
-  for (const nest of nests) {
-    const level = getNestLevel(nest, familiarsState)
-    const bonuses = getNestBonuses(nest, level)
-    for (const attr of ALL_FAMILIAR_ATTRIBUTES) {
-      totals[attr] += bonuses[attr]
-    }
-  }
-  return totals
+  const def = familiarMap.get(familiarId)
+  if (!def?.nestId) return { ...zero }
+  const nest = nestMap.get(def.nestId)
+  if (!nest) return { ...zero }
+  const level = getNestLevel(nest, familiarsState)
+  return getNestBonuses(nest, level)
 }

@@ -63,6 +63,15 @@ npm run dev
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
+### Lint & build
+
+```bash
+npm run lint    # ESLint (non-interactive; uses .eslintrc.json)
+npm run build   # production build
+```
+
+`next.config.js` skips TypeScript/ESLint during `next build` for deployment; run `npm run lint` locally (or in CI) for full checks.
+
 ## Technology Stack
 
 - **Framework**: Next.js 14 with React 18

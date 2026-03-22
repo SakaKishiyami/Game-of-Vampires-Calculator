@@ -4,7 +4,7 @@ import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { getDisplayValue, getAttributeColor } from '@/utils/helpers'
+import { getAttributeColor, nonNegativeIntInputProps } from '@/utils/helpers'
 import { domIncreasePerStarData } from '@/data/talent_stars'
 
 export default function TalentsTab() {
@@ -25,31 +25,15 @@ export default function TalentsTab() {
               <div className="space-y-2">
                 <Label className="text-gray-300">Random Talent Scroll (5-1000 exp)</Label>
                 <Input
-                  type="number"
-                  value={getDisplayValue(talents.randomTalentScroll.count)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value === '' || value === '-') {
-                      return
-                    }
-                    const newCount = parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      randomTalentScroll: { ...prev.randomTalentScroll, count: newCount }
-                    }))
-                    syncTalentsToInventory('randomTalentScroll', newCount)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      randomTalentScroll: { ...prev.randomTalentScroll, count: newCount }
-                    }))
-                    syncTalentsToInventory('randomTalentScroll', newCount)
-                  }}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="0"
+                  {...nonNegativeIntInputProps(talents.randomTalentScroll.count, (newCount) => {
+                    setTalents((prev: any) => ({
+                      ...prev,
+                      randomTalentScroll: { ...prev.randomTalentScroll, count: newCount },
+                    }))
+                    syncTalentsToInventory('randomTalentScroll', newCount)
+                  })}
                 />
                 <p className="text-xs text-gray-400">Average: ~502.5 exp each</p>
               </div>
@@ -57,31 +41,15 @@ export default function TalentsTab() {
               <div className="space-y-2">
                 <Label className="text-gray-300">Talent Scroll Lvl 4 (41-80 exp)</Label>
                 <Input
-                  type="number"
-                  value={getDisplayValue(talents.talentScrollLvl4.count)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value === '' || value === '-') {
-                      return
-                    }
-                    const newCount = parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount }
-                    }))
-                    syncTalentsToInventory('talentScrollLvl4', newCount)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount }
-                    }))
-                    syncTalentsToInventory('talentScrollLvl4', newCount)
-                  }}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="0"
+                  {...nonNegativeIntInputProps(talents.talentScrollLvl4.count, (newCount) => {
+                    setTalents((prev: any) => ({
+                      ...prev,
+                      talentScrollLvl4: { ...prev.talentScrollLvl4, count: newCount },
+                    }))
+                    syncTalentsToInventory('talentScrollLvl4', newCount)
+                  })}
                 />
                 <p className="text-xs text-gray-400">Average: ~60.5 exp each</p>
               </div>
@@ -89,31 +57,15 @@ export default function TalentsTab() {
               <div className="space-y-2">
                 <Label className="text-gray-300">Talent Scroll Lvl 3 (21-40 exp)</Label>
                 <Input
-                  type="number"
-                  value={getDisplayValue(talents.talentScrollLvl3.count)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value === '' || value === '-') {
-                      return
-                    }
-                    const newCount = parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      talentScrollLvl3: { ...prev.talentScrollLvl3, count: newCount }
-                    }))
-                    syncTalentsToInventory('talentScrollLvl3', newCount)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      talentScrollLvl3: { ...prev.talentScrollLvl3, count: newCount }
-                    }))
-                    syncTalentsToInventory('talentScrollLvl3', newCount)
-                  }}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="0"
+                  {...nonNegativeIntInputProps(talents.talentScrollLvl3.count, (newCount) => {
+                    setTalents((prev: any) => ({
+                      ...prev,
+                      talentScrollLvl3: { ...prev.talentScrollLvl3, count: newCount },
+                    }))
+                    syncTalentsToInventory('talentScrollLvl3', newCount)
+                  })}
                 />
                 <p className="text-xs text-gray-400">Average: ~30.5 exp each</p>
               </div>
@@ -121,31 +73,15 @@ export default function TalentsTab() {
               <div className="space-y-2">
                 <Label className="text-gray-300">Talent Scroll Lvl 2 (6-20 exp)</Label>
                 <Input
-                  type="number"
-                  value={getDisplayValue(talents.talentScrollLvl2.count)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value === '' || value === '-') {
-                      return
-                    }
-                    const newCount = parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      talentScrollLvl2: { ...prev.talentScrollLvl2, count: newCount }
-                    }))
-                    syncTalentsToInventory('talentScrollLvl2', newCount)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      talentScrollLvl2: { ...prev.talentScrollLvl2, count: newCount }
-                    }))
-                    syncTalentsToInventory('talentScrollLvl2', newCount)
-                  }}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="0"
+                  {...nonNegativeIntInputProps(talents.talentScrollLvl2.count, (newCount) => {
+                    setTalents((prev: any) => ({
+                      ...prev,
+                      talentScrollLvl2: { ...prev.talentScrollLvl2, count: newCount },
+                    }))
+                    syncTalentsToInventory('talentScrollLvl2', newCount)
+                  })}
                 />
                 <p className="text-xs text-gray-400">Average: ~13 exp each</p>
               </div>
@@ -153,31 +89,15 @@ export default function TalentsTab() {
               <div className="space-y-2">
                 <Label className="text-gray-300">Talent Scroll Lvl 1 (1-5 exp)</Label>
                 <Input
-                  type="number"
-                  value={getDisplayValue(talents.talentScrollLvl1.count)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value === '' || value === '-') {
-                      return
-                    }
-                    const newCount = parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      talentScrollLvl1: { ...prev.talentScrollLvl1, count: newCount }
-                    }))
-                    syncTalentsToInventory('talentScrollLvl1', newCount)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      talentScrollLvl1: { ...prev.talentScrollLvl1, count: newCount }
-                    }))
-                    syncTalentsToInventory('talentScrollLvl1', newCount)
-                  }}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="0"
+                  {...nonNegativeIntInputProps(talents.talentScrollLvl1.count, (newCount) => {
+                    setTalents((prev: any) => ({
+                      ...prev,
+                      talentScrollLvl1: { ...prev.talentScrollLvl1, count: newCount },
+                    }))
+                    syncTalentsToInventory('talentScrollLvl1', newCount)
+                  })}
                 />
                 <p className="text-xs text-gray-400">Average: ~3 exp each</p>
               </div>
@@ -191,93 +111,45 @@ export default function TalentsTab() {
               <div className="space-y-2">
                 <Label className="text-gray-300">Basic Talent Scroll (50 exp)</Label>
                 <Input
-                  type="number"
-                  value={getDisplayValue(talents.basicTalentScroll.count)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value === '' || value === '-') {
-                      return
-                    }
-                    const newCount = parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      basicTalentScroll: { ...prev.basicTalentScroll, count: newCount }
-                    }))
-                    syncTalentsToInventory('basicTalentScroll', newCount)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      basicTalentScroll: { ...prev.basicTalentScroll, count: newCount }
-                    }))
-                    syncTalentsToInventory('basicTalentScroll', newCount)
-                  }}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="0"
+                  {...nonNegativeIntInputProps(talents.basicTalentScroll.count, (newCount) => {
+                    setTalents((prev: any) => ({
+                      ...prev,
+                      basicTalentScroll: { ...prev.basicTalentScroll, count: newCount },
+                    }))
+                    syncTalentsToInventory('basicTalentScroll', newCount)
+                  })}
                 />
               </div>
               
               <div className="space-y-2">
                 <Label className="text-gray-300">Fine Talent Scroll (100 exp)</Label>
                 <Input
-                  type="number"
-                  value={getDisplayValue(talents.fineTalentScroll.count)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value === '' || value === '-') {
-                      return
-                    }
-                    const newCount = parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      fineTalentScroll: { ...prev.fineTalentScroll, count: newCount }
-                    }))
-                    syncTalentsToInventory('fineTalentScroll', newCount)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      fineTalentScroll: { ...prev.fineTalentScroll, count: newCount }
-                    }))
-                    syncTalentsToInventory('fineTalentScroll', newCount)
-                  }}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="0"
+                  {...nonNegativeIntInputProps(talents.fineTalentScroll.count, (newCount) => {
+                    setTalents((prev: any) => ({
+                      ...prev,
+                      fineTalentScroll: { ...prev.fineTalentScroll, count: newCount },
+                    }))
+                    syncTalentsToInventory('fineTalentScroll', newCount)
+                  })}
                 />
               </div>
               
               <div className="space-y-2">
                 <Label className="text-gray-300">Superior Talent Scroll (200 exp)</Label>
                 <Input
-                  type="number"
-                  value={getDisplayValue(talents.superiorTalentScroll.count)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value === '' || value === '-') {
-                      return
-                    }
-                    const newCount = parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      superiorTalentScroll: { ...prev.superiorTalentScroll, count: newCount }
-                    }))
-                    syncTalentsToInventory('superiorTalentScroll', newCount)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    const newCount = value === '' ? 0 : parseInt(value) || 0
-                    setTalents(prev => ({
-                      ...prev,
-                      superiorTalentScroll: { ...prev.superiorTalentScroll, count: newCount }
-                    }))
-                    syncTalentsToInventory('superiorTalentScroll', newCount)
-                  }}
                   className="bg-gray-700 border-gray-600 text-white"
                   placeholder="0"
+                  {...nonNegativeIntInputProps(talents.superiorTalentScroll.count, (newCount) => {
+                    setTalents((prev: any) => ({
+                      ...prev,
+                      superiorTalentScroll: { ...prev.superiorTalentScroll, count: newCount },
+                    }))
+                    syncTalentsToInventory('superiorTalentScroll', newCount)
+                  })}
                 />
               </div>
             </div>
@@ -427,15 +299,16 @@ export default function TalentsTab() {
                           <div className="flex items-center gap-2">
                             <Label className="text-gray-300 text-xs">Warden Lv.</Label>
                             <Input
-                              type="number"
-                              value={script.wardenLevel}
-                              onChange={(e) => setTalents(prev => ({
-                                ...prev,
-                                [scriptKey]: { ...prev[scriptKey], wardenLevel: parseInt(e.target.value) || 1 }
-                              }))}
                               className="bg-gray-700 border-gray-600 text-white w-20 h-8 text-xs"
-                              min="1"
-                              max="500"
+                              {...nonNegativeIntInputProps(script.wardenLevel, (n) =>
+                                setTalents((prev: any) => ({
+                                  ...prev,
+                                  [scriptKey]: {
+                                    ...prev[scriptKey],
+                                    wardenLevel: Math.min(500, Math.max(1, n || 1)),
+                                  },
+                                }))
+                              )}
                             />
                           </div>
                           <div className="text-gray-400 text-xs">
@@ -452,7 +325,7 @@ export default function TalentsTab() {
                           <div className="flex flex-wrap gap-2">
                             <button
                               type="button"
-                              onClick={() => setTalents(prev => ({
+                              onClick={() => setTalents((prev: any) => ({
                                 ...prev,
                                 [scriptKey]: { ...prev[scriptKey], selectedStar: 0, quantity: 0 }
                               }))}
@@ -471,7 +344,7 @@ export default function TalentsTab() {
                                 <button
                                   key={star}
                                   type="button"
-                                  onClick={() => setTalents(prev => ({
+                                  onClick={() => setTalents((prev: any) => ({
                                     ...prev,
                                     [scriptKey]: { ...prev[scriptKey], selectedStar: star }
                                   }))}
@@ -493,30 +366,14 @@ export default function TalentsTab() {
                           <div className="flex flex-wrap items-center gap-2">
                             <Label className="text-gray-300 text-xs">Attempts:</Label>
                             <Input
-                              type="number"
-                              value={getDisplayValue(script.quantity)}
-                              onChange={(e) => {
-                                const value = e.target.value
-                                if (value === '' || value === '-') {
-                                  return
-                                }
-                                const quantity = parseInt(value) || 0
-                                setTalents(prev => ({
-                                  ...prev,
-                                  [scriptKey]: { ...prev[scriptKey], quantity }
-                                }))
-                              }}
-                              onBlur={(e) => {
-                                const value = e.target.value
-                                const quantity = value === '' ? 0 : parseInt(value) || 0
-                                setTalents(prev => ({
-                                  ...prev,
-                                  [scriptKey]: { ...prev[scriptKey], quantity }
-                                }))
-                              }}
                               className="bg-gray-700 border-gray-600 text-white w-20 h-8 text-xs"
-                              min="0"
                               placeholder="0"
+                              {...nonNegativeIntInputProps(script.quantity, (quantity) =>
+                                setTalents((prev: any) => ({
+                                  ...prev,
+                                  [scriptKey]: { ...prev[scriptKey], quantity },
+                                }))
+                              )}
                             />
                             <div className="text-gray-400 text-[11px]">
                               {script.selectedStar}★ rolls

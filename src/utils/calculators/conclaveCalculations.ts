@@ -1,5 +1,5 @@
 // Conclave calculation functions
-import type { ConclaveState, ConclaveUpgrade, BooksState, WardenCounts } from '@/types'
+import type { BookCollection, ConclaveState, ConclaveUpgrade, BooksState, WardenCounts } from '@/types'
 import { conclaveLevels } from '@/data/conclave'
 import { wardenGroups } from '@/data/wardens'
 import { bookBonuses } from '@/data/books'
@@ -244,9 +244,10 @@ export function calculateConclaveUpgrades(
     }))
   }
 
-  selectedUpgrades.forEach(upgrade => {
+  type AttrKey = keyof typeof results.wardenBonuses
+  selectedUpgrades.forEach((upgrade: { attribute: AttrKey; wardenBonus: number; bookMultiplier: number }) => {
     results.wardenBonuses[upgrade.attribute] = upgrade.wardenBonus
-    results.bookMultipliers[upgrade.attribute] = 1 + (upgrade.bookMultiplier / 100)
+    results.bookMultipliers[upgrade.attribute] = 1 + upgrade.bookMultiplier / 100
   })
 
   return results

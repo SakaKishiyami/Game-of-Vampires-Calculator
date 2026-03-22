@@ -2,7 +2,12 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { familiarBondDefinitions, getBondValue, type FamiliarBondId } from '@/data/familiarBonds'
+import {
+  familiarBondDefinitions,
+  getBondValue,
+  type FamiliarBondDefinition,
+  type FamiliarBondId,
+} from '@/data/familiarBonds'
 import { Button } from "@/components/ui/button"
 
 import {
@@ -13,7 +18,6 @@ import {
   ALL_FAMILIAR_ATTRIBUTES,
   getNestLevel,
   getNestBonuses,
-  getTotalFamiliarBonuses,
   type FamiliarGrade,
   type FamiliarDefinition,
   type NestDefinition,
@@ -24,6 +28,7 @@ import {
 
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { nonNegativeIntInputProps } from '@/utils/helpers'
 
 const ATTR_COLORS: Record<string, string> = {
   Loyalty: 'text-rose-400',
@@ -125,15 +130,48 @@ function getRankFromRequirement(req: string): FamiliarGrade | null {
   return null
 }
 
+/** Highest bond tier (1–6) unlocked by any owned familiar with this bond (main-attribute gates). */
+function getBestUnlockedBondTier(
+  def: FamiliarBondDefinition,
+  withBond: { familiar: FamiliarDefinition; entry: FamiliarOwnedEntry }[]
+): number {
+  if (withBond.length === 0) return 1
+  return withBond.reduce((best, x) => {
+    const [a1, a2] = x.entry.mainAttributes
+    const minMain = Math.min(x.entry.attributes[a1] || 0, x.entry.attributes[a2] || 0)
+    let unlocked = 1
+    for (const test of [2, 3, 4, 5, 6] as const) {
+      if (minMain >= getBondValue(def, test)) unlocked = test
+    }
+    return Math.max(best, unlocked)
+  }, 1)
+}
+
+/** Highlights numeric values and percentages in bond effect copy. */
+function BondEffectHighlight({ text }: { text: string }) {
+  const parts = text.split(/(\d+(?:\.\d+)?%?)/g)
+  return (
+    <>
+      {parts.map((part, i) =>
+        /^\d+(?:\.\d+)?%?$/.test(part) ? (
+          <span key={i} className="text-amber-300 font-bold tabular-nums">
+            {part}
+          </span>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  )
+}
+
 function FamiliarSquare({
   familiar,
   state,
-  size = 16,
   showStageLabel = false,
 }: {
   familiar: FamiliarDefinition
   state?: FamiliarOwnedEntry | null
-  size?: number
   showStageLabel?: boolean
 }) {
   const owned = !!state
@@ -325,6 +363,10 @@ function NestLevelsAndBonuses({ nest, familiars }: { nest: NestDefinition; famil
       {level > 0 && (
         <div className="space-y-1">
           <div className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Active Bonuses</div>
+          <p className="text-[10px] text-gray-500 leading-snug mb-1.5">
+            These attribute boosts apply only to familiars in <span className="text-gray-400">{nest.name}</span> — not
+            to familiars from other nests (e.g. an Imp only gets Shadewoods nest bonuses, not Briargrove or Hollowmoor).
+          </p>
           <div className="flex flex-wrap gap-2">
             {ALL_FAMILIAR_ATTRIBUTES.filter((a) => bonuses[a] > 0).map((attr) => (
               <span key={attr} className={`text-[11px] ${ATTR_COLORS[attr]}`}>
@@ -352,6 +394,7 @@ export default function FamiliarsTab() {
   const [mutationMode, setMutationMode] = useState<'normal' | 'mutated'>('normal')
   const [selectedGrade, setSelectedGrade] = useState<FamiliarGrade>('D')
   const [selectedLevel, setSelectedLevel] = useState<number>(FAMILIAR_GRADE_MAX_LEVEL.D)
+  const [levelDraft, setLevelDraft] = useState<string>(() => String(FAMILIAR_GRADE_MAX_LEVEL.D))
   const [selectedBondId, setSelectedBondId] = useState<FamiliarBondId | null>(null)
   const [mainAttr1, setMainAttr1] = useState<FamiliarAttribute>('Loyalty')
   const [mainAttr2, setMainAttr2] = useState<FamiliarAttribute>('Ferocity')
@@ -371,8 +414,16 @@ export default function FamiliarsTab() {
 
   useEffect(() => {
     const max = FAMILIAR_GRADE_MAX_LEVEL[selectedGrade]
-    setSelectedLevel((prev) => Math.min(prev, max))
+    setSelectedLevel((prev) => {
+      const next = Math.min(prev, max)
+      setLevelDraft(String(next))
+      return next
+    })
   }, [selectedGrade])
+
+  useEffect(() => {
+    setLevelDraft(String(selectedLevel))
+  }, [selectedFamiliarId, editingEntryId])
 
   const selectedFamiliar =
     releasedFamiliars.find((f) => f.id === selectedFamiliarId) ?? null
@@ -521,8 +572,6 @@ export default function FamiliarsTab() {
     setFamiliars((prev) => ({ ...prev, [familiarId]: [next, ...list.filter((x: FamiliarOwnedEntry) => x.id !== next.id)] }))
   }
 
-  const totalBonuses = getTotalFamiliarBonuses(familiars)
-  const hasAnyBonus = ALL_FAMILIAR_ATTRIBUTES.some((a) => totalBonuses[a] > 0)
   const totalCopies = useMemo(
     () => Object.values(familiars).reduce((sum, arr) => sum + (arr?.length ?? 0), 0),
     [familiars]
@@ -550,12 +599,13 @@ export default function FamiliarsTab() {
     return rows
   }, [familiars, searchText, rankFilter, bondFilter, knackFilter])
 
-  // bonds tab (local state for now)
-  const [bondLevels, setBondLevels] = useState<Record<FamiliarBondId, number>>(() => {
-    const obj = {} as Record<FamiliarBondId, number>
-    for (const d of familiarBondDefinitions) obj[d.id] = 1
-    return obj
-  })
+  const trackerEntriesForBonds = useMemo(
+    () =>
+      releasedFamiliars.flatMap((f) =>
+        (familiars[f.id] ?? []).map((entry: FamiliarOwnedEntry) => ({ familiar: f, entry }))
+      ),
+    [familiars, releasedFamiliars]
+  )
 
   return (
     <Card className="bg-gray-800/50 border-gray-600">
@@ -581,25 +631,11 @@ export default function FamiliarsTab() {
           </TabsList>
 
           <TabsContent value="nests" className="pt-4">
-            {hasAnyBonus && (
-              <Card className="bg-gray-900/60 border-gray-700 mb-4">
-                <CardContent className="py-3 px-4">
-                  <div className="text-[10px] text-gray-500 font-medium uppercase tracking-wider mb-2">
-                    Total Nest Bonuses
-                  </div>
-                  <div className="flex flex-wrap gap-4">
-                    {ALL_FAMILIAR_ATTRIBUTES.map((attr) => (
-                      <div key={attr} className="text-center">
-                        <div className={`text-lg font-bold ${ATTR_COLORS[attr]}`}>
-                          +{totalBonuses[attr]}
-                        </div>
-                        <div className="text-[10px] text-gray-400">{attr}</div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            <div className="text-xs text-gray-400 mb-4 rounded-lg border border-amber-900/30 bg-amber-950/15 px-3 py-2.5 leading-relaxed">
+              <strong className="text-amber-200/90">Per-nest bonuses:</strong> each nest unlocks stats for{' '}
+              <span className="text-gray-300">that nest&apos;s familiars only</span>. They are not added together
+              across all nests — e.g. Shadewoods progress helps Imp / Griphalkin / etc., not Gremlin or Zombunny.
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {nests.map((nest) => {
@@ -942,16 +978,10 @@ export default function FamiliarsTab() {
                             <div key={attr} className={`rounded border p-2 ${highlighted ? 'border-yellow-500/50 bg-yellow-500/10' : 'border-gray-700/50 bg-gray-800/30'}`}>
                               <div className={`text-[10px] ${highlighted ? 'text-yellow-200' : 'text-gray-300'}`}>{attr}</div>
                               <input
-                                type="number"
-                                min={0}
-                                value={attrValues[attr]}
-                                onChange={(e) =>
-                                  setAttrValues((prev) => ({
-                                    ...prev,
-                                    [attr]: Math.max(0, parseInt(e.target.value || '0', 10) || 0),
-                                  }))
-                                }
                                 className="mt-1 w-full bg-gray-900 border border-gray-700 rounded px-1.5 py-1 text-xs text-white"
+                                {...nonNegativeIntInputProps(attrValues[attr], (n) =>
+                                  setAttrValues((prev) => ({ ...prev, [attr]: n }))
+                                )}
                               />
                             </div>
                           )
@@ -1007,14 +1037,31 @@ export default function FamiliarsTab() {
                       <div className="flex-1 min-w-[180px] space-y-1">
                         <div className="text-[11px] text-gray-500">Level</div>
                         <input
-                          type="number"
-                          min={1}
-                          max={maxLevel}
-                          value={selectedLevel}
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="off"
+                          value={levelDraft}
                           onChange={(e) => {
-                            const raw = parseInt(e.target.value, 10)
-                            if (Number.isNaN(raw)) return
-                            setSelectedLevel(Math.max(1, Math.min(raw, maxLevel)))
+                            const v = e.target.value
+                            setLevelDraft(v)
+                            if (v === '') return
+                            const n = parseInt(v, 10)
+                            if (!Number.isNaN(n)) setSelectedLevel(Math.max(1, Math.min(n, maxLevel)))
+                          }}
+                          onBlur={() => {
+                            if (levelDraft.trim() === '') {
+                              setLevelDraft('1')
+                              setSelectedLevel(1)
+                              return
+                            }
+                            const n = parseInt(levelDraft, 10)
+                            if (Number.isNaN(n)) {
+                              setLevelDraft(String(selectedLevel))
+                            } else {
+                              const cl = Math.max(1, Math.min(n, maxLevel))
+                              setSelectedLevel(cl)
+                              setLevelDraft(String(cl))
+                            }
                           }}
                           className="w-full bg-gray-800 border-gray-700 text-white text-sm rounded px-2 py-2 h-10"
                         />
@@ -1057,69 +1104,101 @@ export default function FamiliarsTab() {
 
           <TabsContent value="bonds" className="pt-4">
             <div className="text-sm font-semibold text-gray-200 mb-3">Familiar Bonds</div>
+            <p className="text-xs text-gray-500 mb-4 max-w-3xl">
+              Tier is based on your <span className="text-gray-400">lowest main attribute</span> vs each threshold
+              (workshop bonds use different numbers than standard). Each card shows the{' '}
+              <span className="text-amber-300/90">highest tier</span> any of your familiars with this bond qualify for —
+              it updates when you add or change familiars in the tracker.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {familiarBondDefinitions.map((def) => {
-                const lvl = bondLevels[def.id] ?? 1
-                const value = getBondValue(def, lvl)
-                const entries = releasedFamiliars.flatMap((f) =>
-                  (familiars[f.id] ?? []).map((entry: FamiliarOwnedEntry) => ({ familiar: f, entry }))
-                )
-                const withBond = entries.filter((x) => x.entry.bondId === def.id)
-                const bestUnlocked = withBond.reduce((best, x) => {
-                  const [a1, a2] = x.entry.mainAttributes
-                  const minMain = Math.min(x.entry.attributes[a1] || 0, x.entry.attributes[a2] || 0)
-                  let unlocked = 1
-                  for (const test of [2, 3, 4, 5, 6] as const) {
-                    if (minMain >= getBondValue(def, test)) unlocked = test
-                  }
-                  return Math.max(best, unlocked)
-                }, 1)
-                const activeLevel = Math.min(lvl, bestUnlocked)
-                const effect = activeLevel >= 2 ? def.effectsByLevel[activeLevel as 2 | 3 | 4 | 5 | 6] : 'Locked'
+                const withBond = trackerEntriesForBonds.filter((x) => x.entry.bondId === def.id)
+                const bestUnlocked = getBestUnlockedBondTier(def, withBond)
+                const activeLevel = bestUnlocked
+                const effectText =
+                  activeLevel >= 2 ? def.effectsByLevel[activeLevel as 2 | 3 | 4 | 5 | 6] : null
+                const nextTier = activeLevel < 6 ? ((activeLevel + 1) as 2 | 3 | 4 | 5 | 6) : null
+                const nextThreshold = nextTier ? getBondValue(def, nextTier) : null
+                const tier2Threshold = getBondValue(def, 2)
+
                 return (
-                  <Card key={def.id} className="bg-gray-900/60 border-gray-700">
-                    <CardHeader className="py-3 px-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-3">
+                  <Card key={def.id} className="bg-gray-900/60 border-gray-700 overflow-hidden">
+                    <CardContent className="p-4 sm:p-5">
+                      <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-stretch">
+                        <div className="flex flex-row sm:flex-col gap-3 sm:gap-2 items-center sm:items-start shrink-0 sm:w-[7.5rem]">
                           <img
                             src={`/FamiliarAssets/Bonds/${def.assetFile}`}
-                            alt={def.displayName}
-                            className="w-10 h-10 object-contain"
+                            alt=""
+                            className="w-[4.5rem] h-[4.5rem] sm:w-[6.5rem] sm:h-[6.5rem] object-contain drop-shadow-lg mx-auto sm:mx-0"
                           />
-                          <div>
-                            <CardTitle className="text-sm text-gray-100">{def.displayName}</CardTitle>
-                            <div className="text-[10px] text-gray-400 mt-1">
-                              Req @ Lv{lvl}: {value}
+                          <div className="flex-1 sm:flex-none min-w-0 text-center sm:text-left">
+                            <div className="text-base font-semibold text-gray-100 leading-tight">{def.displayName}</div>
+                            <div className="text-[11px] text-gray-400 mt-1">
+                              {def.type === 'workshop' ? (
+                                <span className="text-violet-300/90">Workshop bond</span>
+                              ) : (
+                                <span>Standard bond</span>
+                              )}
+                            </div>
+                            <div className="mt-2 inline-flex items-center rounded-md border border-amber-500/35 bg-amber-950/30 px-2 py-1">
+                              <span className="text-[10px] text-gray-400 mr-1">Active tier</span>
+                              <span className="text-lg font-bold text-amber-300 tabular-nums">{bestUnlocked}</span>
+                              <span className="text-[10px] text-gray-500 ml-0.5">/ 6</span>
                             </div>
                           </div>
                         </div>
-                        <div className="text-[10px] text-gray-500">
-                          Active Lv {activeLevel}
+
+                        <div className="flex-1 min-w-0 flex flex-col gap-3 sm:border-l sm:border-gray-700/50 sm:pl-5">
+                          <div>
+                            <div className="text-[10px] uppercase tracking-wide text-gray-500 mb-1.5">Current effect</div>
+                            {effectText ? (
+                              <p className="text-sm text-gray-100 leading-relaxed">
+                                <BondEffectHighlight text={effectText} />
+                              </p>
+                            ) : (
+                              <p className="text-sm text-gray-500">
+                                Locked — add a familiar with this bond and raise both{' '}
+                                <span className="text-gray-400">main attributes</span> to at least{' '}
+                                <span className="text-amber-300 font-bold tabular-nums">{tier2Threshold}</span> for tier
+                                2.
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="rounded-lg bg-gray-950/60 border border-gray-700/60 px-3 py-2.5 space-y-1.5">
+                            <div className="text-[10px] text-gray-500 uppercase tracking-wide">Thresholds</div>
+                            {bestUnlocked >= 2 ? (
+                              <>
+                                <div className="text-xs text-gray-300 leading-snug">
+                                  Tier <span className="text-amber-300 font-bold tabular-nums">{bestUnlocked}</span> needs
+                                  both mains ≥{' '}
+                                  <span className="text-amber-300 font-bold tabular-nums">
+                                    {getBondValue(def, bestUnlocked as 2 | 3 | 4 | 5 | 6)}
+                                  </span>
+                                  .
+                                </div>
+                                {nextTier != null && nextThreshold != null && (
+                                  <div className="text-[11px] text-gray-500">
+                                    Next: tier <span className="text-gray-300 font-medium">{nextTier}</span> at{' '}
+                                    <span className="text-amber-300 font-bold tabular-nums">{nextThreshold}</span> on both
+                                    mains.
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              <div className="text-xs text-gray-400 leading-snug">
+                                Tier 2 unlocks when both mains are ≥{' '}
+                                <span className="text-amber-300 font-bold tabular-nums">{tier2Threshold}</span>.
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="text-[10px] text-gray-500 mt-auto pt-1">
+                            {withBond.length === 0
+                              ? 'No familiars with this bond yet.'
+                              : `${withBond.length} familiar(s) have this bond — highest qualifying tier applies.`}
+                          </div>
                         </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-3 pt-0 space-y-3">
-                      <div className="flex flex-wrap gap-1">
-                        {[1, 2, 3, 4, 5, 6].map((x) => (
-                          <button
-                            key={x}
-                            type="button"
-                            onClick={() => setBondLevels((prev) => ({ ...prev, [def.id]: x }))}
-                            className={`text-[11px] px-2 py-1 rounded border transition ${
-                              lvl === x
-                                ? 'bg-red-700/30 border-red-400/60 text-red-100'
-                                : 'bg-gray-800/40 border-gray-700 text-gray-300 hover:bg-gray-800/60'
-                            }`}
-                          >
-                            {x}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="text-[12px] text-gray-200 leading-snug">
-                        {effect}
-                      </div>
-                      <div className="text-[10px] text-gray-500">
-                        {withBond.length} familiar(s) have this bond. Highest qualifying one counts.
                       </div>
                     </CardContent>
                   </Card>

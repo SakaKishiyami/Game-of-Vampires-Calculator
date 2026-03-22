@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { getAttributeColor, getAttributeBg } from '@/utils/helpers'
+import { getAttributeColor, getAttributeBg, nonNegativeIntInputProps } from '@/utils/helpers'
 import { scarletBondData, scarletBondLevels, getOffSingle } from '@/data/scarletBonds'
 import { wardenAttributes } from '@/data/wardens'
 import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier, wildHuntSummonedCount, monsterNoirSummonedCount, tierPercentFromCount, heartOfWarCount } from '@/utils/loverScarletBondAuras'
@@ -155,7 +155,7 @@ export default function ScarletBondTab() {
     const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
     if (!bondData) return { flatBonus: 0, percentBonus: 0, totalBonus: 0, loverMultiplier: 0 }
 
-    const optimizedBond = optimizedBondLevels[bondKey] || currentBond
+    const optimizedBond = (optimizedBondLevels[bondKey] || currentBond) as Record<string, number | undefined>
     let flatBonus = 0
     let percentBonus = 0
 
@@ -215,7 +215,7 @@ export default function ScarletBondTab() {
       }
       return newBonus - currentBonus
     } else if (bondType.endsWith('Percent')) {
-      const currentBondData = scarletBond[bondKey] || {}
+      const currentBondData = (scarletBond[bondKey] || {}) as Record<string, number | undefined>
       const flatLevel = currentBondData[`${attr}Level`] || 0
       const flatData = scarletBondLevels.find(l => l.level === flatLevel)
       let flatBonus = 0
@@ -250,7 +250,10 @@ export default function ScarletBondTab() {
     const suggestedUpgrades: Record<string, any> = {}
     let remainingAffinity = availableAffinity
     const tempCurrentLevels: Record<string, number> = {}
-    bondTypes.forEach(bt => { tempCurrentLevels[bt] = currentBond[bt] || 0 })
+    const currentBondNum = currentBond as Record<string, number | undefined>
+    bondTypes.forEach((bt) => {
+      tempCurrentLevels[bt] = currentBondNum[bt] || 0
+    })
 
     let canAffordMore = true
     while (canAffordMore && remainingAffinity > 0) {
@@ -286,7 +289,10 @@ export default function ScarletBondTab() {
         const best = availableUpgrades[0]
         if (!suggestedUpgrades[best.bondType]) {
           suggestedUpgrades[best.bondType] = {
-            increase: 0, newLevel: currentBond[best.bondType] || 0, cost: 0, domGain: 0
+            increase: 0,
+            newLevel: currentBondNum[best.bondType] || 0,
+            cost: 0,
+            domGain: 0,
           }
         }
         suggestedUpgrades[best.bondType].increase += 1
@@ -417,7 +423,7 @@ export default function ScarletBondTab() {
           <div className="flex items-start space-x-2">
             <div className="text-yellow-400 font-bold text-sm">⚠️ PSA:</div>
             <div className="text-yellow-200 text-sm">
-              Most numbers past level 100 are not 100% accurate yet. We're still collecting and verifying data for higher levels.
+              Most numbers past level 100 are not 100% accurate yet. We&apos;re still collecting and verifying data for higher levels.
             </div>
           </div>
         </div>
@@ -615,13 +621,11 @@ export default function ScarletBondTab() {
                           <div className="ml-auto flex flex-col gap-2">
                             <Label className="text-white text-sm">Affinity Points</Label>
                             <Input
-                              type="number"
-                              value={scarletBondAffinity[bondKey] || 0}
-                              onChange={(e) => setScarletBondAffinity((prev) => ({
-                                ...prev, [bondKey]: Number.parseInt(e.target.value) || 0
-                              }))}
                               className="w-24 bg-gray-600 border-gray-500 text-white text-sm"
                               placeholder="0"
+                              {...nonNegativeIntInputProps(scarletBondAffinity[bondKey] || 0, (n) =>
+                                setScarletBondAffinity((prev) => ({ ...prev, [bondKey]: n }))
+                              )}
                             />
                             <div className="text-xs text-gray-400">Suggestions shown automatically</div>
                           </div>
@@ -645,13 +649,17 @@ export default function ScarletBondTab() {
                                   <Label className={`capitalize text-xs ${getAttributeColor(attr)}`}>{attr} Flat</Label>
                                   <div className="flex items-center gap-1">
                                     <Input
-                                      type="number" min="0" max="205"
-                                      value={(scarletBond[bondKey] as any)?.[`${attr}Level`] || 0}
-                                      onChange={(e) => setScarletBond((prev) => ({
-                                        ...prev, [bondKey]: { ...prev[bondKey], [`${attr}Level`]: Number.parseInt(e.target.value) || 0 }
-                                      }))}
                                       className="w-full bg-gray-600 border-gray-500 text-white text-xs"
                                       placeholder="Level"
+                                      {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Level`] || 0, (n) =>
+                                        setScarletBond((prev) => ({
+                                          ...prev,
+                                          [bondKey]: {
+                                            ...prev[bondKey],
+                                            [`${attr}Level`]: Math.min(205, Math.max(0, n)),
+                                          },
+                                        }))
+                                      )}
                                     />
                                     {flatSuggestion && (
                                       <div className="text-xs text-green-400">+{flatSuggestion.increase} ({flatSuggestion.newLevel})</div>
@@ -662,13 +670,17 @@ export default function ScarletBondTab() {
                                   <Label className={`capitalize text-xs ${getAttributeColor(attr)}`}>{attr} %</Label>
                                   <div className="flex items-center gap-1">
                                     <Input
-                                      type="number" min="0" max="205"
-                                      value={(scarletBond[bondKey] as any)?.[`${attr}Percent`] || 0}
-                                      onChange={(e) => setScarletBond((prev) => ({
-                                        ...prev, [bondKey]: { ...prev[bondKey], [`${attr}Percent`]: Number.parseInt(e.target.value) || 0 }
-                                      }))}
                                       className="w-full bg-gray-600 border-gray-500 text-white text-xs"
                                       placeholder="%"
+                                      {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Percent`] || 0, (n) =>
+                                        setScarletBond((prev) => ({
+                                          ...prev,
+                                          [bondKey]: {
+                                            ...prev[bondKey],
+                                            [`${attr}Percent`]: Math.min(205, Math.max(0, n)),
+                                          },
+                                        }))
+                                      )}
                                     />
                                     {percentSuggestion && (
                                       <div className="text-xs text-green-400">+{percentSuggestion.increase} ({percentSuggestion.newLevel})</div>

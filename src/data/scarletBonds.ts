@@ -293,11 +293,16 @@ function interpolate(sortedEntries: Array<[number, number]>, level: number): num
 }
 
 export function getOffSingle(level: number): number {
-  return offSingleKnown[level] ?? interpolate(Object.entries(offSingleKnown).map((e)=>[+e[0],+e[1]]).sort((a,b)=>a[0]-b[0]), level)
+  const sorted: Array<[number, number]> = Object.entries(offSingleKnown)
+    .map((e): [number, number] => [Number(e[0]), Number(e[1])])
+    .sort((a, b) => a[0] - b[0])
+  return offSingleKnown[level] ?? interpolate(sorted, level)
 }
 
 export function getOffAffinity(level: number): number {
-  const sorted = Object.entries(offAffinityKnown).map((e)=>[+e[0],+e[1]]).sort((a,b)=>a[0]-b[0])
+  const sorted: Array<[number, number]> = Object.entries(offAffinityKnown)
+    .map((e): [number, number] => [Number(e[0]), Number(e[1])])
+    .sort((a, b) => a[0] - b[0])
   const known = offAffinityKnown[level]
   if (known !== undefined) return known
   return interpolate(sorted, level)

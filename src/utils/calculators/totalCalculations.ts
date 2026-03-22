@@ -1,5 +1,15 @@
 // Total DOM calculation functions
-import type { BaseAttributes, BooksState, ConclaveState, WardenStats, ScarletBondLevel, CourtyardState, DomIncreasePerStar, Inventory } from '@/types'
+import type {
+  BaseAttributes,
+  BookCollection,
+  BooksState,
+  ConclaveState,
+  CourtyardState,
+  DomIncreasePerStar,
+  Inventory,
+  ScarletBondLevel,
+  WardenStats,
+} from '@/types'
 import { bookBonuses } from '@/data/books'
 import { wardenGroups } from '@/data/wardens'
 import { scarletBondData, scarletBondLevels } from '@/data/scarletBonds'
@@ -50,7 +60,7 @@ export function calculateTotals(
   const conclaveBonus = calculateTotalConclaveBonus(conclave)
 
   // Add book bonuses with conclave multipliers
-  Object.entries(books).forEach(([category, bookCollection]) => {
+  ;(Object.entries(books) as [keyof BooksState, BookCollection][]).forEach(([category, bookCollection]) => {
     Object.entries(bookCollection).forEach(([bookName, count]) => {
       const categoryBonuses = bookBonuses[category as keyof typeof bookBonuses]
       const bookBonus = categoryBonuses ? categoryBonuses[bookName as keyof typeof categoryBonuses] || 0 : 0

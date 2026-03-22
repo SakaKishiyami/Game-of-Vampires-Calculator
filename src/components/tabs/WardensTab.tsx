@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getDisplayValue, getAttributeColor, getAttributeBg, renderStars } from '@/utils/helpers'
+import { getDisplayValue, getAttributeColor, getAttributeBg, renderStars, nonNegativeIntInputProps } from '@/utils/helpers'
 import { wardenGroups } from '@/data/wardens'
+import type { AttributeBreakdown, UploadedWardenData } from '@/types'
 
 const allWardens = [
   { name: "Thorgrim", group: "circus", attributes: ["Intellect", "Strength"], tier: 5, skins: ["ThorgrimSkin1"] },
@@ -326,7 +327,11 @@ export default function WardensTab() {
                   <Label htmlFor={warden.id} className="text-yellow-400 font-medium cursor-pointer">{warden.name}</Label>
                   <div className={`text-xs ${getAttributeColor(warden.type)}`}>{warden.type}</div>
                 </div>
-                <Checkbox id={warden.id} checked={warden.checked} onCheckedChange={warden.onChange} />
+                <Checkbox
+                  id={warden.id}
+                  checked={warden.checked}
+                  onCheckedChange={(checked) => warden.onChange(checked === true)}
+                />
               </div>
             ))}
           </div>
@@ -364,22 +369,13 @@ export default function WardensTab() {
                     <div>
                       <Label className="text-white">Number of {groupKey} wardens:</Label>
                       <Input
-                        type="number"
-                        min="0"
-                        max={groupKey === "noir" || groupKey === "hunt" ? 4 : 5}
-                        value={getDisplayValue(wardenCounts[groupKey as keyof typeof wardenCounts])}
-                        onChange={(e) => {
-                          const value = e.target.value
-                          if (value === '' || value === '-') return
-                          const numValue = parseInt(value) || 0
-                          setWardenCounts((prev) => ({ ...prev, [groupKey]: numValue }))
-                        }}
-                        onBlur={(e) => {
-                          const value = e.target.value
-                          const numValue = value === '' ? 0 : parseInt(value) || 0
-                          setWardenCounts((prev) => ({ ...prev, [groupKey]: numValue }))
-                        }}
                         className="w-20 mt-1 bg-gray-600 border-gray-500 text-white"
+                        {...nonNegativeIntInputProps(wardenCounts[groupKey as keyof typeof wardenCounts], (n) =>
+                          setWardenCounts((prev) => ({
+                            ...prev,
+                            [groupKey]: Math.min(groupKey === 'noir' || groupKey === 'hunt' ? 4 : 5, Math.max(0, n)),
+                          }))
+                        )}
                       />
                     </div>
                   </CardHeader>
@@ -487,8 +483,8 @@ export default function WardensTab() {
                       <div className="text-sm text-gray-300">
                         Upload files named after your wardens containing their attribute breakdowns:
                         <ul className="mt-2 list-disc list-inside">
-                          <li><strong>Screenshots (PNG/JPG):</strong> "Diana.png", "Scarlet.jpg" - Uses OCR to extract text</li>
-                          <li><strong>Text files:</strong> "Diana.txt", "Scarlet.json" - Parses text directly</li>
+                          <li><strong>Screenshots (PNG/JPG):</strong> &quot;Diana.png&quot;, &quot;Scarlet.jpg&quot; - Uses OCR to extract text</li>
+                          <li><strong>Text files:</strong> &quot;Diana.txt&quot;, &quot;Scarlet.json&quot; - Parses text directly</li>
                         </ul>
                         The parser will automatically extract total attributes and all bonus breakdowns.
                       </div>
@@ -550,8 +546,8 @@ export default function WardensTab() {
                           </CardHeader>
                           <CardContent className="pt-2">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                              {["strength", "allure", "intellect", "spirit"].map((attr) => {
-                                const attrData = data[attr as keyof typeof data]
+                              {(['strength', 'allure', 'intellect', 'spirit'] as const).map((attr) => {
+                                const attrData = data[attr]
                                 if (typeof attrData === 'object' && attrData.total !== undefined) {
                                   const bonusFields = [
                                     { key: 'total', label: 'Total' },
@@ -579,27 +575,64 @@ export default function WardensTab() {
                                               }
                                               onChange={(e) => {
                                                 const value = e.target.value
-                                                if ((key === 'total' || key === 'talentBonus' || key === 'bookBonus' || key === 'scarletBondBonus' || key === 'presenceBonus' || key === 'auraBonus') && (value === '' || value === '-')) return
+                                                if (
+                                                  (key === 'total' || key === 'talentBonus' || key === 'bookBonus' || key === 'scarletBondBonus' || key === 'presenceBonus' || key === 'auraBonus') &&
+                                                  value === ''
+                                                ) {
+                                                  setUploadedWardenData((prev: UploadedWardenData) => {
+                                                    const w = prev[wardenName]
+                                                    if (!w) return prev
+                                                    const breakdown = w[attr]
+                                                    return {
+                                                      ...prev,
+                                                      [wardenName]: {
+                                                        ...w,
+                                                        [attr]: {
+                                                          ...breakdown,
+                                                          [key as keyof AttributeBreakdown]: 0,
+                                                        },
+                                                      },
+                                                    }
+                                                  })
+                                                  return
+                                                }
+                                                if (value === '-') return
                                                 const newValue = parseInt(value) || 0
-                                                setUploadedWardenData(prev => ({
-                                                  ...prev,
-                                                  [wardenName]: {
-                                                    ...prev[wardenName],
-                                                    [attr]: { ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]], [key]: newValue }
+                                                setUploadedWardenData((prev: UploadedWardenData) => {
+                                                  const w = prev[wardenName]
+                                                  if (!w) return prev
+                                                  const breakdown = w[attr]
+                                                  return {
+                                                    ...prev,
+                                                    [wardenName]: {
+                                                      ...w,
+                                                      [attr]: {
+                                                        ...breakdown,
+                                                        [key as keyof AttributeBreakdown]: newValue,
+                                                      },
+                                                    },
                                                   }
-                                                }))
+                                                })
                                               }}
                                               onBlur={(e) => {
                                                 if (key === 'total' || key === 'talentBonus' || key === 'bookBonus' || key === 'scarletBondBonus' || key === 'presenceBonus' || key === 'auraBonus') {
                                                   const value = e.target.value
                                                   const newValue = value === '' ? 0 : parseInt(value) || 0
-                                                  setUploadedWardenData(prev => ({
-                                                    ...prev,
-                                                    [wardenName]: {
-                                                      ...prev[wardenName],
-                                                      [attr]: { ...prev[wardenName][attr as keyof typeof prev[typeof wardenName]], [key]: newValue }
+                                                  setUploadedWardenData((prev: UploadedWardenData) => {
+                                                    const w = prev[wardenName]
+                                                    if (!w) return prev
+                                                    const breakdown = w[attr]
+                                                    return {
+                                                      ...prev,
+                                                      [wardenName]: {
+                                                        ...w,
+                                                        [attr]: {
+                                                          ...breakdown,
+                                                          [key as keyof AttributeBreakdown]: newValue,
+                                                        },
+                                                      },
                                                     }
-                                                  }))
+                                                  })
                                                 }
                                               }}
                                               className="mt-1 bg-gray-600 border-gray-500 text-white"
@@ -659,21 +692,18 @@ export default function WardensTab() {
                                       ))}
                                     </div>
                                     <div className="space-y-1">
-                                      {["strength", "allure", "intellect", "spirit"].map((attr) => (
+                                      {(['strength', 'allure', 'intellect', 'spirit'] as const).map((attr) => (
                                         <div key={attr} className="flex items-center gap-1">
                                           <span className={`text-xs w-12 ${getAttributeColor(attr)}`}>{attr.charAt(0).toUpperCase()}</span>
                                           <Input
-                                            type="number"
                                             placeholder="0"
                                             className="w-16 h-6 text-xs bg-gray-700 border-gray-600 text-white"
-                                            value={wardenStats[warden.name]?.[attr] || ''}
-                                            onChange={(e) => {
-                                              const value = Number.parseInt(e.target.value) || 0
-                                              setWardenStats(prev => ({
+                                            {...nonNegativeIntInputProps(wardenStats[warden.name]?.[attr] || 0, (value) =>
+                                              setWardenStats((prev) => ({
                                                 ...prev,
-                                                [warden.name]: { ...prev[warden.name], [attr]: value }
+                                                [warden.name]: { ...prev[warden.name], [attr]: value },
                                               }))
-                                            }}
+                                            )}
                                           />
                                         </div>
                                       ))}
