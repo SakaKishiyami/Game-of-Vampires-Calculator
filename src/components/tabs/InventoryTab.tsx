@@ -173,7 +173,14 @@ export default function InventoryTab() {
                       <img
                         src={inventoryImages[itemName] || `/InventoryAssets/${getItemCategory(itemName)}/${itemName}.png`}
                         alt={itemName} className="w-20 h-20 object-contain"
-                        onError={(e) => { e.currentTarget.style.display = 'none' }} />
+                        onError={(e) => {
+                          const staticSrc = `/InventoryAssets/${getItemCategory(itemName)}/${itemName}.png`
+                          if (!e.currentTarget.src.endsWith(staticSrc)) {
+                            e.currentTarget.src = staticSrc
+                          } else {
+                            e.currentTarget.style.display = 'none'
+                          }
+                        }} />
                       <div className="text-white font-medium text-sm text-center">{formatItemName(itemName)}</div>
                       <div className="flex items-center space-x-2">
                         <Button size="sm" onClick={() => updateInventoryItem(itemName, Math.max(0, itemData.count - 1))}
