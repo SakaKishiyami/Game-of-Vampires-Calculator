@@ -171,7 +171,7 @@ export default function InventoryTab() {
                   {Object.entries(inventory).map(([itemName, itemData]) => (
                     <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
                       <img
-                        src={inventoryImages[itemName] || `/InventoryAssets/${getItemCategory(itemName)}/${itemName}.PNG`}
+                        src={inventoryImages[itemName] || `/InventoryAssets/${getItemCategory(itemName)}/${itemName}.png`}
                         alt={itemName} className="w-20 h-20 object-contain"
                         onError={(e) => { e.currentTarget.style.display = 'none' }} />
                       <div className="text-white font-medium text-sm text-center">{formatItemName(itemName)}</div>
