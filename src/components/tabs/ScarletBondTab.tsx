@@ -35,7 +35,9 @@ function LoverSummonPickCard({
   imgCandidates,
   checked,
   setChecked,
-  tokenHint,
+  tokenCount,
+  tokenMax,
+  tokenImgSrc,
 }: {
   loverName: string
   wardenName: string
@@ -43,15 +45,17 @@ function LoverSummonPickCard({
   imgCandidates: string[]
   checked: boolean
   setChecked: (v: boolean) => void
-  tokenHint: string
+  tokenCount: number
+  tokenMax: number
+  tokenImgSrc: string | null
 }) {
   const ring = getAttributeRingClass(attrKey)
   const toggle = () => setChecked(!checked)
   const attrBadge =
     attrKey === 'all' ? (
-      <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-200">All attributes</span>
+      <span className="text-xs px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-200 whitespace-nowrap">All attrs</span>
     ) : (
-      <span className={`text-xs px-2 py-0.5 rounded capitalize ${getAttributeBg(attrKey)} ${getAttributeColor(attrKey)}`}>
+      <span className={`text-xs px-1.5 py-0.5 rounded capitalize whitespace-nowrap ${getAttributeBg(attrKey)} ${getAttributeColor(attrKey)}`}>
         {attrKey}
       </span>
     )
@@ -62,40 +66,39 @@ function LoverSummonPickCard({
       tabIndex={0}
       onClick={toggle}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          toggle()
-        }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle() }
       }}
       className={cn(
-        'flex items-stretch rounded-lg overflow-hidden border min-h-[118px] cursor-pointer transition-all select-none text-left w-full',
+        'flex items-stretch rounded-lg overflow-hidden border cursor-pointer transition-all select-none text-left w-full',
         checked
           ? cn('ring-2 ring-offset-2 ring-offset-gray-900 border-transparent', ring, attrKey === 'all' ? 'bg-amber-500/15' : '')
           : 'border-gray-600 bg-gray-800/40 hover:bg-gray-800/70',
         checked && attrKey !== 'all' && getAttributeBg(attrKey)
       )}
     >
-      <div className="w-[100px] sm:w-[112px] flex-shrink-0 bg-gray-900/90 flex items-center justify-center p-2 border-r border-gray-700/80">
+      <div className="w-16 flex-shrink-0 bg-gray-900/90 flex items-center justify-center border-r border-gray-700/80">
         <LoverPortraitThumb
           candidates={imgCandidates}
           label={loverName}
-          imgClassName="w-full h-full min-h-[100px] max-h-[120px] object-cover object-top"
-          emptyClassName="w-full min-h-[100px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-2"
+          imgClassName="w-full h-full object-contain"
+          emptyClassName="w-full h-16 rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
         />
       </div>
-      <div className="flex-1 flex items-stretch p-3 min-w-0 gap-2">
-        <div onClick={(e) => e.stopPropagation()} className="shrink-0 pt-0.5">
-          <Checkbox
-            checked={checked}
-            onCheckedChange={(v) => setChecked(v === true)}
-            className="border-gray-400"
-          />
+      <div className="flex-1 flex flex-col justify-between p-2 min-w-0 gap-1">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+            <Checkbox checked={checked} onCheckedChange={(v) => setChecked(v === true)} className="border-gray-400" />
+          </div>
+          <span className={cn('font-semibold text-sm leading-tight', checked ? 'text-white' : 'text-gray-300')}>{loverName}</span>
+          <span className="text-xs text-gray-400 leading-tight">with {wardenName}</span>
+          {attrBadge}
         </div>
-        <div className="flex flex-col gap-1.5 min-w-0 flex-1 justify-center">
-          <span className={cn('font-semibold text-sm leading-tight', checked ? 'text-white' : 'text-gray-400')}>{loverName}</span>
-          <span className="text-sm text-gray-300 leading-tight">{wardenName}</span>
-          <div className="flex flex-wrap gap-1">{attrBadge}</div>
-          <span className="text-[10px] text-gray-500 leading-snug">{tokenHint}</span>
+        <div className="flex items-center gap-1">
+          {tokenImgSrc && (
+            <img src={tokenImgSrc} alt="token" className="w-4 h-4 object-contain flex-shrink-0"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+          )}
+          <span className="text-xs text-white">Tokens Owned: {tokenCount}/{tokenMax}</span>
         </div>
       </div>
     </div>
@@ -509,7 +512,9 @@ export default function ScarletBondTab() {
                     imgCandidates={getLoverPortraitSrcs('Agneyi').flat()}
                     checked={hasAgneyi}
                     setChecked={setHasAgneyi}
-                    tokenHint={`AgneyiToken in inventory: ${inventory['AgneyiToken']?.count ?? 0}/100`}
+                    tokenCount={inventory['AgneyiToken']?.count ?? 0}
+                    tokenMax={100}
+                    tokenImgSrc="/GoVAssets/AgneyiToken.png"
                   />
                   <LoverSummonPickCard
                     loverName="Hela"
@@ -518,7 +523,9 @@ export default function ScarletBondTab() {
                     imgCandidates={getLoverPortraitSrcs('Hela').flat()}
                     checked={hasHela}
                     setChecked={setHasHela}
-                    tokenHint={`HelaToken in inventory: ${inventory['HelaToken']?.count ?? 0}/100`}
+                    tokenCount={inventory['HelaToken']?.count ?? 0}
+                    tokenMax={100}
+                    tokenImgSrc="/GoVAssets/HelaToken.png"
                   />
                   <LoverSummonPickCard
                     loverName="Dionysus"
@@ -527,7 +534,9 @@ export default function ScarletBondTab() {
                     imgCandidates={getLoverPortraitSrcs('Dionysus').flat()}
                     checked={hasDionysus}
                     setChecked={setHasDionysus}
-                    tokenHint={`DionysusToken in inventory: ${inventory['DionysusToken']?.count ?? 0}/100`}
+                    tokenCount={inventory['DionysusToken']?.count ?? 0}
+                    tokenMax={100}
+                    tokenImgSrc="/GoVAssets/DionysusToken.png"
                   />
                   <LoverSummonPickCard
                     loverName="Culann"
@@ -536,7 +545,9 @@ export default function ScarletBondTab() {
                     imgCandidates={getLoverPortraitSrcs('Culann').flat()}
                     checked={hasCulann}
                     setChecked={setHasCulann}
-                    tokenHint={`CulannToken in inventory: ${inventory['CulannToken']?.count ?? 0}/100`}
+                    tokenCount={inventory['CulannToken']?.count ?? 0}
+                    tokenMax={100}
+                    tokenImgSrc="/GoVAssets/CulannToken.png"
                   />
                 </div>
               </div>
@@ -551,50 +562,66 @@ export default function ScarletBondTab() {
                     imgCandidates={getLoverPortraitSrcs('Maya').flat()}
                     checked={hasMaya}
                     setChecked={setHasMaya}
-                    tokenHint={`MayaToken in inventory: ${inventory['MayaToken']?.count ?? 0}/100`}
+                    tokenCount={inventory['MayaToken']?.count ?? 0}
+                    tokenMax={100}
+                    tokenImgSrc={null}
                   />
                 </div>
               </div>
 
               <div>
                 <div className="text-xs font-semibold text-amber-300 mb-3">Ember / Ash</div>
-                <div className="max-w-3xl">
-                  <div className="flex items-stretch rounded-lg overflow-hidden border border-gray-600 bg-gray-800/40 min-h-[118px]">
-                    {/* Both portraits side by side */}
-                    <div className="w-[100px] sm:w-[120px] flex-shrink-0 bg-gray-900/90 flex border-r border-gray-700/80">
-                      <div className="w-1/2 flex items-center justify-center p-1">
+                <div className="max-w-xs">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => { const next = !(hasEmber || hasAsh); setHasEmber(next); setHasAsh(next) }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const next = !(hasEmber || hasAsh); setHasEmber(next); setHasAsh(next) } }}
+                    className={cn(
+                      'flex items-stretch rounded-lg overflow-hidden border cursor-pointer transition-all select-none text-left',
+                      (hasEmber || hasAsh)
+                        ? 'ring-2 ring-offset-2 ring-offset-gray-900 border-transparent ring-amber-400 bg-amber-500/15'
+                        : 'border-gray-600 bg-gray-800/40 hover:bg-gray-800/70'
+                    )}
+                  >
+                    {/* Both portraits */}
+                    <div className="w-24 flex-shrink-0 bg-gray-900/90 flex border-r border-gray-700/80">
+                      <div className="w-1/2 flex items-center justify-center">
                         <LoverPortraitThumb
                           candidates={getLoverPortraitSrcs('Ember').flat()}
                           label="Ember"
-                          imgClassName="w-full h-full min-h-[90px] max-h-[110px] object-cover object-top"
-                          emptyClassName="w-full min-h-[90px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
+                          imgClassName="w-full h-full object-contain"
+                          emptyClassName="w-full h-12 rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
                         />
                       </div>
-                      <div className="w-1/2 flex items-center justify-center p-1">
+                      <div className="w-1/2 flex items-center justify-center">
                         <LoverPortraitThumb
                           candidates={getLoverPortraitSrcs('Ash').flat()}
                           label="Ash"
-                          imgClassName="w-full h-full min-h-[90px] max-h-[110px] object-cover object-top"
-                          emptyClassName="w-full min-h-[90px] rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
+                          imgClassName="w-full h-full object-contain"
+                          emptyClassName="w-full h-12 rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
                         />
                       </div>
                     </div>
-                    {/* Info + checkboxes */}
-                    <div className="flex-1 flex flex-col justify-center p-3 gap-2">
-                      <span className="font-semibold text-sm text-white">Ember / Ash</span>
-                      <span className="text-sm text-gray-300">with Nyx</span>
-                      <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-200 w-fit">All attributes</span>
-                      <div className="flex gap-4 mt-1">
-                        <label className="flex items-center gap-1.5 cursor-pointer select-none">
-                          <Checkbox checked={hasEmber} onCheckedChange={(v) => setHasEmber(v === true)} className="border-gray-400" />
-                          <span className="text-sm text-gray-300">Ember</span>
-                        </label>
-                        <label className="flex items-center gap-1.5 cursor-pointer select-none">
-                          <Checkbox checked={hasAsh} onCheckedChange={(v) => setHasAsh(v === true)} className="border-gray-400" />
-                          <span className="text-sm text-gray-300">Ash</span>
-                        </label>
+                    {/* Info */}
+                    <div className="flex-1 flex flex-col justify-between p-2 gap-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={hasEmber || hasAsh}
+                            onCheckedChange={(v) => { setHasEmber(v === true); setHasAsh(v === true) }}
+                            className="border-gray-400"
+                          />
+                        </div>
+                        <span className="font-semibold text-sm text-white">Ember / Ash</span>
+                        <span className="text-xs text-gray-400">with Nyx</span>
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-200 whitespace-nowrap">All attrs</span>
                       </div>
-                      <span className="text-[10px] text-gray-500">{`Heart of War tokens: ${heartOfWarCount(inventory)}/400 (counts toward both)`}</span>
+                      <div className="flex items-center gap-1">
+                        <img src="/GoVAssets/HeartOfWarToken.png" alt="token" className="w-4 h-4 object-contain flex-shrink-0"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                        <span className="text-xs text-white">Tokens Owned: {heartOfWarCount(inventory)}/400</span>
+                      </div>
                     </div>
                   </div>
                 </div>

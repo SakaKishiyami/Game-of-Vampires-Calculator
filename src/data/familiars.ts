@@ -207,7 +207,7 @@ export const familiarDefinitions: FamiliarDefinition[] = [
 
   // Barrowhaunt
   { id: 'gravescourge', name: 'Gravescourge', nestId: 'barrowhaunt', folder: 'Base', images: basePaths('Gravescourge') },
-  { id: 'frankenpug', name: 'Frankenpug', nestId: 'barrowhaunt', folder: 'Base', images: basePaths('Frankenpug') },
+  { id: 'frankenpug', name: 'Frankenpug', nestId: 'barrowhaunt', folder: 'Base', images: { ...basePaths('Frankenpug'), adult: '/FamiliarAssets/Base/Frankenpug/FrakenpugA.png', adultMutation: '/FamiliarAssets/Base/Frankenpug/FrakenpugAM.png' } },
   { id: 'faeree', name: 'Faeree', nestId: 'barrowhaunt', folder: 'Base', images: basePaths('Faeree') },
 
   // Sylvanshore

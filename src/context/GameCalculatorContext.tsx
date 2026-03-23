@@ -111,6 +111,8 @@ interface GameCalculatorContextType {
   // Familiars
   familiars: FamiliarsState
   setFamiliars: React.Dispatch<React.SetStateAction<FamiliarsState>>
+  nestProgress: Record<string, string>
+  setNestProgress: React.Dispatch<React.SetStateAction<Record<string, string>>>
   
   // Inventory
   inventory: Inventory
@@ -278,6 +280,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
 
   // Inventory
   const [familiars, setFamiliars] = useState<FamiliarsState>(createInitialFamiliarsState())
+  const [nestProgress, setNestProgress] = useState<Record<string, string>>({})
   const [inventory, setInventory] = useState<Inventory>({})
   const [inventoryImages, setInventoryImages] = useState<InventoryImages>({})
 
@@ -471,6 +474,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     if (data.talentScrolls) setTalentScrolls(data.talentScrolls)
     if (data.talentScripts) setTalentScripts(data.talentScripts)
     if ((data as any).familiars) setFamiliars((data as any).familiars)
+    if ((data as any).nestProgress) setNestProgress((data as any).nestProgress)
   }, [])
 
   // Helper function to sync inventory items with other systems
@@ -1133,6 +1137,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     setSummonableCharacter,
     familiars,
     setFamiliars,
+    nestProgress,
+    setNestProgress,
     inventory,
     setInventory,
     inventoryImages,

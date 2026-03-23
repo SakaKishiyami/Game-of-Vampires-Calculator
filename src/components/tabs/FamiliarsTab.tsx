@@ -24,6 +24,7 @@ import {
   type FamiliarAttribute,
   type FamiliarOwnedEntry,
   type FamiliarKnack,
+  type FamiliarsState,
 } from '@/data/familiars'
 
 import { useGameCalculator } from '@/context/GameCalculatorContext'
@@ -364,7 +365,7 @@ function NestLevelsAndBonuses({ nest, familiars }: { nest: NestDefinition; famil
 }
 
 export default function FamiliarsTab() {
-  const { familiars, setFamiliars } = useGameCalculator()
+  const { familiars, setFamiliars, nestProgress, setNestProgress } = useGameCalculator()
   const [activeTab, setActiveTab] = useState<'nests' | 'tracker' | 'bonds'>('tracker')
 
   const releasedFamiliars = useMemo(
@@ -529,30 +530,35 @@ export default function FamiliarsTab() {
     scrollToAddForm()
   }
 
-  const stepNestProgress = (familiarId: string, direction: -1 | 1) => {
-    const list = familiars[familiarId] ?? []
-    const best = list[0]
-    const idx = best ? GRADE_ORDER.indexOf(best.grade) : -1
-    const nextIdx = Math.max(-1, Math.min(GRADE_ORDER.length - 1, idx + direction))
+  const nestFamiliarsState: FamiliarsState = useMemo(() => {
+    const result: FamiliarsState = {}
+    for (const [fid, grade] of Object.entries(nestProgress)) {
+      if (grade) {
+        result[fid] = [{
+          id: `nest-${fid}`,
+          grade: grade as FamiliarGrade,
+          level: FAMILIAR_GRADE_MAX_LEVEL[grade as FamiliarGrade],
+          isAdult: false,
+          isMutated: false,
+          attributes: { ...DEFAULT_ATTRIBUTES },
+          mainAttributes: ['Loyalty', 'Ferocity'],
+          bondId: null,
+          knacks: ['Other'],
+        }]
+      }
+    }
+    return result
+  }, [nestProgress])
 
+  const stepNestProgress = (familiarId: string, direction: -1 | 1) => {
+    const currentGrade = (nestProgress[familiarId] ?? null) as FamiliarGrade | null
+    const idx = currentGrade ? GRADE_ORDER.indexOf(currentGrade) : -1
+    const nextIdx = Math.max(-1, Math.min(GRADE_ORDER.length - 1, idx + direction))
     if (nextIdx === -1) {
-      setFamiliars((prev) => ({ ...prev, [familiarId]: [] }))
-      return
+      setNestProgress((prev) => { const next = { ...prev }; delete next[familiarId]; return next })
+    } else {
+      setNestProgress((prev) => ({ ...prev, [familiarId]: GRADE_ORDER[nextIdx] }))
     }
-    const nextGrade = GRADE_ORDER[nextIdx]
-    const nextLevel = FAMILIAR_GRADE_MAX_LEVEL[nextGrade]
-    const next: FamiliarOwnedEntry = {
-      id: best?.id ?? `${familiarId}-nest-${Date.now()}`,
-      grade: nextGrade,
-      level: nextLevel,
-      isAdult: true,
-      isMutated: best?.isMutated ?? false,
-      attributes: best?.attributes ?? { ...DEFAULT_ATTRIBUTES },
-      mainAttributes: best?.mainAttributes ?? ['Loyalty', 'Ferocity'],
-      bondId: best?.bondId ?? null,
-      knacks: (best?.knacks ?? ['Other']).slice(0, nextGrade === 'S' || nextGrade === 'SS' ? 2 : 1),
-    }
-    setFamiliars((prev) => ({ ...prev, [familiarId]: [next, ...list.filter((x: FamiliarOwnedEntry) => x.id !== next.id)] }))
   }
 
   const totalCopies = useMemo(
@@ -623,7 +629,7 @@ export default function FamiliarsTab() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {nests.map((nest) => {
                 const isExclusive = nest.id === 'mythborn'
-                const nestLv = getNestLevel(nest, familiars)
+                const nestLv = getNestLevel(nest, nestFamiliarsState)
                 const maxLv = nest.levels.length
                 return (
                   <Card
@@ -660,7 +666,8 @@ export default function FamiliarsTab() {
                         {nest.familiarIds.map((fid) => {
                           const fam = familiarDefinitions.find((x) => x.id === fid)
                           if (!fam) return null
-                          const best = (familiars[fid] ?? [])[0] ?? null
+                          const nestGrade = (nestProgress[fid] ?? null) as FamiliarGrade | null
+                          const best = nestGrade ? { id: `nest-${fid}`, grade: nestGrade, level: FAMILIAR_GRADE_MAX_LEVEL[nestGrade], isAdult: false, isMutated: false, attributes: { ...DEFAULT_ATTRIBUTES }, mainAttributes: ['Loyalty', 'Ferocity'] as [FamiliarAttribute, FamiliarAttribute], bondId: null, knacks: [] as FamiliarKnack[] } : null
                           return (
                             <div
                               key={fid}
@@ -690,7 +697,7 @@ export default function FamiliarsTab() {
                           )
                         })}
                       </div>
-                      <NestLevelsAndBonuses nest={nest} familiars={familiars} />
+                      <NestLevelsAndBonuses nest={nest} familiars={nestFamiliarsState} />
                     </CardContent>
                   </Card>
                 )
@@ -773,7 +780,7 @@ export default function FamiliarsTab() {
                     {filteredRoster.map(({ familiar: f, entry }) => (
                       <div
                         key={`${f.id}-${entry.id}`}
-                        className="rounded-xl border border-gray-700/60 bg-gray-950/30 p-3 flex flex-col items-center gap-2"
+                        className="rounded-xl border border-gray-700/60 bg-gray-950/30 py-3 px-1 flex flex-col items-center gap-2"
                       >
                         <TrackerPortrait familiar={f} state={entry} />
                         <div className="text-sm font-medium text-gray-100 text-center leading-tight px-1">{f.name}</div>
