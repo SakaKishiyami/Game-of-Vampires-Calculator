@@ -674,12 +674,12 @@ export default function ScarletBondTab() {
               const loverSlots = getLoverSkinSlots(bond.lover)
               return (
                 <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
-                  <div className="flex h-[220px]">
+                  <div className="flex h-[260px]">
                     {/* Lover Images + Skin Switchers - Left Side */}
                     <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50">
                       <div className="flex flex-1 min-h-0">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className="flex-shrink-0 flex flex-col min-w-[70px] max-w-[150px]">
+                          <div key={slot.baseName} className="flex-shrink-0 flex flex-col min-w-[70px] max-w-[150px] p-1">
                             <div className="flex-1 min-h-0">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
@@ -697,109 +697,100 @@ export default function ScarletBondTab() {
                                 />
                               )}
                             </div>
-                            {slot.skins.length > 0 && (
-                              <div className="px-1 pb-1">
-                                {loverSlots.length > 1 && <div className="text-[9px] text-gray-400 text-center mb-0.5">{slot.displayName}</div>}
-                                <div className="flex gap-0.5">
-                                  {(['base', ...slot.skins] as string[]).map((opt) => {
-                                    const active = loverActiveSkins[slot.baseName] ?? 'base'
-                                    const label = opt === 'base' ? 'Base' : opt.replace(/^.*Skin/, 'S')
-                                    return (
-                                      <label key={opt} className={`flex-1 text-center cursor-pointer text-[9px] py-0.5 rounded select-none ${active === opt ? 'bg-blue-600/60 text-white' : 'bg-gray-700/60 text-gray-400 hover:bg-gray-600/60'}`}>
-                                        <input type="radio" className="sr-only" name={`ls-${slot.baseName}`} value={opt} checked={active === opt} onChange={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: opt }))} />
-                                        {label}
-                                      </label>
-                                    )
-                                  })}
-                                </div>
+                            <div className="pb-1">
+                              {loverSlots.length > 1 && <div className="text-[9px] text-gray-400 text-center mb-0.5">{slot.displayName}</div>}
+                              <div className="flex gap-0.5">
+                                {(['base', ...slot.skins] as string[]).map((opt) => {
+                                  const active = loverActiveSkins[slot.baseName] ?? 'base'
+                                  const label = opt === 'base' ? 'Base' : opt.replace(/^.*Skin/, 'S')
+                                  return (
+                                    <label key={opt} className={`flex-1 text-center cursor-pointer text-[9px] py-0.5 rounded select-none ${active === opt ? 'bg-blue-600/60 text-white' : 'bg-gray-700/60 text-gray-400 hover:bg-gray-600/60'}`}>
+                                      <input type="radio" className="sr-only" name={`ls-${slot.baseName}`} value={opt} checked={active === opt} onChange={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: opt }))} />
+                                      {label}
+                                    </label>
+                                  )
+                                })}
                               </div>
-                            )}
+                            </div>
                           </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Content - Right Side */}
-                    <div className="flex-1 min-w-0 overflow-y-auto">
-                      <CardHeader className="pb-0 pt-2">
-                        <CardTitle className="flex items-center gap-1 flex-wrap text-xs">
-                          <div className="flex items-center gap-1">
-                            <div className="flex flex-col gap-0">
-                              <span className="text-white text-xs font-bold">{bond.lover}</span>
-                              <div className="flex items-center gap-1">
-                                <span className="text-gray-300 text-xs">with</span>
-                                <span className="text-white font-semibold text-xs">{bond.warden}</span>
-                                <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
-                                  <img src={getWardenImageSrc(bond.warden)} alt={bond.warden}
-                                    className="w-full h-full object-contain"
-                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                                </div>
+                    <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
+                      {/* Row 1: Tags + Affinity */}
+                      <div className="flex items-center gap-1 flex-wrap px-2 pt-1.5 pb-1 border-b border-gray-700/40">
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                          bond.type === 'All' ? 'bg-yellow-500/20 text-yellow-400'
+                          : bond.type === 'Dual' ? 'bg-purple-500/20 text-purple-400'
+                          : 'bg-blue-500/20 text-blue-400'
+                        }`}>{bond.type}</span>
+                        {wardenData && wardenData.map((attr) => {
+                          const isMain = wardenData.some((a) => a.toLowerCase() === attr.toLowerCase())
+                          return (
+                            <span key={attr} className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ring-1 ${getAttributeBg(attr)} ${getAttributeColor(attr)} ring-current`}>{attr}</span>
+                          )
+                        })}
+                        <div className="ml-auto flex items-center gap-1">
+                          <span className="text-[10px] text-gray-400">Aff</span>
+                          <Input
+                            className="w-16 h-6 text-xs py-0 bg-gray-600 border-gray-500 text-white"
+                            placeholder="0"
+                            {...nonNegativeIntInputProps(scarletBondAffinity[bondKey] || 0, (n) =>
+                              setScarletBondAffinity((prev) => ({ ...prev, [bondKey]: n }))
+                            )}
+                          />
+                        </div>
+                      </div>
+                      {/* Row 2: Names + Warden pic */}
+                      <div className="flex items-center gap-1.5 px-2 pt-1 pb-0.5">
+                        <span className="text-base font-bold text-white leading-none">{bond.lover}</span>
+                        <span className="text-[10px] text-gray-500">with</span>
+                        <span className="text-sm font-semibold text-gray-300 leading-none">{bond.warden}</span>
+                        <div className="w-14 h-14 flex-shrink-0 ml-auto">
+                          <img src={getWardenImageSrc(bond.warden)} alt={bond.warden}
+                            className="w-full h-full object-contain"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                        </div>
+                      </div>
+                      {/* Row 3: Skin ownership cards (compact, only if any skins exist) */}
+                      {loverSlots.some((s) => s.skins.length > 0) && (
+                        <div className="flex gap-2 px-2 pb-1 flex-wrap">
+                          {loverSlots.filter((s) => s.skins.length > 0).map((slot) => (
+                            <div key={slot.baseName} className="flex flex-col gap-0.5">
+                              {loverSlots.filter((s) => s.skins.length > 0).length > 1 && (
+                                <div className="text-[9px] text-gray-400">{slot.displayName}</div>
+                              )}
+                              <div className="flex gap-1">
+                                {slot.skins.map((skinKey) => (
+                                  <div key={skinKey} className="flex flex-col items-center gap-0.5">
+                                    <img src={`/Gov/SkinCards/LoverSkins/${skinKey}.png`} className="w-8 h-8 object-contain"
+                                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                                    <div className="flex items-center gap-0.5">
+                                      <Checkbox
+                                        id={`ls-own-${slot.baseName}-${skinKey}`}
+                                        checked={loverOwnedSkins[slot.baseName]?.[skinKey] || false}
+                                        onCheckedChange={() => setLoverOwnedSkins((prev) => ({
+                                          ...prev,
+                                          [slot.baseName]: { ...prev[slot.baseName], [skinKey]: !prev[slot.baseName]?.[skinKey] },
+                                        }))}
+                                        className="border-gray-400 w-3 h-3"
+                                      />
+                                      <Label htmlFor={`ls-own-${slot.baseName}-${skinKey}`} className="text-[9px] text-gray-300 cursor-pointer">
+                                        {skinKey.replace(/^.*Skin/, 'S')}
+                                      </Label>
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
                             </div>
-                          </div>
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            bond.type === "All" ? "bg-yellow-500/20 text-yellow-400"
-                            : bond.type === "Dual" ? "bg-purple-500/20 text-purple-400"
-                            : "bg-blue-500/20 text-blue-400"
-                          }`}>{bond.type}</span>
-                          {wardenData && (
-                            <div className="flex gap-1">
-                              {wardenData.map((attr) => (
-                                <span key={attr} className={`text-xs px-2 py-1 rounded ${getAttributeBg(attr)} ${getAttributeColor(attr)}`}>{attr}</span>
-                              ))}
-                            </div>
-                          )}
-                          {loverSlots.some((s) => s.skins.length > 0) && (
-                            <div className="flex gap-3 items-start">
-                              {loverSlots.filter((s) => s.skins.length > 0).map((slot) => (
-                                <div key={slot.baseName} className="flex flex-col gap-0.5">
-                                  {loverSlots.filter((s) => s.skins.length > 0).length > 1 && (
-                                    <div className="text-[9px] text-gray-400">{slot.displayName} Skins</div>
-                                  )}
-                                  <div className="flex gap-1">
-                                    {slot.skins.map((skinKey) => (
-                                      <div key={skinKey} className="flex flex-col items-center gap-0.5">
-                                        <img
-                                          src={`/Gov/SkinCards/LoverSkins/${skinKey}.png`}
-                                          className="w-10 h-10 object-contain"
-                                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                                        />
-                                        <div className="flex items-center gap-0.5">
-                                          <Checkbox
-                                            id={`ls-own-${slot.baseName}-${skinKey}`}
-                                            checked={loverOwnedSkins[slot.baseName]?.[skinKey] || false}
-                                            onCheckedChange={() => setLoverOwnedSkins((prev) => ({
-                                              ...prev,
-                                              [slot.baseName]: { ...prev[slot.baseName], [skinKey]: !prev[slot.baseName]?.[skinKey] },
-                                            }))}
-                                            className="border-gray-400"
-                                          />
-                                          <Label htmlFor={`ls-own-${slot.baseName}-${skinKey}`} className="text-[9px] text-gray-300 cursor-pointer">
-                                            {skinKey.replace(/^.*Skin/, 'S')}
-                                          </Label>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          <div className="ml-auto flex flex-col gap-2">
-                            <Label className="text-white text-sm">Affinity Points</Label>
-                            <Input
-                              className="w-24 bg-gray-600 border-gray-500 text-white text-sm"
-                              placeholder="0"
-                              {...nonNegativeIntInputProps(scarletBondAffinity[bondKey] || 0, (n) =>
-                                setScarletBondAffinity((prev) => ({ ...prev, [bondKey]: n }))
-                              )}
-                            />
-                            <div className="text-xs text-gray-400">Suggestions shown automatically</div>
-                          </div>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0 pb-2">
-                        <div className="grid grid-cols-8 gap-2">
+                          ))}
+                        </div>
+                      )}
+                      {/* Row 4: Attribute inputs (4-col compact) */}
+                      <div className="flex-1 px-2 pb-1.5 min-h-0 overflow-hidden">
+                        <div className="grid grid-cols-4 gap-1 h-full">
                           {["strength", "allure", "intellect", "spirit"].map((attr) => {
                             const isMainStat = wardenData?.some((a) => a.toLowerCase() === attr || a === "Balance")
                             const suggestedUpgradesResult = calculateSuggestedUpgrades(bondKey, scarletBondAffinity[bondKey] || 0)
@@ -807,63 +798,35 @@ export default function ScarletBondTab() {
                             const percentSuggestion = isMainStat ? suggestedUpgradesResult[`${attr}Percent`] : null
                             const contribution = calculateScarletBondContribution(bondKey, attr)
                             return (
-                              <div key={attr} className="col-span-2">
-                                <div className="text-center mb-1">
-                                  <div className={`text-sm font-bold ${getAttributeColor(attr)}`}>{contribution.totalBonus}</div>
-                                  <div className="text-xs text-gray-400 capitalize">{attr}</div>
+                              <div key={attr} className={`flex flex-col gap-0.5 rounded p-1 ${isMainStat ? getAttributeBg(attr) + ' ring-1 ring-current/30' : 'bg-gray-800/30'}`}>
+                                <div className="text-center">
+                                  <div className={`text-xs font-bold leading-none ${isMainStat ? getAttributeColor(attr) : 'text-gray-500'}`}>{contribution.totalBonus}</div>
+                                  <div className={`text-[9px] capitalize leading-none mt-0.5 ${isMainStat ? getAttributeColor(attr) : 'text-gray-600'}`}>{attr}</div>
                                 </div>
-                                <div>
-                                  <Label className={`capitalize text-xs ${getAttributeColor(attr)}`}>{attr} Flat</Label>
-                                  <div className="flex items-center gap-1">
-                                    <Input
-                                      className="w-full bg-gray-600 border-gray-500 text-white text-xs"
-                                      placeholder="Level"
-                                      {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Level`] || 0, (n) =>
-                                        setScarletBond((prev) => ({
-                                          ...prev,
-                                          [bondKey]: {
-                                            ...prev[bondKey],
-                                            [`${attr}Level`]: Math.min(205, Math.max(0, n)),
-                                          },
-                                        }))
-                                      )}
-                                    />
-                                    {flatSuggestion && (
-                                      <div className="text-xs text-green-400">+{flatSuggestion.increase} ({flatSuggestion.newLevel})</div>
-                                    )}
-                                  </div>
-                                </div>
-                                <div>
-                                  <Label className={`capitalize text-xs ${getAttributeColor(attr)}`}>{attr} %</Label>
-                                  <div className="flex items-center gap-1">
-                                    <Input
-                                      className="w-full bg-gray-600 border-gray-500 text-white text-xs"
-                                      placeholder="%"
-                                      {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Percent`] || 0, (n) =>
-                                        setScarletBond((prev) => ({
-                                          ...prev,
-                                          [bondKey]: {
-                                            ...prev[bondKey],
-                                            [`${attr}Percent`]: Math.min(205, Math.max(0, n)),
-                                          },
-                                        }))
-                                      )}
-                                    />
-                                    {percentSuggestion && (
-                                      <div className="text-xs text-green-400">+{percentSuggestion.increase} ({percentSuggestion.newLevel})</div>
-                                    )}
-                                  </div>
-                                </div>
+                                <Input
+                                  className="h-5 text-[10px] px-1 py-0 bg-gray-600 border-gray-500 text-white"
+                                  placeholder="Flat"
+                                  {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Level`] || 0, (n) =>
+                                    setScarletBond((prev) => ({ ...prev, [bondKey]: { ...prev[bondKey], [`${attr}Level`]: Math.min(205, Math.max(0, n)) } }))
+                                  )}
+                                />
+                                {flatSuggestion && <div className="text-[9px] text-green-400 leading-none">+{flatSuggestion.increase}</div>}
+                                <Input
+                                  className="h-5 text-[10px] px-1 py-0 bg-gray-600 border-gray-500 text-white"
+                                  placeholder="%"
+                                  {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Percent`] || 0, (n) =>
+                                    setScarletBond((prev) => ({ ...prev, [bondKey]: { ...prev[bondKey], [`${attr}Percent`]: Math.min(205, Math.max(0, n)) } }))
+                                  )}
+                                />
+                                {percentSuggestion && <div className="text-[9px] text-green-400 leading-none">+{percentSuggestion.increase}</div>}
                                 {contribution.loverMultiplier > 0 && (
-                                  <div className="text-center mt-1">
-                                    <div className="text-xs text-orange-400">+{contribution.loverMultiplier}% lover bonus</div>
-                                  </div>
+                                  <div className="text-[9px] text-orange-400 leading-none text-center">+{contribution.loverMultiplier}%</div>
                                 )}
                               </div>
                             )
                           })}
                         </div>
-                      </CardContent>
+                      </div>
                     </div>
                   </div>
                 </Card>
