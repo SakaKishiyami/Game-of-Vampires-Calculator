@@ -679,20 +679,20 @@ export default function ScarletBondTab() {
                     <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50">
                       <div className="flex flex-1 min-h-0 gap-2 px-1">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className="flex-shrink-0 flex flex-col min-w-[70px] max-w-[150px] pt-1">
-                            <div className="flex-1 min-h-0">
+                          <div key={slot.baseName} className="flex flex-col w-[90px] pt-1">
+                            <div className="flex-1 min-h-0 overflow-hidden">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
-                                  className="h-full w-auto object-contain max-w-none"
+                                  className="h-full w-full object-contain"
                                   onError={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: 'base' }))}
                                 />
                               ) : (
                                 <LoverPortraitThumb
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
-                                  imgClassName="h-full w-auto object-contain max-w-none"
+                                  imgClassName="h-full w-full object-contain"
                                   emptyClassName="h-full w-[70px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
@@ -720,72 +720,65 @@ export default function ScarletBondTab() {
                     {/* Content - Right Side: 4 horizontal columns */}
                     <div className="flex-1 min-w-0 flex flex-row overflow-hidden">
 
-                      {/* Col 1: Name + Warden name + Tags + Warden image + Skins */}
-                      <div className="flex-1 min-w-0 flex flex-row px-2 pt-2 pb-1.5 gap-1">
-                        {/* Left: names + tags + skins */}
-                        <div className="flex-1 min-w-0 flex flex-col gap-1">
-                          {/* Names row */}
-                          <div className="flex flex-col gap-0">
-                            <span className="text-lg font-bold text-white leading-tight">{bond.lover}</span>
-                            <span className="text-xs text-gray-400 leading-tight">with {bond.warden}</span>
-                          </div>
-                          {/* Tags row */}
-                          <div className="flex gap-1 flex-wrap items-center">
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                              bond.type === 'All' ? 'bg-yellow-500/20 text-yellow-400'
-                              : bond.type === 'Dual' ? 'bg-purple-500/20 text-purple-400'
-                              : 'bg-blue-500/20 text-blue-400'
-                            }`}>{bond.type}</span>
-                            {wardenData && wardenData.map((attr) => (
-                              <span key={attr} className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ring-1 ${getAttributeBg(attr)} ${getAttributeColor(attr)} ring-current`}>{attr}</span>
+                      {/* Col 1: Name+Tags, warden name, warden image, skins */}
+                      <div className="flex-shrink-0 flex flex-col px-2 pt-2 pb-1.5 gap-1 min-w-[150px] max-w-[210px]">
+                        {/* Name + Tags on same line */}
+                        <div className="flex items-center gap-1 flex-wrap">
+                          <span className="text-lg font-bold text-white leading-none">{bond.lover}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                            bond.type === 'All' ? 'bg-yellow-500/20 text-yellow-400'
+                            : bond.type === 'Dual' ? 'bg-purple-500/20 text-purple-400'
+                            : 'bg-blue-500/20 text-blue-400'
+                          }`}>{bond.type}</span>
+                          {wardenData && wardenData.map((attr) => (
+                            <span key={attr} className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ring-1 ${getAttributeBg(attr)} ${getAttributeColor(attr)} ring-current`}>{attr}</span>
+                          ))}
+                        </div>
+                        {/* Warden name */}
+                        <span className="text-xs text-gray-400 leading-none">with {bond.warden}</span>
+                        {/* Warden image — between names and skins */}
+                        <img src={getWardenImageSrc(bond.warden)} alt={bond.warden}
+                          className="h-14 w-auto object-contain"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                        {/* Skin ownership cards */}
+                        {loverSlots.some((s) => s.skins.length > 0) && (
+                          <div className="flex gap-2 flex-wrap">
+                            {loverSlots.filter((s) => s.skins.length > 0).map((slot) => (
+                              <div key={slot.baseName} className="flex flex-col gap-0.5">
+                                {loverSlots.filter((s) => s.skins.length > 0).length > 1 && (
+                                  <div className="text-[9px] text-gray-400">{slot.displayName}</div>
+                                )}
+                                <div className="flex gap-1.5">
+                                  {slot.skins.map((skinKey) => (
+                                    <div key={skinKey} className="flex flex-col items-center gap-0.5">
+                                      <img src={`/Gov/SkinCards/LoverSkins/${skinKey}.png`} className="w-12 h-12 object-contain"
+                                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                                      <div className="flex items-center gap-0.5">
+                                        <Checkbox
+                                          id={`ls-own-${slot.baseName}-${skinKey}`}
+                                          checked={loverOwnedSkins[slot.baseName]?.[skinKey] || false}
+                                          onCheckedChange={() => setLoverOwnedSkins((prev) => ({
+                                            ...prev,
+                                            [slot.baseName]: { ...prev[slot.baseName], [skinKey]: !prev[slot.baseName]?.[skinKey] },
+                                          }))}
+                                          className="border-gray-400 w-3 h-3"
+                                        />
+                                        <Label htmlFor={`ls-own-${slot.baseName}-${skinKey}`} className="text-[9px] text-gray-300 cursor-pointer">
+                                          {skinKey.replace(/^.*Skin/, 'S')}
+                                        </Label>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             ))}
                           </div>
-                          {/* Skin ownership cards */}
-                          {loverSlots.some((s) => s.skins.length > 0) && (
-                            <div className="flex gap-2 flex-wrap mt-0.5">
-                              {loverSlots.filter((s) => s.skins.length > 0).map((slot) => (
-                                <div key={slot.baseName} className="flex flex-col gap-0.5">
-                                  {loverSlots.filter((s) => s.skins.length > 0).length > 1 && (
-                                    <div className="text-[9px] text-gray-400">{slot.displayName}</div>
-                                  )}
-                                  <div className="flex gap-1.5">
-                                    {slot.skins.map((skinKey) => (
-                                      <div key={skinKey} className="flex flex-col items-center gap-0.5">
-                                        <img src={`/Gov/SkinCards/LoverSkins/${skinKey}.png`} className="w-12 h-12 object-contain"
-                                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                                        <div className="flex items-center gap-0.5">
-                                          <Checkbox
-                                            id={`ls-own-${slot.baseName}-${skinKey}`}
-                                            checked={loverOwnedSkins[slot.baseName]?.[skinKey] || false}
-                                            onCheckedChange={() => setLoverOwnedSkins((prev) => ({
-                                              ...prev,
-                                              [slot.baseName]: { ...prev[slot.baseName], [skinKey]: !prev[slot.baseName]?.[skinKey] },
-                                            }))}
-                                            className="border-gray-400 w-3 h-3"
-                                          />
-                                          <Label htmlFor={`ls-own-${slot.baseName}-${skinKey}`} className="text-[9px] text-gray-300 cursor-pointer">
-                                            {skinKey.replace(/^.*Skin/, 'S')}
-                                          </Label>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        {/* Right: Warden image */}
-                        <div className="flex-shrink-0 w-16">
-                          <img src={getWardenImageSrc(bond.warden)} alt={bond.warden}
-                            className="w-full h-auto object-contain"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                        </div>
+                        )}
                       </div>
 
-                      {/* Col 2: Attribute inputs (4-col grid) */}
-                      <div className="flex-1 min-w-0 px-2 pt-2 pb-1.5 border-l border-gray-700/30">
-                        <div className="grid grid-cols-4 gap-1 h-full">
+                      {/* Col 2: Attribute inputs (4-col grid), top aligned with warden name line */}
+                      <div className="flex-1 min-w-0 px-2 pt-[30px] pb-1.5 border-l border-gray-700/30">
+                        <div className="grid grid-cols-4 gap-1.5">
                           {["strength", "allure", "intellect", "spirit"].map((attr) => {
                             const isMainStat = wardenData?.some((a) => a.toLowerCase() === attr || a === "Balance")
                             const suggestedUpgradesResult = calculateSuggestedUpgrades(bondKey, scarletBondAffinity[bondKey] || 0)
@@ -793,18 +786,18 @@ export default function ScarletBondTab() {
                             const percentSuggestion = isMainStat ? suggestedUpgradesResult[`${attr}Percent`] : null
                             const contribution = calculateScarletBondContribution(bondKey, attr)
                             return (
-                              <div key={attr} className={`flex flex-col gap-0.5 rounded p-1 ${isMainStat ? getAttributeBg(attr) + ' ring-1 ring-current/30' : 'bg-gray-800/30'}`}>
+                              <div key={attr} className={`flex flex-col gap-0.5 rounded p-1.5 ${isMainStat ? getAttributeBg(attr) + ' ring-1 ring-current/30' : 'bg-gray-800/30'}`}>
                                 <div className="text-center">
-                                  <div className={`text-xs font-bold leading-none ${isMainStat ? getAttributeColor(attr) : 'text-gray-500'}`}>{contribution.totalBonus}</div>
-                                  <div className={`text-[9px] capitalize leading-none mt-0.5 ${isMainStat ? getAttributeColor(attr) : 'text-gray-600'}`}>{attr}</div>
+                                  <div className={`text-sm font-bold leading-none ${isMainStat ? getAttributeColor(attr) : 'text-gray-500'}`}>{contribution.totalBonus}</div>
+                                  <div className={`text-[10px] capitalize leading-none mt-0.5 ${isMainStat ? getAttributeColor(attr) : 'text-gray-600'}`}>{attr}</div>
                                 </div>
-                                <Input className="h-5 text-[10px] px-1 py-0 bg-gray-600 border-gray-500 text-white" placeholder="Flat"
+                                <Input className="h-6 text-xs px-1 py-0 bg-gray-600 border-gray-500 text-white w-full" placeholder="Flat"
                                   {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Level`] || 0, (n) =>
                                     setScarletBond((prev) => ({ ...prev, [bondKey]: { ...prev[bondKey], [`${attr}Level`]: Math.min(205, Math.max(0, n)) } }))
                                   )}
                                 />
                                 {flatSuggestion && <div className="text-[9px] text-green-400 leading-none">+{flatSuggestion.increase}</div>}
-                                <Input className="h-5 text-[10px] px-1 py-0 bg-gray-600 border-gray-500 text-white" placeholder="%"
+                                <Input className="h-6 text-xs px-1 py-0 bg-gray-600 border-gray-500 text-white w-full" placeholder="%"
                                   {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Percent`] || 0, (n) =>
                                     setScarletBond((prev) => ({ ...prev, [bondKey]: { ...prev[bondKey], [`${attr}Percent`]: Math.min(205, Math.max(0, n)) } }))
                                   )}

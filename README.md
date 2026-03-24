@@ -121,7 +121,6 @@ Same-name female/male lovers use files like `RavenFemale.png` / `RavenMale.png` 
 ## Roadmap / TODO
 
 - **Admin / maintainer tools**: role-gated UI to add lovers (PNG + metadata), wardens, and inventory items without editing code.
-- **Google Drive** export/import: wire OAuth + file pickers (steps TBD when you’re ready).
 - **Discord / Vercel auth**: re-verify Supabase OAuth redirect URLs and provider settings after deployments.
 
 ## Contributing
