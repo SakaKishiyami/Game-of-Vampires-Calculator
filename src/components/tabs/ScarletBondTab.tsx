@@ -674,13 +674,13 @@ export default function ScarletBondTab() {
               const loverSlots = getLoverSkinSlots(bond.lover)
               return (
                 <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
-                  <div className="flex h-[260px]">
-                    {/* Lover Images + Skin Switchers - Left Side */}
-                    <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50">
-                      <div className="flex flex-1 min-h-0 gap-2 px-1">
+                  <div className="flex h-[280px]">
+                    {/* Lover portraits — fixed-width panel so single lover gets natural right padding */}
+                    <div className="flex-shrink-0 w-[185px] flex flex-col border-r border-gray-700/50 pt-1 px-1 pb-1 gap-1">
+                      <div className="flex flex-1 min-h-0 gap-1">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className="flex flex-col w-[90px] pt-1">
-                            <div className="flex-1 min-h-0 overflow-hidden">
+                          <div key={slot.baseName} className="flex flex-col w-[90px]">
+                            <div className="flex-1 min-h-0">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
@@ -697,7 +697,7 @@ export default function ScarletBondTab() {
                                 />
                               )}
                             </div>
-                            <div className="pb-1">
+                            <div>
                               {loverSlots.length > 1 && <div className="text-[9px] text-gray-400 text-center mb-0.5">{slot.displayName}</div>}
                               <div className="flex gap-0.5">
                                 {(['base', ...slot.skins] as string[]).map((opt) => {
@@ -717,29 +717,18 @@ export default function ScarletBondTab() {
                       </div>
                     </div>
 
-                    {/* Content - Right Side: 4 horizontal columns */}
+                    {/* Right side */}
                     <div className="flex-1 min-w-0 flex flex-row overflow-hidden">
 
-                      {/* Col 1: Name+Tags, warden name, warden image, skins */}
-                      <div className="flex-shrink-0 flex flex-col px-2 pt-2 pb-1.5 gap-1 min-w-[150px] max-w-[210px]">
-                        {/* Name + Tags on same line */}
-                        <div className="flex items-center gap-1 flex-wrap">
-                          <span className="text-lg font-bold text-white leading-none">{bond.lover}</span>
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                            bond.type === 'All' ? 'bg-yellow-500/20 text-yellow-400'
-                            : bond.type === 'Dual' ? 'bg-purple-500/20 text-purple-400'
-                            : 'bg-blue-500/20 text-blue-400'
-                          }`}>{bond.type}</span>
-                          {wardenData && wardenData.map((attr) => (
-                            <span key={attr} className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ring-1 ${getAttributeBg(attr)} ${getAttributeColor(attr)} ring-current`}>{attr}</span>
-                          ))}
-                        </div>
-                        {/* Warden name */}
+                      {/* Col 1: Lover name, warden name, warden image, skins */}
+                      <div className="flex-shrink-0 w-[230px] flex flex-col px-2 pt-2 pb-1.5 gap-1">
+                        <span className="text-lg font-bold text-white leading-none">{bond.lover}</span>
                         <span className="text-xs text-gray-400 leading-none">with {bond.warden}</span>
-                        {/* Warden image — between names and skins */}
-                        <img src={getWardenImageSrc(bond.warden)} alt={bond.warden}
-                          className="h-14 w-auto object-contain"
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                        <div className="flex items-center justify-center h-[80px] w-full">
+                          <img src={getWardenImageSrc(bond.warden)} alt={bond.warden}
+                            className="max-h-full max-w-full object-contain"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                        </div>
                         {/* Skin ownership cards */}
                         {loverSlots.some((s) => s.skins.length > 0) && (
                           <div className="flex gap-2 flex-wrap">
@@ -776,9 +765,21 @@ export default function ScarletBondTab() {
                         )}
                       </div>
 
-                      {/* Col 2: Attribute inputs (4-col grid), top aligned with warden name line */}
-                      <div className="flex-1 min-w-0 px-2 pt-[30px] pb-1.5 border-l border-gray-700/30">
-                        <div className="grid grid-cols-4 gap-1.5">
+                      {/* Col 2: Tags + 2×2 attribute grid */}
+                      <div className="flex-1 min-w-0 px-2 pt-2 pb-1.5 border-l border-gray-700/30 flex flex-col gap-1.5">
+                        {/* Tags row */}
+                        <div className="flex items-center gap-1 flex-wrap">
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                            bond.type === 'All' ? 'bg-yellow-500/20 text-yellow-400'
+                            : bond.type === 'Dual' ? 'bg-purple-500/20 text-purple-400'
+                            : 'bg-blue-500/20 text-blue-400'
+                          }`}>{bond.type}</span>
+                          {wardenData && wardenData.map((attr) => (
+                            <span key={attr} className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ring-1 ${getAttributeBg(attr)} ${getAttributeColor(attr)} ring-current`}>{attr}</span>
+                          ))}
+                        </div>
+                        {/* 2×2 attribute grid */}
+                        <div className="grid grid-cols-2 gap-2 flex-1">
                           {["strength", "allure", "intellect", "spirit"].map((attr) => {
                             const isMainStat = wardenData?.some((a) => a.toLowerCase() === attr || a === "Balance")
                             const suggestedUpgradesResult = calculateSuggestedUpgrades(bondKey, scarletBondAffinity[bondKey] || 0)
@@ -786,18 +787,18 @@ export default function ScarletBondTab() {
                             const percentSuggestion = isMainStat ? suggestedUpgradesResult[`${attr}Percent`] : null
                             const contribution = calculateScarletBondContribution(bondKey, attr)
                             return (
-                              <div key={attr} className={`flex flex-col gap-0.5 rounded p-1.5 ${isMainStat ? getAttributeBg(attr) + ' ring-1 ring-current/30' : 'bg-gray-800/30'}`}>
+                              <div key={attr} className={`flex flex-col gap-1 rounded p-2 ${isMainStat ? getAttributeBg(attr) + ' ring-1 ring-current/30' : 'bg-gray-800/30'}`}>
                                 <div className="text-center">
-                                  <div className={`text-sm font-bold leading-none ${isMainStat ? getAttributeColor(attr) : 'text-gray-500'}`}>{contribution.totalBonus}</div>
-                                  <div className={`text-[10px] capitalize leading-none mt-0.5 ${isMainStat ? getAttributeColor(attr) : 'text-gray-600'}`}>{attr}</div>
+                                  <div className={`text-base font-bold leading-none ${isMainStat ? getAttributeColor(attr) : 'text-gray-500'}`}>{contribution.totalBonus}</div>
+                                  <div className={`text-xs capitalize leading-none mt-0.5 ${isMainStat ? getAttributeColor(attr) : 'text-gray-600'}`}>{attr}</div>
                                 </div>
-                                <Input className="h-6 text-xs px-1 py-0 bg-gray-600 border-gray-500 text-white w-full" placeholder="Flat"
+                                <Input className="h-7 text-xs px-1.5 py-0 bg-gray-600 border-gray-500 text-white w-full" placeholder="Flat"
                                   {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Level`] || 0, (n) =>
                                     setScarletBond((prev) => ({ ...prev, [bondKey]: { ...prev[bondKey], [`${attr}Level`]: Math.min(205, Math.max(0, n)) } }))
                                   )}
                                 />
                                 {flatSuggestion && <div className="text-[9px] text-green-400 leading-none">+{flatSuggestion.increase}</div>}
-                                <Input className="h-6 text-xs px-1 py-0 bg-gray-600 border-gray-500 text-white w-full" placeholder="%"
+                                <Input className="h-7 text-xs px-1.5 py-0 bg-gray-600 border-gray-500 text-white w-full" placeholder="%"
                                   {...nonNegativeIntInputProps((scarletBond[bondKey] as any)?.[`${attr}Percent`] || 0, (n) =>
                                     setScarletBond((prev) => ({ ...prev, [bondKey]: { ...prev[bondKey], [`${attr}Percent`]: Math.min(205, Math.max(0, n)) } }))
                                   )}
@@ -810,11 +811,11 @@ export default function ScarletBondTab() {
                         </div>
                       </div>
 
-                      {/* Col 4: Affinity */}
+                      {/* Col 3: Affinity */}
                       <div className="flex-shrink-0 flex flex-col gap-1 px-2 pt-2 pb-1.5 border-l border-gray-700/30">
                         <span className="text-[10px] text-gray-400 leading-none">Affinity</span>
                         <Input
-                          className="w-14 h-6 text-xs py-0 bg-gray-600 border-gray-500 text-white"
+                          className="w-14 h-7 text-xs py-0 bg-gray-600 border-gray-500 text-white"
                           placeholder="0"
                           {...nonNegativeIntInputProps(scarletBondAffinity[bondKey] || 0, (n) =>
                             setScarletBondAffinity((prev) => ({ ...prev, [bondKey]: n }))
