@@ -1,4 +1,4 @@
--- =====================================================
+ -- =====================================================
 -- Game Calculator Database Schema - Supabase/PostgreSQL
 -- =====================================================
 -- Translated from database_schema.sql (SQL Server/SSMS)
@@ -251,6 +251,27 @@ CREATE TABLE IF NOT EXISTS event_tracking_records (
 );
 
 -- =====================================================
+-- 7. USER SAVES (1:N with User Account)
+-- =====================================================
+-- Named save slots for user calculator data (used by cloud save feature)
+-- References auth.users directly so saves work without a user_profiles record
+
+CREATE TABLE IF NOT EXISTS user_saves (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    save_name TEXT NOT NULL,
+    save_data JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE user_saves ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own saves"
+    ON user_saves FOR ALL
+    USING (auth.uid() = user_id);
+
+-- =====================================================
 -- INDEXES for Performance
 -- =====================================================
 
@@ -284,6 +305,10 @@ CREATE INDEX IF NOT EXISTS idx_breeding_history_created_at ON breeding_history(c
 CREATE INDEX IF NOT EXISTS idx_current_events_user_id ON current_events(user_id);
 CREATE INDEX IF NOT EXISTS idx_current_events_event_type ON current_events(event_type);
 CREATE INDEX IF NOT EXISTS idx_current_events_event_start_date ON current_events(event_start_date DESC);
+
+-- User saves
+CREATE INDEX IF NOT EXISTS idx_user_saves_user_id ON user_saves(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_saves_updated_at ON user_saves(updated_at DESC);
 
 -- Event tracking records
 CREATE INDEX IF NOT EXISTS idx_event_tracking_user_id ON event_tracking_records(user_id);

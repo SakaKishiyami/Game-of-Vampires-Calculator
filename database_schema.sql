@@ -257,6 +257,23 @@ CREATE TABLE event_tracking_records (
 );
 
 -- =====================================================
+-- 7. USER SAVES (1:N with User Account)
+-- =====================================================
+-- Named save slots for user calculator data (used by cloud save feature)
+
+CREATE TABLE user_saves (
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    user_id UNIQUEIDENTIFIER NOT NULL,
+    save_name NVARCHAR(255) NOT NULL,
+    save_data NVARCHAR(MAX), -- JSON stored as string
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+
+    CONSTRAINT FK_user_saves_user_id
+        FOREIGN KEY (user_id) REFERENCES user_profiles(id) ON DELETE CASCADE
+);
+
+-- =====================================================
 -- INDEXES for Performance
 -- =====================================================
 
@@ -290,6 +307,10 @@ CREATE INDEX idx_breeding_history_created_at ON breeding_history(created_at DESC
 CREATE INDEX idx_current_events_user_id ON current_events(user_id);
 CREATE INDEX idx_current_events_event_type ON current_events(event_type);
 CREATE INDEX idx_current_events_event_start_date ON current_events(event_start_date DESC);
+
+-- User saves
+CREATE INDEX idx_user_saves_user_id ON user_saves(user_id);
+CREATE INDEX idx_user_saves_updated_at ON user_saves(updated_at DESC);
 
 -- Event tracking records
 CREATE INDEX idx_event_tracking_user_id ON event_tracking_records(user_id);

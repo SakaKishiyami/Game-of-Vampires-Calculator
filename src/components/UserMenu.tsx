@@ -5,6 +5,7 @@ import { User } from '@supabase/supabase-js'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase, getCurrentUser, signOut, UserSave } from '@/lib/supabase'
+import { getOrCreateFolder, listDriveSaves, saveToDrive, loadFromDrive, deleteFromDrive, DriveFile } from '@/lib/googleDrive'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -51,6 +52,14 @@ export default function UserMenu({
   const menuRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Google Drive state
+  const [driveToken, setDriveToken] = useState<string | null>(null)
+  const [driveFolderId, setDriveFolderId] = useState<string | null>(null)
+  const [driveFiles, setDriveFiles] = useState<DriveFile[]>([])
+  const [driveSaveName, setDriveSaveName] = useState('')
+  const [driveLoading, setDriveLoading] = useState(false)
+  const [driveError, setDriveError] = useState<string | null>(null)
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -72,7 +81,21 @@ export default function UserMenu({
       if (event === 'SIGNED_IN') {
         setShowAuth(false)
         loadSaves()
+        // Capture Google provider token for Drive access
+        if (session?.provider_token) {
+          setDriveToken(session.provider_token)
+        }
       }
+      if (event === 'SIGNED_OUT') {
+        setDriveToken(null)
+        setDriveFolderId(null)
+        setDriveFiles([])
+      }
+    })
+
+    // Check for existing session with provider token on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.provider_token) setDriveToken(session.provider_token)
     })
 
     return () => subscription.unsubscribe()
@@ -98,6 +121,84 @@ export default function UserMenu({
       loadSaves()
     }
   }, [user])
+
+  // Google Drive helpers
+  const signInWithGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        scopes: 'https://www.googleapis.com/auth/drive.file',
+        redirectTo: `${window.location.origin}/oauth/consent`,
+      },
+    })
+  }
+
+  const initDrive = async (token: string) => {
+    setDriveLoading(true)
+    setDriveError(null)
+    try {
+      const fid = await getOrCreateFolder(token)
+      setDriveFolderId(fid)
+      const files = await listDriveSaves(token, fid)
+      setDriveFiles(files)
+    } catch (e) {
+      setDriveError('Could not connect to Google Drive. Try signing in with Google again.')
+    } finally {
+      setDriveLoading(false)
+    }
+  }
+
+  const refreshDriveFiles = async () => {
+    if (!driveToken || !driveFolderId) return
+    const files = await listDriveSaves(driveToken, driveFolderId)
+    setDriveFiles(files)
+  }
+
+  const saveToDriveHandler = async () => {
+    if (!driveToken || !driveSaveName.trim()) return
+    setDriveLoading(true)
+    setDriveError(null)
+    try {
+      const fid = driveFolderId ?? await getOrCreateFolder(driveToken)
+      if (!driveFolderId) setDriveFolderId(fid)
+      const existing = driveFiles.find(f => f.name === `${driveSaveName.trim()}.json`)
+      await saveToDrive(driveToken, fid, driveSaveName.trim(), currentData, existing?.id)
+      setDriveSaveName('')
+      await refreshDriveFiles()
+    } catch {
+      setDriveError('Failed to save to Google Drive.')
+    } finally {
+      setDriveLoading(false)
+    }
+  }
+
+  const loadFromDriveHandler = async (fileId: string) => {
+    if (!driveToken) return
+    setDriveLoading(true)
+    setDriveError(null)
+    try {
+      const data = await loadFromDrive(driveToken, fileId)
+      onLoadCloudData(data)
+      setIsOpen(false)
+    } catch {
+      setDriveError('Failed to load from Google Drive.')
+    } finally {
+      setDriveLoading(false)
+    }
+  }
+
+  const deleteFromDriveHandler = async (fileId: string) => {
+    if (!driveToken || !confirm('Delete this Drive save?')) return
+    setDriveLoading(true)
+    try {
+      await deleteFromDrive(driveToken, fileId)
+      await refreshDriveFiles()
+    } catch {
+      setDriveError('Failed to delete from Google Drive.')
+    } finally {
+      setDriveLoading(false)
+    }
+  }
 
   const handleSignOut = async () => {
     await signOut()
@@ -323,6 +424,56 @@ export default function UserMenu({
                 )}
               </div>
 
+              {/* Google Drive Section */}
+              <div className="border-t border-gray-700 pt-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-gray-300 text-sm">🗂 Google Drive Saves</h4>
+                  {!driveToken && (
+                    <Button onClick={signInWithGoogle} size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1">
+                      Connect Google
+                    </Button>
+                  )}
+                  {driveToken && !driveFolderId && (
+                    <Button onClick={() => initDrive(driveToken)} disabled={driveLoading} size="sm" className="bg-green-600 hover:bg-green-700 text-xs px-2 py-1">
+                      {driveLoading ? 'Connecting...' : 'Load Drive'}
+                    </Button>
+                  )}
+                </div>
+                {driveError && <p className="text-red-400 text-xs">{driveError}</p>}
+                {driveToken && driveFolderId && (
+                  <>
+                    <div className="flex gap-2">
+                      <Input
+                        value={driveSaveName}
+                        onChange={(e) => setDriveSaveName(e.target.value)}
+                        placeholder="Drive save name..."
+                        className="bg-gray-700 border-gray-600 text-white text-xs"
+                      />
+                      <Button onClick={saveToDriveHandler} disabled={driveLoading || !driveSaveName.trim()} size="sm" className="bg-green-600 hover:bg-green-700 text-xs shrink-0">
+                        Save
+                      </Button>
+                    </div>
+                    {driveFiles.length > 0 && (
+                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                        {driveFiles.map((f) => (
+                          <div key={f.id} className="flex items-center gap-2 p-1.5 bg-gray-700/50 rounded text-xs">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white truncate">{f.name.replace(/\.json$/, '')}</p>
+                              <p className="text-gray-400">{new Date(f.modifiedTime).toLocaleDateString()}</p>
+                            </div>
+                            <Button onClick={() => loadFromDriveHandler(f.id)} disabled={driveLoading} size="sm" className="bg-blue-600 hover:bg-blue-700 px-1.5 py-1 text-xs">📂</Button>
+                            <Button onClick={() => deleteFromDriveHandler(f.id)} disabled={driveLoading} size="sm" variant="destructive" className="px-1.5 py-1 text-xs">🗑️</Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {driveFiles.length === 0 && !driveLoading && (
+                      <p className="text-gray-500 text-xs text-center">No Drive saves yet</p>
+                    )}
+                  </>
+                )}
+              </div>
+
               {/* Local Save/Load */}
               <div className="border-t border-gray-700 pt-3 space-y-2">
                 <h4 className="text-gray-300 text-sm">💾 Local Data</h4>
@@ -377,34 +528,35 @@ export default function UserMenu({
               {showAuth ? (
                 <div className="space-y-4">
                   <div className="text-center">
-                    <h3 className="text-white font-medium">🎮 Sign In with Discord</h3>
-                    <p className="text-gray-400 text-sm">
-                      Save your data to the cloud!
-                    </p>
+                    <h3 className="text-white font-medium">Sign In</h3>
+                    <p className="text-gray-400 text-sm">Save your data to the cloud!</p>
+                  </div>
+                  {/* Google sign-in (with Drive scope) */}
+                  <Button
+                    onClick={signInWithGoogle}
+                    className="w-full bg-white hover:bg-gray-100 text-gray-900 font-medium text-sm flex items-center gap-2 justify-center"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    Sign in with Google + Drive
+                  </Button>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-px bg-gray-700" />
+                    <span className="text-xs text-gray-500">or</span>
+                    <div className="flex-1 h-px bg-gray-700" />
                   </div>
                   <Auth
                     supabaseClient={supabase}
-                    appearance={{ 
+                    appearance={{
                       theme: ThemeSupa,
                       style: {
-                        button: {
-                          background: '#374151',
-                          color: 'white',
-                          borderColor: '#4B5563',
-                          fontSize: '14px',
-                        },
+                        button: { background: '#374151', color: 'white', borderColor: '#4B5563', fontSize: '14px' },
                         anchor: { color: '#A78BFA' },
                         message: { color: '#EF4444' },
-                        input: {
-                          background: '#374151',
-                          color: 'white',
-                          borderColor: '#4B5563',
-                          fontSize: '14px',
-                        }
+                        input: { background: '#374151', color: 'white', borderColor: '#4B5563', fontSize: '14px' }
                       }
                     }}
                     providers={['discord']}
-                    redirectTo={`${window.location.origin}/auth/callback`}
+                    redirectTo={`${window.location.origin}/oauth/consent`}
                   />
                   <Button 
                     onClick={() => setShowAuth(false)}
