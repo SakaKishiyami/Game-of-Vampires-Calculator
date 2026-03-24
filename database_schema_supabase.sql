@@ -267,10 +267,6 @@ CREATE TABLE IF NOT EXISTS user_saves (
 
 ALTER TABLE user_saves ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can manage own saves"
-    ON user_saves FOR ALL
-    USING (auth.uid() = user_id);
-
 -- =====================================================
 -- INDEXES for Performance
 -- =====================================================
@@ -332,33 +328,45 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Apply triggers to all tables with updated_at
+DROP TRIGGER IF EXISTS update_user_profiles_updated_at ON user_profiles;
 CREATE TRIGGER update_user_profiles_updated_at
     BEFORE UPDATE ON user_profiles
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_calculator_configurations_updated_at ON calculator_configurations;
 CREATE TRIGGER update_calculator_configurations_updated_at
     BEFORE UPDATE ON calculator_configurations
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_familiar_records_updated_at ON familiar_records;
 CREATE TRIGGER update_familiar_records_updated_at
     BEFORE UPDATE ON familiar_records
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_breeding_history_updated_at ON breeding_history;
 CREATE TRIGGER update_breeding_history_updated_at
     BEFORE UPDATE ON breeding_history
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_current_events_updated_at ON current_events;
 CREATE TRIGGER update_current_events_updated_at
     BEFORE UPDATE ON current_events
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_event_tracking_records_updated_at ON event_tracking_records;
 CREATE TRIGGER update_event_tracking_records_updated_at
     BEFORE UPDATE ON event_tracking_records
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_user_saves_updated_at ON user_saves;
+CREATE TRIGGER update_user_saves_updated_at
+    BEFORE UPDATE ON user_saves
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
@@ -390,6 +398,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_set_current_attributes_from_base ON familiar_records;
 CREATE TRIGGER trigger_set_current_attributes_from_base
     BEFORE INSERT ON familiar_records
     FOR EACH ROW
@@ -491,6 +500,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_update_familiar_bond_level ON familiar_records;
 CREATE TRIGGER trigger_update_familiar_bond_level
     BEFORE INSERT OR UPDATE ON familiar_records
     FOR EACH ROW
@@ -509,92 +519,119 @@ ALTER TABLE current_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE event_tracking_records ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Users can only see and modify their own data
+DROP POLICY IF EXISTS "Users can view own profile" ON user_profiles;
 CREATE POLICY "Users can view own profile"
     ON user_profiles FOR SELECT
     USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON user_profiles;
 CREATE POLICY "Users can update own profile"
     ON user_profiles FOR UPDATE
     USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can view own calculator config" ON calculator_configurations;
 CREATE POLICY "Users can view own calculator config"
     ON calculator_configurations FOR SELECT
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own calculator config" ON calculator_configurations;
 CREATE POLICY "Users can insert own calculator config"
     ON calculator_configurations FOR INSERT
     WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own calculator config" ON calculator_configurations;
 CREATE POLICY "Users can update own calculator config"
     ON calculator_configurations FOR UPDATE
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own calculator config" ON calculator_configurations;
 CREATE POLICY "Users can delete own calculator config"
     ON calculator_configurations FOR DELETE
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own familiars" ON familiar_records;
 CREATE POLICY "Users can view own familiars"
     ON familiar_records FOR SELECT
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own familiars" ON familiar_records;
 CREATE POLICY "Users can insert own familiars"
     ON familiar_records FOR INSERT
     WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own familiars" ON familiar_records;
 CREATE POLICY "Users can update own familiars"
     ON familiar_records FOR UPDATE
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own familiars" ON familiar_records;
 CREATE POLICY "Users can delete own familiars"
     ON familiar_records FOR DELETE
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own breeding history" ON breeding_history;
 CREATE POLICY "Users can view own breeding history"
     ON breeding_history FOR SELECT
     USING (auth.uid() = user_id OR auth.uid() = user_id_2);
 
+DROP POLICY IF EXISTS "Users can insert own breeding history" ON breeding_history;
 CREATE POLICY "Users can insert own breeding history"
     ON breeding_history FOR INSERT
     WITH CHECK (auth.uid() = user_id OR auth.uid() = user_id_2);
 
+DROP POLICY IF EXISTS "Users can update own breeding history" ON breeding_history;
 CREATE POLICY "Users can update own breeding history"
     ON breeding_history FOR UPDATE
     USING (auth.uid() = user_id OR auth.uid() = user_id_2);
 
+DROP POLICY IF EXISTS "Users can delete own breeding history" ON breeding_history;
 CREATE POLICY "Users can delete own breeding history"
     ON breeding_history FOR DELETE
     USING (auth.uid() = user_id OR auth.uid() = user_id_2);
 
+DROP POLICY IF EXISTS "Users can view own current events" ON current_events;
 CREATE POLICY "Users can view own current events"
     ON current_events FOR SELECT
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own current events" ON current_events;
 CREATE POLICY "Users can insert own current events"
     ON current_events FOR INSERT
     WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own current events" ON current_events;
 CREATE POLICY "Users can update own current events"
     ON current_events FOR UPDATE
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own current events" ON current_events;
 CREATE POLICY "Users can delete own current events"
     ON current_events FOR DELETE
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own event records" ON event_tracking_records;
 CREATE POLICY "Users can view own event records"
     ON event_tracking_records FOR SELECT
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own event records" ON event_tracking_records;
 CREATE POLICY "Users can insert own event records"
     ON event_tracking_records FOR INSERT
     WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own event records" ON event_tracking_records;
 CREATE POLICY "Users can update own event records"
     ON event_tracking_records FOR UPDATE
     USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own event records" ON event_tracking_records;
 CREATE POLICY "Users can delete own event records"
     ON event_tracking_records FOR DELETE
+    USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can manage own saves" ON user_saves;
+CREATE POLICY "Users can manage own saves"
+    ON user_saves FOR ALL
     USING (auth.uid() = user_id);
 
 -- =====================================================
