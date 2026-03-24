@@ -674,26 +674,26 @@ export default function ScarletBondTab() {
               const loverSlots = getLoverSkinSlots(bond.lover)
               return (
                 <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
-                  <div className="flex items-stretch">
+                  <div className="flex h-[220px]">
                     {/* Lover Images + Skin Switchers - Left Side */}
-                    <div className="w-80 flex-shrink-0 flex flex-col">
-                      <div className="flex flex-1">
+                    <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50">
+                      <div className="flex flex-1 min-h-0">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className={`${loverSlots.length > 1 ? 'w-1/2' : 'w-full'} flex flex-col`}>
-                            <div className="flex-1 flex items-center justify-center overflow-hidden">
+                          <div key={slot.baseName} className="flex-shrink-0 flex flex-col min-w-[70px] max-w-[150px]">
+                            <div className="flex-1 min-h-0">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
-                                  className="w-full h-full object-contain"
+                                  className="h-full w-auto object-contain max-w-none"
                                   onError={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: 'base' }))}
                                 />
                               ) : (
                                 <LoverPortraitThumb
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
-                                  imgClassName="w-full h-full object-contain"
-                                  emptyClassName="w-full h-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
+                                  imgClassName="h-full w-auto object-contain max-w-none"
+                                  emptyClassName="h-full w-[70px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
                             </div>
@@ -720,7 +720,7 @@ export default function ScarletBondTab() {
                     </div>
 
                     {/* Content - Right Side */}
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 overflow-y-auto">
                       <CardHeader className="pb-0 pt-2">
                         <CardTitle className="flex items-center gap-1 flex-wrap text-xs">
                           <div className="flex items-center gap-1">
