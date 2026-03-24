@@ -96,7 +96,7 @@ export default function InventoryTab() {
   const renderItemCard = (itemName: string, assetPath: string) => (
     <div key={itemName} className="bg-gray-700/50 rounded-lg p-3 flex flex-col items-center space-y-2">
       <img
-        src={`/InventoryAssets/${assetPath}/${itemName}.PNG`}
+        src={`/InventoryAssets/${assetPath}/${itemName}.png`}
         alt={itemName}
         className="w-20 h-20 object-contain"
         onError={(e) => { e.currentTarget.style.display = 'none' }}
