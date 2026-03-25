@@ -9,27 +9,58 @@ import { importGameData, validateImportedData, STORAGE_KEY } from '@/utils/expor
 import { supabase } from '@/lib/supabase'
 import { getOrCreateFolder, listDriveSaves, saveToDrive, loadFromDrive, deleteFromDrive, DriveFile } from '@/lib/googleDrive'
 
+const DRIVE_TOKEN_KEY = 'gov_drive_token'
+
 export default function DataTab() {
   const { exportGameData, getExportState, importGameData: importData } = useGameCalculator()
 
   const [driveToken, setDriveToken] = useState<string | null>(null)
   const [driveFolderId, setDriveFolderId] = useState<string | null>(null)
   const [driveFiles, setDriveFiles] = useState<DriveFile[]>([])
-  const [driveSaveName, setDriveSaveName] = useState('')
   const [driveLoading, setDriveLoading] = useState(false)
   const [driveError, setDriveError] = useState<string | null>(null)
   const [driveConnected, setDriveConnected] = useState(false)
+  const [currentDriveFile, setCurrentDriveFile] = useState<DriveFile | null>(null)
+  const [showSaveAs, setShowSaveAs] = useState(false)
+  const [saveAsName, setSaveAsName] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.provider_token) setDriveToken(session.provider_token)
+      if (session?.provider_token) {
+        localStorage.setItem(DRIVE_TOKEN_KEY, session.provider_token)
+        setDriveToken(session.provider_token)
+      } else {
+        const stored = localStorage.getItem(DRIVE_TOKEN_KEY)
+        if (stored) setDriveToken(stored)
+      }
     })
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.provider_token) setDriveToken(session.provider_token)
-      else { setDriveToken(null); setDriveFolderId(null); setDriveFiles([]); setDriveConnected(false) }
+      if (session?.provider_token) {
+        localStorage.setItem(DRIVE_TOKEN_KEY, session.provider_token)
+        setDriveToken(session.provider_token)
+      } else if (_event === 'SIGNED_OUT') {
+        localStorage.removeItem(DRIVE_TOKEN_KEY)
+        setDriveToken(null); setDriveFolderId(null); setDriveFiles([])
+        setDriveConnected(false); setCurrentDriveFile(null)
+      }
     })
     return () => subscription.unsubscribe()
   }, [])
+
+  // Auto-connect when token is available
+  useEffect(() => {
+    if (!driveToken || driveConnected) return
+    setDriveLoading(true); setDriveError(null)
+    getOrCreateFolder(driveToken)
+      .then(fid => { setDriveFolderId(fid); return listDriveSaves(driveToken, fid) })
+      .then(files => { setDriveFiles(files); setDriveConnected(true) })
+      .catch(() => {
+        localStorage.removeItem(DRIVE_TOKEN_KEY)
+        setDriveToken(null)
+        setDriveError('Google Drive session expired. Please sign in with Google again.')
+      })
+      .finally(() => setDriveLoading(false))
+  }, [driveToken])
 
   const signInWithGoogle = async () => {
     await supabase.auth.signInWithOAuth({
@@ -38,48 +69,49 @@ export default function DataTab() {
     })
   }
 
-  const connectDrive = async () => {
-    if (!driveToken) return
+  const handleDriveSave = async () => {
+    if (!driveToken || !driveFolderId) return
+    if (!currentDriveFile) { setShowSaveAs(true); return }
     setDriveLoading(true); setDriveError(null)
     try {
-      const fid = await getOrCreateFolder(driveToken)
-      setDriveFolderId(fid)
-      setDriveFiles(await listDriveSaves(driveToken, fid))
-      setDriveConnected(true)
-    } catch { setDriveError('Could not connect to Google Drive. Try signing in with Google again.') }
-    setDriveLoading(false)
-  }
-
-  const saveToDriveHandler = async () => {
-    if (!driveToken || !driveSaveName.trim()) return
-    setDriveLoading(true); setDriveError(null)
-    try {
-      const fid = driveFolderId ?? await getOrCreateFolder(driveToken)
-      if (!driveFolderId) setDriveFolderId(fid)
-      const existing = driveFiles.find(f => f.name === `${driveSaveName.trim()}.json`)
-      await saveToDrive(driveToken, fid, driveSaveName.trim(), getExportState(), existing?.id)
-      setDriveSaveName('')
-      setDriveFiles(await listDriveSaves(driveToken, fid))
+      await saveToDrive(driveToken, driveFolderId, currentDriveFile.name.replace(/\.json$/, ''), getExportState(), currentDriveFile.id)
+      setDriveFiles(await listDriveSaves(driveToken, driveFolderId))
     } catch { setDriveError('Failed to save to Google Drive.') }
     setDriveLoading(false)
   }
 
-  const loadFromDriveHandler = async (fileId: string) => {
+  const handleDriveSaveAs = async () => {
+    if (!driveToken || !driveFolderId || !saveAsName.trim()) return
+    setDriveLoading(true); setDriveError(null)
+    try {
+      const existing = driveFiles.find(f => f.name === `${saveAsName.trim()}.json`)
+      await saveToDrive(driveToken, driveFolderId, saveAsName.trim(), getExportState(), existing?.id)
+      const updated = await listDriveSaves(driveToken, driveFolderId)
+      setDriveFiles(updated)
+      const saved = updated.find(f => f.name === `${saveAsName.trim()}.json`)
+      if (saved) setCurrentDriveFile(saved)
+      setShowSaveAs(false); setSaveAsName('')
+    } catch { setDriveError('Failed to save to Google Drive.') }
+    setDriveLoading(false)
+  }
+
+  const handleDriveLoad = async (file: DriveFile) => {
     if (!driveToken) return
     setDriveLoading(true); setDriveError(null)
     try {
-      const data = await loadFromDrive(driveToken, fileId)
+      const data = await loadFromDrive(driveToken, file.id)
       importData(data as any)
-      alert('Loaded from Google Drive!')
+      setCurrentDriveFile(file)
     } catch { setDriveError('Failed to load from Google Drive.') }
     setDriveLoading(false)
   }
 
-  const deleteFromDriveHandler = async (fileId: string) => {
+  const handleDriveDelete = async (fileId: string) => {
     if (!driveToken || !confirm('Delete this Drive save?')) return
     setDriveLoading(true)
     try {
       await deleteFromDrive(driveToken, fileId)
+      if (currentDriveFile?.id === fileId) setCurrentDriveFile(null)
       if (driveFolderId) setDriveFiles(await listDriveSaves(driveToken, driveFolderId))
     } catch { setDriveError('Failed to delete.') }
     setDriveLoading(false)
@@ -243,7 +275,7 @@ export default function DataTab() {
           <div className="space-y-3 border-t border-gray-600 pt-4">
             <h3 className="text-lg font-semibold text-white">Google Drive</h3>
             <p className="text-sm text-gray-300">
-              Save JSON files directly to your Google Drive. Requires signing in with Google.
+              Save JSON files directly to your Google Drive. Sign in with Google to connect.
             </p>
             {driveError && <p className="text-red-400 text-sm">{driveError}</p>}
             {!driveToken && (
@@ -252,26 +284,35 @@ export default function DataTab() {
                 Sign in with Google to use Drive
               </Button>
             )}
-            {driveToken && !driveConnected && (
-              <Button onClick={connectDrive} disabled={driveLoading} className="bg-yellow-600 hover:bg-yellow-700">
-                {driveLoading ? 'Connecting...' : 'Load My Drive Saves'}
-              </Button>
+            {driveToken && !driveConnected && driveLoading && (
+              <p className="text-gray-400 text-sm">Connecting to Google Drive...</p>
             )}
             {driveToken && driveConnected && (
               <div className="space-y-2">
-                <div className="flex gap-2">
-                  <Input value={driveSaveName} onChange={e => setDriveSaveName(e.target.value)} placeholder="Save name..." className="bg-gray-700 border-gray-600 text-white" />
-                  <Button onClick={saveToDriveHandler} disabled={driveLoading || !driveSaveName.trim()} className="bg-green-600 hover:bg-green-700 shrink-0">Save</Button>
+                {/* Current file + Save / Save As */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm text-gray-300 flex-1 truncate">
+                    {currentDriveFile ? `📄 ${currentDriveFile.name.replace(/\.json$/, '')}` : '📄 New file'}
+                  </span>
+                  <Button onClick={handleDriveSave} disabled={driveLoading} size="sm" className="bg-green-600 hover:bg-green-700">Save</Button>
+                  <Button onClick={() => { setSaveAsName(currentDriveFile?.name.replace(/\.json$/, '') ?? ''); setShowSaveAs(true) }} disabled={driveLoading} size="sm" variant="outline" className="border-gray-500 text-gray-200 hover:bg-gray-700">Save As</Button>
                 </div>
+                {showSaveAs && (
+                  <div className="flex gap-2">
+                    <Input value={saveAsName} onChange={e => setSaveAsName(e.target.value)} placeholder="File name..." className="bg-gray-700 border-gray-600 text-white" autoFocus />
+                    <Button onClick={handleDriveSaveAs} disabled={driveLoading || !saveAsName.trim()} className="bg-green-600 hover:bg-green-700 shrink-0">Save</Button>
+                    <Button onClick={() => setShowSaveAs(false)} variant="ghost" size="sm" className="text-gray-400">✕</Button>
+                  </div>
+                )}
                 {driveFiles.length === 0 && !driveLoading && <p className="text-gray-500 text-sm">No Drive saves yet.</p>}
                 {driveFiles.map(f => (
-                  <div key={f.id} className="flex items-center gap-2 p-2 bg-gray-700/50 rounded">
+                  <div key={f.id} className={`flex items-center gap-2 p-2 rounded ${currentDriveFile?.id === f.id ? 'bg-green-900/30 border border-green-700/40' : 'bg-gray-700/50'}`}>
                     <div className="flex-1 min-w-0">
-                      <p className="text-white text-sm truncate">{f.name.replace(/\.json$/, '')}</p>
+                      <p className={`text-sm truncate ${currentDriveFile?.id === f.id ? 'text-green-300' : 'text-white'}`}>{f.name.replace(/\.json$/, '')}</p>
                       <p className="text-gray-400 text-xs">{new Date(f.modifiedTime).toLocaleString()}</p>
                     </div>
-                    <Button onClick={() => loadFromDriveHandler(f.id)} disabled={driveLoading} size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs">Load</Button>
-                    <Button onClick={() => deleteFromDriveHandler(f.id)} disabled={driveLoading} size="sm" variant="destructive" className="text-xs">Delete</Button>
+                    <Button onClick={() => handleDriveLoad(f)} disabled={driveLoading} size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs">Load</Button>
+                    <Button onClick={() => handleDriveDelete(f.id)} disabled={driveLoading} size="sm" variant="destructive" className="text-xs">Delete</Button>
                   </div>
                 ))}
               </div>

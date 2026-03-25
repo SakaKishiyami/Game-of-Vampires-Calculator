@@ -84,7 +84,7 @@ function LoverSummonPickCard({
           emptyClassName="w-full h-16 rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
         />
       </div>
-      <div className="flex-1 flex flex-col justify-between p-2 min-w-0 gap-1">
+      <div className="flex-1 flex flex-col p-2 min-w-0 gap-1">
         <div className="flex items-center gap-1.5 flex-wrap">
           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
             <Checkbox checked={checked} onCheckedChange={(v) => setChecked(v === true)} className="border-gray-400" />
@@ -93,7 +93,7 @@ function LoverSummonPickCard({
           <span className="text-xs text-gray-400 leading-tight">with {wardenName}</span>
           {attrBadge}
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex flex-1 items-center gap-1">
           {tokenImgSrc && (
             <img src={tokenImgSrc} alt="token" className="w-4 h-4 object-contain flex-shrink-0"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
@@ -675,24 +675,24 @@ export default function ScarletBondTab() {
               return (
                 <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
                   <div className="flex h-[280px]">
-                    {/* Lover portraits — fixed-width panel so single lover gets natural right padding */}
-                    <div className="flex-shrink-0 w-[185px] flex flex-col border-r border-gray-700/50 pt-1 px-1 pb-1 gap-1">
+                    {/* Lover portraits — auto-width panel so portraits push the right pane naturally */}
+                    <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50 pt-1 px-1 pb-1">
                       <div className="flex flex-1 min-h-0 gap-1">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className="flex flex-col w-[90px]">
+                          <div key={slot.baseName} className="flex flex-col">
                             <div className="flex-1 min-h-0">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
-                                  className="h-full w-full object-contain"
+                                  className="h-full w-auto object-contain"
                                   onError={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: 'base' }))}
                                 />
                               ) : (
                                 <LoverPortraitThumb
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
-                                  imgClassName="h-full w-full object-contain"
+                                  imgClassName="h-full w-auto object-contain"
                                   emptyClassName="h-full w-[70px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
@@ -714,6 +714,8 @@ export default function ScarletBondTab() {
                             </div>
                           </div>
                         ))}
+                        {/* Extra breathing room when there's only one lover */}
+                        {loverSlots.length === 1 && <div className="w-10 flex-shrink-0" />}
                       </div>
                     </div>
 
