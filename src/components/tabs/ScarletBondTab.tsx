@@ -76,29 +76,29 @@ function LoverSummonPickCard({
         checked && attrKey !== 'all' && getAttributeBg(attrKey)
       )}
     >
-      <div className="w-16 flex-shrink-0 bg-gray-900/90 flex items-center justify-center border-r border-gray-700/80">
+      <div className="w-24 flex-shrink-0 bg-gray-900/90 flex items-center justify-center border-r border-gray-700/80">
         <LoverPortraitThumb
           candidates={imgCandidates}
           label={loverName}
           imgClassName="w-full h-full object-contain"
-          emptyClassName="w-full h-16 rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px] text-gray-500 text-center p-1"
+          emptyClassName="w-full h-24 rounded bg-gray-800 border border-gray-700 flex items-center justify-center text-xs text-gray-500 text-center p-1"
         />
       </div>
-      <div className="flex-1 flex flex-col p-2 min-w-0 gap-1">
-        <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex-1 flex flex-col p-3 min-w-0 gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
             <Checkbox checked={checked} onCheckedChange={(v) => setChecked(v === true)} className="border-gray-400" />
           </div>
-          <span className={cn('font-semibold text-sm leading-tight', checked ? 'text-white' : 'text-gray-300')}>{loverName}</span>
-          <span className="text-xs text-gray-400 leading-tight">with {wardenName}</span>
+          <span className={cn('font-semibold text-base leading-tight', checked ? 'text-white' : 'text-gray-300')}>{loverName}</span>
+          <span className="text-sm text-gray-400 leading-tight">with {wardenName}</span>
           {attrBadge}
         </div>
-        <div className="flex flex-1 items-center gap-1">
+        <div className="flex flex-1 items-center gap-2">
           {tokenImgSrc && (
-            <img src={tokenImgSrc} alt="token" className="w-4 h-4 object-contain flex-shrink-0"
+            <img src={tokenImgSrc} alt="token" className="w-6 h-6 object-contain flex-shrink-0"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
           )}
-          <span className="text-xs text-white">Tokens Owned: {tokenCount}/{tokenMax}</span>
+          <span className="text-sm text-white">Tokens Owned: {tokenCount}/{tokenMax}</span>
         </div>
       </div>
     </div>
@@ -679,7 +679,7 @@ export default function ScarletBondTab() {
                     <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50 pt-1 px-1 pb-1">
                       <div className="flex flex-1 min-h-0 gap-1">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className="flex flex-col">
+                          <div key={slot.baseName} className="flex flex-col min-w-[70px] max-w-[110px]">
                             <div className="flex-1 min-h-0">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
@@ -693,7 +693,7 @@ export default function ScarletBondTab() {
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
                                   imgClassName="h-full w-auto object-contain"
-                                  emptyClassName="h-full w-[70px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
+                                  emptyClassName="h-full w-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
                             </div>
