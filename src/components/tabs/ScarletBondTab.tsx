@@ -674,26 +674,26 @@ export default function ScarletBondTab() {
               const loverSlots = getLoverSkinSlots(bond.lover)
               return (
                 <Card key={bondKey} className="bg-gray-700/50 border-gray-600">
-                  <div className="flex h-[280px]">
+                  <div className="flex">
                     {/* Lover portraits — auto-width panel so portraits push the right pane naturally */}
-                    <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50 pt-1 px-1 pb-1">
-                      <div className="flex flex-1 min-h-0 gap-1">
+                    <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50 pt-1 px-1 pb-2">
+                      <div className="flex gap-1 items-start">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className="flex-shrink-0 flex flex-col min-w-[70px] max-w-[150px]">
-                            <div className="flex-1 min-h-0 overflow-hidden">
+                          <div key={slot.baseName} className="flex-shrink-0 flex flex-col min-w-[70px]">
+                            <div>
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
-                                  className="h-full w-auto object-contain max-w-none"
+                                  className="max-h-[400px] w-auto object-contain"
                                   onError={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: 'base' }))}
                                 />
                               ) : (
                                 <LoverPortraitThumb
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
-                                  imgClassName="h-full w-auto object-contain max-w-none"
-                                  emptyClassName="h-full w-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
+                                  imgClassName="max-h-[400px] w-auto object-contain"
+                                  emptyClassName="min-h-[120px] w-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
                             </div>
@@ -779,7 +779,7 @@ export default function ScarletBondTab() {
                           ))}
                         </div>
                         {/* 2×2 attribute grid */}
-                        <div className="grid grid-cols-2 gap-2 flex-1">
+                        <div className="grid grid-cols-2 gap-2">
                           {["strength", "allure", "intellect", "spirit"].map((attr) => {
                             const isMainStat = wardenData?.some((a) => a.toLowerCase() === attr || a === "Balance")
                             const suggestedUpgradesResult = calculateSuggestedUpgrades(bondKey, scarletBondAffinity[bondKey] || 0)
