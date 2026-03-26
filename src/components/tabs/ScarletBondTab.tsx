@@ -679,8 +679,8 @@ export default function ScarletBondTab() {
                     <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50 pt-1 px-1 pb-1">
                       <div className="flex flex-1 min-h-0 gap-1">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className="flex flex-col">
-                            <div className="flex-1 min-h-0">
+                          <div key={slot.baseName} className="flex-shrink-0 flex flex-col min-w-[70px] max-w-[150px]">
+                            <div className="flex-1 min-h-0 overflow-hidden">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
@@ -693,7 +693,7 @@ export default function ScarletBondTab() {
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
                                   imgClassName="h-full w-auto object-contain max-w-none"
-                                  emptyClassName="h-full w-[80px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
+                                  emptyClassName="h-full w-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
                             </div>
