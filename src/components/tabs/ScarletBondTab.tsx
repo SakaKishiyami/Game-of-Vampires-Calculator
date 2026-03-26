@@ -679,21 +679,21 @@ export default function ScarletBondTab() {
                     <div className="flex-shrink-0 flex flex-col border-r border-gray-700/50 pt-1 px-1 pb-1">
                       <div className="flex flex-1 min-h-0 gap-1">
                         {loverSlots.map((slot) => (
-                          <div key={slot.baseName} className="flex flex-col w-[90px] flex-shrink-0">
-                            <div className="flex-1 min-h-0 overflow-hidden">
+                          <div key={slot.baseName} className="flex flex-col">
+                            <div className="flex-1 min-h-0">
                               {(loverActiveSkins[slot.baseName] ?? 'base') !== 'base' ? (
                                 <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
-                                  className="h-full w-full object-contain"
+                                  className="h-full w-auto object-contain"
                                   onError={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: 'base' }))}
                                 />
                               ) : (
                                 <LoverPortraitThumb
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
-                                  imgClassName="h-full w-full object-contain"
-                                  emptyClassName="h-full w-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
+                                  imgClassName="h-full w-auto object-contain"
+                                  emptyClassName="h-full w-[70px] rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
                             </div>
@@ -714,8 +714,6 @@ export default function ScarletBondTab() {
                             </div>
                           </div>
                         ))}
-                        {/* Extra breathing room when there's only one lover */}
-                        {loverSlots.length === 1 && <div className="w-3 flex-shrink-0" />}
                       </div>
                     </div>
 
