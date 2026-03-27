@@ -685,7 +685,7 @@ export default function ScarletBondTab() {
                                 <TrimmedImg
                                   src={`/Gov/Lovers/LoverSkins/${loverActiveSkins[slot.baseName]}.png`}
                                   alt={slot.displayName}
-                                  className="max-h-[240px] w-auto object-contain"
+                                  className="max-h-[144px] w-auto object-contain"
                                   onError={() => setLoverActiveSkins((prev) => ({ ...prev, [slot.baseName]: 'base' }))}
                                 />
                               ) : (
