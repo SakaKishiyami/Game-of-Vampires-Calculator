@@ -904,10 +904,10 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     totalIntellect += courtyardDom.intellect
     totalSpirit += courtyardDom.spirit
 
-    // Calculate DOM
-    const baseDom = Math.min(totalStrength, totalAllure, totalIntellect, totalSpirit)
-    const totalDom = (totalStrength + totalAllure + totalIntellect + totalSpirit) / 4
-    const domIncrease = totalDom - baseDom
+    // Calculate DOM (sum of all four attributes)
+    const totalDom = Math.round(totalStrength + totalAllure + totalIntellect + totalSpirit)
+    const baseDom = totalDom
+    const domIncrease = 0
 
     return {
       totalStrength,

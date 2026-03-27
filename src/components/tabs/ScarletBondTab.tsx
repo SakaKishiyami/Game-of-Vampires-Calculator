@@ -692,7 +692,7 @@ export default function ScarletBondTab() {
                                 <LoverPortraitThumb
                                   candidates={slot.baseImgCandidates}
                                   label={slot.displayName}
-                                  imgClassName="max-h-[400px] w-auto object-contain"
+                                  imgClassName="max-h-[240px] w-auto object-contain"
                                   emptyClassName="min-h-[120px] w-full rounded bg-gray-700 border border-gray-600 flex items-center justify-center text-[10px] text-gray-400 text-center p-2"
                                 />
                               )}
