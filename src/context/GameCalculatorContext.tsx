@@ -846,56 +846,45 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       }
     })
 
-    // Add scarlet bond bonuses (using optimized levels)
-    Object.entries(scarletBond).forEach(([bondKey, bond]: [string, any]) => {
-      if (bond) {
+    // Helper: compute scarlet bond attribute contributions from a given level source
+    const s = resolveLoverSummonFlags(
+      { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+      inventory
+    )
+    const sumBondContribs = (levelSource: Record<string, any>) => {
+      let str = 0, all = 0, int = 0, spi = 0
+      Object.entries(scarletBond).forEach(([bondKey, bond]) => {
+        if (!bond) return
         const bondData = scarletBondData.find(b => `${b.lover}-${b.warden}` === bondKey)
-        if (bondData) {
-          const optimizedBond = optimizedBondLevels[bondKey]
-          if (!optimizedBond) return
-          
-          // Calculate bonuses for each attribute
-          (['strength', 'allure', 'intellect', 'spirit'] as const).forEach((attr) => {
-            const level = optimizedBond[`${attr}Level` as keyof typeof optimizedBond] as number || 0
-            const percent = optimizedBond[`${attr}Percent` as keyof typeof optimizedBond] as number || 0
-            
-            if (level > 0) {
-              const levelData = scarletBondLevels.find(l => l.level === level)
-              if (levelData) {
-                let flatBonus = 0
-                if (bondData.type === 'All') {
-                  flatBonus = levelData.all || 0
-                } else if (bondData.type === 'Dual') {
-                  flatBonus = levelData.dual || 0
-                } else {
-                  flatBonus = levelData.single || 0
-                }
-                
-                const s = resolveLoverSummonFlags(
-                  { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
-                  inventory
-                )
-                const multiplier = getLoverScarletBondAuraMultiplier(attr, s)
-                
-                const attrTotal = flatBonus * multiplier
-                if (percent > 0) {
-                  const percentBonus = (percent / 100) * flatBonus * multiplier
-                  if (attr === 'strength') totalStrength += attrTotal + percentBonus
-                  else if (attr === 'allure') totalAllure += attrTotal + percentBonus
-                  else if (attr === 'intellect') totalIntellect += attrTotal + percentBonus
-                  else if (attr === 'spirit') totalSpirit += attrTotal + percentBonus
-                } else {
-                  if (attr === 'strength') totalStrength += attrTotal
-                  else if (attr === 'allure') totalAllure += attrTotal
-                  else if (attr === 'intellect') totalIntellect += attrTotal
-                  else if (attr === 'spirit') totalSpirit += attrTotal
-                }
-              }
-            }
-          })
-        }
-      }
-    })
+        if (!bondData) return
+        const src = (levelSource[bondKey] ?? bond) as Record<string, number>
+        ;(['strength', 'allure', 'intellect', 'spirit'] as const).forEach((attr) => {
+          const level = src[`${attr}Level`] || 0
+          const percent = src[`${attr}Percent`] || 0
+          if (level <= 0) return
+          const levelData = scarletBondLevels.find(l => l.level === level)
+          if (!levelData) return
+          let flat = 0
+          if (bondData.type === 'All') flat = levelData.all || 0
+          else if (bondData.type === 'Dual') flat = levelData.dual || 0
+          else flat = levelData.single || 0
+          const mult = getLoverScarletBondAuraMultiplier(attr, s)
+          const total = flat * mult + (percent > 0 ? (percent / 100) * flat * mult : 0)
+          if (attr === 'strength') str += total
+          else if (attr === 'allure') all += total
+          else if (attr === 'intellect') int += total
+          else if (attr === 'spirit') spi += total
+        })
+      })
+      return { str, all, int, spi }
+    }
+
+    // Add current scarlet bond bonuses (user's entered levels)
+    const currentBondContribs = sumBondContribs(scarletBond)
+    totalStrength += currentBondContribs.str
+    totalAllure += currentBondContribs.all
+    totalIntellect += currentBondContribs.int
+    totalSpirit += currentBondContribs.spi
 
     // Add courtyard bonuses
     const courtyardDom = calculateCourtyardDom(courtyard, courtyard.currentLevel)
@@ -904,10 +893,17 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     totalIntellect += courtyardDom.intellect
     totalSpirit += courtyardDom.spirit
 
-    // Calculate DOM (sum of all four attributes)
-    const totalDom = Math.round(totalStrength + totalAllure + totalIntellect + totalSpirit)
-    const baseDom = totalDom
-    const domIncrease = 0
+    // Current DOM = sum of attributes with current bond levels
+    const baseDom = Math.round(totalStrength + totalAllure + totalIntellect + totalSpirit)
+
+    // Total DOM = same base but with optimized bond levels (falls back to current if no suggestion)
+    const optimizedBondContribs = sumBondContribs(optimizedBondLevels)
+    const optStr = totalStrength - currentBondContribs.str + optimizedBondContribs.str
+    const optAll = totalAllure - currentBondContribs.all + optimizedBondContribs.all
+    const optInt = totalIntellect - currentBondContribs.int + optimizedBondContribs.int
+    const optSpi = totalSpirit - currentBondContribs.spi + optimizedBondContribs.spi
+    const totalDom = Math.round(optStr + optAll + optInt + optSpi)
+    const domIncrease = totalDom - baseDom
 
     return {
       totalStrength,
