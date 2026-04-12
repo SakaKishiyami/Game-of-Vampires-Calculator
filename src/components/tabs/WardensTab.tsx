@@ -10,70 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getDisplayValue, getAttributeColor, getAttributeBg, renderStars, nonNegativeIntInputProps } from '@/utils/helpers'
 import { wardenGroups } from '@/data/wardens'
+import { WARDEN_CATALOG as allWardens } from '@/data/wardenCatalog'
 import type { AttributeBreakdown, UploadedWardenData } from '@/types'
-
-const allWardens = [
-  { name: "Thorgrim", group: "circus", attributes: ["Intellect", "Strength"], tier: 5, skins: [] },
-  { name: "Naja", group: "circus", attributes: ["Allure", "Spirit"], tier: 5, skins: [] },
-  { name: "Diavolo", group: "circus", attributes: ["Spirit", "Strength"], tier: 5, skins: [] },
-  { name: "Jester", group: "circus", attributes: ["Allure", "Intellect"], tier: 5, skins: [] },
-  { name: "Dominique", group: "circus", attributes: ["Balance"], tier: 5, skins: [] },
-  { name: "Ivan", group: "tyrants", attributes: ["Allure", "Spirit"], tier: 5, skins: ["IvanSkin1"] },
-  { name: "Max", group: "tyrants", attributes: ["Spirit", "Strength"], tier: 5, skins: ["MaxSkin1"] },
-  { name: "Erzsebet", group: "tyrants", attributes: ["Allure", "Intellect"], tier: 5, skins: ["ErzsebetSkin1"] },
-  { name: "Maria", group: "tyrants", attributes: ["Balance"], tier: 5, skins: ["MariaSkin1"] },
-  { name: "Eddie", group: "noir", attributes: ["Strength"], tier: 5, skins: ["EddieSkin1"] },
-  { name: "Scarlet", group: "noir", attributes: ["Allure"], tier: 5, skins: ["ScarletSkin1"] },
-  { name: "Sam", group: "noir", attributes: ["Intellect"], tier: 5, skins: ["SamSkin1"] },
-  { name: "Grendel", group: "noir", attributes: ["Spirit"], tier: 5, skins: ["GrendelSkin1"] },
-  { name: "Rudra", group: "hunt", attributes: ["Strength"], tier: 5, skins: ["RudraSkin1", "RudraSkin2"] },
-  { name: "Woden", group: "hunt", attributes: ["Allure"], tier: 5, skins: ["WodenSkin1", "WodenSkin2"] },
-  { name: "Artemis", group: "hunt", attributes: ["Intellect"], tier: 5, skins: ["ArtemisSkin1", "ArtemisSkin2"] },
-  { name: "Finn", group: "hunt", attributes: ["Spirit"], tier: 5, skins: ["FinnSkin1", "FinnSkin2"] },
-  { name: "Aurelia", group: "other", attributes: ["Allure", "Strength"], tier: 5, skins: ["AureliaSkin1"] },
-  { name: "Asra", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: [] },
-  { name: "Harker", group: "other", attributes: ["Strength"], tier: 5, skins: ["HarkerSkin1", "HarkerSkin2"] },
-  { name: "Pavan", group: "other", attributes: ["Strength"], tier: 5, skins: ["PavanSkin1"] },
-  { name: "Frederick", group: "other", attributes: ["Allure"], tier: 5, skins: ["FrederickSkin1"] },
-  { name: "Carmilla", group: "other", attributes: ["Balance"], tier: 5, skins: ["CarmillaSkin1", "CarmillaSkin2"] },
-  { name: "Gilgamesh", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: ["GilgameshSkin1"] },
-  { name: "Drusilla", group: "other", attributes: ["Allure"], tier: 5, skins: [] },
-  { name: "Tomas", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["TomasSkin1"] },
-  { name: "Temujin", group: "other", attributes: ["Allure", "Strength"], tier: 5, skins: ["TemujinSkin1", "TemujinSkin2"] },
-  { name: "Josey", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["JoseySkin1"] },
-  { name: "Julie", group: "other", attributes: ["Allure", "Intellect"], tier: 5, skins: ["JulieSkin1"] },
-  { name: "Mortimer", group: "other", attributes: ["Balance"], tier: 5, skins: [] },
-  { name: "Cleo", group: "other", attributes: ["Balance"], tier: 5, skins: ["CleoSkin1"] },
-  { name: "Mike", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: ["MikeSkin1"] },
-  { name: "Ulfred", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
-  { name: "Diana", group: "other", attributes: ["Balance"], tier: 5, skins: ["DianaSkin1"] },
-  { name: "Damian", group: "other", attributes: ["Balance"], tier: 5, skins: ["DamianSkin1"] },
-  { name: "Vance", group: "other", attributes: ["Balance"], tier: 5, skins: ["VanceSkin1"] },
-  { name: "Edward", group: "other", attributes: ["Intellect"], tier: 5, skins: [] },
-  { name: "William", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["WilliamSkin1"] },
-  { name: "Vicente", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["VicenteSkin1"] },
-  { name: "Saber", group: "other", attributes: ["Strength"], tier: 5, skins: [] },
-  { name: "Nikolai", group: "other", attributes: ["Intellect", "Strength"], tier: 5, skins: [] },
-  { name: "Cornelius", group: "other", attributes: ["Strength"], tier: 5, skins: ["CorneliusSkin1"] },
-  { name: "Rollo", group: "other", attributes: ["Allure"], tier: 5, skins: ["RolloSkin1"] },
-  { name: "Morien", group: "other", attributes: ["Strength"], tier: 5, skins: ["MorienSkin1", "MorienSkin2"] },
-  { name: "Piper", group: "other", attributes: ["Spirit"], tier: 5, skins: ["PiperSkin1"] },
-  { name: "Robert", group: "other", attributes: ["Allure", "Spirit"], tier: 5, skins: [] },
-  { name: "John", group: "other", attributes: ["Spirit"], tier: 5, skins: ["JohnSkin1"] },
-  { name: "Lorenzo", group: "other", attributes: ["Intellect"], tier: 5, skins: ["LorenzoSkin1"] },
-  { name: "Hans", group: "other", attributes: ["Spirit"], tier: 5, skins: ["HansSkin1"] },
-  { name: "Franco", group: "other", attributes: ["Allure"], tier: 5, skins: ["FrancoSkin1"] },
-  { name: "Alastair", group: "other", attributes: ["Spirit"], tier: 5, skins: ["AlastairSkin1"] },
-  { name: "Elsie", group: "other", attributes: ["Allure", "Spirit"], tier: 5, skins: ["ElsieSkin1"] },
-  { name: "Nostradamus", group: "other", attributes: ["Intellect"], tier: 5, skins: ["NostradamusSkin1"] },
-  { name: "Erik", group: "other", attributes: ["Spirit", "Strength"], tier: 5, skins: ["ErikSkin1"] },
-  { name: "Victor", group: "other", attributes: ["Balance"], tier: 5, skins: ["VictorSkin1"] },
-  { name: "Poe", group: "other", attributes: ["Balance"], tier: 5, skins: ["PoeSkin1"] },
-  { name: "Candace", group: "other", attributes: ["Balance"], tier: 5, skins: ["CandaceSkin1", "CandaceSkin2"] },
-  { name: "Cesare", group: "other", attributes: [], tier: 5, skins: ["CesareSkin1"] },
-  { name: "Charlemagne", group: "other", attributes: [], tier: 5, skins: ["CharlemagneSkin1"] },
-  { name: "Thanatos", group: "other", attributes: [], tier: 5, skins: ["ThanatosSkin1"] },
-]
 
 function parseNumberWithSuffix(value: string): number {
   const numStr = value.toString().toLowerCase().replace(/,/g, '').trim()
@@ -220,7 +158,7 @@ function getLevelStyle(level: number): { card: string; border: string } {
 export default function WardensTab() {
   const {
     wardenCounts, setWardenCounts, selectedWardens, setSelectedWardens,
-    wardenSkins, setWardenSkins, wardenActiveSkins, setWardenActiveSkins, getWardenImageSrc,
+    wardenSkins, setWardenSkins, wardenActiveSkins, setWardenActiveSkins, setWardenSkinLevels, getWardenImageSrc,
     wardenStats, setWardenStats,
     uploadedWardenData, setUploadedWardenData,
     hasNyx, setHasNyx, hasDracula, setHasDracula,
@@ -244,10 +182,20 @@ export default function WardensTab() {
   }
 
   const handleSkinToggle = (wardenName: string, skinName: string) => {
-    setWardenSkins((prev) => ({
-      ...prev,
-      [wardenName]: { ...prev[wardenName], [skinName]: !prev[wardenName]?.[skinName] },
-    }))
+    setWardenSkins((prev) => {
+      const owned = !!prev[wardenName]?.[skinName]
+      const nextOwned = !owned
+      if (nextOwned) {
+        setWardenSkinLevels((lv) => ({
+          ...lv,
+          [wardenName]: { ...lv[wardenName], [skinName]: lv[wardenName]?.[skinName] ?? 1 },
+        }))
+      }
+      return {
+        ...prev,
+        [wardenName]: { ...prev[wardenName], [skinName]: nextOwned },
+      }
+    })
   }
 
   const processImageWithOCR = async (file: File): Promise<string> => {

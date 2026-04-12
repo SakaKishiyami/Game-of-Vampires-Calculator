@@ -11,6 +11,7 @@ import { scarletBondData, scarletBondLevels, getOffSingle } from '@/data/scarlet
 import { wardenAttributes } from '@/data/wardens'
 import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier, wildHuntSummonedCount, monsterNoirSummonedCount, tierPercentFromCount, heartOfWarCount } from '@/utils/loverScarletBondAuras'
 import { getLoverPortraitSrcs, getLoverSkinSlots } from '@/utils/loverImagePaths'
+import { getLoverSkinAffinitySpeedPercent } from '@/utils/calculators/skinLedgerCalculations'
 import { cn } from '@/lib/utils'
 
 const attributeOrder = ['strength', 'allure', 'intellect', 'spirit'] as const
@@ -205,6 +206,7 @@ export default function ScarletBondTab() {
     getWardenImageSrc,
     loverOwnedSkins, setLoverOwnedSkins,
     loverActiveSkins, setLoverActiveSkins,
+    loverSkinRarities,
   } = useGameCalculator()
 
   const summonState = resolveLoverSummonFlags(
@@ -291,6 +293,14 @@ export default function ScarletBondTab() {
   }
 
   const calculateSuggestedUpgrades = (bondKey: string, availableAffinity: number) => {
+    const [lover] = bondKey.split("-")
+    const affPct = getLoverSkinAffinitySpeedPercent(
+      lover,
+      loverActiveSkins,
+      loverSkinRarities,
+      loverOwnedSkins
+    )
+    const scaledAffinity = Math.floor(availableAffinity * (1 + affPct / 100))
     const [, warden] = bondKey.split("-")
     const wardenData = wardenAttributes[warden as keyof typeof wardenAttributes]
     const currentBond = scarletBond[bondKey] || {}
@@ -310,7 +320,7 @@ export default function ScarletBondTab() {
     }
 
     const suggestedUpgrades: Record<string, any> = {}
-    let remainingAffinity = availableAffinity
+    let remainingAffinity = scaledAffinity
     const tempCurrentLevels: Record<string, number> = {}
     const currentBondNum = currentBond as Record<string, number | undefined>
     bondTypes.forEach((bt) => {

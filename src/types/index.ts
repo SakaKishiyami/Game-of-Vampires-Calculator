@@ -1,6 +1,7 @@
 // Core game types and interfaces
 
 import type { BookCollection, BooksState } from '@/data/books'
+import type { WardenSkinRarity, LoverSkinRarity } from '@/data/skinLedger'
 
 export type { BookCollection, BooksState }
 
@@ -63,6 +64,20 @@ export type WardenActiveSkins = Record<string, string>
 export type LoverOwnedSkins = Record<string, Record<string, boolean>>
 // Maps lover base name → active skin key ('base' or e.g. 'AgneyiSkin1')
 export type LoverActiveSkins = Record<string, string>
+
+/** User override for warden cosmetic skin rarity (purple / orange / red). */
+export type WardenSkinRarityOverrides = Record<string, Record<string, WardenSkinRarity>>
+/** Warden skin "star" level (1 = tier-1 only; each extra level doubles total after ledger-adjusted base). */
+export type WardenSkinLevels = Record<string, Record<string, number>>
+/** Lover skin color tier for collection / affinity / intimacy (purple or orange). */
+export type LoverSkinRarities = Record<string, Record<string, LoverSkinRarity>>
+
+/** Children marriage planner (Familiars → Children tab). */
+export interface ChildPlannerEntry {
+  id: string
+  name: string
+  totalAttributes: number
+}
 
 export interface Warden {
   name: string
@@ -172,6 +187,12 @@ export interface GameCalculatorState {
   wardenCounts: WardenCounts
   selectedWardens: SelectedWardens
   wardenSkins: WardenSkins
+  wardenActiveSkins?: WardenActiveSkins
+  wardenSkinLevels?: WardenSkinLevels
+  wardenSkinRarityOverrides?: WardenSkinRarityOverrides
+  loverOwnedSkins?: LoverOwnedSkins
+  loverActiveSkins?: LoverActiveSkins
+  loverSkinRarities?: LoverSkinRarities
   wardenStats: WardenStats
   uploadedWardenData: UploadedWardenData
   inventory: Inventory
@@ -227,4 +248,6 @@ export interface GameCalculatorState {
   talentScripts: any
   // Familiars
   familiars: any
+  /** Optional list for children marriage / ring planner */
+  childrenPlannerEntries?: ChildPlannerEntry[]
 }

@@ -2,6 +2,11 @@
 
 Web app for tracking and optimizing Game of Vampires progression data in one place.
 
+## Documentation
+
+- **[User Manual](docs/USER_MANUAL.md)** — how to use each section of the toolkit, saves, import/export, and OCR tips.
+- **[Developer’s Guide](docs/DEVELOPER_GUIDE.md)** — architecture, data flow, extending calculators, persistence, and deployment notes.
+
 ## Features
 
 - **Base Attributes**: Track Strength, Allure, Intellect, and Spirit

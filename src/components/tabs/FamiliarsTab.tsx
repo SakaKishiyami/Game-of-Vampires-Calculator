@@ -28,6 +28,7 @@ import {
 } from '@/data/familiars'
 
 import { useGameCalculator } from '@/context/GameCalculatorContext'
+import ChildrenPlannerTab from '@/components/tabs/ChildrenPlannerTab'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { nonNegativeIntInputProps } from '@/utils/helpers'
 
@@ -365,8 +366,8 @@ function NestLevelsAndBonuses({ nest, familiars }: { nest: NestDefinition; famil
 }
 
 export default function FamiliarsTab() {
-  const { familiars, setFamiliars, nestProgress, setNestProgress } = useGameCalculator()
-  const [activeTab, setActiveTab] = useState<'nests' | 'tracker' | 'bonds'>('tracker')
+  const { familiars, setFamiliars, nestProgress, setNestProgress, skinLedger } = useGameCalculator()
+  const [activeTab, setActiveTab] = useState<'nests' | 'tracker' | 'bonds' | 'children'>('tracker')
 
   const releasedFamiliars = useMemo(
     () => familiarDefinitions.filter((f) => f.nestId !== null),
@@ -606,8 +607,16 @@ export default function FamiliarsTab() {
       </CardHeader>
 
       <CardContent>
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-          <TabsList className="w-full grid grid-cols-3 bg-gray-800">
+        {skinLedger.childrenTotalAttrsPct > 0 && (
+          <div className="text-xs text-gray-300 mb-3 rounded-lg border border-green-900/40 bg-green-950/20 px-3 py-2">
+            Skin ledger: <strong className="text-green-200">+{skinLedger.childrenTotalAttrsPct}%</strong> to total
+            attributes of children (familiars) — reference multiplier{' '}
+            <span className="font-mono text-green-300">×{skinLedger.familiarTotalAttrsMultiplier.toFixed(3)}</span>. Configure
+            skins on the calculator <strong>Skins</strong> tab.
+          </div>
+        )}
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
+          <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 bg-gray-800">
             <TabsTrigger value="nests" className="data-[state=active]:bg-red-600">
               Nest
             </TabsTrigger>
@@ -616,6 +625,9 @@ export default function FamiliarsTab() {
             </TabsTrigger>
             <TabsTrigger value="bonds" className="data-[state=active]:bg-red-600">
               Bonds
+            </TabsTrigger>
+            <TabsTrigger value="children" className="data-[state=active]:bg-red-600">
+              Children
             </TabsTrigger>
           </TabsList>
 
@@ -1195,6 +1207,10 @@ export default function FamiliarsTab() {
                 )
               })}
             </div>
+          </TabsContent>
+
+          <TabsContent value="children" className="pt-4">
+            <ChildrenPlannerTab />
           </TabsContent>
         </Tabs>
       </CardContent>

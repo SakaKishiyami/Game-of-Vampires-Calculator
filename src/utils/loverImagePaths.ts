@@ -15,7 +15,7 @@ export function sameNamePairImageBases(femaleName: string, maleName: string): [s
 }
 
 // Lover base name → skin file keys (without .png)
-const LOVER_SKINS: Record<string, string[]> = {
+export const LOVER_SKINS: Record<string, string[]> = {
   Ace: ['AceSkin1'],
   Agneyi: ['AgneyiSkin1'],
   Aisha: ['AishaSkin1', 'AishaSkin2'],

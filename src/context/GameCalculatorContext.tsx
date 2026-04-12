@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react'
 import { initialBooks, type BooksState } from '@/data/books'
 import { createInitialFamiliarsState, type FamiliarsState } from '@/data/familiars'
 import { initialAuras } from '@/data/auras'
@@ -14,6 +14,13 @@ import { calculateDynamicAuraLevels, calculateAuraBonuses } from '@/utils/calcul
 import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier } from '@/utils/loverScarletBondAuras'
 import { calculateTotalConclaveBonus, calculateConclaveUpgrades } from '@/utils/calculators/conclaveCalculations'
 import { calculateCourtyardDom } from '@/utils/calculators/courtyardCalculations'
+import {
+  aggregateLedger,
+  totalCollectionExpFromSkins,
+  applyActiveWardenSkinBonusesToTotals,
+  totalLoverSkinIntimacy,
+} from '@/utils/calculators/skinLedgerCalculations'
+import { normalizeLoverSkinRarities, normalizeWardenSkinRarityOverrides } from '@/utils/calculators/skinRarityNormalize'
 import { formatItemName, getItemCategory, getItemsByCategory, groupItemsByType, renderStars, getDisplayValue } from '@/utils/helpers'
 import type {
   BaseAttributes,
@@ -34,6 +41,10 @@ import type {
   ScarletBondAffinity,
   DomIncreasePerStar,
   GameCalculatorState,
+  WardenSkinLevels,
+  WardenSkinRarityOverrides,
+  LoverSkinRarities,
+  ChildPlannerEntry,
 } from '@/types'
 
 interface GameCalculatorContextType {
@@ -73,6 +84,22 @@ interface GameCalculatorContextType {
   setLoverOwnedSkins: React.Dispatch<React.SetStateAction<LoverOwnedSkins>>
   loverActiveSkins: LoverActiveSkins
   setLoverActiveSkins: React.Dispatch<React.SetStateAction<LoverActiveSkins>>
+  wardenSkinLevels: WardenSkinLevels
+  setWardenSkinLevels: React.Dispatch<React.SetStateAction<WardenSkinLevels>>
+  wardenSkinRarityOverrides: WardenSkinRarityOverrides
+  setWardenSkinRarityOverrides: React.Dispatch<React.SetStateAction<WardenSkinRarityOverrides>>
+  loverSkinRarities: LoverSkinRarities
+  setLoverSkinRarities: React.Dispatch<React.SetStateAction<LoverSkinRarities>>
+  /** Collection ledger + derived multipliers (read-only). */
+  skinLedger: {
+    collectionExp: number
+    tier: number
+    childrenTotalAttrsPct: number
+    wardenAllFlat: number
+    skinBaseBoostSteps: number
+    intimacyFromLoversSkins: number
+    familiarTotalAttrsMultiplier: number
+  }
   wardenStats: WardenStats
   setWardenStats: React.Dispatch<React.SetStateAction<WardenStats>>
   uploadedWardenData: UploadedWardenData
@@ -113,6 +140,8 @@ interface GameCalculatorContextType {
   setFamiliars: React.Dispatch<React.SetStateAction<FamiliarsState>>
   nestProgress: Record<string, string>
   setNestProgress: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  childrenPlannerEntries: ChildPlannerEntry[]
+  setChildrenPlannerEntries: React.Dispatch<React.SetStateAction<ChildPlannerEntry[]>>
   
   // Inventory
   inventory: Inventory
@@ -249,6 +278,9 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   const [wardenActiveSkins, setWardenActiveSkins] = useState<WardenActiveSkins>({})
   const [loverOwnedSkins, setLoverOwnedSkins] = useState<LoverOwnedSkins>({})
   const [loverActiveSkins, setLoverActiveSkins] = useState<LoverActiveSkins>({})
+  const [wardenSkinLevels, setWardenSkinLevels] = useState<WardenSkinLevels>({})
+  const [wardenSkinRarityOverrides, setWardenSkinRarityOverrides] = useState<WardenSkinRarityOverrides>({})
+  const [loverSkinRarities, setLoverSkinRarities] = useState<LoverSkinRarities>({})
   const getWardenImageSrc = (wardenName: string): string => {
     const active = wardenActiveSkins[wardenName]
     if (!active || active === 'base') return `/Gov/Wardens/BaseWardens/${wardenName}.png`
@@ -281,6 +313,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   // Inventory
   const [familiars, setFamiliars] = useState<FamiliarsState>(createInitialFamiliarsState())
   const [nestProgress, setNestProgress] = useState<Record<string, string>>({})
+  const [childrenPlannerEntries, setChildrenPlannerEntries] = useState<ChildPlannerEntry[]>([])
   const [inventory, setInventory] = useState<Inventory>({})
   const [inventoryImages, setInventoryImages] = useState<InventoryImages>({})
 
@@ -359,6 +392,12 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       wardenCounts,
       selectedWardens,
       wardenSkins,
+      wardenActiveSkins,
+      wardenSkinLevels,
+      wardenSkinRarityOverrides,
+      loverOwnedSkins,
+      loverActiveSkins,
+      loverSkinRarities,
       wardenStats,
       uploadedWardenData,
       inventory,
@@ -382,17 +421,21 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       talentScrolls,
       talentScripts,
       familiars,
+      childrenPlannerEntries,
     }
     
     const { exportGameData: exportFn } = require('@/utils/exportImport')
     exportFn(state)
   }, [
     baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade,
-    courtyard, wardenCounts, selectedWardens, wardenSkins, wardenStats,
+    courtyard, wardenCounts, selectedWardens, wardenSkins, wardenActiveSkins,
+    wardenSkinLevels, wardenSkinRarityOverrides, loverOwnedSkins, loverActiveSkins,
+    loverSkinRarities, wardenStats,
     uploadedWardenData, inventory, inventoryImages, scarletBond,
     scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
     hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
-    hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars
+    hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars,
+    childrenPlannerEntries,
   ])
 
   const getExportState = useCallback((): Partial<GameCalculatorState> => {
@@ -407,6 +450,12 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     wardenCounts,
     selectedWardens,
     wardenSkins,
+    wardenActiveSkins,
+    wardenSkinLevels,
+    wardenSkinRarityOverrides,
+    loverOwnedSkins,
+    loverActiveSkins,
+    loverSkinRarities,
     wardenStats,
     uploadedWardenData,
     inventory,
@@ -430,14 +479,18 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     talentScrolls,
     talentScripts,
     familiars,
+    childrenPlannerEntries,
     }
   }, [
     baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade,
-    courtyard, wardenCounts, selectedWardens, wardenSkins, wardenStats,
+    courtyard, wardenCounts, selectedWardens, wardenSkins, wardenActiveSkins,
+    wardenSkinLevels, wardenSkinRarityOverrides, loverOwnedSkins, loverActiveSkins,
+    loverSkinRarities, wardenStats,
     uploadedWardenData, inventory, inventoryImages, scarletBond,
     scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
     hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
-    hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars
+    hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars,
+    childrenPlannerEntries,
   ])
 
   const importGameData = useCallback((data: Partial<GameCalculatorState>) => {
@@ -451,6 +504,12 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     if (data.wardenCounts) setWardenCounts(data.wardenCounts)
     if (data.selectedWardens) setSelectedWardens(data.selectedWardens)
     if (data.wardenSkins) setWardenSkins(data.wardenSkins)
+    if (data.wardenActiveSkins) setWardenActiveSkins(data.wardenActiveSkins)
+    if (data.wardenSkinLevels) setWardenSkinLevels(data.wardenSkinLevels)
+    if (data.wardenSkinRarityOverrides) setWardenSkinRarityOverrides(normalizeWardenSkinRarityOverrides(data.wardenSkinRarityOverrides))
+    if (data.loverOwnedSkins) setLoverOwnedSkins(data.loverOwnedSkins)
+    if (data.loverActiveSkins) setLoverActiveSkins(data.loverActiveSkins)
+    if (data.loverSkinRarities) setLoverSkinRarities(normalizeLoverSkinRarities(data.loverSkinRarities))
     if (data.wardenStats) setWardenStats(data.wardenStats)
     if (data.uploadedWardenData) setUploadedWardenData(data.uploadedWardenData)
     if (data.inventory) setInventory(data.inventory)
@@ -475,6 +534,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     if (data.talentScripts) setTalentScripts(data.talentScripts)
     if ((data as any).familiars) setFamiliars((data as any).familiars)
     if ((data as any).nestProgress) setNestProgress((data as any).nestProgress)
+    if (data.childrenPlannerEntries) setChildrenPlannerEntries(data.childrenPlannerEntries)
   }, [])
 
   // Helper function to sync inventory items with other systems
@@ -721,13 +781,20 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
 
   // Handle skin toggle
   const handleSkinToggle = useCallback((wardenName: string, skinName: string) => {
-    setWardenSkins((prev) => ({
-      ...prev,
-      [wardenName]: {
-        ...prev[wardenName],
-        [skinName]: !prev[wardenName]?.[skinName],
-      },
-    }))
+    setWardenSkins((prev) => {
+      const owned = !!prev[wardenName]?.[skinName]
+      const nextOwned = !owned
+      if (nextOwned) {
+        setWardenSkinLevels((lv) => ({
+          ...lv,
+          [wardenName]: { ...lv[wardenName], [skinName]: lv[wardenName]?.[skinName] ?? 1 },
+        }))
+      }
+      return {
+        ...prev,
+        [wardenName]: { ...prev[wardenName], [skinName]: nextOwned },
+      }
+    })
   }, [])
 
   // Handle inventory image upload
@@ -846,6 +913,31 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       }
     })
 
+    const collectionExp = totalCollectionExpFromSkins({
+      wardenSkins,
+      wardenSkinRarityOverrides,
+      loverOwnedSkins,
+      loverSkinRarities,
+    })
+    const ledgerAgg = aggregateLedger(collectionExp)
+    totalStrength += ledgerAgg.wardenAllFlat
+    totalAllure += ledgerAgg.wardenAllFlat
+    totalIntellect += ledgerAgg.wardenAllFlat
+    totalSpirit += ledgerAgg.wardenAllFlat
+
+    const skinAdd = { strength: 0, allure: 0, intellect: 0, spirit: 0 }
+    applyActiveWardenSkinBonusesToTotals(skinAdd, {
+      wardenSkins,
+      wardenActiveSkins,
+      wardenSkinLevels,
+      wardenSkinRarityOverrides,
+      ledgerSkinBaseBoostSteps: ledgerAgg.skinBaseBoostSteps,
+    })
+    totalStrength += skinAdd.strength
+    totalAllure += skinAdd.allure
+    totalIntellect += skinAdd.intellect
+    totalSpirit += skinAdd.spirit
+
     // Helper: compute scarlet bond attribute contributions from a given level source
     const s = resolveLoverSummonFlags(
       { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
@@ -914,7 +1006,29 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       totalDom,
       domIncrease
     }
-  }, [baseAttributes, books, conclave, wardenStats, scarletBond, optimizedBondLevels, courtyard, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, inventory])
+  }, [
+    baseAttributes,
+    books,
+    conclave,
+    wardenStats,
+    scarletBond,
+    optimizedBondLevels,
+    courtyard,
+    hasAgneyi,
+    hasCulann,
+    hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
+    inventory,
+    wardenSkins,
+    wardenActiveSkins,
+    wardenSkinLevels,
+    wardenSkinRarityOverrides,
+    loverOwnedSkins,
+    loverSkinRarities,
+  ])
 
   // Calculate optimized scarlet bond bonuses
   const calculateOptimizedScarletBondBonuses = useCallback(() => {
@@ -1041,6 +1155,32 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Calculate dynamic auras and aura bonuses
+  const skinLedger = useMemo(() => {
+    const collectionExp = totalCollectionExpFromSkins({
+      wardenSkins,
+      wardenSkinRarityOverrides,
+      loverOwnedSkins,
+      loverSkinRarities,
+    })
+    const ledger = aggregateLedger(collectionExp)
+    const intimacyFromLoversSkins = totalLoverSkinIntimacy(loverOwnedSkins, loverSkinRarities)
+    const familiarTotalAttrsMultiplier = 1 + ledger.childrenTotalAttrsPct / 100
+    return {
+      collectionExp,
+      tier: ledger.tier,
+      childrenTotalAttrsPct: ledger.childrenTotalAttrsPct,
+      wardenAllFlat: ledger.wardenAllFlat,
+      skinBaseBoostSteps: ledger.skinBaseBoostSteps,
+      intimacyFromLoversSkins,
+      familiarTotalAttrsMultiplier,
+    }
+  }, [
+    wardenSkins,
+    wardenSkinRarityOverrides,
+    loverOwnedSkins,
+    loverSkinRarities,
+  ])
+
   const computedDynamicAuras = calculateDynamicAuraLevels(
     auras,
     selectedWardens,
@@ -1103,6 +1243,13 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     setLoverOwnedSkins,
     loverActiveSkins,
     setLoverActiveSkins,
+    wardenSkinLevels,
+    setWardenSkinLevels,
+    wardenSkinRarityOverrides,
+    setWardenSkinRarityOverrides,
+    loverSkinRarities,
+    setLoverSkinRarities,
+    skinLedger,
     wardenStats,
     setWardenStats,
     uploadedWardenData,
@@ -1135,6 +1282,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     setFamiliars,
     nestProgress,
     setNestProgress,
+    childrenPlannerEntries,
+    setChildrenPlannerEntries,
     inventory,
     setInventory,
     inventoryImages,
