@@ -24,6 +24,7 @@ import WardensTab from "@/components/tabs/WardensTab"
 import ScarletBondTab from "@/components/tabs/ScarletBondTab"
 import InventoryTab from "@/components/tabs/InventoryTab"
 import SkinsTab from "@/components/tabs/SkinsTab"
+import ChildrenPlannerTab from "@/components/tabs/ChildrenPlannerTab"
 import { getAttributeColor, nonNegativeIntInputProps } from "@/utils/helpers"
 
 export default function GameCalculator() {
@@ -1000,7 +1001,7 @@ export default function GameCalculator() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-10 bg-gray-800 mb-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11 gap-1 bg-gray-800 mb-6">
             <TabsTrigger value="aura-bonuses" className="data-[state=active]:bg-red-600">
               Aura Bonuses
             </TabsTrigger>
@@ -1024,6 +1025,9 @@ export default function GameCalculator() {
             </TabsTrigger>
             <TabsTrigger value="inventory" className="data-[state=active]:bg-red-600">
               Inventory
+            </TabsTrigger>
+            <TabsTrigger value="children" className="data-[state=active]:bg-red-600">
+              Children
             </TabsTrigger>
             <TabsTrigger value="skins" className="data-[state=active]:bg-red-600">
               Skins
@@ -1071,6 +1075,10 @@ export default function GameCalculator() {
           {/* Inventory Tab */}
           <TabsContent value="inventory">
             <InventoryTab />
+          </TabsContent>
+
+          <TabsContent value="children">
+            <ChildrenPlannerTab />
           </TabsContent>
 
           <TabsContent value="skins">
