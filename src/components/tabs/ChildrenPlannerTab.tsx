@@ -37,6 +37,10 @@ export default function ChildrenPlannerTab() {
     () => computeMarriageSelection(childrenPlannerEntries, ringCounts),
     [childrenPlannerEntries, ringCounts]
   )
+  const sortedChildrenEntries = useMemo(
+    () => [...childrenPlannerEntries].sort((a, b) => b.totalAttributes - a.totalAttributes),
+    [childrenPlannerEntries]
+  )
 
   const setRing = (canonicalKey: string, count: number) => {
     updateInventoryItem(canonicalKey, Math.max(0, Math.floor(count)))
@@ -218,7 +222,7 @@ export default function ChildrenPlannerTab() {
                       </tr>
                     </thead>
                     <tbody>
-                      {childrenPlannerEntries.map((row) => {
+                      {sortedChildrenEntries.map((row) => {
                         const tier = childRankFromTotalAttributes(row.totalAttributes)
                         return (
                           <tr key={row.id} className="border-t border-gray-800">

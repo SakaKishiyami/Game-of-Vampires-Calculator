@@ -42,7 +42,8 @@ export function nonNegativeIntInputProps(
   onBlur: (e: ChangeEvent<HTMLInputElement>) => void
 } {
   const zeroShowsEmpty = options?.zeroShowsEmpty !== false
-  const display = zeroShowsEmpty && value === 0 ? '' : String(value)
+  const normalized = Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0
+  const display = zeroShowsEmpty && normalized === 0 ? '' : normalized.toLocaleString()
   return {
     type: 'text' as const,
     inputMode: 'numeric' as const,
@@ -54,7 +55,12 @@ export function nonNegativeIntInputProps(
         onCommit(0)
         return
       }
-      const n = parseInt(v, 10)
+      const digitsOnly = v.replace(/[^\d]/g, '')
+      if (digitsOnly === '') {
+        onCommit(0)
+        return
+      }
+      const n = parseInt(digitsOnly, 10)
       if (!Number.isNaN(n)) onCommit(Math.max(0, n))
     },
     onBlur: (e: ChangeEvent<HTMLInputElement>) => {
