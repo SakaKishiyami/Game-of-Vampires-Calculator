@@ -11,3 +11,9 @@ export const CHILD_RING_KEY_ALIASES: Record<string, readonly string[]> = {
   RubyRing2: ['RubyRing2', 'rubyring2'],
   AmethystRing1: ['AmethystRing1', 'amethystring1', 'amethystRing1'],
 }
+
+export const CHILD_RING_IMAGES = {
+  blackPearl: '/InventoryAssets/Lover+ChildItems/BlackPearlRing3.png',
+  ruby: '/InventoryAssets/Lover+ChildItems/RubyRing2.png',
+  amethyst: '/InventoryAssets/Lover+ChildItems/AmethystRing1.png',
+} as const

@@ -9,7 +9,7 @@ export const WARDEN_CATALOG = [
   { name: "Max", group: "tyrants", attributes: ["Spirit", "Strength"], tier: 5, skins: ["MaxSkin1"] },
   { name: "Erzsebet", group: "tyrants", attributes: ["Allure", "Intellect"], tier: 5, skins: ["ErzsebetSkin1"] },
   { name: "Maria", group: "tyrants", attributes: ["Balance"], tier: 5, skins: ["MariaSkin1"] },
-  { name: "Eddie", group: "noir", attributes: ["Strength"], tier: 5, skins: ["EddieSkin1"] },
+  { name: "Dahlia", group: "noir", attributes: ["Strength"], tier: 5, skins: ["EddieSkin1"] },
   { name: "Scarlet", group: "noir", attributes: ["Allure"], tier: 5, skins: ["ScarletSkin1"] },
   { name: "Sam", group: "noir", attributes: ["Intellect"], tier: 5, skins: ["SamSkin1"] },
   { name: "Grendel", group: "noir", attributes: ["Spirit"], tier: 5, skins: ["GrendelSkin1"] },

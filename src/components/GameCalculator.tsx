@@ -26,6 +26,7 @@ import InventoryTab from "@/components/tabs/InventoryTab"
 import SkinsTab from "@/components/tabs/SkinsTab"
 import ChildrenPlannerTab from "@/components/tabs/ChildrenPlannerTab"
 import { getAttributeColor, nonNegativeIntInputProps } from "@/utils/helpers"
+import { migrateEddieToDahliaInPartialState } from "@/utils/migrateEddieToDahlia"
 
 export default function GameCalculator() {
   const [activeTab, setActiveTab] = useState(() => {
@@ -162,7 +163,7 @@ export default function GameCalculator() {
     try {
       const savedData = localStorage.getItem('gameCalculatorData')
       if (savedData) {
-        const parsedData = JSON.parse(savedData)
+        const parsedData = migrateEddieToDahliaInPartialState(JSON.parse(savedData) as Record<string, unknown>) as any
         
         setBaseAttributes(parsedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
         setVipLevel(parsedData.vipLevel || 1)
@@ -345,7 +346,7 @@ export default function GameCalculator() {
     const reader = new FileReader()
     reader.onload = (e) => {
       try {
-        const importedData = JSON.parse(e.target?.result as string)
+        const importedData = migrateEddieToDahliaInPartialState(JSON.parse(e.target?.result as string) as Record<string, unknown>) as any
         
         setBaseAttributes(importedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
         setVipLevel(importedData.vipLevel || 1)
@@ -531,61 +532,62 @@ export default function GameCalculator() {
   }
 
   const loadCloudData = (data: any) => {
-    if (data.baseAttributes) setBaseAttributes(data.baseAttributes)
-    if (data.vipLevel !== undefined) setVipLevel(data.vipLevel)
-    if (data.lordLevel) setLordLevel(data.lordLevel)
-    if (data.books) setBooks(data.books)
-    if (data.conclave) setConclave(data.conclave)
-    if (data.conclaveUpgrade) setConclaveUpgrade(data.conclaveUpgrade)
-    if (data.domIncreasePerStar) setDomIncreasePerStar(data.domIncreasePerStar)
-    if (data.courtyard) setCourtyard(data.courtyard)
-    if (data.wardenCounts) setWardenCounts(data.wardenCounts)
-    if (data.selectedWardens) setSelectedWardens(data.selectedWardens)
-    if (data.hasNyx !== undefined) setHasNyx(data.hasNyx)
-    if (data.hasDracula !== undefined) setHasDracula(data.hasDracula)
-    if (data.hasVictor !== undefined) setHasVictor(data.hasVictor)
-    if (data.hasFrederick !== undefined) setHasFrederick(data.hasFrederick)
-    if (data.auras) setAuras(data.auras)
-    if (data.wardenStats) setWardenStats(data.wardenStats)
-    if (data.uploadedWardenData) setUploadedWardenData(data.uploadedWardenData)
-    if (data.scarletBond) setScarletBond(data.scarletBond)
-    if (data.scarletBondAffinity) setScarletBondAffinity(data.scarletBondAffinity)
-    if (data.optimizedBondLevels) setOptimizedBondLevels(data.optimizedBondLevels)
-    if (data.hasAgneyi !== undefined) setHasAgneyi(data.hasAgneyi)
-    if (data.hasCulann !== undefined) setHasCulann(data.hasCulann)
-    if (data.hasHela !== undefined) setHasHela(data.hasHela)
-    if (data.hasDionysus !== undefined) setHasDionysus(data.hasDionysus)
-    if (data.hasMaya !== undefined) setHasMaya(data.hasMaya)
-    if (data.hasEmber !== undefined) setHasEmber(data.hasEmber)
-    if (data.hasAsh !== undefined) setHasAsh(data.hasAsh)
-    if (data.hasFrances !== undefined) setHasFrances(data.hasFrances)
-    if (data.hasRaven !== undefined) setHasRaven(data.hasRaven)
-    if (data.hasMary !== undefined) setHasMary(data.hasMary)
-    if (data.hasInanna !== undefined) setHasInanna(data.hasInanna)
-    if (data.hasOtchigon !== undefined) setHasOtchigon(data.hasOtchigon)
-    if (data.hasSkylar !== undefined) setHasSkylar(data.hasSkylar)
-    if (data.hasBess !== undefined) setHasBess(data.hasBess)
-    if (data.hasRoxana !== undefined) setHasRoxana(data.hasRoxana)
-    if (data.hasAisha !== undefined) setHasAisha(data.hasAisha)
-    if (data.hasAntonia !== undefined) setHasAntonia(data.hasAntonia)
-    if (data.hasGabrielle !== undefined) setHasGabrielle(data.hasGabrielle)
-    if (data.hasMairi !== undefined) setHasMairi(data.hasMairi)
-    if (data.hasAretha !== undefined) setHasAretha(data.hasAretha)
-    if (data.hasRegina !== undefined) setHasRegina(data.hasRegina)
-    if (data.hasAva !== undefined) setHasAva(data.hasAva)
-    if (data.hasAlexis !== undefined) setHasAlexis(data.hasAlexis)
-    if (data.hasElaine !== undefined) setHasElaine(data.hasElaine)
-    if (data.hasSuria !== undefined) setHasSuria(data.hasSuria)
-    if (data.hasCordelia !== undefined) setHasCordelia(data.hasCordelia)
-    if (data.hasHanna !== undefined) setHasHanna(data.hasHanna)
-    if (data.hasElizabeth !== undefined) setHasElizabeth(data.hasElizabeth)
-    if (data.hasMichelle !== undefined) setHasMichelle(data.hasMichelle)
-    if (data.hasHarriet !== undefined) setHasHarriet(data.hasHarriet)
-    if (data.hasJohanna !== undefined) setHasJohanna(data.hasJohanna)
-    if (data.hasLucy !== undefined) setHasLucy(data.hasLucy)
-    if (data.hasRuna !== undefined) setHasRuna(data.hasRuna)
-    if (data.talents) setTalents(data.talents)
-    if (data.inventory) setInventory(data.inventory)
+    const d = migrateEddieToDahliaInPartialState(data as Record<string, unknown>) as typeof data
+    if (d.baseAttributes) setBaseAttributes(d.baseAttributes)
+    if (d.vipLevel !== undefined) setVipLevel(d.vipLevel)
+    if (d.lordLevel) setLordLevel(d.lordLevel)
+    if (d.books) setBooks(d.books)
+    if (d.conclave) setConclave(d.conclave)
+    if (d.conclaveUpgrade) setConclaveUpgrade(d.conclaveUpgrade)
+    if (d.domIncreasePerStar) setDomIncreasePerStar(d.domIncreasePerStar)
+    if (d.courtyard) setCourtyard(d.courtyard)
+    if (d.wardenCounts) setWardenCounts(d.wardenCounts)
+    if (d.selectedWardens) setSelectedWardens(d.selectedWardens)
+    if (d.hasNyx !== undefined) setHasNyx(d.hasNyx)
+    if (d.hasDracula !== undefined) setHasDracula(d.hasDracula)
+    if (d.hasVictor !== undefined) setHasVictor(d.hasVictor)
+    if (d.hasFrederick !== undefined) setHasFrederick(d.hasFrederick)
+    if (d.auras) setAuras(d.auras)
+    if (d.wardenStats) setWardenStats(d.wardenStats)
+    if (d.uploadedWardenData) setUploadedWardenData(d.uploadedWardenData)
+    if (d.scarletBond) setScarletBond(d.scarletBond)
+    if (d.scarletBondAffinity) setScarletBondAffinity(d.scarletBondAffinity)
+    if (d.optimizedBondLevels) setOptimizedBondLevels(d.optimizedBondLevels)
+    if (d.hasAgneyi !== undefined) setHasAgneyi(d.hasAgneyi)
+    if (d.hasCulann !== undefined) setHasCulann(d.hasCulann)
+    if (d.hasHela !== undefined) setHasHela(d.hasHela)
+    if (d.hasDionysus !== undefined) setHasDionysus(d.hasDionysus)
+    if (d.hasMaya !== undefined) setHasMaya(d.hasMaya)
+    if (d.hasEmber !== undefined) setHasEmber(d.hasEmber)
+    if (d.hasAsh !== undefined) setHasAsh(d.hasAsh)
+    if (d.hasFrances !== undefined) setHasFrances(d.hasFrances)
+    if (d.hasRaven !== undefined) setHasRaven(d.hasRaven)
+    if (d.hasMary !== undefined) setHasMary(d.hasMary)
+    if (d.hasInanna !== undefined) setHasInanna(d.hasInanna)
+    if (d.hasOtchigon !== undefined) setHasOtchigon(d.hasOtchigon)
+    if (d.hasSkylar !== undefined) setHasSkylar(d.hasSkylar)
+    if (d.hasBess !== undefined) setHasBess(d.hasBess)
+    if (d.hasRoxana !== undefined) setHasRoxana(d.hasRoxana)
+    if (d.hasAisha !== undefined) setHasAisha(d.hasAisha)
+    if (d.hasAntonia !== undefined) setHasAntonia(d.hasAntonia)
+    if (d.hasGabrielle !== undefined) setHasGabrielle(d.hasGabrielle)
+    if (d.hasMairi !== undefined) setHasMairi(d.hasMairi)
+    if (d.hasAretha !== undefined) setHasAretha(d.hasAretha)
+    if (d.hasRegina !== undefined) setHasRegina(d.hasRegina)
+    if (d.hasAva !== undefined) setHasAva(d.hasAva)
+    if (d.hasAlexis !== undefined) setHasAlexis(d.hasAlexis)
+    if (d.hasElaine !== undefined) setHasElaine(d.hasElaine)
+    if (d.hasSuria !== undefined) setHasSuria(d.hasSuria)
+    if (d.hasCordelia !== undefined) setHasCordelia(d.hasCordelia)
+    if (d.hasHanna !== undefined) setHasHanna(d.hasHanna)
+    if (d.hasElizabeth !== undefined) setHasElizabeth(d.hasElizabeth)
+    if (d.hasMichelle !== undefined) setHasMichelle(d.hasMichelle)
+    if (d.hasHarriet !== undefined) setHasHarriet(d.hasHarriet)
+    if (d.hasJohanna !== undefined) setHasJohanna(d.hasJohanna)
+    if (d.hasLucy !== undefined) setHasLucy(d.hasLucy)
+    if (d.hasRuna !== undefined) setHasRuna(d.hasRuna)
+    if (d.talents) setTalents(d.talents)
+    if (d.inventory) setInventory(d.inventory)
   }
 
   const toggleAutoLoadCloudSaves = () => {
@@ -724,7 +726,7 @@ export default function GameCalculator() {
     try {
       const autoSavedData = localStorage.getItem('gameCalculatorAutoSave')
       if (autoSavedData) {
-        const parsedData = JSON.parse(autoSavedData)
+        const parsedData = migrateEddieToDahliaInPartialState(JSON.parse(autoSavedData) as Record<string, unknown>) as any
         
         const lastSave = localStorage.getItem('gameCalculatorData')
         if (!lastSave) {
@@ -944,6 +946,12 @@ export default function GameCalculator() {
               <CardContent className="p-4 text-center">
                 <div className="text-3xl font-bold text-red-400">{totals.totalDom.toLocaleString()}</div>
                 <div className="text-sm text-gray-300">Total DOM</div>
+                {(totals.childrenMarriageDomGain ?? 0) > 0 && (
+                  <div className="text-xs text-gray-500 mt-2 leading-snug">
+                    Includes +{(totals.childrenMarriageDomGain ?? 0).toLocaleString()} from planned child marriages
+                    (Children tab).
+                  </div>
+                )}
               </CardContent>
             </Card>
             <Card className="bg-gray-800/50 border-gray-600">

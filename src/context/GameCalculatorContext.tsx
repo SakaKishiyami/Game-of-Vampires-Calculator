@@ -14,6 +14,7 @@ import { calculateDynamicAuraLevels, calculateAuraBonuses } from '@/utils/calcul
 import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier } from '@/utils/loverScarletBondAuras'
 import { calculateTotalConclaveBonus, calculateConclaveUpgrades } from '@/utils/calculators/conclaveCalculations'
 import { calculateCourtyardDom } from '@/utils/calculators/courtyardCalculations'
+import { computeMarriageSelection, readAllRingCounts } from '@/utils/calculators/childrenPlannerCalculations'
 import {
   aggregateLedger,
   totalCollectionExpFromSkins,
@@ -21,6 +22,7 @@ import {
   totalLoverSkinIntimacy,
 } from '@/utils/calculators/skinLedgerCalculations'
 import { normalizeLoverSkinRarities, normalizeWardenSkinRarityOverrides } from '@/utils/calculators/skinRarityNormalize'
+import { migrateEddieToDahliaInPartialState } from '@/utils/migrateEddieToDahlia'
 import { formatItemName, getItemCategory, getItemsByCategory, groupItemsByType, renderStars, getDisplayValue } from '@/utils/helpers'
 import type {
   BaseAttributes,
@@ -493,7 +495,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     childrenPlannerEntries,
   ])
 
-  const importGameData = useCallback((data: Partial<GameCalculatorState>) => {
+  const importGameData = useCallback((raw: Partial<GameCalculatorState>) => {
+    const data = migrateEddieToDahliaInPartialState(raw as Record<string, unknown>) as Partial<GameCalculatorState>
     if (data.baseAttributes) setBaseAttributes(data.baseAttributes)
     if (data.vipLevel !== undefined) setVipLevel(data.vipLevel)
     if (data.lordLevel) setLordLevel(data.lordLevel)
@@ -985,6 +988,16 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     totalIntellect += courtyardDom.intellect
     totalSpirit += courtyardDom.spirit
 
+    const { projectedMarriageDom: childrenMarriageDomGain } = computeMarriageSelection(
+      childrenPlannerEntries,
+      readAllRingCounts(inventory)
+    )
+    const marriagePerAttr = childrenMarriageDomGain / 4
+    totalStrength += marriagePerAttr
+    totalAllure += marriagePerAttr
+    totalIntellect += marriagePerAttr
+    totalSpirit += marriagePerAttr
+
     // Current DOM = sum of attributes with current bond levels
     const baseDom = Math.round(totalStrength + totalAllure + totalIntellect + totalSpirit)
 
@@ -1004,7 +1017,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       totalSpirit,
       baseDom,
       totalDom,
-      domIncrease
+      domIncrease,
+      childrenMarriageDomGain,
     }
   }, [
     baseAttributes,
@@ -1014,6 +1028,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     scarletBond,
     optimizedBondLevels,
     courtyard,
+    childrenPlannerEntries,
     hasAgneyi,
     hasCulann,
     hasHela,

@@ -7,6 +7,17 @@ export function loverPairImageCandidates(namePart: string): string[] {
   return [`/Gov/Lovers/BaseLovers/${n}.png`, `/Gov/Lovers/BaseLovers/${n}.PNG`]
 }
 
+/** Extra portrait paths (e.g. unreleased) tried before `/Gov/Lovers/BaseLovers/{Name}.png`. */
+const LOVER_EXTRA_BASE_IMAGE_CANDIDATES: Record<string, readonly string[]> = {
+  Dahlia: ['/Gov/Lovers/BaseLovers/Unreleased/Dahlia.png', '/Gov/Lovers/BaseLovers/Unreleased/Dahlia.PNG'],
+}
+
+export function loverBaseImageCandidates(namePart: string): string[] {
+  const n = namePart.trim()
+  const extra = LOVER_EXTRA_BASE_IMAGE_CANDIDATES[n] ?? []
+  return [...extra, ...loverPairImageCandidates(n)]
+}
+
 /** "Raven/Raven" → RavenFemale, RavenMale */
 export function sameNamePairImageBases(femaleName: string, maleName: string): [string, string] {
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
@@ -37,6 +48,7 @@ export const LOVER_SKINS: Record<string, string[]> = {
   Chandra: ['ChandraSkin1'],
   Cordelia: ['CordeliaSkin1'],
   Culann: ['CulannSkin1'],
+  Dahlia: ['EddieSkin1'],
   Dionysus: ['DionysusSkin1'],
   Elaine: ['ElaineSkin1'],
   Elizabeth: ['ElizabethSkin1'],
@@ -99,35 +111,35 @@ export interface LoverSkinSlot {
 export function getLoverSkinSlots(loverField: string): LoverSkinSlot[] {
   if (!loverField.includes('/')) {
     const name = loverField.trim()
-    return [{ baseName: name, displayName: name, baseImgCandidates: loverPairImageCandidates(name), skins: LOVER_SKINS[name] ?? [], isPaired: false }]
+    return [{ baseName: name, displayName: name, baseImgCandidates: loverBaseImageCandidates(name), skins: LOVER_SKINS[name] ?? [], isPaired: false }]
   }
   const parts = loverField.split('/').map((s) => s.trim())
-  if (parts.length !== 2) return [{ baseName: loverField, displayName: loverField, baseImgCandidates: loverPairImageCandidates(loverField), skins: [], isPaired: false }]
+  if (parts.length !== 2) return [{ baseName: loverField, displayName: loverField, baseImgCandidates: loverBaseImageCandidates(loverField), skins: [], isPaired: false }]
   const [a, b] = parts
   if (a.toLowerCase() === b.toLowerCase()) {
     const [fBase, mBase] = sameNamePairImageBases(a, b)
     return [
-      { baseName: fBase, displayName: `${a} (F)`, baseImgCandidates: loverPairImageCandidates(fBase), skins: LOVER_SKINS[fBase] ?? [], isPaired: true },
-      { baseName: mBase, displayName: `${b} (M)`, baseImgCandidates: loverPairImageCandidates(mBase), skins: LOVER_SKINS[mBase] ?? [], isPaired: true },
+      { baseName: fBase, displayName: `${a} (F)`, baseImgCandidates: loverBaseImageCandidates(fBase), skins: LOVER_SKINS[fBase] ?? [], isPaired: true },
+      { baseName: mBase, displayName: `${b} (M)`, baseImgCandidates: loverBaseImageCandidates(mBase), skins: LOVER_SKINS[mBase] ?? [], isPaired: true },
     ]
   }
   return [
-    { baseName: a, displayName: a, baseImgCandidates: loverPairImageCandidates(a), skins: LOVER_SKINS[a] ?? [], isPaired: true },
-    { baseName: b, displayName: b, baseImgCandidates: loverPairImageCandidates(b), skins: LOVER_SKINS[b] ?? [], isPaired: true },
+    { baseName: a, displayName: a, baseImgCandidates: loverBaseImageCandidates(a), skins: LOVER_SKINS[a] ?? [], isPaired: true },
+    { baseName: b, displayName: b, baseImgCandidates: loverBaseImageCandidates(b), skins: LOVER_SKINS[b] ?? [], isPaired: true },
   ]
 }
 
 export function getLoverPortraitSrcs(loverField: string): string[][] {
   if (!loverField.includes('/')) {
-    return [loverPairImageCandidates(loverField)]
+    return [loverBaseImageCandidates(loverField)]
   }
   const parts = loverField.split('/').map((s) => s.trim())
-  if (parts.length !== 2) return [loverPairImageCandidates(loverField)]
+  if (parts.length !== 2) return [loverBaseImageCandidates(loverField)]
 
   const [a, b] = parts
   if (a.toLowerCase() === b.toLowerCase()) {
     const [f, m] = sameNamePairImageBases(a, b)
-    return [loverPairImageCandidates(f), loverPairImageCandidates(m)]
+    return [loverBaseImageCandidates(f), loverBaseImageCandidates(m)]
   }
-  return [loverPairImageCandidates(a), loverPairImageCandidates(b)]
+  return [loverBaseImageCandidates(a), loverBaseImageCandidates(b)]
 }
