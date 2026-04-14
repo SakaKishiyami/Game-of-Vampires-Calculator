@@ -1,6 +1,7 @@
-import type { SelectedWardens } from '@/types'
+import type { Inventory, SelectedWardens } from '@/types'
 import type { WardenCatalogEntry } from '@/data/wardenCatalog'
 import { initialAuras } from '@/data/auras'
+import { resolveLoverSummonFlags } from '@/utils/loverScarletBondAuras'
 
 /** Lord-level reward wardens (Elder/Ancient picks). Player chooses which of the four they own up to their grant cap. */
 export const LORD_UPGRADE_WARDENS = ['Temujin', 'Charlemagne', 'Josey', 'Erik'] as const
@@ -120,11 +121,14 @@ export type ScarletBondVisibilityContext = WardenOwnershipContext & {
   hasMaya: boolean
   hasEmber: boolean
   hasAsh: boolean
+  /** Used with summon flags so token thresholds match Scarlet Bond / aura logic (100 tokens, Heart of War, etc.). */
+  inventory: Inventory
 }
 
 /**
- * Scarlet bond card: VIP gate, summon/token lovers (Wild Hunt singles, Maya, Ember/Ash), then warden ownership.
- * Dual and other lovers default to “owned” (no checkbox); only those series require flags above.
+ * Scarlet bond card: VIP gate, summon lovers (Wild Hunt singles, Maya, Ember/Ash) via checkbox **or** token rules
+ * (`resolveLoverSummonFlags`), then warden ownership.
+ * Dual and other lovers default to “owned” (no checkbox); only those series require flags/tokens above.
  */
 export function isScarletBondCardVisible(
   bond: { lover: string; warden: string; vip: number },
@@ -133,14 +137,27 @@ export function isScarletBondCardVisible(
 ): boolean {
   if (bond.vip > ctx.vipLevel) return false
 
-  if (bond.lover === 'Agneyi' && !ctx.hasAgneyi) return false
-  if (bond.lover === 'Culann' && !ctx.hasCulann) return false
-  if (bond.lover === 'Hela' && !ctx.hasHela) return false
-  if (bond.lover === 'Dionysus' && !ctx.hasDionysus) return false
-  if (bond.lover === 'Maya' && !ctx.hasMaya) return false
+  const s = resolveLoverSummonFlags(
+    {
+      hasAgneyi: ctx.hasAgneyi,
+      hasCulann: ctx.hasCulann,
+      hasHela: ctx.hasHela,
+      hasDionysus: ctx.hasDionysus,
+      hasMaya: ctx.hasMaya,
+      hasEmber: ctx.hasEmber,
+      hasAsh: ctx.hasAsh,
+    },
+    ctx.inventory,
+  )
+
+  if (bond.lover === 'Agneyi' && !s.canAgneyi) return false
+  if (bond.lover === 'Culann' && !s.canCulann) return false
+  if (bond.lover === 'Hela' && !s.canHela) return false
+  if (bond.lover === 'Dionysus' && !s.canDionysus) return false
+  if (bond.lover === 'Maya' && !s.canMaya) return false
   if (bond.lover === 'Ember/Ash') {
     if (!ctx.hasNyx) return false
-    if (!ctx.hasEmber || !ctx.hasAsh) return false
+    if (!s.canEmber || !s.canAsh) return false
   }
 
   return isWardenOwned(bond.warden, ctx, catalog)

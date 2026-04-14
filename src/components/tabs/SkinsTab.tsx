@@ -16,7 +16,8 @@ import {
   resolveWardenSkinRarity,
 } from '@/utils/calculators/skinLedgerCalculations'
 import { nonNegativeIntInputProps } from '@/utils/helpers'
-import { isWardenOwned, type WardenOwnershipContext } from '@/utils/wardenOwnership'
+import { isWardenOwned, type WardenOwnershipContext, type ScarletBondVisibilityContext } from '@/utils/wardenOwnership'
+import { visibleLoverSkinBaseNames } from '@/utils/loverSkinVisibility'
 
 /** Same card art as Scarlet Bond lover skin checkboxes. */
 function loverSkinCardSrc(skinKey: string) {
@@ -90,6 +91,14 @@ export default function SkinsTab() {
     hasDracula,
     hasVictor,
     hasFrederick,
+    hasAgneyi,
+    hasCulann,
+    hasHela,
+    hasDionysus,
+    hasMaya,
+    hasEmber,
+    hasAsh,
+    inventory,
   } = useGameCalculator()
 
   const wardenOwnershipCtx = useMemo<WardenOwnershipContext>(
@@ -109,6 +118,42 @@ export default function SkinsTab() {
   const ownedWardenCatalog = useMemo(
     () => WARDEN_CATALOG.filter((w) => isWardenOwned(w.name, wardenOwnershipCtx, WARDEN_CATALOG)),
     [wardenOwnershipCtx],
+  )
+
+  const bondVisibilityCtx = useMemo<ScarletBondVisibilityContext>(
+    () => ({
+      ...wardenOwnershipCtx,
+      hasAgneyi,
+      hasCulann,
+      hasHela,
+      hasDionysus,
+      hasMaya,
+      hasEmber,
+      hasAsh,
+      inventory,
+    }),
+    [
+      wardenOwnershipCtx,
+      hasAgneyi,
+      hasCulann,
+      hasHela,
+      hasDionysus,
+      hasMaya,
+      hasEmber,
+      hasAsh,
+      inventory,
+    ],
+  )
+
+  const visibleLoverBases = useMemo(
+    () => visibleLoverSkinBaseNames(bondVisibilityCtx, WARDEN_CATALOG),
+    [bondVisibilityCtx],
+  )
+
+  const visibleLoverEntries = useMemo(
+    () =>
+      Object.entries(LOVER_SKINS).filter(([baseName, skins]) => skins.length > 0 && visibleLoverBases.has(baseName)),
+    [visibleLoverBases],
   )
 
   const setWardenRarity = (warden: string, skin: string, r: WardenSkinRarity) => {
@@ -221,15 +266,21 @@ export default function SkinsTab() {
         <CardHeader>
           <CardTitle className="text-purple-300">Lover skins (Epic / Legendary)</CardTitle>
           <p className="text-sm text-gray-400">
-            Mark skins owned in Scarlet Bond. Rarity: <strong>Epic</strong> (default) and <strong>Legendary</strong>.
-            Tier-1: Epic +200 intimacy / +50 EXP / +1% affinity; Legendary +500 / +100 / +2%. Active skin affinity
-            applies to bond suggestions for that lover.
+            Only lovers you can access (same rules as Scarlet Bond: VIP, summons, linked warden owned). Mark skins
+            owned here. Rarity: <strong>Epic</strong> (default) and <strong>Legendary</strong>. Tier-1: Epic +200
+            intimacy / +50 EXP / +1% affinity; Legendary +500 / +100 / +2%. Active skin affinity applies to bond
+            suggestions for that lover.
           </p>
         </CardHeader>
         <CardContent>
+          {visibleLoverEntries.length === 0 && (
+            <p className="text-sm text-gray-500 mb-4">
+              No lovers unlocked yet (raise VIP, select summons / lord rewards, or toggle special wardens so the
+              matching Scarlet Bond rows appear).
+            </p>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {Object.entries(LOVER_SKINS).map(([baseName, skins]) => {
-              if (!skins.length) return null
+            {visibleLoverEntries.map(([baseName, skins]) => {
               const owned = loverOwnedSkins[baseName] ?? {}
               const portraitCandidates = getLoverPortraitSrcs(baseName)[0] ?? []
               return (

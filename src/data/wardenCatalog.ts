@@ -57,7 +57,7 @@ export const WARDEN_CATALOG = [
   { name: "Victor", group: "other", attributes: ["Balance"], tier: 5, skins: ["VictorSkin1"] },
   { name: "Poe", group: "other", attributes: ["Balance"], tier: 5, skins: ["PoeSkin1"] },
   { name: "Candace", group: "other", attributes: ["Balance"], tier: 5, skins: ["CandaceSkin1", "CandaceSkin2"] },
-  { name: "Cesare", group: "other", attributes: [], tier: 5, skins: ["CesareSkin1"] },
+  { name: "Cesare", group: "tyrants", attributes: ["Intellect", "Strength"], tier: 5, skins: ["CesareSkin1"] },
   { name: "Charlemagne", group: "other", attributes: [], tier: 5, skins: ["CharlemagneSkin1"] },
   { name: "Thanatos", group: "other", attributes: [], tier: 5, skins: ["ThanatosSkin1"] },
 ]

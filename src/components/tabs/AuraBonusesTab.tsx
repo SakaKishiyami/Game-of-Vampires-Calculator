@@ -196,7 +196,7 @@ export default function AuraBonusesTab() {
                             <img
                               src={getWardenImageSrc(wardenName)}
                               alt={wardenName}
-                              className="w-14 h-14 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
+                              className="w-24 h-24 rounded object-contain object-top flex-shrink-0 bg-gray-800/40 p-1.5"
                               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                             />
                             <div className="flex-1 min-w-0">
@@ -290,7 +290,7 @@ export default function AuraBonusesTab() {
                         <img
                           src={imgSrc}
                           alt={loverName}
-                          className="w-12 h-12 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
+                          className="w-24 h-24 rounded object-contain object-top flex-shrink-0 bg-gray-800/40 p-1.5"
                           onError={(e) => {
                             const img = e.target as HTMLImageElement
                             if (!img.src.includes('.PNG')) img.src = imgSrc.replace('.png', '.PNG')
@@ -321,7 +321,7 @@ export default function AuraBonusesTab() {
                         <img
                           src={getWardenImageSrc(wardenName)}
                           alt={wardenName}
-                          className="w-12 h-12 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
+                          className="w-24 h-24 rounded object-contain object-top flex-shrink-0 bg-gray-800/40 p-1.5"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                         />
                         <div className="flex-1 min-w-0">
@@ -351,7 +351,7 @@ export default function AuraBonusesTab() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {hasNyx && (
                     <div className="flex items-center gap-3 p-3 rounded bg-gray-700/30">
-                      <img src={getWardenImageSrc("Nyx")} alt="Nyx" className="w-14 h-14 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
+                      <img src={getWardenImageSrc("Nyx")} alt="Nyx" className="w-24 h-24 rounded object-contain object-top flex-shrink-0 bg-gray-800/40 p-1.5"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                       <div className="flex-1">
                         <span className="text-white font-medium text-sm">Nyx</span>
@@ -365,7 +365,7 @@ export default function AuraBonusesTab() {
                   )}
                   {hasDracula && (
                     <div className="flex items-center gap-3 p-3 rounded bg-gray-700/30">
-                      <img src={getWardenImageSrc("Dracula")} alt="Dracula" className="w-14 h-14 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
+                      <img src={getWardenImageSrc("Dracula")} alt="Dracula" className="w-24 h-24 rounded object-contain object-top flex-shrink-0 bg-gray-800/40 p-1.5"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                       <div className="flex-1">
                         <span className="text-white font-medium text-sm">Dracula</span>

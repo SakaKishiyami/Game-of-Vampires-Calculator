@@ -235,6 +235,7 @@ export default function ScarletBondTab() {
       hasMaya,
       hasEmber,
       hasAsh,
+      inventory,
     }),
     [
       selectedWardens,
@@ -252,6 +253,7 @@ export default function ScarletBondTab() {
       hasMaya,
       hasEmber,
       hasAsh,
+      inventory,
     ],
   )
 
@@ -801,7 +803,7 @@ export default function ScarletBondTab() {
                                     <div key={skinKey} className="flex flex-col items-center gap-0.5">
                                       <img src={`/Gov/SkinCards/LoverSkins/${skinKey}.png`} className="w-12 h-12 object-contain"
                                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                                      <div className="flex items-center gap-0.5">
+                                      <div className="inline-flex items-center gap-1">
                                         <Checkbox
                                           id={`ls-own-${slot.baseName}-${skinKey}`}
                                           checked={loverOwnedSkins[slot.baseName]?.[skinKey] || false}
@@ -809,9 +811,12 @@ export default function ScarletBondTab() {
                                             ...prev,
                                             [slot.baseName]: { ...prev[slot.baseName], [skinKey]: !prev[slot.baseName]?.[skinKey] },
                                           }))}
-                                          className="border-gray-400 w-3 h-3"
+                                          className="border-gray-400 shrink-0"
                                         />
-                                        <Label htmlFor={`ls-own-${slot.baseName}-${skinKey}`} className="text-[9px] text-gray-300 cursor-pointer">
+                                        <Label
+                                          htmlFor={`ls-own-${slot.baseName}-${skinKey}`}
+                                          className="text-[9px] text-gray-300 cursor-pointer leading-none py-0"
+                                        >
                                           {skinKey.replace(/^.*Skin/, 'S')}
                                         </Label>
                                       </div>
