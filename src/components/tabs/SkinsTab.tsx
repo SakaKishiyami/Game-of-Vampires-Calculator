@@ -77,6 +77,7 @@ export default function SkinsTab() {
     wardenSkinRarityOverrides,
     setWardenSkinRarityOverrides,
     loverOwnedSkins,
+    setLoverOwnedSkins,
     loverSkinRarities,
     setLoverSkinRarities,
     getWardenImageSrc,
@@ -95,6 +96,12 @@ export default function SkinsTab() {
       [base]: { ...prev[base], [skin]: r },
     }))
   }
+  const toggleLoverSkinOwned = (base: string, skin: string) => {
+    setLoverOwnedSkins((prev) => ({
+      ...prev,
+      [base]: { ...prev[base], [skin]: !prev[base]?.[skin] },
+    }))
+  }
 
   const setWardenSkinLevel = (warden: string, skin: string, n: number) => {
     setWardenSkinLevels((prev) => ({
@@ -103,10 +110,17 @@ export default function SkinsTab() {
     }))
   }
   const toggleWardenSkinOwned = (warden: string, skin: string) => {
-    setWardenSkins((prev) => ({
-      ...prev,
-      [warden]: { ...prev[warden], [skin]: !prev[warden]?.[skin] },
-    }))
+    setWardenSkins((prev) => {
+      const nextOwned = !prev[warden]?.[skin]
+      setWardenSkinLevels((lv) => ({
+        ...lv,
+        [warden]: { ...lv[warden], [skin]: nextOwned ? 1 : 0 },
+      }))
+      return {
+        ...prev,
+        [warden]: { ...prev[warden], [skin]: nextOwned },
+      }
+    })
   }
 
   return (
@@ -184,54 +198,73 @@ export default function SkinsTab() {
             applies to bond suggestions for that lover.
           </p>
         </CardHeader>
-        <CardContent className="space-y-3">
-          {Object.entries(LOVER_SKINS).map(([baseName, skins]) => {
-            if (!skins.length) return null
-            const owned = loverOwnedSkins[baseName]
-            if (!owned || !Object.keys(owned).some((k) => owned[k])) return null
-            const portraitCandidates = getLoverPortraitSrcs(baseName)[0] ?? []
-            return (
-              <div key={baseName} className="border border-gray-700 rounded-md p-3 space-y-2">
-                <div className="flex items-center gap-3">
-                  <UrlImageWithFallback
-                    candidates={portraitCandidates}
-                    alt={baseName}
-                    className="w-11 h-11 object-contain rounded border border-gray-700 bg-gray-900/60 shrink-0"
-                    emptyClassName="w-11 h-11 rounded border border-gray-700 bg-gray-900/60 shrink-0 flex items-center justify-center text-[9px] text-gray-500 text-center p-1"
-                  />
-                  <div className="font-medium text-white">{baseName}</div>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Object.entries(LOVER_SKINS).map(([baseName, skins]) => {
+              if (!skins.length) return null
+              const owned = loverOwnedSkins[baseName] ?? {}
+              const portraitCandidates = getLoverPortraitSrcs(baseName)[0] ?? []
+              return (
+                <div key={baseName} className="border border-gray-700 rounded-md p-3 space-y-2">
+                  <div className="flex items-center gap-3">
+                    <UrlImageWithFallback
+                      candidates={portraitCandidates}
+                      alt={baseName}
+                      className="w-11 h-11 object-contain rounded border border-gray-700 bg-gray-900/60 shrink-0"
+                      emptyClassName="w-11 h-11 rounded border border-gray-700 bg-gray-900/60 shrink-0 flex items-center justify-center text-[9px] text-gray-500 text-center p-1"
+                    />
+                    <div className="font-medium text-white">{baseName}</div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {skins.map((skinKey) => {
+                      const isOwned = !!owned[skinKey]
+                      const r = loverSkinRarities[baseName]?.[skinKey] ?? 1 /* 1 = purple */
+                      return (
+                        <div key={skinKey} className="rounded border border-gray-800 bg-gray-900/40 p-3 space-y-2">
+                          <div className="flex items-start gap-3">
+                            <img
+                              src={loverSkinCardSrc(skinKey)}
+                              alt=""
+                              className="w-20 h-20 object-contain rounded border border-gray-700 bg-gray-900/50 shrink-0"
+                              onError={(e) => {
+                                ;(e.target as HTMLImageElement).style.display = 'none'
+                              }}
+                            />
+                            <div className="min-w-0 flex-1">
+                              <Label className="text-gray-300 text-xs font-mono break-all">{skinKey}</Label>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Checkbox
+                                  id={`lover-skin-own-${baseName}-${skinKey}`}
+                                  checked={isOwned}
+                                  onCheckedChange={() => toggleLoverSkinOwned(baseName, skinKey)}
+                                  className="border-gray-400"
+                                />
+                                <Label htmlFor={`lover-skin-own-${baseName}-${skinKey}`} className="text-xs text-gray-300 cursor-pointer">
+                                  Owned
+                                </Label>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="text-gray-400 text-xs">Rarity</Label>
+                            <select
+                              className="block mt-1 bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white"
+                              value={String(r)}
+                              disabled={!isOwned}
+                              onChange={(e) => setLoverRarity(baseName, skinKey, parseLoverRarity(e.target.value))}
+                            >
+                              <option value="1">Epic</option>
+                              <option value="2">Legendary</option>
+                            </select>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
-                {skins.map((skinKey) => {
-                  if (!owned[skinKey]) return null
-                  const r = loverSkinRarities[baseName]?.[skinKey] ?? 1 /* 1 = purple */
-                  return (
-                    <div key={skinKey} className="flex flex-wrap items-center gap-3 text-sm">
-                      <img
-                        src={loverSkinCardSrc(skinKey)}
-                        alt=""
-                        className="w-14 h-14 object-contain rounded border border-gray-700 bg-gray-900/50 shrink-0"
-                        onError={(e) => {
-                          ;(e.target as HTMLImageElement).style.display = 'none'
-                        }}
-                      />
-                      <span className="text-gray-300 w-36 sm:w-44 truncate font-mono text-xs">{skinKey}</span>
-                      <select
-                        className="bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white"
-                        value={String(r)}
-                        onChange={(e) => setLoverRarity(baseName, skinKey, parseLoverRarity(e.target.value))}
-                      >
-                        <option value="1">Epic</option>
-                        <option value="2">Legendary</option>
-                      </select>
-                    </div>
-                  )
-                })}
-              </div>
-            )
-          })}
-          {Object.keys(loverOwnedSkins).every((b) => !loverOwnedSkins[b] || !Object.values(loverOwnedSkins[b]).some(Boolean)) && (
-            <p className="text-gray-500 text-sm">No lover skins marked owned yet — use Scarlet Bond to check owned skins.</p>
-          )}
+              )
+            })}
+          </div>
         </CardContent>
       </Card>
 
@@ -266,7 +299,7 @@ export default function SkinsTab() {
                   {skins.map((skinKey, idx) => {
                     const isOwned = !!wardenSkins[w.name]?.[skinKey]
                     const rarity = resolveWardenSkinRarity(w.name, skinKey, idx, skins.length, wardenSkinRarityOverrides)
-                    const level = wardenSkinLevels[w.name]?.[skinKey] ?? 1
+                    const level = isOwned ? (wardenSkinLevels[w.name]?.[skinKey] ?? 1) : 0
                     const flat0 = wardenSkinRarityFlat(rarity)
                     const preview = wardenSkinAttributeTotal(flat0, skinLedger.skinBaseBoostSteps, level)
                     return (

@@ -72,12 +72,6 @@ export default function BooksTab() {
     return `${category} Books`
   }
 
-  /** Short tag shown left of each count input (same as column category). */
-  const getBookTypeTag = (category: keyof BooksState) => {
-    if (category === 'Balanced') return 'MYS'
-    return category.slice(0, 3).toUpperCase()
-  }
-
   const getBookImage = (category: string, bookName: string) => {
     const assetName = bookImageMap[category]?.[bookName]
     if (!assetName) return null
@@ -132,12 +126,6 @@ export default function BooksTab() {
                             <div className="flex-1 min-w-0">
                               <div className="text-[11px] text-gray-300 leading-tight truncate">{bookName}</div>
                               <div className="flex items-center gap-1.5 mt-0.5">
-                                <span
-                                  className={`text-[10px] font-semibold tabular-nums w-8 shrink-0 text-right ${getAttributeColor(category)}`}
-                                  title={category === 'Balanced' ? 'Mystery / balanced' : `${category} book`}
-                                >
-                                  {getBookTypeTag(category)}
-                                </span>
                                 <Input
                                   className="bg-gray-800 border-gray-600 h-7 text-xs w-16 shrink-0 px-2"
                                   {...nonNegativeIntInputProps(count as number, (newCount) =>
