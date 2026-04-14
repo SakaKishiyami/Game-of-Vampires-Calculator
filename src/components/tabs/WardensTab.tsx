@@ -12,6 +12,13 @@ import { getDisplayValue, getAttributeColor, getAttributeBg, renderStars, nonNeg
 import { wardenGroups } from '@/data/wardens'
 import { WARDEN_CATALOG as allWardens } from '@/data/wardenCatalog'
 import { WARDEN_TALENT_PROFILES, talentCapFromWardenLevel, type TalentAttr } from '@/data/wardenTalentProfiles'
+import {
+  LORD_UPGRADE_WARDENS,
+  elderLordWardenGrantCount,
+  isWardenOwned,
+  showElderLordWardenSection,
+  type WardenOwnershipContext,
+} from '@/utils/wardenOwnership'
 import type { AttributeBreakdown, UploadedWardenData } from '@/types'
 
 function parseNumberWithSuffix(value: string): number {
@@ -168,7 +175,27 @@ export default function WardensTab() {
     isUploading, setIsUploading, uploadError, setUploadError,
     ocrProgress, setOcrProgress,
     talents,
+    vipLevel,
+    lordLevel,
   } = useGameCalculator()
+
+  const wardenOwnershipCtx = React.useMemo<WardenOwnershipContext>(
+    () => ({
+      selectedWardens,
+      vipLevel,
+      lordLevel,
+      hasNyx,
+      hasDracula,
+      hasVictor,
+      hasFrederick,
+    }),
+    [selectedWardens, vipLevel, lordLevel, hasNyx, hasDracula, hasVictor, hasFrederick],
+  )
+
+  const ownedWardens = React.useMemo(
+    () => allWardens.filter((w) => isWardenOwned(w.name, wardenOwnershipCtx, allWardens)),
+    [wardenOwnershipCtx],
+  )
 
   const [wardenTalentLevels, setWardenTalentLevels] = React.useState<Record<string, Record<TalentAttr, number[]>>>({})
   const [wardenTalentExp, setWardenTalentExp] = React.useState<Record<string, number>>({})
@@ -301,16 +328,20 @@ export default function WardensTab() {
     return stars
   }, [])
 
-  const eligibleWardensForAttr = (attr: TalentAttr) => {
-    return allWardens
-      .filter((w) => {
-        const p = WARDEN_TALENT_PROFILES[w.name]
-        if (!p) return false
-        return p.mainStat === 'Balance' || p.mainStat.toLowerCase() === attr || p.offStat?.toLowerCase() === attr
-      })
-      .map((w) => w.name)
-      .sort((a, b) => a.localeCompare(b))
-  }
+  const eligibleWardensForAttr = React.useCallback(
+    (attr: TalentAttr) => {
+      return allWardens
+        .filter((w) => {
+          const p = WARDEN_TALENT_PROFILES[w.name]
+          if (!p) return false
+          if (!isWardenOwned(w.name, wardenOwnershipCtx, allWardens)) return false
+          return p.mainStat === 'Balance' || p.mainStat.toLowerCase() === attr || p.offStat?.toLowerCase() === attr
+        })
+        .map((w) => w.name)
+        .sort((a, b) => a.localeCompare(b))
+    },
+    [wardenOwnershipCtx],
+  )
 
   const getPriorityPickerChoices = (attr: TalentAttr, slot: 0 | 1 | 2) => {
     const eligible = eligibleWardensForAttr(attr)
@@ -364,7 +395,7 @@ export default function WardensTab() {
         {/* Special Wardens */}
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-white mb-3">Special Wardens</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="flex flex-wrap gap-3">
             {([
               { name: "Nyx", id: "nyx", checked: hasNyx, onChange: setHasNyx, type: "Balance" },
               { name: "Dracula", id: "dracula", checked: hasDracula, onChange: setHasDracula, type: "Balance" },
@@ -373,7 +404,7 @@ export default function WardensTab() {
             ] as const).map((warden) => (
               <div
                 key={warden.id}
-                className={`flex items-stretch gap-3 rounded-lg p-2 border ${
+                className={`inline-flex w-fit max-w-full items-center gap-3 rounded-lg p-2 border ${
                   warden.checked ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-gray-700/50 border-gray-600'
                 }`}
               >
@@ -430,6 +461,46 @@ export default function WardensTab() {
           {/* Summons/Acquired Tab */}
           {activeWardenTab === "summons" && (
             <div className="space-y-6">
+              {showElderLordWardenSection(lordLevel) && (
+                <Card className="bg-gray-700/50 border-gray-600 border-amber-600/30">
+                  <CardHeader>
+                    <CardTitle className="text-amber-200">Lord tier reward wardens</CardTitle>
+                    <p className="text-sm text-gray-300">
+                      From Elder Lord onward you unlock these (in order): Elder 1 → 1, Elder 2 → 2, Elder 3 → 2, Elder 4 → 3, Elder 5 → 4, Ancient → all 4.
+                      Current unlocks: <span className="text-white font-medium">{elderLordWardenGrantCount(lordLevel)}</span> / {LORD_UPGRADE_WARDENS.length}.
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {LORD_UPGRADE_WARDENS.map((name, i) => {
+                        const grant = elderLordWardenGrantCount(lordLevel)
+                        const unlocked = i < grant
+                        return (
+                          <div
+                            key={name}
+                            className={`rounded-lg border p-2 flex flex-col items-center gap-1 ${
+                              unlocked ? 'border-green-500/40 bg-green-500/5' : 'border-gray-600 bg-gray-800/30 opacity-70'
+                            }`}
+                          >
+                            <div className="w-full h-28 flex items-center justify-center bg-gray-900/50 rounded">
+                              <img
+                                src={getWardenImageSrc(name)}
+                                alt={name}
+                                className="max-h-full max-w-full object-contain object-top"
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                              />
+                            </div>
+                            <div className="text-sm text-white font-medium">{name}</div>
+                            <div className={`text-xs ${unlocked ? 'text-green-400' : 'text-gray-500'}`}>
+                              {unlocked ? 'Unlocked' : 'Locked'}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
               {Object.entries(wardenGroups).map(([groupKey, wardens]) => (
                 <Card key={groupKey} className="bg-gray-700/50 border-gray-600">
                   <CardHeader>
@@ -733,7 +804,7 @@ export default function WardensTab() {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {[...allWardens].sort((a, b) => {
+                        {[...ownedWardens].sort((a, b) => {
                           const tot = (n: string) => (['strength', 'allure', 'intellect', 'spirit'] as const).reduce((s, k) => s + (wardenStats[n]?.[k] || 0), 0)
                           return tot(b.name) - tot(a.name)
                         }).map((warden) => {
@@ -904,13 +975,13 @@ export default function WardensTab() {
                                     <img
                                       src={getWardenImageSrc(picked)}
                                       alt={picked}
-                                      className="w-10 h-10 rounded object-contain bg-gray-900/70 p-1"
+                                      className="w-20 h-20 rounded-lg object-contain bg-gray-900/70 p-1"
                                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                                     />
                                     <span className="text-xs text-white truncate">{picked}</span>
                                   </div>
                                 ) : (
-                                  <div className="h-10 rounded border border-dashed border-gray-600 flex items-center justify-center text-xs text-gray-500">
+                                  <div className="h-20 rounded border border-dashed border-gray-600 flex items-center justify-center text-xs text-gray-500">
                                     Choose
                                   </div>
                                 )}
@@ -956,7 +1027,7 @@ export default function WardensTab() {
                                   <img
                                     src={getWardenImageSrc(w)}
                                     alt={w}
-                                    className="w-10 h-10 rounded object-contain bg-gray-950/60 p-1"
+                                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-contain bg-gray-950/60 p-1"
                                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                                   />
                                   <span className="text-xs text-white truncate">{w}</span>
@@ -989,7 +1060,7 @@ export default function WardensTab() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {allWardens.map((w) => {
+                    {ownedWardens.map((w) => {
                       const p = WARDEN_TALENT_PROFILES[w.name]
                       if (!p) return null
                       const plannerLevel = wardenStats[w.name]?.level ?? 1
@@ -1011,11 +1082,11 @@ export default function WardensTab() {
                         <div key={w.name} className="rounded border border-gray-700 bg-gray-900/40 p-3 space-y-2">
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-14 h-14 rounded bg-gray-800/60 p-1 flex-shrink-0">
+                              <div className="w-40 h-40 sm:w-44 sm:h-44 rounded-lg bg-gray-800/60 p-2 flex-shrink-0">
                                 <img
                                   src={getWardenImageSrc(w.name)}
                                   alt={w.name}
-                                  className="w-full h-full object-contain"
+                                  className="w-full h-full object-contain object-top"
                                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                                 />
                               </div>

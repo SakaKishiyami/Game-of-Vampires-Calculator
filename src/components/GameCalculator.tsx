@@ -167,7 +167,7 @@ export default function GameCalculator() {
         
         setBaseAttributes(parsedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
         setVipLevel(parsedData.vipLevel || 1)
-        setLordLevel(parsedData.lordLevel || "Fledgling 1")
+        setLordLevel(parsedData.lordLevel || "Fledgling Lord 1")
         setBooks(parsedData.books || initialBooks)
         setConclave(parsedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
         setConclaveUpgrade(parsedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })
@@ -350,7 +350,7 @@ export default function GameCalculator() {
         
         setBaseAttributes(importedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
         setVipLevel(importedData.vipLevel || 1)
-        setLordLevel(importedData.lordLevel || "Fledgling 1")
+        setLordLevel(importedData.lordLevel || "Fledgling Lord 1")
         setBooks(importedData.books || initialBooks)
         setConclave(importedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
         setConclaveUpgrade(importedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })
@@ -732,7 +732,7 @@ export default function GameCalculator() {
         if (!lastSave) {
           setBaseAttributes(parsedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
           setVipLevel(parsedData.vipLevel || 1)
-          setLordLevel(parsedData.lordLevel || "Fledgling 1")
+          setLordLevel(parsedData.lordLevel || "Fledgling Lord 1")
           setBooks(parsedData.books || initialBooks)
           setConclave(parsedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
           setConclaveUpgrade(parsedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })

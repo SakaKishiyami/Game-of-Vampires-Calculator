@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -16,6 +16,7 @@ import {
   resolveWardenSkinRarity,
 } from '@/utils/calculators/skinLedgerCalculations'
 import { nonNegativeIntInputProps } from '@/utils/helpers'
+import { isWardenOwned, type WardenOwnershipContext } from '@/utils/wardenOwnership'
 
 /** Same card art as Scarlet Bond lover skin checkboxes. */
 function loverSkinCardSrc(skinKey: string) {
@@ -81,7 +82,32 @@ export default function SkinsTab() {
     loverSkinRarities,
     setLoverSkinRarities,
     getWardenImageSrc,
+    selectedWardens,
+    vipLevel,
+    lordLevel,
+    hasNyx,
+    hasDracula,
+    hasVictor,
+    hasFrederick,
   } = useGameCalculator()
+
+  const wardenOwnershipCtx = useMemo<WardenOwnershipContext>(
+    () => ({
+      selectedWardens,
+      vipLevel,
+      lordLevel,
+      hasNyx,
+      hasDracula,
+      hasVictor,
+      hasFrederick,
+    }),
+    [selectedWardens, vipLevel, lordLevel, hasNyx, hasDracula, hasVictor, hasFrederick],
+  )
+
+  const ownedWardenCatalog = useMemo(
+    () => WARDEN_CATALOG.filter((w) => isWardenOwned(w.name, wardenOwnershipCtx, WARDEN_CATALOG)),
+    [wardenOwnershipCtx],
+  )
 
   const setWardenRarity = (warden: string, skin: string, r: WardenSkinRarity) => {
     setWardenSkinRarityOverrides((prev) => ({
@@ -280,7 +306,7 @@ export default function SkinsTab() {
         </CardHeader>
         <CardContent className="text-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {WARDEN_CATALOG.filter((w) => w.skins.length > 0).map((w) => {
+            {ownedWardenCatalog.filter((w) => w.skins.length > 0).map((w) => {
               const skins = [...w.skins]
               return (
                 <div key={w.name} className="border border-gray-700 rounded-md p-3 space-y-2">

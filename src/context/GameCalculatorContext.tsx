@@ -234,7 +234,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   })
 
   const [vipLevel, setVipLevel] = useState(0)
-  const [lordLevel, setLordLevel] = useState("Fledgling 1")
+  const [lordLevel, setLordLevel] = useState("Fledgling Lord 1")
   const [books, setBooks] = useState<BooksState>(initialBooks)
 
   // Conclave

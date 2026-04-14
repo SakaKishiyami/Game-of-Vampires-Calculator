@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from 'react'
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -7,6 +8,8 @@ import { Label } from "@/components/ui/label"
 import { attributeOrder, getAttributeColor, nonNegativeIntInputProps } from '@/utils/helpers'
 import { calculateDynamicAuraLevels, calculateAuraBonuses } from '@/utils/calculators/auraCalculations'
 import { useCalculatorSettings } from '@/components/layout/MainLayout'
+import { WARDEN_CATALOG } from '@/data/wardenCatalog'
+import { isWardenOwned, type WardenOwnershipContext } from '@/utils/wardenOwnership'
 
 export default function AuraBonusesTab() {
   const {
@@ -27,9 +30,31 @@ export default function AuraBonusesTab() {
     hasAsh,
     inventory,
     getWardenImageSrc,
+    lordLevel,
   } = useGameCalculator()
   const { density } = useCalculatorSettings()
   const compact = density === 'compact'
+
+  const wardenOwnershipCtx = useMemo<WardenOwnershipContext>(
+    () => ({
+      selectedWardens,
+      vipLevel,
+      lordLevel,
+      hasNyx,
+      hasDracula,
+      hasVictor,
+      hasFrederick,
+    }),
+    [selectedWardens, vipLevel, lordLevel, hasNyx, hasDracula, hasVictor, hasFrederick],
+  )
+
+  const visibleVipAuraWardens = useMemo(
+    () =>
+      Object.entries(auras.vip)
+        .filter(([_, wardenData]: [string, any]) => vipLevel >= wardenData.vipRequired)
+        .filter(([wardenName]) => isWardenOwned(wardenName, wardenOwnershipCtx, WARDEN_CATALOG)),
+    [auras.vip, vipLevel, wardenOwnershipCtx],
+  )
 
   const dynamicAuras = calculateDynamicAuraLevels(
     auras,
@@ -156,7 +181,9 @@ export default function AuraBonusesTab() {
                     Base Level: {selected.length > 0 ? group.baseOffset + Math.max(0, selected.length - 1) : 0}
                   </div>
                   <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
-                    {Object.entries(group.data).map(([wardenName, wardenData]: [string, any]) => {
+                    {Object.entries(group.data)
+                      .filter(([wardenName]) => isWardenOwned(wardenName, wardenOwnershipCtx, WARDEN_CATALOG))
+                      .map(([wardenName, wardenData]: [string, any]) => {
                       const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
                       const isSelected = selected.includes(wardenName)
                       const secondaryAura = auras.secondaryAuras?.[group.secondaryKey]?.[wardenName]
@@ -216,14 +243,35 @@ export default function AuraBonusesTab() {
             })}
 
             {/* Lovers (if any are active) */}
-            {(hasAgneyi || hasCulann || hasHela || hasDionysus || hasMaya || hasEmber || hasAsh) && (
+            {(
+              (hasAgneyi || hasCulann || hasHela || hasDionysus || hasMaya || hasEmber || hasAsh) &&
+              Object.entries(dynamicAuras.lovers || {}).some(([loverName]) => {
+                if (loverName === 'Agneyi') return hasAgneyi
+                if (loverName === 'Culann') return hasCulann
+                if (loverName === 'Hela') return hasHela
+                if (loverName === 'Dionysus') return hasDionysus
+                if (loverName === 'Maya') return hasMaya
+                if (loverName === 'EmberAsh') return hasEmber && hasAsh
+                return false
+              })
+            ) && (
               <div>
                 <h3 className="text-lg font-semibold text-pink-400 mb-3">Lovers (Scarlet Bond Bonuses)</h3>
                 <div className="text-sm text-gray-300 mb-3">
                   Wild Hunt: {[hasAgneyi, hasCulann, hasHela, hasDionysus].filter(Boolean).length}/4 · Monster Noir: {[hasMaya].filter(Boolean).length}/4 · Ember/Ash: {hasEmber && hasAsh ? 'on' : 'off'}
                 </div>
                 <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
-                  {Object.entries(dynamicAuras.lovers || {}).map(([loverName, loverData]: [string, any]) => {
+                  {Object.entries(dynamicAuras.lovers || {})
+                    .filter(([loverName]) => {
+                      if (loverName === 'Agneyi') return hasAgneyi
+                      if (loverName === 'Culann') return hasCulann
+                      if (loverName === 'Hela') return hasHela
+                      if (loverName === 'Dionysus') return hasDionysus
+                      if (loverName === 'Maya') return hasMaya
+                      if (loverName === 'EmberAsh') return hasEmber && hasAsh
+                      return false
+                    })
+                    .map(([loverName, loverData]: [string, any]) => {
                     const isSelected =
                       (loverName === 'Agneyi' && hasAgneyi) ||
                       (loverName === 'Culann' && hasCulann) ||
@@ -262,13 +310,11 @@ export default function AuraBonusesTab() {
             )}
 
             {/* VIP Wardens (if any are active) */}
-            {vipLevel > 0 && (
+            {visibleVipAuraWardens.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-yellow-400 mb-3">VIP Wardens (VIP {vipLevel})</h3>
                 <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
-                  {Object.entries(auras.vip)
-                    .filter(([_, wardenData]: [string, any]) => vipLevel >= wardenData.vipRequired)
-                    .map(([wardenName, wardenData]: [string, any]) => (
+                  {visibleVipAuraWardens.map(([wardenName, wardenData]: [string, any]) => (
                       <div key={wardenName} className="flex items-center gap-3 p-3 rounded bg-gray-700/30">
                         <img
                           src={getWardenImageSrc(wardenName)}
@@ -296,7 +342,7 @@ export default function AuraBonusesTab() {
               </div>
             )}
 
-            {/* Special Wardens (if any are active) */}
+            {/* Special Wardens */}
             {(hasNyx || hasDracula) && (
               <div>
                 <h3 className="text-lg font-semibold text-purple-400 mb-3">Special Wardens</h3>

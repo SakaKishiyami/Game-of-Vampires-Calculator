@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,6 +13,8 @@ import { resolveLoverSummonFlags, getLoverScarletBondAuraMultiplier, wildHuntSum
 import { getLoverPortraitSrcs, getLoverSkinSlots } from '@/utils/loverImagePaths'
 import { getLoverSkinAffinitySpeedPercent } from '@/utils/calculators/skinLedgerCalculations'
 import { cn } from '@/lib/utils'
+import { WARDEN_CATALOG } from '@/data/wardenCatalog'
+import { isScarletBondCardVisible, type ScarletBondVisibilityContext } from '@/utils/wardenOwnership'
 
 const attributeOrder = ['strength', 'allure', 'intellect', 'spirit'] as const
 
@@ -192,6 +194,12 @@ function LoverPortraitThumb({
 export default function ScarletBondTab() {
   const {
     vipLevel,
+    selectedWardens,
+    lordLevel,
+    hasNyx,
+    hasDracula,
+    hasVictor,
+    hasFrederick,
     scarletBond, setScarletBond,
     scarletBondAffinity, setScarletBondAffinity,
     optimizedBondLevels,
@@ -208,6 +216,46 @@ export default function ScarletBondTab() {
     loverActiveSkins, setLoverActiveSkins,
     loverSkinRarities,
   } = useGameCalculator()
+
+  const bondVisibilityCtx = useMemo<ScarletBondVisibilityContext>(
+    () => ({
+      selectedWardens,
+      vipLevel,
+      lordLevel,
+      hasNyx,
+      hasDracula,
+      hasVictor,
+      hasFrederick,
+      hasAgneyi,
+      hasCulann,
+      hasHela,
+      hasDionysus,
+      hasMaya,
+      hasEmber,
+      hasAsh,
+    }),
+    [
+      selectedWardens,
+      vipLevel,
+      lordLevel,
+      hasNyx,
+      hasDracula,
+      hasVictor,
+      hasFrederick,
+      hasAgneyi,
+      hasCulann,
+      hasHela,
+      hasDionysus,
+      hasMaya,
+      hasEmber,
+      hasAsh,
+    ],
+  )
+
+  const visibleScarletBonds = useMemo(
+    () => scarletBondData.filter((bond) => isScarletBondCardVisible(bond, bondVisibilityCtx, WARDEN_CATALOG)),
+    [bondVisibilityCtx],
+  )
 
   const summonState = resolveLoverSummonFlags(
     { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
@@ -676,9 +724,7 @@ export default function ScarletBondTab() {
             </CardContent>
           </Card>
 
-          {scarletBondData
-            .filter((bond) => bond.vip <= vipLevel)
-            .map((bond) => {
+          {visibleScarletBonds.map((bond) => {
               const wardenData = wardenAttributes[bond.warden as keyof typeof wardenAttributes]
               const bondKey = `${bond.lover}-${bond.warden}`
               const loverSlots = getLoverSkinSlots(bond.lover)
