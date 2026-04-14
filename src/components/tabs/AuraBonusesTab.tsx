@@ -26,6 +26,7 @@ export default function AuraBonusesTab() {
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     inventory,
@@ -66,6 +67,7 @@ export default function AuraBonusesTab() {
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     inventory
@@ -83,6 +85,7 @@ export default function AuraBonusesTab() {
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     inventory
@@ -246,13 +249,14 @@ export default function AuraBonusesTab() {
 
             {/* Lovers (if any are active) */}
             {(
-              (hasAgneyi || hasCulann || hasHela || hasDionysus || hasMaya || hasEmber || hasAsh) &&
+              (hasAgneyi || hasCulann || hasHela || hasDionysus || hasMaya || hasDahlia || hasEmber || hasAsh) &&
               Object.entries(dynamicAuras.lovers || {}).some(([loverName]) => {
                 if (loverName === 'Agneyi') return hasAgneyi
                 if (loverName === 'Culann') return hasCulann
                 if (loverName === 'Hela') return hasHela
                 if (loverName === 'Dionysus') return hasDionysus
                 if (loverName === 'Maya') return hasMaya
+                if (loverName === 'Dahlia') return hasDahlia
                 if (loverName === 'EmberAsh') return hasEmber && hasAsh
                 return false
               })
@@ -260,7 +264,7 @@ export default function AuraBonusesTab() {
               <div>
                 <h3 className="text-lg font-semibold text-pink-400 mb-3">Lovers (Scarlet Bond Bonuses)</h3>
                 <div className="text-sm text-gray-300 mb-3">
-                  Wild Hunt: {[hasAgneyi, hasCulann, hasHela, hasDionysus].filter(Boolean).length}/4 · Monster Noir: {[hasMaya].filter(Boolean).length}/4 · Ember/Ash: {hasEmber && hasAsh ? 'on' : 'off'}
+                  Wild Hunt: {[hasAgneyi, hasCulann, hasHela, hasDionysus].filter(Boolean).length}/4 · Monster Noir: {[hasMaya, hasDahlia].filter(Boolean).length}/4 · Ember/Ash: {hasEmber && hasAsh ? 'on' : 'off'}
                 </div>
                 <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
                   {Object.entries(dynamicAuras.lovers || {})
@@ -270,6 +274,7 @@ export default function AuraBonusesTab() {
                       if (loverName === 'Hela') return hasHela
                       if (loverName === 'Dionysus') return hasDionysus
                       if (loverName === 'Maya') return hasMaya
+                      if (loverName === 'Dahlia') return hasDahlia
                       if (loverName === 'EmberAsh') return hasEmber && hasAsh
                       return false
                     })
@@ -280,10 +285,13 @@ export default function AuraBonusesTab() {
                       (loverName === 'Hela' && hasHela) ||
                       (loverName === 'Dionysus' && hasDionysus) ||
                       (loverName === 'Maya' && hasMaya) ||
+                      (loverName === 'Dahlia' && hasDahlia) ||
                       (loverName === 'EmberAsh' && hasEmber && hasAsh)
                     const imgSrc =
                       loverName === 'EmberAsh'
                         ? '/Gov/Lovers/BaseLovers/Ember.png'
+                        : loverName === 'Dahlia'
+                          ? '/Gov/Lovers/BaseLovers/Unreleased/Dahlia.png'
                         : `/Gov/Lovers/BaseLovers/${loverName}.png`
                     return (
                       <div key={loverName} className={`p-3 rounded flex items-center gap-3 ${isSelected ? 'bg-pink-500/20 border border-pink-500/30' : 'bg-gray-700/30'}`}>

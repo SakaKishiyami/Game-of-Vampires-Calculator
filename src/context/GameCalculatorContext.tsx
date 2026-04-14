@@ -131,6 +131,8 @@ interface GameCalculatorContextType {
   setHasDionysus: React.Dispatch<React.SetStateAction<boolean>>
   hasMaya: boolean
   setHasMaya: React.Dispatch<React.SetStateAction<boolean>>
+  hasDahlia: boolean
+  setHasDahlia: React.Dispatch<React.SetStateAction<boolean>>
   hasEmber: boolean
   setHasEmber: React.Dispatch<React.SetStateAction<boolean>>
   hasAsh: boolean
@@ -316,6 +318,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
   const [hasHela, setHasHela] = useState(false)
   const [hasDionysus, setHasDionysus] = useState(false)
   const [hasMaya, setHasMaya] = useState(false)
+  const [hasDahlia, setHasDahlia] = useState(false)
   const [hasEmber, setHasEmber] = useState(false)
   const [hasAsh, setHasAsh] = useState(false)
 
@@ -431,6 +434,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       hasHela,
       hasDionysus,
       hasMaya,
+      hasDahlia,
       hasEmber,
       hasAsh,
       auras,
@@ -450,7 +454,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     uploadedWardenData, inventory, inventoryImages, scarletBond,
     scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
     hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
-    hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars,
+    hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars,
     childrenPlannerEntries,
   ])
 
@@ -490,6 +494,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     auras,
@@ -506,7 +511,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     uploadedWardenData, inventory, inventoryImages, scarletBond,
     scarletBondAffinity, optimizedBondLevels, domIncreasePerStar,
     hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann,
-    hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars,
+    hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh, auras, talentScrolls, talentScripts, familiars,
     childrenPlannerEntries,
   ])
 
@@ -549,6 +554,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     if (data.hasHela !== undefined) setHasHela(data.hasHela)
     if (data.hasDionysus !== undefined) setHasDionysus(data.hasDionysus)
     if (data.hasMaya !== undefined) setHasMaya(data.hasMaya)
+    if (data.hasDahlia !== undefined) setHasDahlia(data.hasDahlia)
     if (data.hasEmber !== undefined) setHasEmber(data.hasEmber)
     if (data.hasAsh !== undefined) setHasAsh(data.hasAsh)
     if (data.auras) setAuras(data.auras)
@@ -962,7 +968,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
 
     // Helper: compute scarlet bond attribute contributions from a given level source
     const s = resolveLoverSummonFlags(
-      { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+      { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh },
       inventory
     )
     const sumBondContribs = (levelSource: Record<string, any>) => {
@@ -1053,6 +1059,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     inventory,
@@ -1144,7 +1151,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
                 }
                 
                 const s = resolveLoverSummonFlags(
-                  { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+                  { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh },
                   inventory
                 )
                 const multiplier = getLoverScarletBondAuraMultiplier(attr, s)
@@ -1175,7 +1182,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       currentIntellect,
       currentSpirit
     }
-  }, [scarletBond, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, inventory])
+  }, [scarletBond, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh, inventory])
 
   // Calculate suggested scarlet bond increase (simplified - returns empty for now)
   const calculateSuggestedScarletBondIncrease = useCallback(() => {
@@ -1223,6 +1230,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     inventory
@@ -1240,6 +1248,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     inventory
@@ -1308,6 +1317,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     setHasDionysus,
     hasMaya,
     setHasMaya,
+    hasDahlia,
+    setHasDahlia,
     hasEmber,
     setHasEmber,
     hasAsh,

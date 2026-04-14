@@ -209,6 +209,7 @@ export default function ScarletBondTab() {
     hasHela, setHasHela,
     hasDionysus, setHasDionysus,
     hasMaya, setHasMaya,
+    hasDahlia, setHasDahlia,
     hasEmber, setHasEmber,
     hasAsh, setHasAsh,
     inventory,
@@ -233,6 +234,7 @@ export default function ScarletBondTab() {
       hasHela,
       hasDionysus,
       hasMaya,
+      hasDahlia,
       hasEmber,
       hasAsh,
       inventory,
@@ -251,6 +253,7 @@ export default function ScarletBondTab() {
       hasHela,
       hasDionysus,
       hasMaya,
+      hasDahlia,
       hasEmber,
       hasAsh,
       inventory,
@@ -263,7 +266,7 @@ export default function ScarletBondTab() {
   )
 
   const summonState = resolveLoverSummonFlags(
-    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh },
     inventory
   )
 
@@ -292,7 +295,7 @@ export default function ScarletBondTab() {
     }
 
     const s = resolveLoverSummonFlags(
-      { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+      { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh },
       inventory
     )
     const attr = attribute as 'strength' | 'allure' | 'intellect' | 'spirit'
@@ -441,7 +444,7 @@ export default function ScarletBondTab() {
       if (!bondData) return
 
       const s = resolveLoverSummonFlags(
-        { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+        { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh },
         inventory
       )
 
@@ -628,6 +631,17 @@ export default function ScarletBondTab() {
                     tokenCount={inventory['MayaToken']?.count ?? 0}
                     tokenMax={100}
                     tokenImgSrc={null}
+                  />
+                  <LoverSummonPickCard
+                    loverName="Dahlia"
+                    wardenName="Eddie"
+                    attrKey="strength"
+                    imgCandidates={getLoverPortraitSrcs('Dahlia').flat()}
+                    checked={hasDahlia}
+                    setChecked={setHasDahlia}
+                    tokenCount={inventory['DahliaToken']?.count ?? 0}
+                    tokenMax={100}
+                    tokenImgSrc="/InventoryAssets/Lover+ChildItems/DahliaToken.png"
                   />
                 </div>
               </div>

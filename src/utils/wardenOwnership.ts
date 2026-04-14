@@ -119,6 +119,7 @@ export type ScarletBondVisibilityContext = WardenOwnershipContext & {
   hasHela: boolean
   hasDionysus: boolean
   hasMaya: boolean
+  hasDahlia: boolean
   hasEmber: boolean
   hasAsh: boolean
   /** Used with summon flags so token thresholds match Scarlet Bond / aura logic (100 tokens, Heart of War, etc.). */
@@ -144,10 +145,11 @@ export function isScarletBondCardVisible(
       hasHela: ctx.hasHela,
       hasDionysus: ctx.hasDionysus,
       hasMaya: ctx.hasMaya,
+      hasDahlia: ctx.hasDahlia,
       hasEmber: ctx.hasEmber,
       hasAsh: ctx.hasAsh,
     },
-    ctx.inventory,
+    ctx.inventory ?? {},
   )
 
   if (bond.lover === 'Agneyi' && !s.canAgneyi) return false
@@ -155,6 +157,7 @@ export function isScarletBondCardVisible(
   if (bond.lover === 'Hela' && !s.canHela) return false
   if (bond.lover === 'Dionysus' && !s.canDionysus) return false
   if (bond.lover === 'Maya' && !s.canMaya) return false
+  if (bond.lover === 'Dahlia' && !s.canDahlia) return false
   if (bond.lover === 'Ember/Ash') {
     if (!ctx.hasNyx) return false
     if (!s.canEmber || !s.canAsh) return false

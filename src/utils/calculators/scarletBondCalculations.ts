@@ -30,6 +30,7 @@ export function calculateScarletBondContribution(
   hasHela: boolean,
   hasDionysus: boolean,
   hasMaya: boolean,
+  hasDahlia: boolean,
   hasEmber: boolean,
   hasAsh: boolean,
   inventory: Inventory
@@ -65,7 +66,7 @@ export function calculateScarletBondContribution(
   }
   
   const s = resolveLoverSummonFlags(
-    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh },
     inventory
   )
   const attr = attribute as 'strength' | 'allure' | 'intellect' | 'spirit'

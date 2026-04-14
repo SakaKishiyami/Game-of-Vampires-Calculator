@@ -469,7 +469,7 @@ export default function WardensTab() {
                   <CardHeader>
                     <CardTitle className="text-amber-200">Lord tier reward wardens</CardTitle>
                     <p className="text-sm text-gray-300">
-                      From Elder Lord onward you choose which of the four you own (not fixed order). Slots: Elder 1 → 1, Elder 2 → 2, Elder 3 → 2, Elder 4 → 3, Elder 5 → 4, Ancient → all 4.
+                      From Elder Lord onward you choose which of the four you own (not fixed order). Slots: Elder 1 → 1, Elder 2 → 2, Elder 4 → 3, Ancient → all 4.
                       Selected:{' '}
                       <span className="text-white font-medium">
                         {lordTierRewardWardens.length} / {elderLordWardenGrantCount(lordLevel)}

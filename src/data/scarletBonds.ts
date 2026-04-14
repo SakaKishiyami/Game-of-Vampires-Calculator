@@ -27,6 +27,7 @@ export const scarletBondData = [
   { lover: "Hela", warden: "Woden", type: "Single", vip: 0, main: 0, mainPercent: 0 },
   { lover: "Dionysus", warden: "Artemis", type: "Single", vip: 0, main: 0, mainPercent: 0 },
   { lover: "Maya", warden: "Grendel", type: "Single", vip: 0, main: 0, mainPercent: 0 },
+  { lover: "Dahlia", warden: "Eddie", type: "Single", vip: 0, main: 0, mainPercent: 0 },
   { lover: "Ember/Ash", warden: "Nyx", type: "All", vip: 0, main: 0, mainPercent: 0 },
   { lover: "Azrael/Morrigan", warden: "Thanatos", type: "Dual", vip: 13, main: 0, mainPercent: 0 },
   { lover: "Kai/Gerda", warden: "Mara", type: "Dual", vip: 14, main: 0, mainPercent: 0 },

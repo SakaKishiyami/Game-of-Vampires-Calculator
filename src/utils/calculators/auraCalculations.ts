@@ -27,12 +27,13 @@ export function calculateLoverAuraLevels(
   hasHela: boolean,
   hasDionysus: boolean,
   hasMaya: boolean,
+  hasDahlia: boolean,
   hasEmber: boolean,
   hasAsh: boolean,
   inventory: Inventory
 ) {
   const s = resolveLoverSummonFlags(
-    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh },
+    { hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasDahlia, hasEmber, hasAsh },
     inventory
   )
   const loverAuras = JSON.parse(JSON.stringify({ ...initialAuras.lovers, ...(auras.lovers || {}) }))
@@ -42,6 +43,7 @@ export function calculateLoverAuraLevels(
   loverAuras.Hela.current = getLoverAuraPercentDisplay('Hela', s)
   if (loverAuras.Dionysus) loverAuras.Dionysus.current = getLoverAuraPercentDisplay('Dionysus', s)
   if (loverAuras.Maya) loverAuras.Maya.current = getLoverAuraPercentDisplay('Maya', s)
+  if (loverAuras.Dahlia) loverAuras.Dahlia.current = getLoverAuraPercentDisplay('Dahlia', s)
   if (loverAuras.EmberAsh) loverAuras.EmberAsh.current = getLoverAuraPercentDisplay('EmberAsh', s)
 
   return loverAuras
@@ -55,6 +57,7 @@ export function calculateDynamicAuraLevels(
   hasHela: boolean,
   hasDionysus: boolean,
   hasMaya: boolean,
+  hasDahlia: boolean,
   hasEmber: boolean,
   hasAsh: boolean,
   inventory: Inventory
@@ -68,6 +71,7 @@ export function calculateDynamicAuraLevels(
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     inventory
@@ -157,6 +161,7 @@ export function calculateAuraBonuses(
   hasHela: boolean,
   hasDionysus: boolean,
   hasMaya: boolean,
+  hasDahlia: boolean,
   hasEmber: boolean,
   hasAsh: boolean,
   inventory: Inventory
@@ -169,6 +174,7 @@ export function calculateAuraBonuses(
     hasHela,
     hasDionysus,
     hasMaya,
+    hasDahlia,
     hasEmber,
     hasAsh,
     inventory

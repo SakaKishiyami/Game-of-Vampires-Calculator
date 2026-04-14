@@ -21,7 +21,7 @@ export const FAMILIAR_GRADE_MAX_LEVEL: Record<FamiliarGrade, number> = {
   B: 30,
   A: 40,
   S: 50,
-  SS: 60,
+  SS: 50,
 }
 
 export type FamiliarAttribute = 'Loyalty' | 'Ferocity' | 'Tenacity' | 'Instinct' | 'Mischief'
