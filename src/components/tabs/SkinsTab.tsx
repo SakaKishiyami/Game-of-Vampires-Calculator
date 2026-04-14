@@ -100,6 +100,7 @@ export default function SkinsTab() {
       [warden]: { ...prev[warden], [skin]: Math.max(1, Math.floor(n) || 1) },
     }))
   }
+  const displayWardenName = (name: string) => (name === 'Dahlia' ? 'Eddie' : name)
 
   return (
     <div className="space-y-6">
@@ -251,10 +252,10 @@ export default function SkinsTab() {
                       ;(e.target as HTMLImageElement).style.display = 'none'
                     }}
                   />
-                  <div className="font-medium text-white">{w.name}</div>
+                  <div className="font-medium text-white">{displayWardenName(w.name)}</div>
                 </div>
                 {skins.map((skinKey, idx) => {
-                  if (!wardenSkins[w.name]?.[skinKey]) return null
+                  const isOwned = !!wardenSkins[w.name]?.[skinKey]
                   const rarity = resolveWardenSkinRarity(w.name, skinKey, idx, skins.length, wardenSkinRarityOverrides)
                   const star = wardenSkinLevels[w.name]?.[skinKey] ?? 1
                   const flat0 = wardenSkinRarityFlat(rarity)
@@ -274,6 +275,7 @@ export default function SkinsTab() {
                         <select
                           className="block mt-1 bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white"
                           value={String(rarity)}
+                          disabled={!isOwned}
                           onChange={(e) => setWardenRarity(w.name, skinKey, parseWardenRarity(e.target.value))}
                         >
                           <option value="1">1 — purple (+5)</option>
@@ -289,14 +291,21 @@ export default function SkinsTab() {
                         <Label className="text-gray-400 text-xs">Star level</Label>
                         <Input
                           className="mt-1 w-20 bg-gray-900 border-gray-600"
+                          disabled={!isOwned}
                           {...nonNegativeIntInputProps(star, (n) => setWardenSkinLevel(w.name, skinKey, Math.max(1, n || 1)), {
                             zeroShowsEmpty: false,
                           })}
                         />
                       </div>
                       <div className="text-gray-400 text-xs pb-1">
-                        Active bonus (if equipped):{' '}
-                        <span className="text-green-300 font-mono">+{preview.toLocaleString()}</span> to target stat(s)
+                        {isOwned ? (
+                          <>
+                            Active bonus (if equipped):{' '}
+                            <span className="text-green-300 font-mono">+{preview.toLocaleString()}</span> to target stat(s)
+                          </>
+                        ) : (
+                          <span className="text-gray-500">Not owned (toggle on Wardens tab).</span>
+                        )}
                       </div>
                     </div>
                   )
