@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from 'react'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -199,6 +200,9 @@ export default function SkinsTab() {
     })
   }
 
+  const [loverSkinsOpen, setLoverSkinsOpen] = useState(true)
+  const [wardenSkinsOpen, setWardenSkinsOpen] = useState(true)
+
   return (
     <div className="space-y-6">
       <Card className="bg-gray-800/50 border-gray-600">
@@ -266,16 +270,36 @@ export default function SkinsTab() {
       </Card>
 
       <Card className="bg-gray-800/50 border-gray-600">
-        <CardHeader>
-          <CardTitle className="text-purple-300">Lover skins (Epic / Legendary)</CardTitle>
-          <p className="text-sm text-gray-400">
-            Only lovers you can access (same rules as Scarlet Bond: VIP, summons, linked warden owned). Mark skins
-            owned here. Rarity: <strong>Epic</strong> (default) and <strong>Legendary</strong>. Tier-1: Epic +200
-            intimacy / +50 EXP / +1% affinity; Legendary +500 / +100 / +2%. Active skin affinity applies to bond
-            suggestions for that lover.
-          </p>
+        <CardHeader className="pb-2">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1 space-y-1">
+              <CardTitle className="text-purple-300">Lover skins (Epic / Legendary)</CardTitle>
+              <p className="text-sm text-gray-400">
+                Only lovers you can access (same rules as Scarlet Bond: VIP, summons, linked warden owned). Mark skins
+                owned here. Rarity: <strong>Epic</strong> (default) and <strong>Legendary</strong>. Tier-1: Epic +200
+                intimacy / +50 EXP / +1% affinity; Legendary +500 / +100 / +2%. Active skin affinity applies to bond
+                suggestions for that lover.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLoverSkinsOpen((o) => !o)}
+              className="shrink-0 rounded-md border border-gray-600 bg-gray-900/80 p-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+              aria-expanded={loverSkinsOpen}
+              aria-controls="skins-lover-panel"
+              title={loverSkinsOpen ? 'Collapse section' : 'Expand section'}
+            >
+              {loverSkinsOpen ? (
+                <ChevronDown className="h-5 w-5" aria-hidden />
+              ) : (
+                <ChevronRight className="h-5 w-5" aria-hidden />
+              )}
+              <span className="sr-only">{loverSkinsOpen ? 'Collapse lover skins' : 'Expand lover skins'}</span>
+            </button>
+          </div>
         </CardHeader>
-        <CardContent>
+        {loverSkinsOpen && (
+        <CardContent id="skins-lover-panel">
           {visibleLoverEntries.length === 0 && (
             <p className="text-sm text-gray-500 mb-4">
               No lovers unlocked yet (raise VIP, select summons / lord rewards, or toggle special wardens so the
@@ -348,19 +372,40 @@ export default function SkinsTab() {
             })}
           </div>
         </CardContent>
+        )}
       </Card>
 
       <Card className="bg-gray-800/50 border-gray-600">
-        <CardHeader>
-          <CardTitle className="text-blue-300">Warden skins — rarity & level</CardTitle>
-          <p className="text-sm text-gray-400">
-            Rarity: <strong>Epic</strong> (+5), <strong>Legendary</strong> (+10), <strong>Supreme</strong> (+20).
-            Defaults: one skin → Epic; two skins → Epic then Legendary. Known overrides (e.g. Rudra) are in data. Dual-attribute wardens
-            apply the skin flat to the <strong>first</strong> listed attribute; Balance applies to all four. Star level 1 =
-            ledger-adjusted base only; each extra star doubles the total.
-          </p>
+        <CardHeader className="pb-2">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1 space-y-1">
+              <CardTitle className="text-blue-300">Warden skins — rarity & level</CardTitle>
+              <p className="text-sm text-gray-400">
+                Rarity: <strong>Epic</strong> (+5), <strong>Legendary</strong> (+10), <strong>Supreme</strong> (+20).
+                Defaults: one skin → Epic; two skins → Epic then Legendary. Known overrides (e.g. Rudra) are in data. Dual-attribute wardens
+                apply the skin flat to the <strong>first</strong> listed attribute; Balance applies to all four. Star level 1 =
+                ledger-adjusted base only; each extra star doubles the total.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setWardenSkinsOpen((o) => !o)}
+              className="shrink-0 rounded-md border border-gray-600 bg-gray-900/80 p-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+              aria-expanded={wardenSkinsOpen}
+              aria-controls="skins-warden-panel"
+              title={wardenSkinsOpen ? 'Collapse section' : 'Expand section'}
+            >
+              {wardenSkinsOpen ? (
+                <ChevronDown className="h-5 w-5" aria-hidden />
+              ) : (
+                <ChevronRight className="h-5 w-5" aria-hidden />
+              )}
+              <span className="sr-only">{wardenSkinsOpen ? 'Collapse warden skins' : 'Expand warden skins'}</span>
+            </button>
+          </div>
         </CardHeader>
-        <CardContent className="text-sm">
+        {wardenSkinsOpen && (
+        <CardContent id="skins-warden-panel" className="text-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {ownedWardenCatalog.filter((w) => w.skins.length > 0).map((w) => {
               const skins = [...w.skins]
@@ -458,6 +503,7 @@ export default function SkinsTab() {
             })}
           </div>
         </CardContent>
+        )}
       </Card>
     </div>
   )
