@@ -15,7 +15,7 @@ export const wardenGroups = {
     { name: "Maria", attributes: ["Balance"], tier: 5 },
   ],
   noir: [
-    { name: "Dahlia", attributes: ["Strength"], tier: 5 },
+    { name: "Eddie", attributes: ["Strength"], tier: 5 },
     { name: "Scarlet", attributes: ["Allure"], tier: 5 },
     { name: "Sam", attributes: ["Intellect"], tier: 5 },
     { name: "Grendel", attributes: ["Spirit"], tier: 5 },
@@ -50,7 +50,7 @@ export const wardenAttributes = {
   "Tomas": ["Intellect", "Strength"],
   "Victor": ["Spirit", "Strength"],
   "Cleo": ["Balance"],
-  "Dahlia": ["Strength"],
+  "Eddie": ["Strength"],
   "Rudra": ["Strength"],
   "Grendel": ["Spirit"],
   "Scarlet": ["Allure"],

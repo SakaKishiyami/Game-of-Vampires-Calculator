@@ -52,19 +52,19 @@ export const WARDEN_SKIN_TIER1: Record<WardenSkinRarity, { attributeFlat: number
 export function describeWardenSkinRarity(r: WardenSkinRarity): string {
   switch (r) {
     case 1:
-      return '1 — purple'
+      return 'Epic'
     case 2:
-      return '2 — orange'
+      return 'Legendary'
     case 3:
-      return '3 — red'
+      return 'Supreme'
   }
 }
 
 export function describeLoverSkinRarity(r: LoverSkinRarity): string {
   switch (r) {
     case 1:
-      return '1 — purple'
+      return 'Epic'
     case 2:
-      return '2 — orange'
+      return 'Legendary'
   }
 }

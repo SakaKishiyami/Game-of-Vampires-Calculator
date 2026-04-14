@@ -10,7 +10,7 @@ export const initialAuras = {
   },
   // Monster Noir Wardens - levels are dynamic based on selected wardens
   monsterNoir: {
-    "Dahlia": { current: 0, max: 12, type: "Strength Books %", baseValue: 1, increment: 1 },
+    "Eddie": { current: 0, max: 12, type: "Strength Books %", baseValue: 1, increment: 1 },
     "Scarlet": { current: 0, max: 12, type: "Allure Books %", baseValue: 1, increment: 1 },
     "Sam": { current: 0, max: 12, type: "Intellect Books %", baseValue: 1, increment: 1 },
     "Grendel": { current: 0, max: 12, type: "Spirit Books %", baseValue: 1, increment: 1 }
@@ -40,7 +40,7 @@ export const initialAuras = {
       "Finn": { current: 0, max: 20, type: "Spirit Talent %", baseValue: 0, increment: 1 }
     },
     monsterNoir: {
-      "Dahlia": { current: 0, max: 20, type: "Strength Books %", baseValue: 0, increment: 1 },
+      "Eddie": { current: 0, max: 20, type: "Strength Books %", baseValue: 0, increment: 1 },
       "Scarlet": { current: 0, max: 20, type: "Allure Books %", baseValue: 0, increment: 1 },
       "Sam": { current: 0, max: 20, type: "Intellect Books %", baseValue: 0, increment: 1 },
       "Grendel": { current: 0, max: 20, type: "Spirit Books %", baseValue: 0, increment: 1 }

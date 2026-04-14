@@ -108,7 +108,6 @@ export default function SkinsTab() {
       [warden]: { ...prev[warden], [skin]: !prev[warden]?.[skin] },
     }))
   }
-  const displayWardenName = (name: string) => (name === 'Dahlia' ? 'Eddie' : name)
 
   return (
     <div className="space-y-6">
@@ -178,10 +177,10 @@ export default function SkinsTab() {
 
       <Card className="bg-gray-800/50 border-gray-600">
         <CardHeader>
-          <CardTitle className="text-purple-300">Lover skins (purple / orange)</CardTitle>
+          <CardTitle className="text-purple-300">Lover skins (Epic / Legendary)</CardTitle>
           <p className="text-sm text-gray-400">
-            Mark skins owned in Scarlet Bond. Rarity codes: <strong>1</strong> = purple, <strong>2</strong> = orange (defaults
-            to 1). Tier-1: purple +200 intimacy / +50 EXP / +1% affinity; orange +500 / +100 / +2%. Active skin affinity
+            Mark skins owned in Scarlet Bond. Rarity: <strong>Epic</strong> (default) and <strong>Legendary</strong>.
+            Tier-1: Epic +200 intimacy / +50 EXP / +1% affinity; Legendary +500 / +100 / +2%. Active skin affinity
             applies to bond suggestions for that lover.
           </p>
         </CardHeader>
@@ -221,8 +220,8 @@ export default function SkinsTab() {
                         value={String(r)}
                         onChange={(e) => setLoverRarity(baseName, skinKey, parseLoverRarity(e.target.value))}
                       >
-                        <option value="1">1 — purple</option>
-                        <option value="2">2 — orange</option>
+                        <option value="1">Epic</option>
+                        <option value="2">Legendary</option>
                       </select>
                     </div>
                   )
@@ -238,10 +237,10 @@ export default function SkinsTab() {
 
       <Card className="bg-gray-800/50 border-gray-600">
         <CardHeader>
-          <CardTitle className="text-blue-300">Warden skins — rarity & star level</CardTitle>
+          <CardTitle className="text-blue-300">Warden skins — rarity & level</CardTitle>
           <p className="text-sm text-gray-400">
-            Rarity codes: <strong>1</strong> = purple (+5), <strong>2</strong> = orange (+10), <strong>3</strong> = red (+20).
-            Defaults: one skin → 1; two skins → 1 then 2. Known overrides (e.g. Rudra) are in data. Dual-attribute wardens
+            Rarity: <strong>Epic</strong> (+5), <strong>Legendary</strong> (+10), <strong>Supreme</strong> (+20).
+            Defaults: one skin → Epic; two skins → Epic then Legendary. Known overrides (e.g. Rudra) are in data. Dual-attribute wardens
             apply the skin flat to the <strong>first</strong> listed attribute; Balance applies to all four. Star level 1 =
             ledger-adjusted base only; each extra star doubles the total.
           </p>
@@ -261,7 +260,7 @@ export default function SkinsTab() {
                       ;(e.target as HTMLImageElement).style.display = 'none'
                     }}
                   />
-                  <div className="font-medium text-white">{displayWardenName(w.name)}</div>
+                  <div className="font-medium text-white">{w.name}</div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {skins.map((skinKey, idx) => {
@@ -309,9 +308,9 @@ export default function SkinsTab() {
                               disabled={!isOwned}
                               onChange={(e) => setWardenRarity(w.name, skinKey, parseWardenRarity(e.target.value))}
                             >
-                              <option value="1">1 — purple (+5)</option>
-                              <option value="2">2 — orange (+10)</option>
-                              <option value="3">3 — red (+20)</option>
+                              <option value="1">Epic (+5)</option>
+                              <option value="2">Legendary (+10)</option>
+                              <option value="3">Supreme (+20)</option>
                             </select>
                           </div>
                           <div>

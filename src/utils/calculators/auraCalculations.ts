@@ -94,7 +94,7 @@ export function calculateDynamicAuraLevels(
   const monsterNoirBaseLevel = monsterNoirCount > 0 ? 9 : 0
   const monsterNoirBonus = Math.max(0, monsterNoirCount - 1)
   
-  const monsterNoirNames = ["Dahlia", "Scarlet", "Sam", "Grendel"]
+  const monsterNoirNames = ["Eddie", "Scarlet", "Sam", "Grendel"]
   monsterNoirNames.forEach(name => {
     if (selectedMonsterNoir.includes(name)) {
       dynamicAuras.monsterNoir[name].current = monsterNoirBaseLevel + monsterNoirBonus
@@ -217,7 +217,7 @@ export function calculateAuraBonuses(
     const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
     
     switch (wardenName) {
-      case "Dahlia":
+      case "Eddie":
         bonuses.books.strength += currentBonus
         break
       case "Scarlet":
@@ -311,7 +311,7 @@ export function calculateAuraBonuses(
       const currentBonus = wardenData.baseValue + wardenData.current * wardenData.increment
       
       switch (wardenName) {
-        case "Dahlia":
+        case "Eddie":
           bonuses.books.strength += currentBonus
           break
         case "Scarlet":
