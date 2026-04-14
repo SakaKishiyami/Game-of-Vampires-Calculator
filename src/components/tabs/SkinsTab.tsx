@@ -1,12 +1,13 @@
 "use client"
 
+import { useState } from 'react'
 import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { SKIN_LEDGER_ROWS, describeWardenSkinRarity, type LoverSkinRarity, type WardenSkinRarity } from '@/data/skinLedger'
 import { WARDEN_CATALOG } from '@/data/wardenCatalog'
-import { LOVER_SKINS } from '@/utils/loverImagePaths'
+import { LOVER_SKINS, getLoverPortraitSrcs } from '@/utils/loverImagePaths'
 import { getDefaultWardenSkinRarity } from '@/data/wardenSkinDefaultRarity'
 import {
   wardenSkinAttributeTotal,
@@ -14,6 +15,45 @@ import {
   resolveWardenSkinRarity,
 } from '@/utils/calculators/skinLedgerCalculations'
 import { nonNegativeIntInputProps } from '@/utils/helpers'
+
+/** Same card art as Scarlet Bond lover skin checkboxes. */
+function loverSkinCardSrc(skinKey: string) {
+  return `/Gov/SkinCards/LoverSkins/${skinKey}.png`
+}
+
+/** Same card art as Wardens tab skin toggles. */
+function wardenSkinCardSrc(skinKey: string) {
+  return `/Gov/SkinCards/WardenSkins/${skinKey}.png`
+}
+
+function UrlImageWithFallback({
+  candidates,
+  alt,
+  className,
+  emptyClassName,
+}: {
+  candidates: string[]
+  alt: string
+  className?: string
+  emptyClassName?: string
+}) {
+  const [idx, setIdx] = useState(0)
+  const imgCls = className ?? 'w-12 h-12 object-contain rounded border border-gray-700 bg-gray-900/60 shrink-0'
+  const emptyCls =
+    emptyClassName ??
+    'w-12 h-12 rounded border border-gray-700 bg-gray-900/60 shrink-0 flex items-center justify-center text-[10px] text-gray-500 text-center p-1'
+  if (idx >= candidates.length) {
+    return <div className={emptyCls}>{alt}</div>
+  }
+  return (
+    <img
+      src={candidates[idx]}
+      alt={alt}
+      className={imgCls}
+      onError={() => setIdx((i) => i + 1)}
+    />
+  )
+}
 
 function parseWardenRarity(v: string): WardenSkinRarity {
   const n = parseInt(v, 10)
@@ -37,6 +77,7 @@ export default function SkinsTab() {
     loverOwnedSkins,
     loverSkinRarities,
     setLoverSkinRarities,
+    getWardenImageSrc,
   } = useGameCalculator()
 
   const setWardenRarity = (warden: string, skin: string, r: WardenSkinRarity) => {
@@ -113,7 +154,7 @@ export default function SkinsTab() {
                   return (
                     <tr key={row.tier} className={unlocked ? 'bg-green-950/30 text-green-100' : 'text-gray-500'}>
                       <td className="p-2">{row.tier}</td>
-                      <td className="p-2">{row.minCollection}</td>
+                      <td className="p-2">{row.minCollection.toLocaleString()}</td>
                       <td className="p-2">{row.childrenTotalAttrsPct ? `+${row.childrenTotalAttrsPct}%` : '—'}</td>
                       <td className="p-2">+{row.wardenAllFlat}</td>
                       <td className="p-2">{row.skinBaseBoostSteps ? `+${row.skinBaseBoostSteps}` : '—'}</td>
@@ -140,15 +181,32 @@ export default function SkinsTab() {
             if (!skins.length) return null
             const owned = loverOwnedSkins[baseName]
             if (!owned || !Object.keys(owned).some((k) => owned[k])) return null
+            const portraitCandidates = getLoverPortraitSrcs(baseName)[0] ?? []
             return (
               <div key={baseName} className="border border-gray-700 rounded-md p-3 space-y-2">
-                <div className="font-medium text-white">{baseName}</div>
+                <div className="flex items-center gap-3">
+                  <UrlImageWithFallback
+                    candidates={portraitCandidates}
+                    alt={baseName}
+                    className="w-11 h-11 object-contain rounded border border-gray-700 bg-gray-900/60 shrink-0"
+                    emptyClassName="w-11 h-11 rounded border border-gray-700 bg-gray-900/60 shrink-0 flex items-center justify-center text-[9px] text-gray-500 text-center p-1"
+                  />
+                  <div className="font-medium text-white">{baseName}</div>
+                </div>
                 {skins.map((skinKey) => {
                   if (!owned[skinKey]) return null
                   const r = loverSkinRarities[baseName]?.[skinKey] ?? 1 /* 1 = purple */
                   return (
                     <div key={skinKey} className="flex flex-wrap items-center gap-3 text-sm">
-                      <span className="text-gray-400 w-40 truncate">{skinKey}</span>
+                      <img
+                        src={loverSkinCardSrc(skinKey)}
+                        alt=""
+                        className="w-14 h-14 object-contain rounded border border-gray-700 bg-gray-900/50 shrink-0"
+                        onError={(e) => {
+                          ;(e.target as HTMLImageElement).style.display = 'none'
+                        }}
+                      />
+                      <span className="text-gray-300 w-36 sm:w-44 truncate font-mono text-xs">{skinKey}</span>
                       <select
                         className="bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white"
                         value={String(r)}
@@ -184,7 +242,17 @@ export default function SkinsTab() {
             const skins = [...w.skins]
             return (
               <div key={w.name} className="border border-gray-700 rounded-md p-3 space-y-2">
-                <div className="font-medium text-white">{w.name}</div>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={getWardenImageSrc(w.name)}
+                    alt=""
+                    className="w-11 h-11 object-contain rounded border border-gray-700 bg-gray-900/60 shrink-0"
+                    onError={(e) => {
+                      ;(e.target as HTMLImageElement).style.display = 'none'
+                    }}
+                  />
+                  <div className="font-medium text-white">{w.name}</div>
+                </div>
                 {skins.map((skinKey, idx) => {
                   if (!wardenSkins[w.name]?.[skinKey]) return null
                   const rarity = resolveWardenSkinRarity(w.name, skinKey, idx, skins.length, wardenSkinRarityOverrides)
@@ -193,6 +261,14 @@ export default function SkinsTab() {
                   const preview = wardenSkinAttributeTotal(flat0, skinLedger.skinBaseBoostSteps, star)
                   return (
                     <div key={skinKey} className="flex flex-wrap items-end gap-3 border-b border-gray-800/80 pb-2">
+                      <img
+                        src={wardenSkinCardSrc(skinKey)}
+                        alt=""
+                        className="w-16 h-16 object-contain rounded border border-gray-700 bg-gray-900/50 shrink-0"
+                        onError={(e) => {
+                          ;(e.target as HTMLImageElement).style.display = 'none'
+                        }}
+                      />
                       <div>
                         <Label className="text-gray-400 text-xs">{skinKey}</Label>
                         <select
@@ -219,7 +295,8 @@ export default function SkinsTab() {
                         />
                       </div>
                       <div className="text-gray-400 text-xs pb-1">
-                        Active bonus (if equipped): <span className="text-green-300 font-mono">+{preview}</span> to target stat(s)
+                        Active bonus (if equipped):{' '}
+                        <span className="text-green-300 font-mono">+{preview.toLocaleString()}</span> to target stat(s)
                       </div>
                     </div>
                   )
