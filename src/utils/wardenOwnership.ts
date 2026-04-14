@@ -43,7 +43,7 @@ export function parseLordTier(lordLevel: string): LordTierParse | null {
   return { tier: m[1].trim(), num: parseInt(m[2], 10) }
 }
 
-/** Elder 1→1, Elder 2→2, Elder 3→2, Elder 4→3, Elder 5→4, Ancient *→4 */
+/** Elder 1→1, Elder 2→2, Elder 3→2, Elder 4–5→3, Ancient *→4 (fourth warden unlocks at Ancient, not Elder 5). */
 export function elderLordWardenGrantCount(lordLevel: string): number {
   const p = parseLordTier(lordLevel)
   if (!p) return 0
@@ -52,8 +52,7 @@ export function elderLordWardenGrantCount(lordLevel: string): number {
     if (p.num === 1) return 1
     if (p.num === 2) return 2
     if (p.num === 3) return 2
-    if (p.num === 4) return 3
-    if (p.num === 5) return 4
+    if (p.num === 4 || p.num === 5) return 3
   }
   return 0
 }
