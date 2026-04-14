@@ -185,7 +185,7 @@ export default function SkinsTab() {
             applies to bond suggestions for that lover.
           </p>
         </CardHeader>
-        <CardContent className="space-y-3 max-h-[420px] overflow-y-auto">
+        <CardContent className="space-y-3">
           {Object.entries(LOVER_SKINS).map(([baseName, skins]) => {
             if (!skins.length) return null
             const owned = loverOwnedSkins[baseName]
@@ -246,11 +246,12 @@ export default function SkinsTab() {
             ledger-adjusted base only; each extra star doubles the total.
           </p>
         </CardHeader>
-        <CardContent className="space-y-2 max-h-[520px] overflow-y-auto text-sm">
-          {WARDEN_CATALOG.filter((w) => w.skins.length > 0).map((w) => {
-            const skins = [...w.skins]
-            return (
-              <div key={w.name} className="border border-gray-700 rounded-md p-3 space-y-2">
+        <CardContent className="text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {WARDEN_CATALOG.filter((w) => w.skins.length > 0).map((w) => {
+              const skins = [...w.skins]
+              return (
+                <div key={w.name} className="border border-gray-700 rounded-md p-3 space-y-2">
                 <div className="flex items-center gap-3">
                   <img
                     src={getWardenImageSrc(w.name)}
@@ -338,9 +339,10 @@ export default function SkinsTab() {
                     )
                   })}
                 </div>
-              </div>
-            )
-          })}
+                </div>
+              )
+            })}
+          </div>
         </CardContent>
       </Card>
     </div>
