@@ -170,14 +170,15 @@ export default function WardensTab() {
     talents,
   } = useGameCalculator()
 
-  const [wardenTalentLevels, setWardenTalentLevels] = React.useState<Record<string, Record<TalentAttr, number>>>({})
-  const [wardenTalentPlannerLevels, setWardenTalentPlannerLevels] = React.useState<Record<string, number>>({})
+  const [wardenTalentLevels, setWardenTalentLevels] = React.useState<Record<string, Record<TalentAttr, number[]>>>({})
+  const [wardenTalentExp, setWardenTalentExp] = React.useState<Record<string, number>>({})
   const [talentFocusPriority, setTalentFocusPriority] = React.useState<Record<TalentAttr, [string, string, string]>>({
     strength: ['', '', ''],
     allure: ['', '', ''],
     intellect: ['', '', ''],
     spirit: ['', '', ''],
   })
+  const [activePriorityPicker, setActivePriorityPicker] = React.useState<{ attr: TalentAttr; slot: 0 | 1 | 2 } | null>(null)
 
   const handleWardenSelection = (group: string, warden: string) => {
     setSelectedWardens((prev: any) => {
@@ -285,6 +286,21 @@ export default function WardensTab() {
     }
   }, [talents])
 
+  const getTalentStarList = React.useCallback((totalStars: number) => {
+    const stars: number[] = []
+    let remaining = Math.max(0, totalStars)
+    while (remaining > 0 && stars.length < 10) {
+      if (remaining >= 6) {
+        stars.push(6)
+        remaining -= 6
+      } else {
+        stars.push(remaining)
+        remaining = 0
+      }
+    }
+    return stars
+  }, [])
+
   const eligibleWardensForAttr = (attr: TalentAttr) => {
     return allWardens
       .filter((w) => {
@@ -296,22 +312,47 @@ export default function WardensTab() {
       .sort((a, b) => a.localeCompare(b))
   }
 
+  const getPriorityPickerChoices = (attr: TalentAttr, slot: 0 | 1 | 2) => {
+    const eligible = eligibleWardensForAttr(attr)
+    const selected = talentFocusPriority[attr]
+    return eligible.filter((name) => {
+      return selected.every((picked, idx) => {
+        if (idx === slot) return true
+        return picked !== name
+      })
+    })
+  }
+
   const projectedFocus = (attr: TalentAttr) => {
     const priorities = talentFocusPriority[attr].filter(Boolean)
-    let remaining = scriptExpectedStarsByAttr[attr]
-    const rows: Array<{ name: string; spent: number; left: number }> = []
+    let remainingScriptStars = scriptExpectedStarsByAttr[attr]
+    const rows: Array<{ name: string; expUsedStars: number; scriptUsedStars: number; levelGain: number; leftStarsRoom: number }> = []
     priorities.forEach((name) => {
       const p = WARDEN_TALENT_PROFILES[name]
       if (!p) return
-      const lvl = wardenTalentPlannerLevels[name] ?? (wardenStats[name]?.level ?? 1)
+      const lvl = wardenStats[name]?.level ?? 1
       const cap = talentCapFromWardenLevel(lvl)
-      const cur = wardenTalentLevels[name]?.[attr] ?? 0
-      const room = Math.max(0, cap - cur)
-      const spend = Math.min(remaining, room)
-      remaining -= spend
-      rows.push({ name, spent: spend, left: room - spend })
+      const starList = getTalentStarList(p.baseStars[attr])
+      const curLevels = wardenTalentLevels[name]?.[attr] ?? starList.map(() => 0)
+      const roomStars = starList.reduce((sum, star, i) => sum + star * Math.max(0, cap - (curLevels[i] ?? 0)), 0)
+
+      const expStarsAvailable = Math.max(0, Math.floor((wardenTalentExp[name] ?? 0) / 200))
+      const expUsedStars = Math.min(expStarsAvailable, roomStars)
+      const roomAfterExp = roomStars - expUsedStars
+      const scriptUsedStars = Math.min(remainingScriptStars, roomAfterExp)
+      remainingScriptStars -= scriptUsedStars
+
+      const spentStars = expUsedStars + scriptUsedStars
+      const levelGain = p.baseStars[attr] > 0 ? spentStars / p.baseStars[attr] : 0
+      rows.push({
+        name,
+        expUsedStars,
+        scriptUsedStars,
+        levelGain,
+        leftStarsRoom: roomStars - spentStars,
+      })
     })
-    return { rows, leftover: remaining }
+    return { rows, leftoverScriptStars: remainingScriptStars }
   }
 
   return (
@@ -344,7 +385,7 @@ export default function WardensTab() {
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
                 </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="min-w-0 flex flex-col justify-center">
                   <Label htmlFor={warden.id} className="text-yellow-400 font-medium cursor-pointer">{warden.name}</Label>
                   <div className={`text-xs ${getAttributeColor(warden.type)}`}>{warden.type}</div>
                 </div>
@@ -838,31 +879,99 @@ export default function WardensTab() {
                       <div key={attr} className="rounded border border-gray-700 bg-gray-900/40 p-3 space-y-2">
                         <div className={`font-semibold capitalize ${getAttributeColor(attr)}`}>{attr} focus</div>
                         <div className="text-xs text-gray-400">Expected stars from scripts: {scriptExpectedStarsByAttr[attr].toFixed(2)}</div>
-                        {[0, 1, 2].map((idx) => (
-                          <select
-                            key={idx}
-                            className="w-full bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white text-sm"
-                            value={talentFocusPriority[attr][idx]}
-                            onChange={(e) =>
-                              setTalentFocusPriority((prev) => ({
-                                ...prev,
-                                [attr]: prev[attr].map((v, i) => (i === idx ? e.target.value : v)) as [string, string, string],
-                              }))
-                            }
-                          >
-                            <option value="">Priority {idx + 1} (none)</option>
-                            {eligible.map((w) => (
-                              <option key={w} value={w}>{w}</option>
-                            ))}
-                          </select>
-                        ))}
+                        <div className="grid grid-cols-3 gap-2">
+                          {[0, 1, 2].map((idx) => {
+                            const slot = idx as 0 | 1 | 2
+                            const picked = talentFocusPriority[attr][slot]
+                            return (
+                              <button
+                                key={slot}
+                                type="button"
+                                onClick={() =>
+                                  setActivePriorityPicker((prev) =>
+                                    prev?.attr === attr && prev.slot === slot ? null : { attr, slot }
+                                  )
+                                }
+                                className={`rounded border p-2 text-left ${
+                                  activePriorityPicker?.attr === attr && activePriorityPicker?.slot === slot
+                                    ? 'border-red-500 bg-red-500/10'
+                                    : 'border-gray-700 bg-gray-800/60'
+                                }`}
+                              >
+                                <div className="text-[11px] text-gray-400 mb-1">Priority {slot + 1}</div>
+                                {picked ? (
+                                  <div className="flex items-center gap-2">
+                                    <img
+                                      src={getWardenImageSrc(picked)}
+                                      alt={picked}
+                                      className="w-10 h-10 rounded object-contain bg-gray-900/70 p-1"
+                                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                    />
+                                    <span className="text-xs text-white truncate">{picked}</span>
+                                  </div>
+                                ) : (
+                                  <div className="h-10 rounded border border-dashed border-gray-600 flex items-center justify-center text-xs text-gray-500">
+                                    Choose
+                                  </div>
+                                )}
+                              </button>
+                            )
+                          })}
+                        </div>
+                        {activePriorityPicker?.attr === attr && (
+                          <div className="rounded border border-gray-700 bg-gray-950/70 p-2">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="text-xs text-gray-300">
+                                Pick warden for Priority {activePriorityPicker.slot + 1}
+                              </div>
+                              <button
+                                type="button"
+                                className="text-xs text-gray-400 hover:text-white"
+                                onClick={() => {
+                                  const slot = activePriorityPicker.slot
+                                  setTalentFocusPriority((prev) => ({
+                                    ...prev,
+                                    [attr]: prev[attr].map((v, i) => (i === slot ? '' : v)) as [string, string, string],
+                                  }))
+                                }}
+                              >
+                                Clear
+                              </button>
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-64 overflow-y-auto pr-1">
+                              {getPriorityPickerChoices(attr, activePriorityPicker.slot).map((w) => (
+                                <button
+                                  key={w}
+                                  type="button"
+                                  onClick={() => {
+                                    const slot = activePriorityPicker.slot
+                                    setTalentFocusPriority((prev) => ({
+                                      ...prev,
+                                      [attr]: prev[attr].map((v, i) => (i === slot ? w : v)) as [string, string, string],
+                                    }))
+                                    setActivePriorityPicker(null)
+                                  }}
+                                  className="rounded border border-gray-700 bg-gray-900/70 hover:bg-gray-800 p-2 flex items-center gap-2 text-left"
+                                >
+                                  <img
+                                    src={getWardenImageSrc(w)}
+                                    alt={w}
+                                    className="w-10 h-10 rounded object-contain bg-gray-950/60 p-1"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                  />
+                                  <span className="text-xs text-white truncate">{w}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                         <div className="text-xs text-gray-400 space-y-1">
                           {proj.rows.map((r) => (
                             <div key={r.name}>
-                              {r.name}: +{r.spent.toFixed(2)} levels ({r.left.toFixed(2)} room left)
+                              {r.name}: +{r.levelGain.toFixed(2)} lv ({r.expUsedStars.toFixed(2)} EXP-stars, {r.scriptUsedStars.toFixed(2)} script-stars)
                             </div>
                           ))}
-                          {proj.leftover > 0.0001 && <div className="text-amber-300">Unassigned leftover: {proj.leftover.toFixed(2)}</div>}
+                          {proj.leftoverScriptStars > 0.0001 && <div className="text-amber-300">Unassigned script-stars: {proj.leftoverScriptStars.toFixed(2)}</div>}
                         </div>
                       </div>
                     )
@@ -883,21 +992,39 @@ export default function WardensTab() {
                     {allWardens.map((w) => {
                       const p = WARDEN_TALENT_PROFILES[w.name]
                       if (!p) return null
-                      const plannerLevel = wardenTalentPlannerLevels[w.name] ?? (wardenStats[w.name]?.level ?? 1)
+                      const plannerLevel = wardenStats[w.name]?.level ?? 1
                       const cap = talentCapFromWardenLevel(plannerLevel)
-                      const levels = wardenTalentLevels[w.name] ?? { strength: 0, allure: 0, intellect: 0, spirit: 0 }
+                      const defaultLevelsByAttr = {
+                        strength: getTalentStarList(p.baseStars.strength).map(() => 0),
+                        allure: getTalentStarList(p.baseStars.allure).map(() => 0),
+                        intellect: getTalentStarList(p.baseStars.intellect).map(() => 0),
+                        spirit: getTalentStarList(p.baseStars.spirit).map(() => 0),
+                      }
+                      const levels = wardenTalentLevels[w.name] ?? defaultLevelsByAttr
                       const totals = {
-                        strength: p.baseStars.strength * levels.strength,
-                        allure: p.baseStars.allure * levels.allure,
-                        intellect: p.baseStars.intellect * levels.intellect,
-                        spirit: p.baseStars.spirit * levels.spirit,
+                        strength: getTalentStarList(p.baseStars.strength).reduce((sum, star, idx) => sum + star * (levels.strength?.[idx] ?? 0), 0),
+                        allure: getTalentStarList(p.baseStars.allure).reduce((sum, star, idx) => sum + star * (levels.allure?.[idx] ?? 0), 0),
+                        intellect: getTalentStarList(p.baseStars.intellect).reduce((sum, star, idx) => sum + star * (levels.intellect?.[idx] ?? 0), 0),
+                        spirit: getTalentStarList(p.baseStars.spirit).reduce((sum, star, idx) => sum + star * (levels.spirit?.[idx] ?? 0), 0),
                       }
                       return (
                         <div key={w.name} className="rounded border border-gray-700 bg-gray-900/40 p-3 space-y-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="text-white font-medium">{w.name}</div>
-                            <div className="text-xs text-gray-400">
-                              {p.mainStat}{p.offStat ? ` / ${p.offStat}` : ''}
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-14 h-14 rounded bg-gray-800/60 p-1 flex-shrink-0">
+                                <img
+                                  src={getWardenImageSrc(w.name)}
+                                  alt={w.name}
+                                  className="w-full h-full object-contain"
+                                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-white font-medium">{w.name}</div>
+                                <div className="text-xs text-gray-400">
+                                  {p.mainStat}{p.offStat ? ` / ${p.offStat}` : ''}
+                                </div>
+                              </div>
                             </div>
                           </div>
                           <div className="flex items-end gap-2">
@@ -906,7 +1033,19 @@ export default function WardensTab() {
                               <Input
                                 className="mt-1 w-24 bg-gray-900 border-gray-600"
                                 {...nonNegativeIntInputProps(plannerLevel, (n) =>
-                                  setWardenTalentPlannerLevels((prev) => ({ ...prev, [w.name]: Math.max(1, n) }))
+                                  setWardenStats((prev) => ({
+                                    ...prev,
+                                    [w.name]: { ...prev[w.name], level: Math.max(1, n) },
+                                  }))
+                                )}
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-gray-400 text-xs">Talent EXP</Label>
+                              <Input
+                                className="mt-1 w-32 bg-gray-900 border-gray-600"
+                                {...nonNegativeIntInputProps(wardenTalentExp[w.name] ?? 0, (n) =>
+                                  setWardenTalentExp((prev) => ({ ...prev, [w.name]: Math.max(0, n) }))
                                 )}
                               />
                             </div>
@@ -915,27 +1054,46 @@ export default function WardensTab() {
                           <div className="grid grid-cols-2 gap-2">
                             {(['strength', 'allure', 'intellect', 'spirit'] as TalentAttr[]).map((attr) => (
                               <div key={attr} className="rounded border border-gray-800 p-2">
-                                <Label className={`text-xs capitalize ${getAttributeColor(attr)}`}>{attr} level</Label>
-                                <Input
-                                  className="mt-1 bg-gray-900 border-gray-600"
-                                  {...nonNegativeIntInputProps(levels[attr], (n) =>
-                                    setWardenTalentLevels((prev) => ({
-                                      ...prev,
-                                      [w.name]: {
-                                        ...(prev[w.name] ?? { strength: 0, allure: 0, intellect: 0, spirit: 0 }),
-                                        [attr]: Math.min(cap, Math.max(0, n)),
-                                      },
-                                    }))
-                                  )}
-                                />
+                                <Label className={`text-xs capitalize ${getAttributeColor(attr)}`}>{attr} talents</Label>
+                                <div className="mt-1 grid grid-cols-5 gap-1">
+                                  {getTalentStarList(p.baseStars[attr]).map((star, idx) => (
+                                    <Input
+                                      key={`${w.name}-${attr}-${idx}`}
+                                      className="h-8 bg-gray-900 border-gray-600 text-xs px-1"
+                                      placeholder="0"
+                                      {...nonNegativeIntInputProps(levels[attr]?.[idx] ?? 0, (n) =>
+                                        setWardenTalentLevels((prev) => {
+                                          const prevWarden = prev[w.name] ?? {
+                                            strength: getTalentStarList(p.baseStars.strength).map(() => 0),
+                                            allure: getTalentStarList(p.baseStars.allure).map(() => 0),
+                                            intellect: getTalentStarList(p.baseStars.intellect).map(() => 0),
+                                            spirit: getTalentStarList(p.baseStars.spirit).map(() => 0),
+                                          }
+                                          const nextAttr = [...(prevWarden[attr] ?? [])]
+                                          nextAttr[idx] = Math.min(cap, Math.max(0, n))
+                                          return {
+                                            ...prev,
+                                            [w.name]: {
+                                              ...prevWarden,
+                                              [attr]: nextAttr,
+                                            },
+                                          }
+                                        })
+                                      )}
+                                    />
+                                  ))}
+                                </div>
                                 <div className="text-[11px] text-gray-400 mt-1">
-                                  +{totals[attr].toLocaleString()} ({p.baseStars[attr]} stars x lvl)
+                                  +{totals[attr].toLocaleString()} ({getTalentStarList(p.baseStars[attr]).map((s) => `${s}★`).join(' + ')})
                                 </div>
                               </div>
                             ))}
                           </div>
                           <div className="text-xs text-gray-300">
                             Total talents: {(totals.strength + totals.allure + totals.intellect + totals.spirit).toLocaleString()}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            Talent EXP stars available: {Math.floor((wardenTalentExp[w.name] ?? 0) / 200).toLocaleString()} ({(wardenTalentExp[w.name] ?? 0).toLocaleString()} EXP)
                           </div>
                         </div>
                       )
