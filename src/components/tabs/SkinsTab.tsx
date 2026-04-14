@@ -5,6 +5,7 @@ import { useGameCalculator } from '@/context/GameCalculatorContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 import { SKIN_LEDGER_ROWS, describeWardenSkinRarity, type LoverSkinRarity, type WardenSkinRarity } from '@/data/skinLedger'
 import { WARDEN_CATALOG } from '@/data/wardenCatalog'
 import { LOVER_SKINS, getLoverPortraitSrcs } from '@/utils/loverImagePaths'
@@ -69,6 +70,7 @@ export default function SkinsTab() {
   const {
     skinLedger,
     wardenSkins,
+    setWardenSkins,
     wardenActiveSkins,
     wardenSkinLevels,
     setWardenSkinLevels,
@@ -98,6 +100,12 @@ export default function SkinsTab() {
     setWardenSkinLevels((prev) => ({
       ...prev,
       [warden]: { ...prev[warden], [skin]: Math.max(1, Math.floor(n) || 1) },
+    }))
+  }
+  const toggleWardenSkinOwned = (warden: string, skin: string) => {
+    setWardenSkins((prev) => ({
+      ...prev,
+      [warden]: { ...prev[warden], [skin]: !prev[warden]?.[skin] },
     }))
   }
   const displayWardenName = (name: string) => (name === 'Dahlia' ? 'Eddie' : name)
@@ -254,62 +262,82 @@ export default function SkinsTab() {
                   />
                   <div className="font-medium text-white">{displayWardenName(w.name)}</div>
                 </div>
-                {skins.map((skinKey, idx) => {
-                  const isOwned = !!wardenSkins[w.name]?.[skinKey]
-                  const rarity = resolveWardenSkinRarity(w.name, skinKey, idx, skins.length, wardenSkinRarityOverrides)
-                  const star = wardenSkinLevels[w.name]?.[skinKey] ?? 1
-                  const flat0 = wardenSkinRarityFlat(rarity)
-                  const preview = wardenSkinAttributeTotal(flat0, skinLedger.skinBaseBoostSteps, star)
-                  return (
-                    <div key={skinKey} className="flex flex-wrap items-end gap-3 border-b border-gray-800/80 pb-2">
-                      <img
-                        src={wardenSkinCardSrc(skinKey)}
-                        alt=""
-                        className="w-16 h-16 object-contain rounded border border-gray-700 bg-gray-900/50 shrink-0"
-                        onError={(e) => {
-                          ;(e.target as HTMLImageElement).style.display = 'none'
-                        }}
-                      />
-                      <div>
-                        <Label className="text-gray-400 text-xs">{skinKey}</Label>
-                        <select
-                          className="block mt-1 bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white"
-                          value={String(rarity)}
-                          disabled={!isOwned}
-                          onChange={(e) => setWardenRarity(w.name, skinKey, parseWardenRarity(e.target.value))}
-                        >
-                          <option value="1">1 — purple (+5)</option>
-                          <option value="2">2 — orange (+10)</option>
-                          <option value="3">3 — red (+20)</option>
-                        </select>
-                        <div className="text-[10px] text-gray-500 mt-0.5">
-                          Default:{' '}
-                          {describeWardenSkinRarity(getDefaultWardenSkinRarity(w.name, skinKey, idx, skins.length))}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {skins.map((skinKey, idx) => {
+                    const isOwned = !!wardenSkins[w.name]?.[skinKey]
+                    const rarity = resolveWardenSkinRarity(w.name, skinKey, idx, skins.length, wardenSkinRarityOverrides)
+                    const level = wardenSkinLevels[w.name]?.[skinKey] ?? 1
+                    const flat0 = wardenSkinRarityFlat(rarity)
+                    const preview = wardenSkinAttributeTotal(flat0, skinLedger.skinBaseBoostSteps, level)
+                    return (
+                      <div key={skinKey} className="rounded border border-gray-800 bg-gray-900/40 p-3 space-y-2">
+                        <div className="flex items-start gap-3">
+                          <img
+                            src={wardenSkinCardSrc(skinKey)}
+                            alt=""
+                            className="w-24 h-24 object-contain rounded border border-gray-700 bg-gray-900/60 shrink-0"
+                            onError={(e) => {
+                              ;(e.target as HTMLImageElement).style.display = 'none'
+                            }}
+                          />
+                          <div className="min-w-0 flex-1">
+                            <Label className="text-gray-300 text-xs font-mono break-all">{skinKey}</Label>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Checkbox
+                                id={`skin-own-${w.name}-${skinKey}`}
+                                checked={isOwned}
+                                onCheckedChange={() => toggleWardenSkinOwned(w.name, skinKey)}
+                                className="border-gray-400"
+                              />
+                              <Label htmlFor={`skin-own-${w.name}-${skinKey}`} className="text-xs text-gray-300 cursor-pointer">
+                                Owned
+                              </Label>
+                            </div>
+                            <div className="text-[10px] text-gray-500 mt-2">
+                              Default:{' '}
+                              {describeWardenSkinRarity(getDefaultWardenSkinRarity(w.name, skinKey, idx, skins.length))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-end gap-3">
+                          <div>
+                            <Label className="text-gray-400 text-xs">Rarity</Label>
+                            <select
+                              className="block mt-1 bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white"
+                              value={String(rarity)}
+                              disabled={!isOwned}
+                              onChange={(e) => setWardenRarity(w.name, skinKey, parseWardenRarity(e.target.value))}
+                            >
+                              <option value="1">1 — purple (+5)</option>
+                              <option value="2">2 — orange (+10)</option>
+                              <option value="3">3 — red (+20)</option>
+                            </select>
+                          </div>
+                          <div>
+                            <Label className="text-gray-400 text-xs">Level</Label>
+                            <Input
+                              className="mt-1 w-24 bg-gray-900 border-gray-600"
+                              disabled={!isOwned}
+                              {...nonNegativeIntInputProps(level, (n) => setWardenSkinLevel(w.name, skinKey, Math.max(1, n || 1)), {
+                                zeroShowsEmpty: false,
+                              })}
+                            />
+                          </div>
+                        </div>
+                        <div className="text-gray-400 text-xs">
+                          {isOwned ? (
+                            <>
+                              Active bonus (if equipped):{' '}
+                              <span className="text-green-300 font-mono">+{preview.toLocaleString()}</span> to target stat(s)
+                            </>
+                          ) : (
+                            <span className="text-gray-500">Not owned yet.</span>
+                          )}
                         </div>
                       </div>
-                      <div>
-                        <Label className="text-gray-400 text-xs">Star level</Label>
-                        <Input
-                          className="mt-1 w-20 bg-gray-900 border-gray-600"
-                          disabled={!isOwned}
-                          {...nonNegativeIntInputProps(star, (n) => setWardenSkinLevel(w.name, skinKey, Math.max(1, n || 1)), {
-                            zeroShowsEmpty: false,
-                          })}
-                        />
-                      </div>
-                      <div className="text-gray-400 text-xs pb-1">
-                        {isOwned ? (
-                          <>
-                            Active bonus (if equipped):{' '}
-                            <span className="text-green-300 font-mono">+{preview.toLocaleString()}</span> to target stat(s)
-                          </>
-                        ) : (
-                          <span className="text-gray-500">Not owned (toggle on Wardens tab).</span>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
             )
           })}
