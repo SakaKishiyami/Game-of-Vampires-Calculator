@@ -2,13 +2,31 @@ import type { SelectedWardens } from '@/types'
 import type { WardenCatalogEntry } from '@/data/wardenCatalog'
 import { initialAuras } from '@/data/auras'
 
-/** Lord-level reward wardens (highest tiers). Order matters for grant count. */
+/** Lord-level reward wardens (Elder/Ancient picks). Player chooses which of the four they own up to their grant cap. */
 export const LORD_UPGRADE_WARDENS = ['Temujin', 'Charlemagne', 'Josey', 'Erik'] as const
+
+const LORD_SET = new Set<string>(LORD_UPGRADE_WARDENS as unknown as string[])
+
+/** Keep only valid names, preserve order, dedupe, cap at `grant` (0 clears). */
+export function normalizeLordTierRewardWardens(selected: readonly string[], grant: number): string[] {
+  if (grant <= 0) return []
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const name of selected) {
+    if (!LORD_SET.has(name) || seen.has(name)) continue
+    seen.add(name)
+    out.push(name)
+    if (out.length >= grant) break
+  }
+  return out
+}
 
 export type WardenOwnershipContext = {
   selectedWardens: SelectedWardens
   vipLevel: number
   lordLevel: string
+  /** Subset of LORD_UPGRADE_WARDENS chosen by the player; length capped by elderLordWardenGrantCount(lordLevel). */
+  lordTierRewardWardens: string[]
   hasNyx: boolean
   hasDracula: boolean
   hasVictor: boolean
@@ -45,6 +63,17 @@ export function showElderLordWardenSection(lordLevel: string): boolean {
   return p.tier === 'Elder' || p.tier === 'Ancient'
 }
 
+/** Load from save: explicit list is normalized; missing key keeps legacy “first N in catalog order” for Elder+. */
+export function resolveLordTierRewardWardensFromSave(
+  raw: string[] | undefined,
+  lordLevelForGrant: string,
+): string[] {
+  const grant = elderLordWardenGrantCount(lordLevelForGrant)
+  if (raw !== undefined) return normalizeLordTierRewardWardens(raw, grant)
+  if (grant <= 0) return []
+  return (LORD_UPGRADE_WARDENS as readonly string[]).slice(0, grant) as string[]
+}
+
 function vipRequiredForWarden(wardenName: string): number | null {
   const v = (initialAuras.vip as Record<string, { vipRequired?: number } | undefined>)[wardenName]
   if (!v || typeof v.vipRequired !== 'number') return null
@@ -52,7 +81,9 @@ function vipRequiredForWarden(wardenName: string): number | null {
 }
 
 /**
- * Warden is "owned" for UI filtering: summons, VIP unlock, lord-tier unlock, or special toggles.
+ * Warden is "owned" for UI filtering.
+ * Exceptions (must be unlocked): specials, lord-tier picks, VIP shop wardens, circus/tyrants/noir/hunt summons.
+ * All other catalog wardens (group `other`) default to owned. Unknown names → not owned.
  * Does not include the Summons/Acquired picker itself (that list stays full so you can add owners).
  */
 export function isWardenOwned(
@@ -65,12 +96,10 @@ export function isWardenOwned(
   if (wardenName === 'Victor') return ctx.hasVictor
   if (wardenName === 'Frederick') return ctx.hasFrederick
 
-  const grant = elderLordWardenGrantCount(ctx.lordLevel)
-  const lordIdx = (LORD_UPGRADE_WARDENS as readonly string[]).indexOf(wardenName)
-  if (lordIdx !== -1 && lordIdx < grant) return true
+  if (LORD_SET.has(wardenName)) return ctx.lordTierRewardWardens.includes(wardenName)
 
   const vipReq = vipRequiredForWarden(wardenName)
-  if (vipReq !== null && ctx.vipLevel >= vipReq) return true
+  if (vipReq !== null) return ctx.vipLevel >= vipReq
 
   const entry = catalog.find((w) => w.name === wardenName)
   if (!entry) return false
@@ -80,7 +109,7 @@ export function isWardenOwned(
     return ctx.selectedWardens[g]?.includes(wardenName) ?? false
   }
 
-  return false
+  return true
 }
 
 export type ScarletBondVisibilityContext = WardenOwnershipContext & {
@@ -93,6 +122,10 @@ export type ScarletBondVisibilityContext = WardenOwnershipContext & {
   hasAsh: boolean
 }
 
+/**
+ * Scarlet bond card: VIP gate, summon/token lovers (Wild Hunt singles, Maya, Ember/Ash), then warden ownership.
+ * Dual and other lovers default to “owned” (no checkbox); only those series require flags above.
+ */
 export function isScarletBondCardVisible(
   bond: { lover: string; warden: string; vip: number },
   ctx: ScarletBondVisibilityContext,

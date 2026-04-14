@@ -27,6 +27,7 @@ import SkinsTab from "@/components/tabs/SkinsTab"
 import ChildrenPlannerTab from "@/components/tabs/ChildrenPlannerTab"
 import { getAttributeColor, nonNegativeIntInputProps } from "@/utils/helpers"
 import { migrateEddieToDahliaInPartialState } from "@/utils/migrateEddieToDahlia"
+import { resolveLordTierRewardWardensFromSave } from "@/utils/wardenOwnership"
 
 export default function GameCalculator() {
   const [activeTab, setActiveTab] = useState(() => {
@@ -37,6 +38,7 @@ export default function GameCalculator() {
   useEffect(() => { localStorage.setItem('activeTab', activeTab) }, [activeTab])
   const {
     baseAttributes, setBaseAttributes, vipLevel, setVipLevel, lordLevel, setLordLevel,
+    lordTierRewardWardens, setLordTierRewardWardens,
     books, setBooks, conclave, setConclave, conclaveUpgrade, setConclaveUpgrade,
     courtyard, setCourtyard, wardenCounts, setWardenCounts, selectedWardens, setSelectedWardens,
     wardenStats, setWardenStats, uploadedWardenData, setUploadedWardenData,
@@ -94,6 +96,7 @@ export default function GameCalculator() {
       baseAttributes,
       vipLevel,
       lordLevel,
+      lordTierRewardWardens,
       books,
       conclave,
       conclaveUpgrade,
@@ -167,7 +170,9 @@ export default function GameCalculator() {
         
         setBaseAttributes(parsedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
         setVipLevel(parsedData.vipLevel || 1)
-        setLordLevel(parsedData.lordLevel || "Fledgling Lord 1")
+        const loadedLord = parsedData.lordLevel || "Fledgling Lord 1"
+        setLordLevel(loadedLord)
+        setLordTierRewardWardens(resolveLordTierRewardWardensFromSave(parsedData.lordTierRewardWardens, loadedLord))
         setBooks(parsedData.books || initialBooks)
         setConclave(parsedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
         setConclaveUpgrade(parsedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })
@@ -266,6 +271,7 @@ export default function GameCalculator() {
       baseAttributes,
       vipLevel,
       lordLevel,
+      lordTierRewardWardens,
       books,
       conclave,
       conclaveUpgrade,
@@ -350,7 +356,9 @@ export default function GameCalculator() {
         
         setBaseAttributes(importedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
         setVipLevel(importedData.vipLevel || 1)
-        setLordLevel(importedData.lordLevel || "Fledgling Lord 1")
+        const impLord = importedData.lordLevel || "Fledgling Lord 1"
+        setLordLevel(impLord)
+        setLordTierRewardWardens(resolveLordTierRewardWardensFromSave(importedData.lordTierRewardWardens, impLord))
         setBooks(importedData.books || initialBooks)
         setConclave(importedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
         setConclaveUpgrade(importedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })
@@ -502,6 +510,7 @@ export default function GameCalculator() {
       baseAttributes,
       vipLevel,
       lordLevel,
+      lordTierRewardWardens,
       books,
       conclave,
       conclaveUpgrade,
@@ -536,6 +545,10 @@ export default function GameCalculator() {
     if (d.baseAttributes) setBaseAttributes(d.baseAttributes)
     if (d.vipLevel !== undefined) setVipLevel(d.vipLevel)
     if (d.lordLevel) setLordLevel(d.lordLevel)
+    if (d.lordTierRewardWardens !== undefined || d.lordLevel) {
+      const lv = d.lordLevel ?? 'Fledgling Lord 1'
+      setLordTierRewardWardens(resolveLordTierRewardWardensFromSave(d.lordTierRewardWardens, lv))
+    }
     if (d.books) setBooks(d.books)
     if (d.conclave) setConclave(d.conclave)
     if (d.conclaveUpgrade) setConclaveUpgrade(d.conclaveUpgrade)
@@ -687,6 +700,7 @@ export default function GameCalculator() {
           baseAttributes,
           vipLevel,
           lordLevel,
+          lordTierRewardWardens,
           books,
           conclave,
           conclaveUpgrade,
@@ -719,7 +733,7 @@ export default function GameCalculator() {
     }, 30000)
 
     return () => clearInterval(autoSaveInterval)
-  }, [baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade, domIncreasePerStar, courtyard, wardenCounts, selectedWardens, hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, wardenStats, scarletBond, scarletBondAffinity, optimizedBondLevels, inventory])
+  }, [baseAttributes, vipLevel, lordLevel, lordTierRewardWardens, books, conclave, conclaveUpgrade, domIncreasePerStar, courtyard, wardenCounts, selectedWardens, hasNyx, hasDracula, hasVictor, hasFrederick, hasAgneyi, hasCulann, hasHela, hasDionysus, hasMaya, hasEmber, hasAsh, auras, wardenStats, scarletBond, scarletBondAffinity, optimizedBondLevels, inventory])
 
   // Load auto-saved data on component mount
   React.useEffect(() => {
@@ -732,7 +746,9 @@ export default function GameCalculator() {
         if (!lastSave) {
           setBaseAttributes(parsedData.baseAttributes || { strength: 0, allure: 0, intellect: 0, spirit: 0 })
           setVipLevel(parsedData.vipLevel || 1)
-          setLordLevel(parsedData.lordLevel || "Fledgling Lord 1")
+          const autoLord = parsedData.lordLevel || "Fledgling Lord 1"
+          setLordLevel(autoLord)
+          setLordTierRewardWardens(resolveLordTierRewardWardensFromSave(parsedData.lordTierRewardWardens, autoLord))
           setBooks(parsedData.books || initialBooks)
           setConclave(parsedData.conclave || { "Seal of Strength": 0, "Seal of Allure": 0, "Seal of Intellect": 0, "Seal of Spirit": 0 })
           setConclaveUpgrade(parsedData.conclaveUpgrade || { savedSeals: 0, upgradeSeals: { "Seal of Strength": true, "Seal of Allure": true, "Seal of Intellect": true, "Seal of Spirit": true } })

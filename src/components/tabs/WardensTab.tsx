@@ -177,6 +177,8 @@ export default function WardensTab() {
     talents,
     vipLevel,
     lordLevel,
+    lordTierRewardWardens,
+    setLordTierRewardWardens,
   } = useGameCalculator()
 
   const wardenOwnershipCtx = React.useMemo<WardenOwnershipContext>(
@@ -184,12 +186,13 @@ export default function WardensTab() {
       selectedWardens,
       vipLevel,
       lordLevel,
+      lordTierRewardWardens,
       hasNyx,
       hasDracula,
       hasVictor,
       hasFrederick,
     }),
-    [selectedWardens, vipLevel, lordLevel, hasNyx, hasDracula, hasVictor, hasFrederick],
+    [selectedWardens, vipLevel, lordLevel, lordTierRewardWardens, hasNyx, hasDracula, hasVictor, hasFrederick],
   )
 
   const ownedWardens = React.useMemo(
@@ -466,23 +469,42 @@ export default function WardensTab() {
                   <CardHeader>
                     <CardTitle className="text-amber-200">Lord tier reward wardens</CardTitle>
                     <p className="text-sm text-gray-300">
-                      From Elder Lord onward you unlock these (in order): Elder 1 → 1, Elder 2 → 2, Elder 3 → 2, Elder 4 → 3, Elder 5 → 4, Ancient → all 4.
-                      Current unlocks: <span className="text-white font-medium">{elderLordWardenGrantCount(lordLevel)}</span> / {LORD_UPGRADE_WARDENS.length}.
+                      From Elder Lord onward you choose which of the four you own (not fixed order). Slots: Elder 1 → 1, Elder 2 → 2, Elder 3 → 2, Elder 4 → 3, Elder 5 → 4, Ancient → all 4.
+                      Selected:{' '}
+                      <span className="text-white font-medium">
+                        {lordTierRewardWardens.length} / {elderLordWardenGrantCount(lordLevel)}
+                      </span>
+                      . Click a card to toggle (deselect to free a slot).
                     </p>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {LORD_UPGRADE_WARDENS.map((name, i) => {
+                      {LORD_UPGRADE_WARDENS.map((name) => {
                         const grant = elderLordWardenGrantCount(lordLevel)
-                        const unlocked = i < grant
+                        const chosen = lordTierRewardWardens.includes(name)
+                        const atCap = lordTierRewardWardens.length >= grant
+                        const canTurnOn = !chosen && !atCap
                         return (
-                          <div
+                          <button
+                            type="button"
                             key={name}
-                            className={`rounded-lg border p-2 flex flex-col items-center gap-1 ${
-                              unlocked ? 'border-green-500/40 bg-green-500/5' : 'border-gray-600 bg-gray-800/30 opacity-70'
+                            onClick={() => {
+                              if (chosen) {
+                                setLordTierRewardWardens((prev) => prev.filter((n) => n !== name))
+                              } else if (canTurnOn) {
+                                setLordTierRewardWardens((prev) => [...prev, name])
+                              }
+                            }}
+                            disabled={!chosen && atCap}
+                            className={`rounded-lg border p-2 flex flex-col items-center gap-1 text-left transition-opacity ${
+                              chosen
+                                ? 'border-green-500/60 bg-green-500/10 ring-1 ring-green-500/30'
+                                : atCap
+                                  ? 'border-gray-600 bg-gray-800/30 opacity-50 cursor-not-allowed'
+                                  : 'border-amber-600/40 bg-gray-800/40 hover:bg-gray-800/70 cursor-pointer'
                             }`}
                           >
-                            <div className="w-full h-28 flex items-center justify-center bg-gray-900/50 rounded">
+                            <div className="w-full h-28 flex items-center justify-center bg-gray-900/50 rounded pointer-events-none">
                               <img
                                 src={getWardenImageSrc(name)}
                                 alt={name}
@@ -491,10 +513,10 @@ export default function WardensTab() {
                               />
                             </div>
                             <div className="text-sm text-white font-medium">{name}</div>
-                            <div className={`text-xs ${unlocked ? 'text-green-400' : 'text-gray-500'}`}>
-                              {unlocked ? 'Unlocked' : 'Locked'}
+                            <div className={`text-xs ${chosen ? 'text-green-400' : 'text-gray-400'}`}>
+                              {chosen ? 'Selected (owned)' : atCap ? 'Slot full — deselect another' : 'Click to add'}
                             </div>
-                          </div>
+                          </button>
                         )
                       })}
                     </div>

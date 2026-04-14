@@ -1,6 +1,7 @@
 "use client"
 
-import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect, ReactNode } from 'react'
+import { elderLordWardenGrantCount, normalizeLordTierRewardWardens, resolveLordTierRewardWardensFromSave } from '@/utils/wardenOwnership'
 import { initialBooks, type BooksState } from '@/data/books'
 import { createInitialFamiliarsState, type FamiliarsState } from '@/data/familiars'
 import { initialAuras } from '@/data/auras'
@@ -57,6 +58,8 @@ interface GameCalculatorContextType {
   setVipLevel: React.Dispatch<React.SetStateAction<number>>
   lordLevel: string
   setLordLevel: React.Dispatch<React.SetStateAction<string>>
+  lordTierRewardWardens: string[]
+  setLordTierRewardWardens: React.Dispatch<React.SetStateAction<string[]>>
   
   // Books
   books: BooksState
@@ -235,7 +238,17 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
 
   const [vipLevel, setVipLevel] = useState(0)
   const [lordLevel, setLordLevel] = useState("Fledgling Lord 1")
+  const [lordTierRewardWardens, setLordTierRewardWardens] = useState<string[]>([])
   const [books, setBooks] = useState<BooksState>(initialBooks)
+
+  useEffect(() => {
+    const grant = elderLordWardenGrantCount(lordLevel)
+    setLordTierRewardWardens((prev) => {
+      const next = normalizeLordTierRewardWardens(prev, grant)
+      if (next.length === prev.length && next.every((n, i) => n === prev[i])) return prev
+      return next
+    })
+  }, [lordLevel])
 
   // Conclave
   const [conclave, setConclave] = useState<ConclaveState>({
@@ -387,6 +400,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
       baseAttributes,
       vipLevel,
       lordLevel,
+      lordTierRewardWardens,
       books,
       conclave,
       conclaveUpgrade,
@@ -429,7 +443,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     const { exportGameData: exportFn } = require('@/utils/exportImport')
     exportFn(state)
   }, [
-    baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade,
+    baseAttributes, vipLevel, lordLevel, lordTierRewardWardens, books, conclave, conclaveUpgrade,
     courtyard, wardenCounts, selectedWardens, wardenSkins, wardenActiveSkins,
     wardenSkinLevels, wardenSkinRarityOverrides, loverOwnedSkins, loverActiveSkins,
     loverSkinRarities, wardenStats,
@@ -445,6 +459,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     baseAttributes,
     vipLevel,
     lordLevel,
+    lordTierRewardWardens,
     books,
     conclave,
     conclaveUpgrade,
@@ -484,7 +499,7 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     childrenPlannerEntries,
     }
   }, [
-    baseAttributes, vipLevel, lordLevel, books, conclave, conclaveUpgrade,
+    baseAttributes, vipLevel, lordLevel, lordTierRewardWardens, books, conclave, conclaveUpgrade,
     courtyard, wardenCounts, selectedWardens, wardenSkins, wardenActiveSkins,
     wardenSkinLevels, wardenSkinRarityOverrides, loverOwnedSkins, loverActiveSkins,
     loverSkinRarities, wardenStats,
@@ -500,6 +515,10 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     if (data.baseAttributes) setBaseAttributes(data.baseAttributes)
     if (data.vipLevel !== undefined) setVipLevel(data.vipLevel)
     if (data.lordLevel) setLordLevel(data.lordLevel)
+    if (data.lordTierRewardWardens !== undefined || data.lordLevel) {
+      const lv = data.lordLevel ?? 'Fledgling Lord 1'
+      setLordTierRewardWardens(resolveLordTierRewardWardensFromSave(data.lordTierRewardWardens, lv))
+    }
     if (data.books) setBooks(data.books)
     if (data.conclave) setConclave(data.conclave)
     if (data.conclaveUpgrade) setConclaveUpgrade(data.conclaveUpgrade)
@@ -1237,6 +1256,8 @@ export function GameCalculatorProvider({ children }: { children: ReactNode }) {
     setVipLevel,
     lordLevel,
     setLordLevel,
+    lordTierRewardWardens,
+    setLordTierRewardWardens,
     books,
     setBooks,
     conclave,

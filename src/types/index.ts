@@ -180,6 +180,8 @@ export interface GameCalculatorState {
   baseAttributes: BaseAttributes
   vipLevel: number
   lordLevel: string
+  /** Which of Temujin / Charlemagne / Josey / Erik are owned from Elder+ lord picks (see wardenOwnership). */
+  lordTierRewardWardens?: string[]
   books: BooksState
   conclave: ConclaveState
   conclaveUpgrade: ConclaveUpgrade

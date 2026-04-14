@@ -31,6 +31,7 @@ export default function AuraBonusesTab() {
     inventory,
     getWardenImageSrc,
     lordLevel,
+    lordTierRewardWardens,
   } = useGameCalculator()
   const { density } = useCalculatorSettings()
   const compact = density === 'compact'
@@ -40,12 +41,13 @@ export default function AuraBonusesTab() {
       selectedWardens,
       vipLevel,
       lordLevel,
+      lordTierRewardWardens,
       hasNyx,
       hasDracula,
       hasVictor,
       hasFrederick,
     }),
-    [selectedWardens, vipLevel, lordLevel, hasNyx, hasDracula, hasVictor, hasFrederick],
+    [selectedWardens, vipLevel, lordLevel, lordTierRewardWardens, hasNyx, hasDracula, hasVictor, hasFrederick],
   )
 
   const visibleVipAuraWardens = useMemo(

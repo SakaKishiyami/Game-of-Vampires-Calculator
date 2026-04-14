@@ -85,6 +85,7 @@ export default function SkinsTab() {
     selectedWardens,
     vipLevel,
     lordLevel,
+    lordTierRewardWardens,
     hasNyx,
     hasDracula,
     hasVictor,
@@ -96,12 +97,13 @@ export default function SkinsTab() {
       selectedWardens,
       vipLevel,
       lordLevel,
+      lordTierRewardWardens,
       hasNyx,
       hasDracula,
       hasVictor,
       hasFrederick,
     }),
-    [selectedWardens, vipLevel, lordLevel, hasNyx, hasDracula, hasVictor, hasFrederick],
+    [selectedWardens, vipLevel, lordLevel, lordTierRewardWardens, hasNyx, hasDracula, hasVictor, hasFrederick],
   )
 
   const ownedWardenCatalog = useMemo(
