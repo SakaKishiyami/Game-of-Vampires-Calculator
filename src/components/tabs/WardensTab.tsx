@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getDisplayValue, getAttributeColor, getAttributeBg, renderStars, nonNegativeIntInputProps } from '@/utils/helpers'
 import { wardenGroups } from '@/data/wardens'
 import { WARDEN_CATALOG as allWardens } from '@/data/wardenCatalog'
+import { WARDEN_TALENT_PROFILES, talentCapFromWardenLevel, type TalentAttr } from '@/data/wardenTalentProfiles'
 import type { AttributeBreakdown, UploadedWardenData } from '@/types'
 
 function parseNumberWithSuffix(value: string): number {
@@ -166,7 +167,17 @@ export default function WardensTab() {
     activeWardenTab, setActiveWardenTab,
     isUploading, setIsUploading, uploadError, setUploadError,
     ocrProgress, setOcrProgress,
+    talents,
   } = useGameCalculator()
+
+  const [wardenTalentLevels, setWardenTalentLevels] = React.useState<Record<string, Record<TalentAttr, number>>>({})
+  const [wardenTalentPlannerLevels, setWardenTalentPlannerLevels] = React.useState<Record<string, number>>({})
+  const [talentFocusPriority, setTalentFocusPriority] = React.useState<Record<TalentAttr, [string, string, string]>>({
+    strength: ['', '', ''],
+    allure: ['', '', ''],
+    intellect: ['', '', ''],
+    spirit: ['', '', ''],
+  })
 
   const handleWardenSelection = (group: string, warden: string) => {
     setSelectedWardens((prev: any) => {
@@ -258,6 +269,51 @@ export default function WardensTab() {
     }
   }
 
+  const scriptExpectedStarsByAttr = React.useMemo(() => {
+    const rates = [1, 0.833, 0.666, 0.5, 0.333, 0.166]
+    const calc = (script: any) => {
+      const star = Number(script?.selectedStar || 0)
+      const qty = Number(script?.quantity || 0)
+      if (star <= 0 || qty <= 0) return 0
+      return qty * (rates[star - 1] ?? 0)
+    }
+    return {
+      strength: calc((talents as any)?.strengthScript),
+      allure: calc((talents as any)?.allureScript),
+      intellect: calc((talents as any)?.intellectScript),
+      spirit: calc((talents as any)?.spiritScript),
+    }
+  }, [talents])
+
+  const eligibleWardensForAttr = (attr: TalentAttr) => {
+    return allWardens
+      .filter((w) => {
+        const p = WARDEN_TALENT_PROFILES[w.name]
+        if (!p) return false
+        return p.mainStat === 'Balance' || p.mainStat.toLowerCase() === attr || p.offStat?.toLowerCase() === attr
+      })
+      .map((w) => w.name)
+      .sort((a, b) => a.localeCompare(b))
+  }
+
+  const projectedFocus = (attr: TalentAttr) => {
+    const priorities = talentFocusPriority[attr].filter(Boolean)
+    let remaining = scriptExpectedStarsByAttr[attr]
+    const rows: Array<{ name: string; spent: number; left: number }> = []
+    priorities.forEach((name) => {
+      const p = WARDEN_TALENT_PROFILES[name]
+      if (!p) return
+      const lvl = wardenTalentPlannerLevels[name] ?? (wardenStats[name]?.level ?? 1)
+      const cap = talentCapFromWardenLevel(lvl)
+      const cur = wardenTalentLevels[name]?.[attr] ?? 0
+      const room = Math.max(0, cap - cur)
+      const spend = Math.min(remaining, room)
+      remaining -= spend
+      rows.push({ name, spent: spend, left: room - spend })
+    })
+    return { rows, leftover: remaining }
+  }
+
   return (
     <Card className="bg-gray-800/50 border-gray-600">
       <CardHeader>
@@ -267,7 +323,7 @@ export default function WardensTab() {
         {/* Special Wardens */}
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-white mb-3">Special Wardens</h3>
-          <div className="flex flex-wrap gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {([
               { name: "Nyx", id: "nyx", checked: hasNyx, onChange: setHasNyx, type: "Balance" },
               { name: "Dracula", id: "dracula", checked: hasDracula, onChange: setHasDracula, type: "Balance" },
@@ -276,25 +332,29 @@ export default function WardensTab() {
             ] as const).map((warden) => (
               <div
                 key={warden.id}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 border ${
+                className={`flex items-stretch gap-3 rounded-lg p-2 border ${
                   warden.checked ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-gray-700/50 border-gray-600'
                 }`}
               >
-                <img
-                  src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
-                  alt={warden.name}
-                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                />
-                <div>
+                <div className="w-24 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded">
+                  <img
+                    src={`/Gov/Wardens/BaseWardens/${warden.name}.png`}
+                    alt={warden.name}
+                    className="w-full h-full object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                  />
+                </div>
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
                   <Label htmlFor={warden.id} className="text-yellow-400 font-medium cursor-pointer">{warden.name}</Label>
                   <div className={`text-xs ${getAttributeColor(warden.type)}`}>{warden.type}</div>
                 </div>
-                <Checkbox
-                  id={warden.id}
-                  checked={warden.checked}
-                  onCheckedChange={(checked) => warden.onChange(checked === true)}
-                />
+                <div className="flex items-center">
+                  <Checkbox
+                    id={warden.id}
+                    checked={warden.checked}
+                    onCheckedChange={(checked) => warden.onChange(checked === true)}
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -316,6 +376,13 @@ export default function WardensTab() {
               className="bg-red-600 hover:bg-red-700"
             >
               Warden Stats
+            </Button>
+            <Button
+              variant={activeWardenTab === "talents" ? "default" : "outline"}
+              onClick={() => setActiveWardenTab("talents")}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Warden Talents
             </Button>
           </div>
 
@@ -750,6 +817,132 @@ export default function WardensTab() {
                   </Card>
                 </TabsContent>
               </Tabs>
+            </div>
+          )}
+
+          {activeWardenTab === "talents" && (
+            <div className="space-y-4">
+              <Card className="bg-gray-700/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-white">Talent Focus Priority (Auto Rollover)</CardTitle>
+                  <p className="text-sm text-gray-300">
+                    Uses expected script stars from the Talents tab. Pick up to 3 priority wardens per attribute. When one hits cap,
+                    remaining stars roll to the next.
+                  </p>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {(['strength', 'allure', 'intellect', 'spirit'] as TalentAttr[]).map((attr) => {
+                    const eligible = eligibleWardensForAttr(attr)
+                    const proj = projectedFocus(attr)
+                    return (
+                      <div key={attr} className="rounded border border-gray-700 bg-gray-900/40 p-3 space-y-2">
+                        <div className={`font-semibold capitalize ${getAttributeColor(attr)}`}>{attr} focus</div>
+                        <div className="text-xs text-gray-400">Expected stars from scripts: {scriptExpectedStarsByAttr[attr].toFixed(2)}</div>
+                        {[0, 1, 2].map((idx) => (
+                          <select
+                            key={idx}
+                            className="w-full bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white text-sm"
+                            value={talentFocusPriority[attr][idx]}
+                            onChange={(e) =>
+                              setTalentFocusPriority((prev) => ({
+                                ...prev,
+                                [attr]: prev[attr].map((v, i) => (i === idx ? e.target.value : v)) as [string, string, string],
+                              }))
+                            }
+                          >
+                            <option value="">Priority {idx + 1} (none)</option>
+                            {eligible.map((w) => (
+                              <option key={w} value={w}>{w}</option>
+                            ))}
+                          </select>
+                        ))}
+                        <div className="text-xs text-gray-400 space-y-1">
+                          {proj.rows.map((r) => (
+                            <div key={r.name}>
+                              {r.name}: +{r.spent.toFixed(2)} levels ({r.left.toFixed(2)} room left)
+                            </div>
+                          ))}
+                          {proj.leftover > 0.0001 && <div className="text-amber-300">Unassigned leftover: {proj.leftover.toFixed(2)}</div>}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gray-700/50 border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-white">Warden Talent Planner</CardTitle>
+                  <p className="text-sm text-gray-300">
+                    Level cap by warden level: 1-99→40, 100-149→80, 150-199→120, 200-249→160, 250-299→200, 300-349→240,
+                    350-399→280, 400+→320.
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {allWardens.map((w) => {
+                      const p = WARDEN_TALENT_PROFILES[w.name]
+                      if (!p) return null
+                      const plannerLevel = wardenTalentPlannerLevels[w.name] ?? (wardenStats[w.name]?.level ?? 1)
+                      const cap = talentCapFromWardenLevel(plannerLevel)
+                      const levels = wardenTalentLevels[w.name] ?? { strength: 0, allure: 0, intellect: 0, spirit: 0 }
+                      const totals = {
+                        strength: p.baseStars.strength * levels.strength,
+                        allure: p.baseStars.allure * levels.allure,
+                        intellect: p.baseStars.intellect * levels.intellect,
+                        spirit: p.baseStars.spirit * levels.spirit,
+                      }
+                      return (
+                        <div key={w.name} className="rounded border border-gray-700 bg-gray-900/40 p-3 space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="text-white font-medium">{w.name}</div>
+                            <div className="text-xs text-gray-400">
+                              {p.mainStat}{p.offStat ? ` / ${p.offStat}` : ''}
+                            </div>
+                          </div>
+                          <div className="flex items-end gap-2">
+                            <div>
+                              <Label className="text-gray-400 text-xs">Warden level</Label>
+                              <Input
+                                className="mt-1 w-24 bg-gray-900 border-gray-600"
+                                {...nonNegativeIntInputProps(plannerLevel, (n) =>
+                                  setWardenTalentPlannerLevels((prev) => ({ ...prev, [w.name]: Math.max(1, n) }))
+                                )}
+                              />
+                            </div>
+                            <div className="text-xs text-cyan-300 pb-2">Talent cap: {cap}</div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {(['strength', 'allure', 'intellect', 'spirit'] as TalentAttr[]).map((attr) => (
+                              <div key={attr} className="rounded border border-gray-800 p-2">
+                                <Label className={`text-xs capitalize ${getAttributeColor(attr)}`}>{attr} level</Label>
+                                <Input
+                                  className="mt-1 bg-gray-900 border-gray-600"
+                                  {...nonNegativeIntInputProps(levels[attr], (n) =>
+                                    setWardenTalentLevels((prev) => ({
+                                      ...prev,
+                                      [w.name]: {
+                                        ...(prev[w.name] ?? { strength: 0, allure: 0, intellect: 0, spirit: 0 }),
+                                        [attr]: Math.min(cap, Math.max(0, n)),
+                                      },
+                                    }))
+                                  )}
+                                />
+                                <div className="text-[11px] text-gray-400 mt-1">
+                                  +{totals[attr].toLocaleString()} ({p.baseStars[attr]} stars x lvl)
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="text-xs text-gray-300">
+                            Total talents: {(totals.strength + totals.allure + totals.intellect + totals.spirit).toLocaleString()}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
         </div>

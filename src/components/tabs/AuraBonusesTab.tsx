@@ -155,36 +155,36 @@ export default function AuraBonusesTab() {
                     Selected: {selected.length}/{group.max} |{' '}
                     Base Level: {selected.length > 0 ? group.baseOffset + Math.max(0, selected.length - 1) : 0}
                   </div>
-                  <div className={`grid gap-2 ${compact ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'}`}>
+                  <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
                     {Object.entries(group.data).map(([wardenName, wardenData]: [string, any]) => {
                       const currentBonus = wardenData.current > 0 ? wardenData.baseValue + (wardenData.current - 1) * wardenData.increment : 0
                       const isSelected = selected.includes(wardenName)
                       const secondaryAura = auras.secondaryAuras?.[group.secondaryKey]?.[wardenName]
                       const secondaryBonus = secondaryAura ? secondaryAura.baseValue + secondaryAura.current * secondaryAura.increment : 0
                       return (
-                        <div key={wardenName} className={`p-2 rounded ${isSelected ? group.activeBg : 'bg-gray-700/30'}`}>
-                          <div className="flex items-center gap-2 mb-1">
+                        <div key={wardenName} className={`p-3 rounded ${isSelected ? group.activeBg : 'bg-gray-700/30'}`}>
+                          <div className="flex items-center gap-3 mb-2">
                             <img
                               src={getWardenImageSrc(wardenName)}
                               alt={wardenName}
-                              className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                              className="w-14 h-14 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
                               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                             />
                             <div className="flex-1 min-w-0">
-                              <span className={`font-medium text-xs ${isSelected ? group.activeText : 'text-gray-500'}`}>{wardenName}</span>
-                              <div className="text-[10px] text-gray-400">{wardenData.type} &middot; Lv {wardenData.current}/{wardenData.max}</div>
+                              <span className={`font-medium text-sm ${isSelected ? group.activeText : 'text-gray-500'}`}>{wardenName}</span>
+                              <div className="text-xs text-gray-400">{wardenData.type} &middot; Lv {wardenData.current}/{wardenData.max}</div>
                             </div>
-                            <span className={`text-sm font-bold ${isSelected ? group.activeBonus : 'text-gray-500'}`}>
+                            <span className={`text-base font-bold ${isSelected ? group.activeBonus : 'text-gray-500'}`}>
                               +{currentBonus}%
                             </span>
                           </div>
                           {secondaryAura && (
-                            <div className="border-t border-gray-600 pt-1 mt-1">
+                            <div className="border-t border-gray-600 pt-2 mt-2">
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1">
-                                  <Label className="text-[11px] text-gray-300">2nd:</Label>
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-xs text-gray-300">2nd:</Label>
                                   <Input
-                                    className="w-14 h-5 text-[11px] bg-gray-600 border-gray-500 text-white"
+                                    className="w-20 h-8 text-sm bg-gray-600 border-gray-500 text-white"
                                     {...nonNegativeIntInputProps(secondaryAura.current, (n) =>
                                       setAuras((prev: any) => ({
                                         ...prev,
@@ -201,9 +201,9 @@ export default function AuraBonusesTab() {
                                       }))
                                     )}
                                   />
-                                  <span className="text-[11px] text-gray-400">/20</span>
+                                  <span className="text-xs text-gray-400">/20</span>
                                 </div>
-                                <span className="text-xs font-semibold text-yellow-400">+{secondaryBonus}%</span>
+                                <span className="text-sm font-semibold text-yellow-400">+{secondaryBonus}%</span>
                               </div>
                             </div>
                           )}
@@ -222,7 +222,7 @@ export default function AuraBonusesTab() {
                 <div className="text-sm text-gray-300 mb-3">
                   Wild Hunt: {[hasAgneyi, hasCulann, hasHela, hasDionysus].filter(Boolean).length}/4 · Monster Noir: {[hasMaya].filter(Boolean).length}/4 · Ember/Ash: {hasEmber && hasAsh ? 'on' : 'off'}
                 </div>
-                <div className={`grid gap-2 ${compact ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-3'}`}>
+                <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
                   {Object.entries(dynamicAuras.lovers || {}).map(([loverName, loverData]: [string, any]) => {
                     const isSelected =
                       (loverName === 'Agneyi' && hasAgneyi) ||
@@ -236,11 +236,11 @@ export default function AuraBonusesTab() {
                         ? '/Gov/Lovers/BaseLovers/Ember.png'
                         : `/Gov/Lovers/BaseLovers/${loverName}.png`
                     return (
-                      <div key={loverName} className={`p-2 rounded flex items-center gap-2 ${isSelected ? 'bg-pink-500/20 border border-pink-500/30' : 'bg-gray-700/30'}`}>
+                      <div key={loverName} className={`p-3 rounded flex items-center gap-3 ${isSelected ? 'bg-pink-500/20 border border-pink-500/30' : 'bg-gray-700/30'}`}>
                         <img
                           src={imgSrc}
                           alt={loverName}
-                          className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                          className="w-12 h-12 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
                           onError={(e) => {
                             const img = e.target as HTMLImageElement
                             if (!img.src.includes('.PNG')) img.src = imgSrc.replace('.png', '.PNG')
@@ -248,10 +248,10 @@ export default function AuraBonusesTab() {
                           }}
                         />
                         <div className="flex-1 min-w-0">
-                          <span className={`font-medium text-xs ${isSelected ? 'text-pink-300' : 'text-gray-500'}`}>{loverName}</span>
-                          <div className="text-[10px] text-gray-400">{loverData.type} &middot; {isSelected ? 'Active' : 'Inactive'}</div>
+                          <span className={`font-medium text-sm ${isSelected ? 'text-pink-300' : 'text-gray-500'}`}>{loverName}</span>
+                          <div className="text-xs text-gray-400">{loverData.type} &middot; {isSelected ? 'Active' : 'Inactive'}</div>
                         </div>
-                        <span className={`text-sm font-bold ${isSelected ? 'text-pink-400' : 'text-gray-500'}`}>
+                        <span className={`text-base font-bold ${isSelected ? 'text-pink-400' : 'text-gray-500'}`}>
                           +{loverData.current}%
                         </span>
                       </div>
@@ -265,29 +265,29 @@ export default function AuraBonusesTab() {
             {vipLevel > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-yellow-400 mb-3">VIP Wardens (VIP {vipLevel})</h3>
-                <div className={`grid gap-2 ${compact ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+                <div className={`grid gap-3 ${compact ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
                   {Object.entries(auras.vip)
                     .filter(([_, wardenData]: [string, any]) => vipLevel >= wardenData.vipRequired)
                     .map(([wardenName, wardenData]: [string, any]) => (
-                      <div key={wardenName} className="flex items-center gap-2 p-2 rounded bg-gray-700/30">
+                      <div key={wardenName} className="flex items-center gap-3 p-3 rounded bg-gray-700/30">
                         <img
                           src={getWardenImageSrc(wardenName)}
                           alt={wardenName}
-                          className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                          className="w-12 h-12 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                         />
                         <div className="flex-1 min-w-0">
-                          <span className="text-white font-medium text-xs">{wardenName}</span>
-                          <div className="text-[10px] text-gray-400">VIP {wardenData.vipRequired}</div>
+                          <span className="text-white font-medium text-sm">{wardenName}</span>
+                          <div className="text-xs text-gray-400">VIP {wardenData.vipRequired}</div>
                         </div>
                         <div className="text-right">
                           {wardenData.talents ? (
                             <>
-                              <div className="text-xs font-bold text-yellow-400">T: +{wardenData.talents.current}%</div>
-                              <div className="text-xs font-bold text-blue-400">B: +{wardenData.books.current}%</div>
+                              <div className="text-sm font-bold text-yellow-400">T: +{wardenData.talents.current}%</div>
+                              <div className="text-sm font-bold text-blue-400">B: +{wardenData.books.current}%</div>
                             </>
                           ) : (
-                            <span className="text-base font-bold text-yellow-400">+{wardenData.current}%</span>
+                            <span className="text-lg font-bold text-yellow-400">+{wardenData.current}%</span>
                           )}
                         </div>
                       </div>
@@ -300,32 +300,32 @@ export default function AuraBonusesTab() {
             {(hasNyx || hasDracula) && (
               <div>
                 <h3 className="text-lg font-semibold text-purple-400 mb-3">Special Wardens</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {hasNyx && (
-                    <div className="flex items-center gap-2 p-2 rounded bg-gray-700/30">
-                      <img src={getWardenImageSrc("Nyx")} alt="Nyx" className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                    <div className="flex items-center gap-3 p-3 rounded bg-gray-700/30">
+                      <img src={getWardenImageSrc("Nyx")} alt="Nyx" className="w-14 h-14 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                       <div className="flex-1">
-                        <span className="text-white font-medium text-xs">Nyx</span>
-                        <div className="text-[10px] text-gray-400">Balance &middot; All Attributes</div>
+                        <span className="text-white font-medium text-sm">Nyx</span>
+                        <div className="text-xs text-gray-400">Balance &middot; All Attributes</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xs font-bold text-yellow-400">T: +{auras.special.Nyx.talents.current}%</div>
-                        <div className="text-xs font-bold text-blue-400">B: +{auras.special.Nyx.books.current}%</div>
+                        <div className="text-sm font-bold text-yellow-400">T: +{auras.special.Nyx.talents.current}%</div>
+                        <div className="text-sm font-bold text-blue-400">B: +{auras.special.Nyx.books.current}%</div>
                       </div>
                     </div>
                   )}
                   {hasDracula && (
-                    <div className="flex items-center gap-2 p-2 rounded bg-gray-700/30">
-                      <img src={getWardenImageSrc("Dracula")} alt="Dracula" className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                    <div className="flex items-center gap-3 p-3 rounded bg-gray-700/30">
+                      <img src={getWardenImageSrc("Dracula")} alt="Dracula" className="w-14 h-14 rounded object-contain flex-shrink-0 bg-gray-800/40 p-1"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                       <div className="flex-1">
-                        <span className="text-white font-medium text-xs">Dracula</span>
-                        <div className="text-[10px] text-gray-400">Balance &middot; All Attributes</div>
+                        <span className="text-white font-medium text-sm">Dracula</span>
+                        <div className="text-xs text-gray-400">Balance &middot; All Attributes</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xs font-bold text-yellow-400">T: +{auras.special.Dracula.talents.current}%</div>
-                        <div className="text-xs font-bold text-blue-400">B: +{auras.special.Dracula.books.current}%</div>
+                        <div className="text-sm font-bold text-yellow-400">T: +{auras.special.Dracula.talents.current}%</div>
+                        <div className="text-sm font-bold text-blue-400">B: +{auras.special.Dracula.books.current}%</div>
                       </div>
                     </div>
                   )}
