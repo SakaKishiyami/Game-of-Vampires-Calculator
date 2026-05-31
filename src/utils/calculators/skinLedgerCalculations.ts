@@ -2,6 +2,7 @@ import { SKIN_LEDGER_ROWS, LOVER_SKIN_TIER1, WARDEN_SKIN_TIER1, type WardenSkinR
 import { WARDEN_CATALOG } from '@/data/wardenCatalog'
 import { wardenAttributes } from '@/data/wardens'
 import { getDefaultWardenSkinRarity } from '@/data/wardenSkinDefaultRarity'
+import { getDefaultLoverSkinRarity } from '@/data/loverSkinDefaultRarity'
 import type {
   LoverOwnedSkins,
   LoverActiveSkins,
@@ -11,7 +12,7 @@ import type {
   WardenSkinLevels,
   LoverSkinRarities,
 } from '@/types'
-import { getLoverSkinSlots } from '@/utils/loverImagePaths'
+import { getLoverSkinSlots, LOVER_SKINS } from '@/utils/loverImagePaths'
 import { coerceLoverSkinRarity, coerceWardenSkinRarity } from '@/utils/calculators/skinRarityNormalize'
 
 export interface LedgerAggregate {
@@ -94,6 +95,17 @@ export function resolveWardenSkinRarity(
     : getDefaultWardenSkinRarity(wardenName, skinKey, skinIndex, totalSkins)
 }
 
+export function resolveLoverSkinRarity(
+  loverBase: string,
+  skinKey: string,
+  skinIndex: number,
+  totalSkins: number,
+  overrides: LoverSkinRarities
+): LoverSkinRarity {
+  const o = overrides[loverBase]?.[skinKey]
+  return o !== undefined ? coerceLoverSkinRarity(o) : getDefaultLoverSkinRarity(loverBase, skinKey, skinIndex, totalSkins)
+}
+
 export function totalCollectionExpFromSkins(params: {
   wardenSkins: WardenSkins
   wardenSkinRarityOverrides: WardenSkinRarityOverrides
@@ -113,11 +125,15 @@ export function totalCollectionExpFromSkins(params: {
   }
   for (const [baseName, skinsOwned] of Object.entries(params.loverOwnedSkins)) {
     if (!skinsOwned) continue
-    for (const skinKey of Object.keys(skinsOwned)) {
-      if (!skinsOwned[skinKey]) continue
-      const lr = coerceLoverSkinRarity(params.loverSkinRarities[baseName]?.[skinKey])
+    const skinList = LOVER_SKINS[baseName]?.length
+      ? LOVER_SKINS[baseName]
+      : (Object.keys(skinsOwned).filter((k) => skinsOwned[k]) as string[])
+    const total = skinList.length
+    skinList.forEach((skinKey, idx) => {
+      if (!skinsOwned[skinKey]) return
+      const lr = resolveLoverSkinRarity(baseName, skinKey, idx, total, params.loverSkinRarities)
       sum += LOVER_SKIN_TIER1[lr].collectionExp
-    }
+    })
   }
   return sum
 }
@@ -131,7 +147,11 @@ function loverSkinAffinityPctOneBase(
   const active = loverActiveSkins[baseName]
   if (!active || active === 'base') return 0
   if (!loverOwnedSkins[baseName]?.[active]) return 0
-  const r = coerceLoverSkinRarity(loverSkinRarities[baseName]?.[active])
+  const skinList = LOVER_SKINS[baseName] ?? []
+  const idx = skinList.indexOf(active)
+  const skinIndex = idx >= 0 ? idx : 0
+  const total = skinList.length > 0 ? skinList.length : 1
+  const r = resolveLoverSkinRarity(baseName, active, skinIndex, total, loverSkinRarities)
   return LOVER_SKIN_TIER1[r].affinityGainPct
 }
 
@@ -153,11 +173,15 @@ export function totalLoverSkinIntimacy(loverOwnedSkins: LoverOwnedSkins, loverSk
   let sum = 0
   for (const [baseName, skinsOwned] of Object.entries(loverOwnedSkins)) {
     if (!skinsOwned) continue
-    for (const skinKey of Object.keys(skinsOwned)) {
-      if (!skinsOwned[skinKey]) continue
-      const r = coerceLoverSkinRarity(loverSkinRarities[baseName]?.[skinKey])
+    const skinList = LOVER_SKINS[baseName]?.length
+      ? LOVER_SKINS[baseName]
+      : (Object.keys(skinsOwned).filter((k) => skinsOwned[k]) as string[])
+    const total = skinList.length
+    skinList.forEach((skinKey, idx) => {
+      if (!skinsOwned[skinKey]) return
+      const r = resolveLoverSkinRarity(baseName, skinKey, idx, total, loverSkinRarities)
       sum += LOVER_SKIN_TIER1[r].intimacy
-    }
+    })
   }
   return sum
 }

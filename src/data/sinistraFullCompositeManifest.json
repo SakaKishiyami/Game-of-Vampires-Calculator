@@ -1,0 +1,14 @@
+{
+  "baked": false,
+  "pixelsPerUnit": 100,
+  "profile": "full",
+  "description": "Full-map terrain composite. Run: npm run bake:sinistra-composite -- --modes full",
+  "worldX": 0,
+  "worldY": 0,
+  "worldWidth": 0,
+  "worldHeight": 0,
+  "imagePath": "",
+  "pixelWidth": 0,
+  "pixelHeight": 0,
+  "spriteCount": 0
+}

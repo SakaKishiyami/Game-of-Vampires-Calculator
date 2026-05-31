@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "bake:sinistra-terrain": "python scripts/bake-sinistra-terrain-prefabs.py",
+    "bake:sinistra-chunk-ground": "python scripts/bake-sinistra-chunk-ground.py",
+    "bake:sinistra-composite": "python scripts/bake-sinistra-terrain-composite.py",
+    "bake:sinistra": "npm run bake:sinistra-terrain && npm run bake:sinistra-chunk-ground",
+    "list:sinistra-missing-prefabs": "python scripts/list-missing-sinistra-prefabs.py"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -22,6 +27,7 @@
     "next": "^14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sharp": "^0.34.5",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "tesseract.js": "^6.0.1"

@@ -1,0 +1,448 @@
+{
+  "prefabs": {
+    "Bridge_CentralCastle_L": {
+      "rootLocalX": 304.0,
+      "rootLocalY": 361.5
+    },
+    "Bridge_CentralCastle_R": {
+      "rootLocalX": 424.0,
+      "rootLocalY": 361.5
+    },
+    "Bridge_CentralCastle_U": {
+      "rootLocalX": 364.0,
+      "rootLocalY": 436.5
+    },
+    "Bridge_Grey_Snow_Vertical": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Bridge_Grey_Snow_horizontal": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Bridge_Grey_Volcano_H": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Bridge_Grey_Volcano_Vertical": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Bridge_Snow_Gray_Horizontal": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Bridge_Snow_Grey_Vertical": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Bridge_Snow_Horizontal": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Bridge_Volcano_Grey_H": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Bridge_Volcano_Grey_Vertical": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "CentralCastle_horizontalTop_1": {
+      "rootLocalX": 341.5,
+      "rootLocalY": 436.5
+    },
+    "CentralCastle_horizontalTop_2": {
+      "rootLocalX": 319.0,
+      "rootLocalY": 436.5
+    },
+    "CentralCastle_horizontalTop_3": {
+      "rootLocalX": 386.5,
+      "rootLocalY": 436.5
+    },
+    "CentralCastle_horizontal_1": {
+      "rootLocalX": 319.0,
+      "rootLocalY": 322.5
+    },
+    "CentralCastle_horizontal_2": {
+      "rootLocalX": 341.5,
+      "rootLocalY": 322.5
+    },
+    "CentralCastle_horizontal_3": {
+      "rootLocalX": 364.0,
+      "rootLocalY": 322.5
+    },
+    "CentralCastle_leftDown_1": {
+      "rootLocalX": 304.0,
+      "rootLocalY": 322.5
+    },
+    "CentralCastle_leftTop_1": {
+      "rootLocalX": 304.0,
+      "rootLocalY": 436.5
+    },
+    "CentralCastle_rightDown_1": {
+      "rootLocalX": 424.0,
+      "rootLocalY": 322.5
+    },
+    "CentralCastle_rightTop_1": {
+      "rootLocalX": 424.0,
+      "rootLocalY": 436.5
+    },
+    "CentralCastle_verticalLeft_1": {
+      "rootLocalX": 304.0,
+      "rootLocalY": 339.0
+    },
+    "CentralCastle_verticalLeft_2": {
+      "rootLocalX": 304.0,
+      "rootLocalY": 384.0
+    },
+    "CentralCastle_verticalLeft_3": {
+      "rootLocalX": 304.0,
+      "rootLocalY": 406.5
+    },
+    "CentralCastle_verticalRight_1": {
+      "rootLocalX": 424.0,
+      "rootLocalY": 339.0
+    },
+    "CentralCastle_verticalRight_2": {
+      "rootLocalX": 424.0,
+      "rootLocalY": 384.0
+    },
+    "CentralCastle_verticalRight_3": {
+      "rootLocalX": 424.0,
+      "rootLocalY": 406.5
+    },
+    "First_VolcanoGrey_Special_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "First_Volcano_Vertical_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "GreyNew_Horizontal_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "GreyNew_Vertical_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Down_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Down_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Down_3": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Horizontal_1": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 244.0
+    },
+    "Grey_LeftDown_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_LeftUp_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_LeftUp_3": {
+      "rootLocalX": 368.07000732421875,
+      "rootLocalY": 327.4200134277344
+    },
+    "Grey_Left_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Left_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Left_3": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_RightDown_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Right_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Right_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Right_3": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_UpRight_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Up_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Up_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Up_3": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Grey_Vertical_1": {
+      "rootLocalX": 364.0,
+      "rootLocalY": 189.5
+    },
+    "Grey_Vertical_2": {
+      "rootLocalX": 364.0,
+      "rootLocalY": 167.5
+    },
+    "Grey_Vertical_3": {
+      "rootLocalX": 364.0,
+      "rootLocalY": 145.5
+    },
+    "Grey_Vertical_4": {
+      "rootLocalX": 364.0,
+      "rootLocalY": 637.25
+    },
+    "Grey_Volcano_LeftDown_1": {
+      "rootLocalX": 241.5,
+      "rootLocalY": 211.5
+    },
+    "Grey_Volcano_LeftDown_2": {
+      "rootLocalX": 161.52999877929688,
+      "rootLocalY": 244.0
+    },
+    "Grey_Volcano_LeftDown_3": {
+      "rootLocalX": 228.10000610351562,
+      "rootLocalY": 527.5
+    },
+    "Grey_Volcano_LeftTop_1": {
+      "rootLocalX": 230.0,
+      "rootLocalY": 571.5
+    },
+    "Grey_Volcano_LeftTop_2": {
+      "rootLocalX": 497.5,
+      "rootLocalY": 572.0
+    },
+    "Grey_Volcano_LeftTop_3": {
+      "rootLocalX": 497.5,
+      "rootLocalY": 527.5
+    },
+    "Grey_Volcano_LeftTop_4": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 527.5
+    },
+    "Grey_Volcano_RightDown_1": {
+      "rootLocalX": 486.5,
+      "rootLocalY": 211.5
+    },
+    "Grey_Volcano_RightDown_2": {
+      "rootLocalX": 241.5,
+      "rootLocalY": 244.0
+    },
+    "Grey_Volcano_RightDown_3": {
+      "rootLocalX": 161.5,
+      "rootLocalY": 266.5
+    },
+    "Grey_Volcano_RightDown_4": {
+      "rootLocalX": 161.0,
+      "rootLocalY": 475.0
+    },
+    "Grey_Volcano_VerticalLeft_1": {
+      "rootLocalX": 161.5,
+      "rootLocalY": 288.0
+    },
+    "Grey_Volcano_VerticalLeft_2": {
+      "rootLocalX": 161.5,
+      "rootLocalY": 310.0
+    },
+    "Grey_Volcano_VerticalLeft_3": {
+      "rootLocalX": 161.5,
+      "rootLocalY": 332.0
+    },
+    "Grey_Volcano_VerticalLeft_4": {
+      "rootLocalX": 497.5,
+      "rootLocalY": 550.0
+    },
+    "Grey_Volcano_VerticalRight_1": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 475.5
+    },
+    "Grey_Volcano_VerticalRight_2": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 453.5
+    },
+    "Grey_Volcano_VerticalRight_3": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 431.0
+    },
+    "Grey_Volcano_VerticalRight_4": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 408.5
+    },
+    "Grey_Volcano_VerticalRight_5": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 267.0
+    },
+    "Grey_Volcano_Volcano_H_1": {
+      "rootLocalX": 441.5,
+      "rootLocalY": 211.5
+    },
+    "Grey_Volcano_Volcano_H_2": {
+      "rootLocalX": 419.0,
+      "rootLocalY": 211.5
+    },
+    "Grey_Volcano_Volcano_H_3": {
+      "rootLocalX": 396.5,
+      "rootLocalY": 211.5
+    },
+    "Grey_Volcano_Volcano_U_1": {
+      "rootLocalX": 183.5,
+      "rootLocalY": 527.5
+    },
+    "Grey_Volcano_Volcano_U_2": {
+      "rootLocalX": 205.5,
+      "rootLocalY": 527.5
+    },
+    "Grey_Volcano_Volcano_U_3": {
+      "rootLocalX": 270.0,
+      "rootLocalY": 571.5
+    },
+    "Grey_Volcano__T_1": {
+      "rootLocalX": 364.0,
+      "rootLocalY": 211.5
+    },
+    "Grey_Volcano__T_2": {
+      "rootLocalX": 358.5,
+      "rootLocalY": 571.5
+    },
+    "Grey_rightTop_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Down_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Down_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Down_3": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Grey_Big_D_L": {
+      "rootLocalX": 137.0,
+      "rootLocalY": 266.0
+    },
+    "Snow_Grey_Big_D_R": {
+      "rootLocalX": 584.0,
+      "rootLocalY": 233.0
+    },
+    "Snow_Grey_Big_U_L": {
+      "rootLocalX": 137.0,
+      "rootLocalY": 528.0
+    },
+    "Snow_Grey_Big_U_R_1": {
+      "rootLocalX": 587.0,
+      "rootLocalY": 481.82000732421875
+    },
+    "Snow_Grey_Big_U_R_2": {
+      "rootLocalX": 588.9000244140625,
+      "rootLocalY": 511.70001220703125
+    },
+    "Snow_LeftDown_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_LeftDown_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_LeftUp_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Left_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Left_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Left_3": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_RightDown_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_RightDown_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_RightUp_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Right_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Right_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Right_3": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Up_1": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Snow_Up_2": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 18.049999237060547
+    },
+    "Snow_Up_3": {
+      "rootLocalX": 0.0,
+      "rootLocalY": 0.0
+    },
+    "Volcano_RightDown_1": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 245.0
+    },
+    "Volcano_RightDown_2": {
+      "rootLocalX": 487.0,
+      "rootLocalY": 244.0
+    },
+    "Volcano_Right_Up_1": {
+      "rootLocalX": 161.0,
+      "rootLocalY": 497.20001220703125
+    },
+    "Volcano_Vertical_1": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 505.0
+    },
+    "Volcano_Vertical_2": {
+      "rootLocalX": 565.0,
+      "rootLocalY": 482.5
+    }
+  }
+}

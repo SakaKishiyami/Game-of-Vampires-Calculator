@@ -7,14 +7,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
-import { SKIN_LEDGER_ROWS, describeWardenSkinRarity, type LoverSkinRarity, type WardenSkinRarity } from '@/data/skinLedger'
+import {
+  SKIN_LEDGER_ROWS,
+  describeLoverSkinRarity,
+  describeWardenSkinRarity,
+  type LoverSkinRarity,
+  type WardenSkinRarity,
+} from '@/data/skinLedger'
 import { WARDEN_CATALOG } from '@/data/wardenCatalog'
 import { LOVER_SKINS, getLoverPortraitSrcs } from '@/utils/loverImagePaths'
 import { getDefaultWardenSkinRarity } from '@/data/wardenSkinDefaultRarity'
+import { getDefaultLoverSkinRarity } from '@/data/loverSkinDefaultRarity'
 import {
   wardenSkinAttributeTotal,
   wardenSkinRarityFlat,
   resolveWardenSkinRarity,
+  resolveLoverSkinRarity,
 } from '@/utils/calculators/skinLedgerCalculations'
 import { nonNegativeIntInputProps } from '@/utils/helpers'
 import { isWardenOwned, type WardenOwnershipContext, type ScarletBondVisibilityContext } from '@/utils/wardenOwnership'
@@ -275,8 +283,10 @@ export default function SkinsTab() {
             <div className="min-w-0 flex-1 space-y-1">
               <CardTitle className="text-purple-300">Lover skins (Epic / Legendary)</CardTitle>
               <p className="text-sm text-gray-400">
-                Only lovers you can access (same rules as Scarlet Bond: VIP, summons, linked warden owned). Mark skins
-                owned here. Rarity: <strong>Epic</strong> (default) and <strong>Legendary</strong>. Tier-1: Epic +200
+            Only lovers you can access (same rules as Scarlet Bond: VIP, summons, linked warden owned). Mark skins
+            owned here.             Default rarity is inferred from the Scarlet Bond warden and the warden default-rarity table (same as
+            copying from the warden skin list when keys line up). Rarity: <strong>Epic</strong>{' '}
+            (default) and <strong>Legendary</strong>. Tier-1: Epic +200
                 intimacy / +50 EXP / +1% affinity; Legendary +500 / +100 / +2%. Active skin affinity applies to bond
                 suggestions for that lover.
               </p>
@@ -322,9 +332,9 @@ export default function SkinsTab() {
                     <div className="font-medium text-white">{baseName}</div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {skins.map((skinKey) => {
+                    {skins.map((skinKey, idx) => {
                       const isOwned = !!owned[skinKey]
-                      const r = loverSkinRarities[baseName]?.[skinKey] ?? 1 /* 1 = purple */
+                      const r = resolveLoverSkinRarity(baseName, skinKey, idx, skins.length, loverSkinRarities)
                       return (
                         <div key={skinKey} className="rounded border border-gray-800 bg-gray-900/40 p-3 space-y-2">
                           <div className="flex items-start gap-3">
@@ -348,6 +358,12 @@ export default function SkinsTab() {
                                 <Label htmlFor={`lover-skin-own-${baseName}-${skinKey}`} className="text-xs text-gray-300 cursor-pointer">
                                   Owned
                                 </Label>
+                              </div>
+                              <div className="text-[10px] text-gray-500 mt-2">
+                                Default:{' '}
+                                {describeLoverSkinRarity(
+                                  getDefaultLoverSkinRarity(baseName, skinKey, idx, skins.length),
+                                )}
                               </div>
                             </div>
                           </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X, Home, Calculator, Map, Sparkles, BarChart2, User, Database, Settings } from "lucide-react"
@@ -46,6 +46,16 @@ export function MainLayout({ children }: MainLayoutProps) {
   const [theme, setTheme] = useState<Theme>("dark")
   const pathname = usePathname()
 
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [pathname])
+
+  const currentSectionLabel =
+    pathname === "/"
+      ? "Main Menu"
+      : navItems.find((item) => item.href !== "/" && pathname.startsWith(item.href))?.label ??
+        "Calculator"
+
   const settingsValue: CalculatorSettings = {
     density,
     toggleDensity: () => setDensity((prev) => (prev === "compact" ? "comfortable" : "compact")),
@@ -65,8 +75,9 @@ export function MainLayout({ children }: MainLayoutProps) {
           />
         )}
         <aside
+          aria-hidden={!sidebarOpen}
           className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0c0a0b] border-r border-red-950/50 shadow-2xl transform transition-transform duration-200 ease-out
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+          ${sidebarOpen ? "translate-x-0 pointer-events-auto" : "-translate-x-full pointer-events-none"}`}
         >
           <div className="h-full flex flex-col">
             <div className="flex items-center justify-between px-4 py-4 border-b border-red-950/50">
@@ -118,7 +129,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       </>
 
       {/* Main content - full width, no max-width box */}
-      <div className="flex-1 flex flex-col min-h-screen w-full min-w-0">
+      <div className="relative z-10 flex-1 flex flex-col min-h-screen w-full min-w-0">
         <CalculatorSettingsContext.Provider value={settingsValue}>
           {/* Top bar - vampire styling, sidebar toggle always visible */}
           <header className="sticky top-0 z-30 flex items-center gap-3 px-4 py-3 md:px-6 bg-[#0c0a0b]/95 backdrop-blur-md border-b border-red-950/50">
@@ -134,11 +145,7 @@ export function MainLayout({ children }: MainLayoutProps) {
               <p className="text-lg md:text-xl font-semibold text-red-100 leading-tight">
                 Game of Vampires Calculator
               </p>
-              <p className="text-xs text-gray-500">
-                {pathname === "/"
-                  ? "Main Menu"
-                  : navItems.find((item) => pathname.startsWith(item.href))?.label ?? "Calculator"}
-              </p>
+              <p className="text-xs text-gray-500">{currentSectionLabel}</p>
             </div>
           </header>
 

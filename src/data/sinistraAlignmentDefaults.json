@@ -1,0 +1,7183 @@
+{
+  "exportedAt": "2026-05-31T04:35:02.376Z",
+  "changedCount": 239,
+  "hiddenCount": 129,
+  "manualCount": 0,
+  "entries": [
+    {
+      "key": "Snow_Down_1|30.9|152",
+      "name": "Snow_Down_1",
+      "anchorX": 30.9,
+      "anchorY": 152,
+      "baseDrawX": 25.50799996399879,
+      "baseDrawY": 145.3759999780655,
+      "deltaX": 2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftDown_1|8.08|170.65",
+      "name": "Snow_LeftDown_1",
+      "anchorX": 8.08,
+      "anchorY": 170.65,
+      "baseDrawX": 0.7679999735355381,
+      "baseDrawY": 164.0259999780655,
+      "deltaX": 2,
+      "deltaY": 12,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|53.3|152",
+      "name": "Snow_Down_2",
+      "anchorX": 53.3,
+      "anchorY": 152,
+      "baseDrawX": 47.90799996399879,
+      "baseDrawY": 145.7107133524226,
+      "deltaX": 2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_3|75.9|152",
+      "name": "Snow_Down_3",
+      "anchorX": 75.9,
+      "anchorY": 152,
+      "baseDrawX": 70.5079999639988,
+      "baseDrawY": 145.71056038306,
+      "deltaX": 2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_2|3.9|195.41",
+      "name": "Snow_Left_2",
+      "anchorX": 3.9,
+      "anchorY": 195.41,
+      "baseDrawX": -0.788432358032948,
+      "baseDrawY": 190.67399994325638,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_3|4.8|219.2",
+      "name": "Snow_Left_3",
+      "anchorX": 4.8,
+      "anchorY": 219.2,
+      "baseDrawX": 0.11156764196705193,
+      "baseDrawY": 214.46399994325637,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_1|3|238.9",
+      "name": "Snow_Left_1",
+      "anchorX": 3,
+      "anchorY": 238.9,
+      "baseDrawX": -1.6884323580329479,
+      "baseDrawY": 234.16399994325639,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftUp_1|5.8|259.6",
+      "name": "Snow_LeftUp_1",
+      "anchorX": 5.8,
+      "anchorY": 259.6,
+      "baseDrawX": 1.111567641967052,
+      "baseDrawY": 256.44385243719597,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_1|26.6|261.4",
+      "name": "Snow_Up_1",
+      "anchorX": 26.6,
+      "anchorY": 261.4,
+      "baseDrawX": 19.559999966144563,
+      "baseDrawY": 258.24374257391304,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|47.6|262.4",
+      "name": "Snow_Up_2",
+      "anchorX": 47.6,
+      "anchorY": 262.4,
+      "baseDrawX": 42.29600000154972,
+      "baseDrawY": 238.70574338370176,
+      "deltaX": 0,
+      "deltaY": 48,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_3|69.4|259.9",
+      "name": "Snow_Up_3",
+      "anchorX": 69.4,
+      "anchorY": 259.9,
+      "baseDrawX": 64.21599998426439,
+      "baseDrawY": 254.2557426207623,
+      "deltaX": -4,
+      "deltaY": 30,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_LeftDown_2|68.44|270.84",
+      "name": "Grey_LeftDown_2",
+      "anchorX": 68.44,
+      "anchorY": 270.84,
+      "baseDrawX": 73.64448088056565,
+      "baseDrawY": 264.25599996140596,
+      "deltaX": 6,
+      "deltaY": 31,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_1|68.23|291.56",
+      "name": "Grey_Left_1",
+      "anchorX": 68.23,
+      "anchorY": 291.56,
+      "baseDrawX": 74.93539986350238,
+      "baseDrawY": 285.1679999681711,
+      "deltaX": 6,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_2|69.1|311.7",
+      "name": "Grey_Left_2",
+      "anchorX": 69.1,
+      "anchorY": 311.7,
+      "baseDrawX": 74.67599983751774,
+      "baseDrawY": 305.1879999616146,
+      "deltaX": 6,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_1|67.75|333",
+      "name": "Grey_Left_1",
+      "anchorX": 67.75,
+      "anchorY": 333,
+      "baseDrawX": 74.45539986350238,
+      "baseDrawY": 326.6079999681711,
+      "deltaX": 6,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_2|68.47|358",
+      "name": "Grey_Left_2",
+      "anchorX": 68.47,
+      "anchorY": 358,
+      "baseDrawX": 74.04599983751774,
+      "baseDrawY": 351.4879999616146,
+      "deltaX": 6,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_3|69.1|382.6",
+      "name": "Grey_Left_3",
+      "anchorX": 69.1,
+      "anchorY": 382.60004,
+      "baseDrawX": 71.40411844110665,
+      "baseDrawY": 376.06403996030326,
+      "deltaX": 6,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_1|30.41|477",
+      "name": "Snow_Down_1",
+      "anchorX": 30.41,
+      "anchorY": 477,
+      "baseDrawX": 25.017999963998797,
+      "baseDrawY": 470.37599997806547,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftDown_1|7.85|487.3",
+      "name": "Snow_LeftDown_1",
+      "anchorX": 7.85,
+      "anchorY": 487.3,
+      "baseDrawX": 0.5379999735355376,
+      "baseDrawY": 480.6759999780655,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_1|69.1|404.1",
+      "name": "Grey_Left_1",
+      "anchorX": 69.1,
+      "anchorY": 404.09998,
+      "baseDrawX": 75.80539986350237,
+      "baseDrawY": 397.7079799681711,
+      "deltaX": 6,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_2|69.1|429.1",
+      "name": "Grey_Left_2",
+      "anchorX": 69.1,
+      "anchorY": 429.09998,
+      "baseDrawX": 74.67599983751774,
+      "baseDrawY": 422.5879799616146,
+      "deltaX": 6,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|55.01|478.18",
+      "name": "Snow_Down_2",
+      "anchorX": 55.01,
+      "anchorY": 478.18,
+      "baseDrawX": 49.61799996399879,
+      "baseDrawY": 471.8907133524226,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_3|76.65|478.35",
+      "name": "Snow_Down_3",
+      "anchorX": 76.65,
+      "anchorY": 478.35,
+      "baseDrawX": 71.2579999639988,
+      "baseDrawY": 472.06056038306,
+      "deltaX": 0,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_3|69.1|453.7",
+      "name": "Grey_Left_3",
+      "anchorX": 69.1,
+      "anchorY": 453.7,
+      "baseDrawX": 71.40411844110665,
+      "baseDrawY": 447.1639999603033,
+      "deltaX": 6,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_LeftUp_2|69.1|472.5",
+      "name": "Grey_LeftUp_2",
+      "anchorX": 69.1,
+      "anchorY": 472.5,
+      "baseDrawX": 64.54520262845162,
+      "baseDrawY": 469.18330155437144,
+      "deltaX": 2,
+      "deltaY": 16,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_1|3.08|504.29",
+      "name": "Snow_Left_1",
+      "anchorX": 3.08,
+      "anchorY": 504.29,
+      "baseDrawX": -1.6084323580329478,
+      "baseDrawY": 499.5539999432564,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_2|4.39|525.67",
+      "name": "Snow_Left_2",
+      "anchorX": 4.39,
+      "anchorY": 525.67,
+      "baseDrawX": -0.2984323580329482,
+      "baseDrawY": 520.9339999432564,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_3|3.85|547.67",
+      "name": "Snow_Left_3",
+      "anchorX": 3.85,
+      "anchorY": 547.67,
+      "baseDrawX": -0.8384323580329478,
+      "baseDrawY": 542.9339999432564,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_1|3.39|568.98",
+      "name": "Snow_Left_1",
+      "anchorX": 3.39,
+      "anchorY": 568.98,
+      "baseDrawX": -1.2984323580329478,
+      "baseDrawY": 564.2439999432564,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftUp_1|3.51|591.48",
+      "name": "Snow_LeftUp_1",
+      "anchorX": 3.51,
+      "anchorY": 591.48,
+      "baseDrawX": -1.178432358032948,
+      "baseDrawY": 588.323852437196,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_3|22.9|594.3",
+      "name": "Snow_Up_3",
+      "anchorX": 22.9,
+      "anchorY": 594.3,
+      "baseDrawX": 17.71599998426437,
+      "baseDrawY": 588.6557426207623,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_1|45.31|599.1",
+      "name": "Snow_Up_1",
+      "anchorX": 45.31,
+      "anchorY": 599.1,
+      "baseDrawX": 38.26999996614457,
+      "baseDrawY": 595.9437425739131,
+      "deltaX": 4,
+      "deltaY": 21,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|67.98|599.3",
+      "name": "Snow_Up_2",
+      "anchorX": 67.98,
+      "anchorY": 599.3,
+      "baseDrawX": 62.676000001549724,
+      "baseDrawY": 575.6057433837018,
+      "deltaX": 0,
+      "deltaY": 41,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_1|98.4|152",
+      "name": "Snow_Down_1",
+      "anchorX": 98.4,
+      "anchorY": 152,
+      "baseDrawX": 93.0079999639988,
+      "baseDrawY": 145.3759999780655,
+      "deltaX": 2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|118.5|152",
+      "name": "Snow_Down_2",
+      "anchorX": 118.5,
+      "anchorY": 152,
+      "baseDrawX": 113.1079999639988,
+      "baseDrawY": 145.7107133524226,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightDown_2|129.3|154.2",
+      "name": "Snow_RightDown_2",
+      "anchorX": 129.3,
+      "anchorY": 154.2,
+      "baseDrawX": 123.5000000189543,
+      "baseDrawY": 147.90399995815753,
+      "deltaX": 2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_3|142.3|148.1",
+      "name": "Grey_Left_3",
+      "anchorX": 142.3,
+      "anchorY": 148.1,
+      "baseDrawX": 144.60411844110666,
+      "baseDrawY": 141.5639999603033,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_LeftDown_2|142.3|123.4",
+      "name": "Grey_LeftDown_2",
+      "anchorX": 142.3,
+      "anchorY": 123.4,
+      "baseDrawX": 147.50448088056567,
+      "baseDrawY": 116.81599996140599,
+      "deltaX": -2,
+      "deltaY": 14,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|159|122.95",
+      "name": "Grey_Down_1",
+      "anchorX": 159,
+      "anchorY": 122.95,
+      "baseDrawX": 153.887999994874,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_1|132.4|174.7",
+      "name": "Snow_Right_1",
+      "anchorX": 132.4,
+      "anchorY": 174.7,
+      "baseDrawX": 126.04799996972085,
+      "baseDrawY": 167.99599995970726,
+      "deltaX": 2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_2|141.8|172.4",
+      "name": "Grey_Left_2",
+      "anchorX": 141.8,
+      "anchorY": 172.4,
+      "baseDrawX": 147.37599983751775,
+      "baseDrawY": 165.8879999616146,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_2|179.36|122.95",
+      "name": "Grey_Down_2",
+      "anchorX": 179.36,
+      "anchorY": 122.95,
+      "baseDrawX": 174.24799999487402,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Snow_horizontal|113.68|266.5",
+      "name": "Bridge_Grey_Snow_horizontal",
+      "anchorX": 113.68,
+      "anchorY": 266.5,
+      "baseDrawX": 108.08249998390676,
+      "baseDrawY": 261.57375,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|90.7|262.6",
+      "name": "Snow_Up_2",
+      "anchorX": 90.7,
+      "anchorY": 262.6,
+      "baseDrawX": 85.39600000154972,
+      "baseDrawY": 238.9057433837018,
+      "deltaX": 2,
+      "deltaY": 44,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|90.16|269.2",
+      "name": "Grey_Down_1",
+      "anchorX": 90.16,
+      "anchorY": 269.2,
+      "baseDrawX": 85.047999994874,
+      "baseDrawY": 263.89599999582765,
+      "deltaX": 10,
+      "deltaY": 34,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_2|133.8|195.4",
+      "name": "Snow_Right_2",
+      "anchorX": 133.8,
+      "anchorY": 195.4,
+      "baseDrawX": 127.44799996972085,
+      "baseDrawY": 189.10399995815754,
+      "deltaX": 2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Left_1|140.9|195.5",
+      "name": "Grey_Left_1",
+      "anchorX": 140.9,
+      "anchorY": 195.5,
+      "baseDrawX": 147.60539986350238,
+      "baseDrawY": 189.10799996817113,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Snow_Grey_Vertical|139|217.9",
+      "name": "Bridge_Snow_Grey_Vertical",
+      "anchorX": 139,
+      "anchorY": 217.9,
+      "baseDrawX": 133.40249998390675,
+      "baseDrawY": 210.869999935627,
+      "deltaX": 2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Grey_Big_D_L|137|266",
+      "name": "Snow_Grey_Big_D_L",
+      "anchorX": 137,
+      "anchorY": 266,
+      "baseDrawX": 137,
+      "baseDrawY": 272.27199981641775,
+      "deltaX": 0,
+      "deltaY": -20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_LeftDown_2|161.53|244",
+      "name": "Grey_Volcano_LeftDown_2",
+      "anchorX": 161.53,
+      "anchorY": 244,
+      "baseDrawX": 161.53,
+      "baseDrawY": 248.50249576568604,
+      "deltaX": 0,
+      "deltaY": 14,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_3|179|244",
+      "name": "Grey_Volcano_Volcano_H_3",
+      "anchorX": 179,
+      "anchorY": 244,
+      "baseDrawX": 172.8999999683499,
+      "baseDrawY": 249.22400002396108,
+      "deltaX": -6,
+      "deltaY": -12,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_RightDown_3|161.5|266.5",
+      "name": "Grey_Volcano_RightDown_3",
+      "anchorX": 161.5,
+      "anchorY": 266.5,
+      "baseDrawX": 161.5,
+      "baseDrawY": 272.3974999986589,
+      "deltaX": 2,
+      "deltaY": 10,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_1|161.5|288",
+      "name": "Grey_Volcano_VerticalLeft_1",
+      "anchorX": 161.5,
+      "anchorY": 288,
+      "baseDrawX": 161.5,
+      "baseDrawY": 292.8000002865791,
+      "deltaX": 4,
+      "deltaY": 6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_2|161.5|310",
+      "name": "Grey_Volcano_VerticalLeft_2",
+      "anchorX": 161.5,
+      "anchorY": 310,
+      "baseDrawX": 161.5,
+      "baseDrawY": 315.2880036507845,
+      "deltaX": 4,
+      "deltaY": 4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_3|161.5|332",
+      "name": "Grey_Volcano_VerticalLeft_3",
+      "anchorX": 161.5,
+      "anchorY": 332,
+      "baseDrawX": 161.5,
+      "baseDrawY": 336.89599999809275,
+      "deltaX": 4,
+      "deltaY": 6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_1|161.5|354",
+      "name": "Grey_Volcano_VerticalLeft_1",
+      "anchorX": 161.5,
+      "anchorY": 354,
+      "baseDrawX": 157.31565398895225,
+      "baseDrawY": 358.8000002865791,
+      "deltaX": 8,
+      "deltaY": 4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Volcano_Vertical|161.5|371.5",
+      "name": "Bridge_Grey_Volcano_Vertical",
+      "anchorX": 161.5,
+      "anchorY": 371.5,
+      "baseDrawX": 156.31125003933906,
+      "baseDrawY": 365.71874999195336,
+      "deltaX": 8,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Snow_Gray_Horizontal|113.5|476.5",
+      "name": "Bridge_Snow_Gray_Horizontal",
+      "anchorX": 113.5,
+      "anchorY": 476.5,
+      "baseDrawX": 107.17125000067055,
+      "baseDrawY": 471.2700000053644,
+      "deltaX": 4,
+      "deltaY": 26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_1|92.3|476.9",
+      "name": "Snow_Down_1",
+      "anchorX": 92.3,
+      "anchorY": 476.9,
+      "baseDrawX": 86.90799996399879,
+      "baseDrawY": 470.27599997806544,
+      "deltaX": 0,
+      "deltaY": 32,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Up_1|90.83|472.39",
+      "name": "Grey_Up_1",
+      "anchorX": 90.83,
+      "anchorY": 472.39,
+      "baseDrawX": 85.04599998104572,
+      "baseDrawY": 469.415315872212,
+      "deltaX": 6,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_2|161.5|393.5",
+      "name": "Grey_Volcano_VerticalLeft_2",
+      "anchorX": 161.5,
+      "anchorY": 393.5,
+      "baseDrawX": 157.16075820417342,
+      "baseDrawY": 398.7880036507845,
+      "deltaX": 6,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_3|161.5|415.5",
+      "name": "Grey_Volcano_VerticalLeft_3",
+      "anchorX": 161.5,
+      "anchorY": 415.5,
+      "baseDrawX": 156.94701575408897,
+      "baseDrawY": 420.39599999809275,
+      "deltaX": 6,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_1|161.5|437.5",
+      "name": "Grey_Volcano_VerticalLeft_1",
+      "anchorX": 161.5,
+      "anchorY": 437.5,
+      "baseDrawX": 157.31565398895225,
+      "baseDrawY": 442.3000002865791,
+      "deltaX": 8,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_RightDown_4|161|475",
+      "name": "Grey_Volcano_RightDown_4",
+      "anchorX": 161,
+      "anchorY": 475,
+      "baseDrawX": 161,
+      "baseDrawY": 480.8337463378906,
+      "deltaX": 0,
+      "deltaY": 14,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_2|161.5|453.8",
+      "name": "Grey_Volcano_VerticalLeft_2",
+      "anchorX": 161.5,
+      "anchorY": 453.8,
+      "baseDrawX": 157.16075820417342,
+      "baseDrawY": 459.0880036507846,
+      "deltaX": 6,
+      "deltaY": 12,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Grey_Big_U_L|137|528",
+      "name": "Snow_Grey_Big_U_L",
+      "anchorX": 137,
+      "anchorY": 528,
+      "baseDrawX": 137,
+      "baseDrawY": 535.0919958041309,
+      "deltaX": -2,
+      "deltaY": -42,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_3|87.82|592.6",
+      "name": "Snow_Up_3",
+      "anchorX": 87.82,
+      "anchorY": 592.6,
+      "baseDrawX": 82.63599998426437,
+      "baseDrawY": 586.9557426207623,
+      "deltaX": 4,
+      "deltaY": 29,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|110.48|596.68",
+      "name": "Snow_Up_2",
+      "anchorX": 110.48,
+      "anchorY": 596.68,
+      "baseDrawX": 105.17600000154972,
+      "baseDrawY": 572.9857433837017,
+      "deltaX": 6,
+      "deltaY": 45,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_1|281.9|49.6",
+      "name": "Snow_Left_1",
+      "anchorX": 281.9,
+      "anchorY": 49.59999,
+      "baseDrawX": 277.211567641967,
+      "baseDrawY": 44.86398994325638,
+      "deltaX": 2,
+      "deltaY": -6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_3|283.6|70.6",
+      "name": "Snow_Left_3",
+      "anchorX": 283.6,
+      "anchorY": 70.59999,
+      "baseDrawX": 278.91156764196705,
+      "baseDrawY": 65.86398994325639,
+      "deltaX": 4,
+      "deltaY": -4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_3|200.73|122.95",
+      "name": "Grey_Down_3",
+      "anchorX": 200.73,
+      "anchorY": 122.95,
+      "baseDrawX": 195.617999994874,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|222.36|122.95",
+      "name": "Grey_Down_1",
+      "anchorX": 222.36,
+      "anchorY": 122.95,
+      "baseDrawX": 217.24799999487402,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_2|243.63|122.95",
+      "name": "Grey_Down_2",
+      "anchorX": 243.63,
+      "anchorY": 122.95,
+      "baseDrawX": 238.517999994874,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_3|265.35|122.95",
+      "name": "Grey_Down_3",
+      "anchorX": 265.35,
+      "anchorY": 122.95,
+      "baseDrawX": 260.23799999487403,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_3|284.1|91.9",
+      "name": "Snow_Left_3",
+      "anchorX": 284.1,
+      "anchorY": 91.899994,
+      "baseDrawX": 279.41156764196705,
+      "baseDrawY": 87.16399394325639,
+      "deltaX": 6,
+      "deltaY": -4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftUp_1|283.6|112.7",
+      "name": "Snow_LeftUp_1",
+      "anchorX": 283.6,
+      "anchorY": 112.7,
+      "baseDrawX": 278.91156764196705,
+      "baseDrawY": 109.54385243719597,
+      "deltaX": 4,
+      "deltaY": -6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_2|196.5|244",
+      "name": "Grey_Volcano_Volcano_H_2",
+      "anchorX": 196.5,
+      "anchorY": 244,
+      "baseDrawX": 190.3199868106244,
+      "baseDrawY": 249.22400002396108,
+      "deltaX": 0,
+      "deltaY": -14,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_1|219|244",
+      "name": "Grey_Volcano_Volcano_H_1",
+      "anchorX": 219,
+      "anchorY": 244,
+      "baseDrawX": 212.56799998474116,
+      "baseDrawY": 249.86800001734497,
+      "deltaX": 0,
+      "deltaY": -16,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Volcano_H|264|211.5",
+      "name": "Bridge_Grey_Volcano_H",
+      "anchorX": 264,
+      "anchorY": 211.5,
+      "baseDrawX": 257.74624999888243,
+      "baseDrawY": 206.3524999946356,
+      "deltaX": -2,
+      "deltaY": -14,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_LeftDown_1|241.5|211.5",
+      "name": "Grey_Volcano_LeftDown_1",
+      "anchorX": 241.5,
+      "anchorY": 211.5,
+      "baseDrawX": 241.5,
+      "baseDrawY": 227.15600020039085,
+      "deltaX": -10,
+      "deltaY": -30,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_RightDown_2|241.5|244",
+      "name": "Grey_Volcano_RightDown_2",
+      "anchorX": 241.5,
+      "anchorY": 244,
+      "baseDrawX": 241.5,
+      "baseDrawY": 248.8024963378906,
+      "deltaX": -8,
+      "deltaY": -18,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_LeftDown_3|227.81|527.5",
+      "name": "Grey_Volcano_LeftDown_3",
+      "anchorX": 227.81,
+      "anchorY": 527.5,
+      "baseDrawX": 222.77499998815358,
+      "baseDrawY": 533.3975000269338,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_LeftTop_1|230|571.5",
+      "name": "Grey_Volcano_LeftTop_1",
+      "anchorX": 230,
+      "anchorY": 571.5,
+      "baseDrawX": 230,
+      "baseDrawY": 576.9160000058414,
+      "deltaX": -6,
+      "deltaY": 0,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Volcano_Grey_H|249|571.5",
+      "name": "Bridge_Volcano_Grey_H",
+      "anchorX": 249,
+      "anchorY": 571.5,
+      "baseDrawX": 243.53750000357627,
+      "baseDrawY": 566.57375,
+      "deltaX": 4,
+      "deltaY": -16,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_3|270|571.5",
+      "name": "Grey_Volcano_Volcano_U_3",
+      "anchorX": 270,
+      "anchorY": 571.5,
+      "baseDrawX": 270,
+      "baseDrawY": 576.8200000005959,
+      "deltaX": 0,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_1|281|684.6",
+      "name": "Snow_Left_1",
+      "anchorX": 281,
+      "anchorY": 684.6,
+      "baseDrawX": 276.31156764196703,
+      "baseDrawY": 679.8639999432564,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_1|280.7|721.9",
+      "name": "Snow_Left_1",
+      "anchorX": 280.7,
+      "anchorY": 721.9,
+      "baseDrawX": 276.011567641967,
+      "baseDrawY": 717.1639999432564,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftUp_1|284.5|741.48",
+      "name": "Snow_LeftUp_1",
+      "anchorX": 284.5,
+      "anchorY": 741.48,
+      "baseDrawX": 279.81156764196703,
+      "baseDrawY": 738.323852437196,
+      "deltaX": 0,
+      "deltaY": -4,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_1|310.4|28.3",
+      "name": "Snow_Down_1",
+      "anchorX": 310.4,
+      "anchorY": 28.299988,
+      "baseDrawX": 305.00799996399877,
+      "baseDrawY": 21.67598797806549,
+      "deltaX": 0,
+      "deltaY": -20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftDown_2|287.6|28.2",
+      "name": "Snow_LeftDown_2",
+      "anchorX": 287.6,
+      "anchorY": 28.199997,
+      "baseDrawX": 282.91156764196705,
+      "baseDrawY": 22.67199699821186,
+      "deltaX": 0,
+      "deltaY": -16,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|333.1|28.6",
+      "name": "Snow_Down_2",
+      "anchorX": 333.1,
+      "anchorY": 28.59999,
+      "baseDrawX": 327.7079999639988,
+      "baseDrawY": 22.310703352422614,
+      "deltaX": 0,
+      "deltaY": -22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_3|356.9|28.9",
+      "name": "Snow_Down_3",
+      "anchorX": 356.9,
+      "anchorY": 28.899994,
+      "baseDrawX": 351.50799996399877,
+      "baseDrawY": 22.610554383059984,
+      "deltaX": -2,
+      "deltaY": -20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|381.5|28.8",
+      "name": "Snow_Down_2",
+      "anchorX": 381.49997,
+      "anchorY": 28.799988,
+      "baseDrawX": 376.1079699639988,
+      "baseDrawY": 22.510701352422615,
+      "deltaX": -4,
+      "deltaY": -20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_1|304.8|116.4",
+      "name": "Snow_Up_1",
+      "anchorX": 304.80002,
+      "anchorY": 116.399994,
+      "baseDrawX": 297.76001996614457,
+      "baseDrawY": 113.24373657391308,
+      "deltaX": 2,
+      "deltaY": -4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|287.13|122.95",
+      "name": "Grey_Down_1",
+      "anchorX": 287.13,
+      "anchorY": 122.95,
+      "baseDrawX": 282.017999994874,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": 0,
+      "deltaY": 12,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|305|125.1",
+      "name": "Grey_Down_1",
+      "anchorX": 305,
+      "anchorY": 125.1,
+      "baseDrawX": 299.887999994874,
+      "baseDrawY": 119.79599999582767,
+      "deltaX": 0,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|348.4|117.7",
+      "name": "Snow_Up_2",
+      "anchorX": 348.4,
+      "anchorY": 117.7,
+      "baseDrawX": 343.0960000015497,
+      "baseDrawY": 94.00574338370178,
+      "deltaX": -2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Snow_horizontal|326.25|121.5",
+      "name": "Bridge_Grey_Snow_horizontal",
+      "anchorX": 326.25,
+      "anchorY": 121.5,
+      "baseDrawX": 320.65249998390675,
+      "baseDrawY": 116.57375,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|379.8|117.5",
+      "name": "Snow_Up_2",
+      "anchorX": 379.80002,
+      "anchorY": 117.5,
+      "baseDrawX": 374.49602000154977,
+      "baseDrawY": 93.80574338370178,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Vertical_3|364|145.5",
+      "name": "Grey_Vertical_3",
+      "anchorX": 364,
+      "anchorY": 145.5,
+      "baseDrawX": 364,
+      "baseDrawY": 150.6440000170469,
+      "deltaX": 0,
+      "deltaY": -16,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_LeftDown_2|367.63|126.26",
+      "name": "Grey_LeftDown_2",
+      "anchorX": 367.63,
+      "anchorY": 126.26,
+      "baseDrawX": 372.83448088056565,
+      "baseDrawY": 119.67599996140599,
+      "deltaX": 6,
+      "deltaY": 4,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|383.76|121.99",
+      "name": "Grey_Down_1",
+      "anchorX": 383.76,
+      "anchorY": 121.99,
+      "baseDrawX": 378.647999994874,
+      "baseDrawY": 116.68599999582767,
+      "deltaX": 6,
+      "deltaY": 12,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Vertical_1|364|189.5",
+      "name": "Grey_Vertical_1",
+      "anchorX": 364,
+      "anchorY": 189.5,
+      "baseDrawX": 364,
+      "baseDrawY": 194.74000002229212,
+      "deltaX": 0,
+      "deltaY": -18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Vertical_2|364|167.5",
+      "name": "Grey_Vertical_2",
+      "anchorX": 364,
+      "anchorY": 167.5,
+      "baseDrawX": 364,
+      "baseDrawY": 172.6440000170469,
+      "deltaX": 0,
+      "deltaY": -18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_1|286.52|211.5",
+      "name": "Grey_Volcano_Volcano_H_1",
+      "anchorX": 286.52,
+      "anchorY": 211.5,
+      "baseDrawX": 280.08799998474115,
+      "baseDrawY": 217.36800001734497,
+      "deltaX": -2,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_2|309|211.5",
+      "name": "Grey_Volcano_Volcano_H_2",
+      "anchorX": 309,
+      "anchorY": 211.5,
+      "baseDrawX": 302.8199868106244,
+      "baseDrawY": 216.72400002396108,
+      "deltaX": -2,
+      "deltaY": -24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_3|331.5|211.5",
+      "name": "Grey_Volcano_Volcano_H_3",
+      "anchorX": 331.5,
+      "anchorY": 211.5,
+      "baseDrawX": 325.3999999683499,
+      "baseDrawY": 216.72400002396108,
+      "deltaX": -2,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano__T_1|364|211.5",
+      "name": "Grey_Volcano__T_1",
+      "anchorX": 364,
+      "anchorY": 211.5,
+      "baseDrawX": 364,
+      "baseDrawY": 218.72400444257266,
+      "deltaX": -18,
+      "deltaY": -28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftDown_1|304|322.5",
+      "name": "CentralCastle_leftDown_1",
+      "anchorX": 304,
+      "anchorY": 322.5,
+      "baseDrawX": 304,
+      "baseDrawY": 327.9999890136719,
+      "deltaX": 2,
+      "deltaY": -2,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontal_2|341.5|322.5",
+      "name": "CentralCastle_horizontal_2",
+      "anchorX": 341.5,
+      "anchorY": 322.5,
+      "baseDrawX": 341.5,
+      "baseDrawY": 329.0199890136719,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalLeft_1|304|428.5",
+      "name": "CentralCastle_verticalLeft_1",
+      "anchorX": 304,
+      "anchorY": 428.5,
+      "baseDrawX": 298.6800038909912,
+      "baseDrawY": 434.36750984191895,
+      "deltaX": 4,
+      "deltaY": 0,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontalTop_2|319|436.5",
+      "name": "CentralCastle_horizontalTop_2",
+      "anchorX": 319,
+      "anchorY": 436.5,
+      "baseDrawX": 319,
+      "baseDrawY": 442.75374779701235,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontalTop_1|341.5|436.5",
+      "name": "CentralCastle_horizontalTop_1",
+      "anchorX": 341.5,
+      "anchorY": 436.5,
+      "baseDrawX": 341.5,
+      "baseDrawY": 442.4312375545502,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_1|292|571.5",
+      "name": "Grey_Volcano_Volcano_U_1",
+      "anchorX": 292,
+      "anchorY": 571.5,
+      "baseDrawX": 287.2159999845028,
+      "baseDrawY": 576.4880000147223,
+      "deltaX": 4,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_2|314|571.5",
+      "name": "Grey_Volcano_Volcano_U_2",
+      "anchorX": 314,
+      "anchorY": 571.5,
+      "baseDrawX": 309.18397444462744,
+      "baseDrawY": 576.7039999988674,
+      "deltaX": 4,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_3|336|571.5",
+      "name": "Grey_Volcano_Volcano_U_3",
+      "anchorX": 336,
+      "anchorY": 571.5,
+      "baseDrawX": 331.18397444462744,
+      "baseDrawY": 576.8200000005959,
+      "deltaX": 4,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano__T_2|358.5|571.5",
+      "name": "Grey_Volcano__T_2",
+      "anchorX": 358.5,
+      "anchorY": 571.5,
+      "baseDrawX": 358.5,
+      "baseDrawY": 576.7600000454784,
+      "deltaX": 0,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftDown_1|290.35|665.3",
+      "name": "Snow_LeftDown_1",
+      "anchorX": 290.35,
+      "anchorY": 665.3,
+      "baseDrawX": 283.03799997353553,
+      "baseDrawY": 658.6759999780654,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Snow_Gray_Horizontal|326.04|649",
+      "name": "Bridge_Snow_Gray_Horizontal",
+      "anchorX": 326.04,
+      "anchorY": 649,
+      "baseDrawX": 319.7112500006706,
+      "baseDrawY": 643.7700000053644,
+      "deltaX": 0,
+      "deltaY": -4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|349.39|650.42",
+      "name": "Snow_Down_2",
+      "anchorX": 349.39,
+      "anchorY": 650.42,
+      "baseDrawX": 343.9979999639988,
+      "baseDrawY": 644.1307133524226,
+      "deltaX": 0,
+      "deltaY": 4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Up_1|347.25|643.48",
+      "name": "Grey_Up_1",
+      "anchorX": 347.25,
+      "anchorY": 643.48,
+      "baseDrawX": 341.46599998104574,
+      "baseDrawY": 640.505315872212,
+      "deltaX": 0,
+      "deltaY": -4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Vertical_1|364|593.5",
+      "name": "Grey_Vertical_1",
+      "anchorX": 364,
+      "anchorY": 593.5,
+      "baseDrawX": 358.87199998700623,
+      "baseDrawY": 598.7400000222922,
+      "deltaX": 6,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Vertical_2|364|615.5",
+      "name": "Grey_Vertical_2",
+      "anchorX": 364,
+      "anchorY": 615.5,
+      "baseDrawX": 358.87199998700623,
+      "baseDrawY": 620.6440000170469,
+      "deltaX": 6,
+      "deltaY": -28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Vertical_4|364|637.25",
+      "name": "Grey_Vertical_4",
+      "anchorX": 364,
+      "anchorY": 637.25,
+      "baseDrawX": 364,
+      "baseDrawY": 641.25,
+      "deltaX": 0,
+      "deltaY": -28,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_3|374.83|649.3",
+      "name": "Snow_Down_3",
+      "anchorX": 374.83,
+      "anchorY": 649.3,
+      "baseDrawX": 369.4379999639988,
+      "baseDrawY": 643.0105603830599,
+      "deltaX": 2,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_UpRight_2|362.2|645.5",
+      "name": "Grey_UpRight_2",
+      "anchorX": 362.2,
+      "anchorY": 645.5,
+      "baseDrawX": 356.41599998104573,
+      "baseDrawY": 642.3972644939611,
+      "deltaX": 2,
+      "deltaY": -8,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_LeftUp_2|369.3|644.22",
+      "name": "Grey_LeftUp_2",
+      "anchorX": 369.30002,
+      "anchorY": 644.22,
+      "baseDrawX": 364.74522262845164,
+      "baseDrawY": 640.9033015543714,
+      "deltaX": 2,
+      "deltaY": -12,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|308.2|743",
+      "name": "Snow_Up_2",
+      "anchorX": 308.2,
+      "anchorY": 743,
+      "baseDrawX": 302.89600000154974,
+      "baseDrawY": 719.3057433837018,
+      "deltaX": -2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_1|355.2|743",
+      "name": "Snow_Up_1",
+      "anchorX": 355.2,
+      "anchorY": 743,
+      "baseDrawX": 348.15999996614454,
+      "baseDrawY": 739.8437425739131,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|378.2|743",
+      "name": "Snow_Up_2",
+      "anchorX": 378.2,
+      "anchorY": 743,
+      "baseDrawX": 372.89600000154974,
+      "baseDrawY": 719.3057433837018,
+      "deltaX": -2,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_3|400.6|28.9",
+      "name": "Snow_Down_3",
+      "anchorX": 400.6,
+      "anchorY": 28.899994,
+      "baseDrawX": 395.2079999639988,
+      "baseDrawY": 22.610554383059984,
+      "deltaX": 0,
+      "deltaY": -20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|417.6|28.6",
+      "name": "Snow_Down_2",
+      "anchorX": 417.6,
+      "anchorY": 28.59999,
+      "baseDrawX": 412.2079999639988,
+      "baseDrawY": 22.310703352422614,
+      "deltaX": 2,
+      "deltaY": -18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightDown_2|442.1|28.2",
+      "name": "Snow_RightDown_2",
+      "anchorX": 442.1,
+      "anchorY": 28.199997,
+      "baseDrawX": 436.3000000189543,
+      "baseDrawY": 21.90399695815754,
+      "deltaX": -2,
+      "deltaY": -24,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_2|443.3|51.51",
+      "name": "Snow_Right_2",
+      "anchorX": 443.30002,
+      "anchorY": 51.509995,
+      "baseDrawX": 436.94801996972086,
+      "baseDrawY": 45.21399495815754,
+      "deltaX": 10,
+      "deltaY": -8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_3|444.2|75.78",
+      "name": "Snow_Right_3",
+      "anchorX": 444.19998,
+      "anchorY": 75.78,
+      "baseDrawX": 437.8479799697208,
+      "baseDrawY": 69.48399995815754,
+      "deltaX": 12,
+      "deltaY": -12,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|422.9|117.7",
+      "name": "Snow_Up_2",
+      "anchorX": 422.9,
+      "anchorY": 117.7,
+      "baseDrawX": 417.5960000015497,
+      "baseDrawY": 94.00574338370178,
+      "deltaX": 2,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Snow_horizontal|401.2|121.5",
+      "name": "Bridge_Grey_Snow_horizontal",
+      "anchorX": 401.2,
+      "anchorY": 121.5,
+      "baseDrawX": 395.60249998390674,
+      "baseDrawY": 116.57375,
+      "deltaX": 2,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|425.23|122.38",
+      "name": "Grey_Down_1",
+      "anchorX": 425.23,
+      "anchorY": 122.38,
+      "baseDrawX": 420.117999994874,
+      "baseDrawY": 117.07599999582767,
+      "deltaX": 0,
+      "deltaY": 10,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_1|445.3|99.79",
+      "name": "Snow_Right_1",
+      "anchorX": 445.30002,
+      "anchorY": 99.78999,
+      "baseDrawX": 438.94801996972086,
+      "baseDrawY": 93.08598995970726,
+      "deltaX": 10,
+      "deltaY": -14,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightUp_1|442.3|117.2",
+      "name": "Snow_RightUp_1",
+      "anchorX": 442.30002,
+      "anchorY": 117.2,
+      "baseDrawX": 436.50801999237063,
+      "baseDrawY": 114.04374257391308,
+      "deltaX": 10,
+      "deltaY": -12,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_2|445.59|122.38",
+      "name": "Grey_Down_2",
+      "anchorX": 445.59,
+      "anchorY": 122.38,
+      "baseDrawX": 440.477999994874,
+      "baseDrawY": 117.07599999582767,
+      "deltaX": 0,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_3|466.96|122.38",
+      "name": "Grey_Down_3",
+      "anchorX": 466.96,
+      "anchorY": 122.38,
+      "baseDrawX": 461.847999994874,
+      "baseDrawY": 117.07599999582767,
+      "deltaX": 0,
+      "deltaY": 6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_3|396.5|211.5",
+      "name": "Grey_Volcano_Volcano_H_3",
+      "anchorX": 396.5,
+      "anchorY": 211.5,
+      "baseDrawX": 396.5,
+      "baseDrawY": 216.72400002396108,
+      "deltaX": 16,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_2|419|211.5",
+      "name": "Grey_Volcano_Volcano_H_2",
+      "anchorX": 419,
+      "anchorY": 211.5,
+      "baseDrawX": 419,
+      "baseDrawY": 216.72400002396108,
+      "deltaX": 16,
+      "deltaY": -24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Volcano_H|464|211.5",
+      "name": "Bridge_Grey_Volcano_H",
+      "anchorX": 464,
+      "anchorY": 211.5,
+      "baseDrawX": 457.74624999888243,
+      "baseDrawY": 206.3524999946356,
+      "deltaX": 20,
+      "deltaY": -14,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_1|441.5|211.5",
+      "name": "Grey_Volcano_Volcano_H_1",
+      "anchorX": 441.5,
+      "anchorY": 211.5,
+      "baseDrawX": 441.5,
+      "baseDrawY": 217.36800001734497,
+      "deltaX": 14,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightDown_1|424|322.5",
+      "name": "CentralCastle_rightDown_1",
+      "anchorX": 424,
+      "anchorY": 322.5,
+      "baseDrawX": 424,
+      "baseDrawY": 329.7400109863281,
+      "deltaX": 0,
+      "deltaY": -4,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontal_2|409|322.5",
+      "name": "CentralCastle_horizontal_2",
+      "anchorX": 409,
+      "anchorY": 322.5,
+      "baseDrawX": 401.2424868106842,
+      "baseDrawY": 329.0199890136719,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontalTop_3|386.5|436.5",
+      "name": "CentralCastle_horizontalTop_3",
+      "anchorX": 386.5,
+      "anchorY": 436.5,
+      "baseDrawX": 386.5,
+      "baseDrawY": 443.37624487876894,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontalTop_2|409|436.5",
+      "name": "CentralCastle_horizontalTop_2",
+      "anchorX": 409,
+      "anchorY": 436.5,
+      "baseDrawX": 400.5675036621094,
+      "baseDrawY": 442.75374779701235,
+      "deltaX": 0,
+      "deltaY": -2,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalRight_1|424|427",
+      "name": "CentralCastle_verticalRight_1",
+      "anchorX": 424,
+      "anchorY": 427,
+      "baseDrawX": 416.1899970817566,
+      "baseDrawY": 434.2400109863281,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_1|390.7|571.5",
+      "name": "Grey_Volcano_Volcano_U_1",
+      "anchorX": 390.7,
+      "anchorY": 571.5,
+      "baseDrawX": 385.91599998450283,
+      "baseDrawY": 576.4880000147223,
+      "deltaX": 4,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_2|412.7|571.5",
+      "name": "Grey_Volcano_Volcano_U_2",
+      "anchorX": 412.7,
+      "anchorY": 571.5,
+      "baseDrawX": 407.88397444462737,
+      "baseDrawY": 576.7039999988674,
+      "deltaX": 2,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_3|434.7|571.5",
+      "name": "Grey_Volcano_Volcano_U_3",
+      "anchorX": 434.7,
+      "anchorY": 571.5,
+      "baseDrawX": 429.88397444462737,
+      "baseDrawY": 576.8200000005959,
+      "deltaX": 0,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Volcano_Grey_H|479|571.5",
+      "name": "Bridge_Volcano_Grey_H",
+      "anchorX": 479,
+      "anchorY": 571.5,
+      "baseDrawX": 473.53750000357627,
+      "baseDrawY": 566.57375,
+      "deltaX": 0,
+      "deltaY": -16,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_1|456.7|571.5",
+      "name": "Grey_Volcano_Volcano_U_1",
+      "anchorX": 456.7,
+      "anchorY": 571.5,
+      "baseDrawX": 451.91599998450283,
+      "baseDrawY": 576.4880000147223,
+      "deltaX": 0,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_1|423.5|649.56",
+      "name": "Snow_Down_1",
+      "anchorX": 423.5,
+      "anchorY": 649.56,
+      "baseDrawX": 418.1079999639988,
+      "baseDrawY": 642.9359999780654,
+      "deltaX": 2,
+      "deltaY": 6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Up_2|422.4|643.71",
+      "name": "Grey_Up_2",
+      "anchorX": 422.4,
+      "anchorY": 643.70996,
+      "baseDrawX": 416.6159999810457,
+      "baseDrawY": 640.735275872212,
+      "deltaX": -2,
+      "deltaY": -4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightDown_2|442.05|649.15",
+      "name": "Snow_RightDown_2",
+      "anchorX": 442.05,
+      "anchorY": 649.15,
+      "baseDrawX": 436.25000001895427,
+      "baseDrawY": 642.8539999581575,
+      "deltaX": 8,
+      "deltaY": 8,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_1|441|669.9",
+      "name": "Snow_Right_1",
+      "anchorX": 441,
+      "anchorY": 669.9,
+      "baseDrawX": 434.64799996972084,
+      "baseDrawY": 663.1959999597073,
+      "deltaX": 10,
+      "deltaY": 8,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|422.9|741.6",
+      "name": "Snow_Up_2",
+      "anchorX": 422.9,
+      "anchorY": 741.6,
+      "baseDrawX": 417.5960000015497,
+      "baseDrawY": 717.9057433837017,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_2|443.55|693.43",
+      "name": "Snow_Right_2",
+      "anchorX": 443.55,
+      "anchorY": 693.43,
+      "baseDrawX": 437.19799996972085,
+      "baseDrawY": 687.1339999581575,
+      "deltaX": 6,
+      "deltaY": 6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_3|445.07|717.41",
+      "name": "Snow_Right_3",
+      "anchorX": 445.07,
+      "anchorY": 717.41,
+      "baseDrawX": 438.71799996972084,
+      "baseDrawY": 711.1139999581575,
+      "deltaX": 6,
+      "deltaY": 4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|488.91|122.95",
+      "name": "Grey_Down_1",
+      "anchorX": 488.91003,
+      "anchorY": 122.95,
+      "baseDrawX": 483.798029994874,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": -8,
+      "deltaY": 6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_2|510.18|122.95",
+      "name": "Grey_Down_2",
+      "anchorX": 510.18005,
+      "anchorY": 122.95,
+      "baseDrawX": 505.068049994874,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": -8,
+      "deltaY": 6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_3|531.9|122.95",
+      "name": "Grey_Down_3",
+      "anchorX": 531.9,
+      "anchorY": 122.95,
+      "baseDrawX": 526.787999994874,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": -10,
+      "deltaY": 4,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|553.23|122.95",
+      "name": "Grey_Down_1",
+      "anchorX": 553.23,
+      "anchorY": 122.95,
+      "baseDrawX": 548.117999994874,
+      "baseDrawY": 117.64599999582768,
+      "deltaX": -8,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_RightDown_2|576.4|125.8",
+      "name": "Grey_RightDown_2",
+      "anchorX": 576.4,
+      "anchorY": 125.8,
+      "baseDrawX": 571.287999994874,
+      "baseDrawY": 120.38799994844197,
+      "deltaX": 0,
+      "deltaY": -6,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_RightDown_1|486.5|211.5",
+      "name": "Grey_Volcano_RightDown_1",
+      "anchorX": 486.5,
+      "anchorY": 211.5,
+      "baseDrawX": 486.5,
+      "baseDrawY": 216.5725,
+      "deltaX": 14,
+      "deltaY": -24,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Volcano_RightDown_2|487|244",
+      "name": "Volcano_RightDown_2",
+      "anchorX": 487,
+      "anchorY": 244,
+      "baseDrawX": 487,
+      "baseDrawY": 248.95599997609855,
+      "deltaX": 14,
+      "deltaY": -36,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_3|508|244",
+      "name": "Grey_Volcano_Volcano_H_3",
+      "anchorX": 508,
+      "anchorY": 244,
+      "baseDrawX": 501.8999999683499,
+      "baseDrawY": 249.22400002396108,
+      "deltaX": 16,
+      "deltaY": -22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_1|542.5|244",
+      "name": "Grey_Volcano_Volcano_H_1",
+      "anchorX": 542.5,
+      "anchorY": 244,
+      "baseDrawX": 536.0679999847412,
+      "baseDrawY": 249.86800001734497,
+      "deltaX": 18,
+      "deltaY": -22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_H_2|520|244",
+      "name": "Grey_Volcano_Volcano_H_2",
+      "anchorX": 520,
+      "anchorY": 244,
+      "baseDrawX": 513.8199868106244,
+      "baseDrawY": 249.22400002396108,
+      "deltaX": 24,
+      "deltaY": -20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Grey_Big_D_R|584|233",
+      "name": "Snow_Grey_Big_D_R",
+      "anchorX": 584,
+      "anchorY": 233,
+      "baseDrawX": 584,
+      "baseDrawY": 272.534988861084,
+      "deltaX": -4,
+      "deltaY": -22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalRight_5|565|267",
+      "name": "Grey_Volcano_VerticalRight_5",
+      "anchorX": 565,
+      "anchorY": 267,
+      "baseDrawX": 565,
+      "baseDrawY": 272.78000002175577,
+      "deltaX": 2,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Volcano_RightDown_1|565|245",
+      "name": "Volcano_RightDown_1",
+      "anchorX": 565,
+      "anchorY": 245,
+      "baseDrawX": 565,
+      "baseDrawY": 249.8040000463128,
+      "deltaX": 8,
+      "deltaY": -14,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Horizontal_1|565|243",
+      "name": "Grey_Horizontal_1",
+      "anchorX": 565,
+      "anchorY": 243,
+      "baseDrawX": 559.7840000352858,
+      "baseDrawY": 236.20189002159077,
+      "deltaX": 14,
+      "deltaY": -6,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalRight_3|565|289.2",
+      "name": "Grey_Volcano_VerticalRight_3",
+      "anchorX": 565,
+      "anchorY": 289.2,
+      "baseDrawX": 559.7159999808669,
+      "baseDrawY": 294.66400000846386,
+      "deltaX": 6,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalRight_2|565|305",
+      "name": "Grey_Volcano_VerticalRight_2",
+      "anchorX": 565,
+      "anchorY": 305,
+      "baseDrawX": 559.7079999807477,
+      "baseDrawY": 310.1719999907614,
+      "deltaX": 6,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalRight_3|565|350",
+      "name": "Grey_Volcano_VerticalRight_3",
+      "anchorX": 565,
+      "anchorY": 350,
+      "baseDrawX": 559.7159999808669,
+      "baseDrawY": 355.4640000084639,
+      "deltaX": 6,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalRight_4|565|327.5",
+      "name": "Grey_Volcano_VerticalRight_4",
+      "anchorX": 565,
+      "anchorY": 327.5,
+      "baseDrawX": 559.7159999808669,
+      "baseDrawY": 332.6440000170469,
+      "deltaX": 6,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Volcano_Grey_Vertical|565|371.5",
+      "name": "Bridge_Volcano_Grey_Vertical",
+      "anchorX": 565,
+      "anchorY": 371.5,
+      "baseDrawX": 558.9750000035763,
+      "baseDrawY": 365.40374999983237,
+      "deltaX": 6,
+      "deltaY": 6,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalRight_2|565|390.5",
+      "name": "Grey_Volcano_VerticalRight_2",
+      "anchorX": 565,
+      "anchorY": 390.5,
+      "baseDrawX": 559.7079999807477,
+      "baseDrawY": 395.6719999907614,
+      "deltaX": 4,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_LeftTop_3|497.5|527.5",
+      "name": "Grey_Volcano_LeftTop_3",
+      "anchorX": 497.5,
+      "anchorY": 527.5,
+      "baseDrawX": 497.5,
+      "baseDrawY": 532.6440244311098,
+      "deltaX": -8,
+      "deltaY": -24,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_VerticalLeft_4|497.5|550",
+      "name": "Grey_Volcano_VerticalLeft_4",
+      "anchorX": 497.5,
+      "anchorY": 550,
+      "baseDrawX": 497.5,
+      "baseDrawY": 555.240000022292,
+      "deltaX": -8,
+      "deltaY": -26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_LeftTop_2|497.12|572",
+      "name": "Grey_Volcano_LeftTop_2",
+      "anchorX": 497.12,
+      "anchorY": 572,
+      "baseDrawX": 492.3359999845028,
+      "baseDrawY": 576.9879795069096,
+      "deltaX": 0,
+      "deltaY": -26,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_1|520|527.5",
+      "name": "Grey_Volcano_Volcano_U_1",
+      "anchorX": 520,
+      "anchorY": 527.5,
+      "baseDrawX": 515.2159999845028,
+      "baseDrawY": 532.4880000147223,
+      "deltaX": -4,
+      "deltaY": -14,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_Volcano_U_2|542.5|527.5",
+      "name": "Grey_Volcano_Volcano_U_2",
+      "anchorX": 542.5,
+      "anchorY": 527.5,
+      "baseDrawX": 537.6839744446274,
+      "baseDrawY": 532.7039999988674,
+      "deltaX": -6,
+      "deltaY": -14,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Volcano_LeftTop_4|565|526.59",
+      "name": "Grey_Volcano_LeftTop_4",
+      "anchorX": 565,
+      "anchorY": 526.59,
+      "baseDrawX": 560.2159999845028,
+      "baseDrawY": 531.5779795069097,
+      "deltaX": -6,
+      "deltaY": -12,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftDown_2|598.8|143.25",
+      "name": "Snow_LeftDown_2",
+      "anchorX": 598.8,
+      "anchorY": 143.25,
+      "baseDrawX": 594.111567641967,
+      "baseDrawY": 137.72199999821186,
+      "deltaX": 6,
+      "deltaY": 26,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_1|596.48|164.07",
+      "name": "Snow_Left_1",
+      "anchorX": 596.48,
+      "anchorY": 164.07,
+      "baseDrawX": 591.791567641967,
+      "baseDrawY": 159.33399994325637,
+      "deltaX": 0,
+      "deltaY": 26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_3|596|184.1",
+      "name": "Snow_Left_3",
+      "anchorX": 596,
+      "anchorY": 184.1,
+      "baseDrawX": 591.311567641967,
+      "baseDrawY": 179.36399994325637,
+      "deltaX": 2,
+      "deltaY": 52,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_1|624.1|143.7",
+      "name": "Snow_Down_1",
+      "anchorX": 624.1,
+      "anchorY": 143.7,
+      "baseDrawX": 618.7079999639989,
+      "baseDrawY": 137.07599997806548,
+      "deltaX": 2,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|648.7|145",
+      "name": "Snow_Down_2",
+      "anchorX": 648.7,
+      "anchorY": 145,
+      "baseDrawX": 643.3079999639989,
+      "baseDrawY": 138.7107133524226,
+      "deltaX": 0,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_3|674|144.8",
+      "name": "Snow_Down_3",
+      "anchorX": 674,
+      "anchorY": 144.8,
+      "baseDrawX": 668.6079999639989,
+      "baseDrawY": 138.51056038306,
+      "deltaX": 0,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_3|594.77|199.2",
+      "name": "Snow_Left_3",
+      "anchorX": 594.77,
+      "anchorY": 199.2,
+      "baseDrawX": 590.081567641967,
+      "baseDrawY": 194.46399994325637,
+      "deltaX": 4,
+      "deltaY": 58,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Snow_Vertical|589|218.32",
+      "name": "Bridge_Grey_Snow_Vertical",
+      "anchorX": 589,
+      "anchorY": 218.32,
+      "baseDrawX": 583.9425000929832,
+      "baseDrawY": 211.63499998927117,
+      "deltaX": 4,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Snow_horizontal|613.71|266.5",
+      "name": "Bridge_Grey_Snow_horizontal",
+      "anchorX": 613.71,
+      "anchorY": 266.5,
+      "baseDrawX": 608.1124999839068,
+      "baseDrawY": 261.57375,
+      "deltaX": 0,
+      "deltaY": 26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_1|636.28|263.04",
+      "name": "Snow_Up_1",
+      "anchorX": 636.28,
+      "anchorY": 263.04,
+      "baseDrawX": 629.2399999661445,
+      "baseDrawY": 259.8837425739131,
+      "deltaX": 0,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Down_1|634.8|268.75",
+      "name": "Grey_Down_1",
+      "anchorX": 634.80005,
+      "anchorY": 268.75,
+      "baseDrawX": 629.6880499948741,
+      "baseDrawY": 263.44599999582766,
+      "deltaX": 0,
+      "deltaY": 36,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|659.83|263.8",
+      "name": "Snow_Up_2",
+      "anchorX": 659.83,
+      "anchorY": 263.8,
+      "baseDrawX": 654.5260000015497,
+      "baseDrawY": 240.1057433837018,
+      "deltaX": 20,
+      "deltaY": 46,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_RightDown_2|658.3|271.6",
+      "name": "Grey_RightDown_2",
+      "anchorX": 658.30005,
+      "anchorY": 271.6,
+      "baseDrawX": 653.1880499948741,
+      "baseDrawY": 266.187999948442,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_3|683.15|259.9",
+      "name": "Snow_Up_3",
+      "anchorX": 683.15,
+      "anchorY": 259.89996,
+      "baseDrawX": 677.9659999842644,
+      "baseDrawY": 254.25570262076235,
+      "deltaX": 18,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_2|657.1|318.5",
+      "name": "Grey_Right_2",
+      "anchorX": 657.10004,
+      "anchorY": 318.5,
+      "baseDrawX": 651.6520400013113,
+      "baseDrawY": 313.5240000693798,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_1|656.9|294.9",
+      "name": "Grey_Right_1",
+      "anchorX": 656.9,
+      "anchorY": 294.90002,
+      "baseDrawX": 651.4520000013113,
+      "baseDrawY": 290.2840199221563,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_3|658.1|342.6",
+      "name": "Grey_Right_3",
+      "anchorX": 658.10004,
+      "anchorY": 342.6,
+      "baseDrawX": 650.7573153408146,
+      "baseDrawY": 337.187999948442,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_2|657.1|388.6",
+      "name": "Grey_Right_2",
+      "anchorX": 657.10004,
+      "anchorY": 388.59998,
+      "baseDrawX": 651.6520400013113,
+      "baseDrawY": 383.6239800693798,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_1|656.9|365",
+      "name": "Grey_Right_1",
+      "anchorX": 656.9,
+      "anchorY": 365,
+      "baseDrawX": 651.4520000013113,
+      "baseDrawY": 360.3839999221563,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Grey_Big_U_R_1|585.49|481.82",
+      "name": "Snow_Grey_Big_U_R_1",
+      "anchorX": 585.49,
+      "anchorY": 481.82,
+      "baseDrawX": 578.8749658203124,
+      "baseDrawY": 537.3520176088809,
+      "deltaX": 8,
+      "deltaY": 18,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Snow_Gray_Horizontal|613.5|476.5",
+      "name": "Bridge_Snow_Gray_Horizontal",
+      "anchorX": 613.5,
+      "anchorY": 476.5,
+      "baseDrawX": 607.1712500006705,
+      "baseDrawY": 471.2700000053644,
+      "deltaX": 4,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_1|636.35|478.53",
+      "name": "Snow_Down_1",
+      "anchorX": 636.35,
+      "anchorY": 478.53,
+      "baseDrawX": 630.9579999639989,
+      "baseDrawY": 471.90599997806544,
+      "deltaX": 4,
+      "deltaY": 30,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Up_1|636.2|471.9",
+      "name": "Grey_Up_1",
+      "anchorX": 636.2,
+      "anchorY": 471.90002,
+      "baseDrawX": 630.4159999810457,
+      "baseDrawY": 468.925335872212,
+      "deltaX": 4,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_3|658.1|412.7",
+      "name": "Grey_Right_3",
+      "anchorX": 658.10004,
+      "anchorY": 412.69995,
+      "baseDrawX": 650.7573153408146,
+      "baseDrawY": 407.28794994844196,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_1|656.9|434.5",
+      "name": "Grey_Right_1",
+      "anchorX": 656.9,
+      "anchorY": 434.5,
+      "baseDrawX": 651.4520000013113,
+      "baseDrawY": 429.8839999221563,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|660.93|478.4",
+      "name": "Snow_Down_2",
+      "anchorX": 660.93,
+      "anchorY": 478.4,
+      "baseDrawX": 655.5379999639988,
+      "baseDrawY": 472.1107133524226,
+      "deltaX": 38,
+      "deltaY": 26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_2|657.1|454.9",
+      "name": "Grey_Right_2",
+      "anchorX": 657.10004,
+      "anchorY": 454.90002,
+      "baseDrawX": 651.6520400013113,
+      "baseDrawY": 449.92402006937976,
+      "deltaX": 6,
+      "deltaY": 24,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_UpRight_2|657.1|473.9",
+      "name": "Grey_UpRight_2",
+      "anchorX": 657.10004,
+      "anchorY": 473.90002,
+      "baseDrawX": 651.3160399810457,
+      "baseDrawY": 470.7972844939611,
+      "deltaX": 0,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Grey_Big_U_R_2|588.9|512.3",
+      "name": "Snow_Grey_Big_U_R_2",
+      "anchorX": 588.9,
+      "anchorY": 512.3,
+      "baseDrawX": 579.9599486568563,
+      "baseDrawY": 504.5479841998813,
+      "deltaX": 2,
+      "deltaY": -14,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Snow_Vertical|589|550.9",
+      "name": "Bridge_Grey_Snow_Vertical",
+      "anchorX": 589,
+      "anchorY": 550.9,
+      "baseDrawX": 583.9425000929832,
+      "baseDrawY": 544.2149999892712,
+      "deltaX": 8,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Left_3|595.95|575.77",
+      "name": "Snow_Left_3",
+      "anchorX": 595.95,
+      "anchorY": 575.77,
+      "baseDrawX": 591.2615676419671,
+      "baseDrawY": 571.0339999432564,
+      "deltaX": 4,
+      "deltaY": 22,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_1|585.1|571",
+      "name": "Grey_Right_1",
+      "anchorX": 585.1,
+      "anchorY": 571,
+      "baseDrawX": 579.6520000013113,
+      "baseDrawY": 566.3839999221564,
+      "deltaX": 6,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftUp_1|593.9|591",
+      "name": "Snow_LeftUp_1",
+      "anchorX": 593.9,
+      "anchorY": 591,
+      "baseDrawX": 589.211567641967,
+      "baseDrawY": 587.843852437196,
+      "deltaX": 6,
+      "deltaY": 26,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Grey_Right_2|585.3|590",
+      "name": "Grey_Right_2",
+      "anchorX": 585.3,
+      "anchorY": 590,
+      "baseDrawX": 579.8520000013112,
+      "baseDrawY": 585.0240000693798,
+      "deltaX": 4,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|633.6|596.68",
+      "name": "Snow_Up_2",
+      "anchorX": 633.6,
+      "anchorY": 596.68,
+      "baseDrawX": 628.2960000015497,
+      "baseDrawY": 572.9857433837017,
+      "deltaX": 12,
+      "deltaY": 44,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_1|616.5|596.3",
+      "name": "Snow_Up_1",
+      "anchorX": 616.5,
+      "anchorY": 596.3,
+      "baseDrawX": 609.4599999661446,
+      "baseDrawY": 593.1437425739131,
+      "deltaX": 6,
+      "deltaY": 20,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|678.1|596.5",
+      "name": "Snow_Up_2",
+      "anchorX": 678.1,
+      "anchorY": 596.5,
+      "baseDrawX": 672.7960000015497,
+      "baseDrawY": 572.8057433837018,
+      "deltaX": 18,
+      "deltaY": 46,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_3|655.5|592.6",
+      "name": "Snow_Up_3",
+      "anchorX": 655.5,
+      "anchorY": 592.6,
+      "baseDrawX": 650.3159999842644,
+      "baseDrawY": 586.9557426207623,
+      "deltaX": 16,
+      "deltaY": 30,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_2|698.3|145",
+      "name": "Snow_Down_2",
+      "anchorX": 698.3,
+      "anchorY": 145,
+      "baseDrawX": 692.9079999639988,
+      "baseDrawY": 138.7107133524226,
+      "deltaX": -2,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightDown_2|724.2|141.56",
+      "name": "Snow_RightDown_2",
+      "anchorX": 724.2,
+      "anchorY": 141.56,
+      "baseDrawX": 718.4000000189543,
+      "baseDrawY": 135.26399995815754,
+      "deltaX": 2,
+      "deltaY": 28,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_1|723.14|164",
+      "name": "Snow_Right_1",
+      "anchorX": 723.14,
+      "anchorY": 164,
+      "baseDrawX": 716.7879999697208,
+      "baseDrawY": 157.29599995970727,
+      "deltaX": 18,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_2|722.27|188.61",
+      "name": "Snow_Right_2",
+      "anchorX": 722.27,
+      "anchorY": 188.61,
+      "baseDrawX": 715.9179999697208,
+      "baseDrawY": 182.31399995815755,
+      "deltaX": 18,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_2|703.7|263.98",
+      "name": "Snow_Up_2",
+      "anchorX": 703.7,
+      "anchorY": 263.97998,
+      "baseDrawX": 698.3960000015497,
+      "baseDrawY": 240.2857233837018,
+      "deltaX": 14,
+      "deltaY": 44,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_3|722.6|212.88",
+      "name": "Snow_Right_3",
+      "anchorX": 722.6,
+      "anchorY": 212.88,
+      "baseDrawX": 716.2479999697208,
+      "baseDrawY": 206.58399995815753,
+      "deltaX": 18,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_1|722.66|236.89",
+      "name": "Snow_Right_1",
+      "anchorX": 722.66,
+      "anchorY": 236.89,
+      "baseDrawX": 716.3079999697208,
+      "baseDrawY": 230.18599995970726,
+      "deltaX": 18,
+      "deltaY": 28,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightUp_1|724|261.3",
+      "name": "Snow_RightUp_1",
+      "anchorX": 724,
+      "anchorY": 261.3,
+      "baseDrawX": 718.2079999923706,
+      "baseDrawY": 258.1437425739131,
+      "deltaX": 18,
+      "deltaY": 22,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Down_3|686.46|479.04",
+      "name": "Snow_Down_3",
+      "anchorX": 686.46,
+      "anchorY": 479.04,
+      "baseDrawX": 681.0679999639989,
+      "baseDrawY": 472.75056038306,
+      "deltaX": 34,
+      "deltaY": 26,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightDown_2|712.7|477.48",
+      "name": "Snow_RightDown_2",
+      "anchorX": 712.7,
+      "anchorY": 477.48,
+      "baseDrawX": 706.9000000189543,
+      "baseDrawY": 471.1839999581576,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Up_1|701|592.1",
+      "name": "Snow_Up_1",
+      "anchorX": 701,
+      "anchorY": 592.1,
+      "baseDrawX": 693.9599999661446,
+      "baseDrawY": 588.9437425739131,
+      "deltaX": 24,
+      "deltaY": 30,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightUp_1|719.77|593.7",
+      "name": "Snow_RightUp_1",
+      "anchorX": 719.77,
+      "anchorY": 593.7,
+      "baseDrawX": 713.9779999923705,
+      "baseDrawY": 590.5437425739132,
+      "deltaX": 28,
+      "deltaY": 30,
+      "rotation": "flipY",
+      "zOrder": 0,
+      "hidden": false,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|172.3|420",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 172.3,
+      "anchorY": 420,
+      "baseDrawX": 182.14000053405763,
+      "baseDrawY": 414.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|172.3|465",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 172.3,
+      "anchorY": 465,
+      "baseDrawX": 182.14000053405763,
+      "baseDrawY": 459.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|172.3|442.5",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 172.3,
+      "anchorY": 442.5,
+      "baseDrawX": 182.14000053405763,
+      "baseDrawY": 437.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|172.2|757.5",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 172.2,
+      "anchorY": 757.5,
+      "baseDrawX": 182.0400005340576,
+      "baseDrawY": 752.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|172.2|780",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 172.2,
+      "anchorY": 780,
+      "baseDrawX": 182.0400005340576,
+      "baseDrawY": 774.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|172.2|825",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 172.2,
+      "anchorY": 825,
+      "baseDrawX": 182.0400005340576,
+      "baseDrawY": 819.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|172.2|802.5",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 172.2,
+      "anchorY": 802.5,
+      "baseDrawX": 182.0400005340576,
+      "baseDrawY": 797.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|172.2|847.5",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 172.2,
+      "anchorY": 847.5,
+      "baseDrawX": 182.0400005340576,
+      "baseDrawY": 842.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_VolcanoGrey_Special_4|374.2|128.6",
+      "name": "First_VolcanoGrey_Special_4",
+      "anchorX": 374.2,
+      "anchorY": 128.6,
+      "baseDrawX": 369.2199999952316,
+      "baseDrawY": 139.0799998474121,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Volcano_Vertical|374.5|152.2",
+      "name": "Bridge_Grey_Volcano_Vertical",
+      "anchorX": 374.5,
+      "anchorY": 152.2,
+      "baseDrawX": 369.3112500393391,
+      "baseDrawY": 146.41874999195335,
+      "deltaX": 0,
+      "deltaY": 8,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_VolcanoGrey_Special_2|375.2|261.5",
+      "name": "First_VolcanoGrey_Special_2",
+      "anchorX": 375.2,
+      "anchorY": 261.5,
+      "baseDrawX": 370.2199999952316,
+      "baseDrawY": 271.9799998474121,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|375|442.6",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 375,
+      "anchorY": 442.59998,
+      "baseDrawX": 384.8400005340576,
+      "baseDrawY": 437.159979961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|285|509.5",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 285,
+      "anchorY": 509.5,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 504.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|285|554.5",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 285,
+      "anchorY": 554.5,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 549.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|285|532",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 285,
+      "anchorY": 532,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 526.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|285|577",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 285,
+      "anchorY": 577,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 571.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|285|599.5",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 285,
+      "anchorY": 599.5,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 594.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|285|622",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 285,
+      "anchorY": 622,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 616.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|285|667",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 285,
+      "anchorY": 667,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 661.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|285|644.5",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 285,
+      "anchorY": 644.5,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 639.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|285|712",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 285,
+      "anchorY": 712,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 706.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|285|689.5",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 285,
+      "anchorY": 689.5,
+      "baseDrawX": 294.8400005340576,
+      "baseDrawY": 684.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|351|758",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 351,
+      "anchorY": 758,
+      "baseDrawX": 360.8400005340576,
+      "baseDrawY": 752.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|351|780.5",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 351,
+      "anchorY": 780.5,
+      "baseDrawX": 360.8400005340576,
+      "baseDrawY": 775.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|351|825.5",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 351,
+      "anchorY": 825.5,
+      "baseDrawX": 360.8400005340576,
+      "baseDrawY": 820.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|351|803",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 351,
+      "anchorY": 803,
+      "baseDrawX": 360.8400005340576,
+      "baseDrawY": 797.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|351|848",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 351,
+      "anchorY": 848,
+      "baseDrawX": 360.8400005340576,
+      "baseDrawY": 842.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_VolcanoGrey_Special_1|441.7|128.6",
+      "name": "First_VolcanoGrey_Special_1",
+      "anchorX": 441.7,
+      "anchorY": 128.6,
+      "baseDrawX": 436.7199999952316,
+      "baseDrawY": 139.0799998474121,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|465|307.5",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 465,
+      "anchorY": 307.5,
+      "baseDrawX": 474.8400005340576,
+      "baseDrawY": 302.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_1|465|352.5",
+      "name": "First_Volcano_Vertical_1",
+      "anchorX": 465,
+      "anchorY": 352.5,
+      "baseDrawX": 474.8400005340576,
+      "baseDrawY": 347.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|465|330",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 465,
+      "anchorY": 330,
+      "baseDrawX": 474.8400005340576,
+      "baseDrawY": 324.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_2|465|375",
+      "name": "First_Volcano_Vertical_2",
+      "anchorX": 465,
+      "anchorY": 375,
+      "baseDrawX": 474.8400005340576,
+      "baseDrawY": 369.559999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "First_Volcano_Vertical_3|465|397.5",
+      "name": "First_Volcano_Vertical_3",
+      "anchorX": 465,
+      "anchorY": 397.5,
+      "baseDrawX": 474.8400005340576,
+      "baseDrawY": 392.059999961853,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftDown_1|464.1|555",
+      "name": "CentralCastle_leftDown_1",
+      "anchorX": 464.1,
+      "anchorY": 555,
+      "baseDrawX": 458.7800134575367,
+      "baseDrawY": 560.4999890136719,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalLeft_1|464.05|577.095",
+      "name": "CentralCastle_verticalLeft_1",
+      "anchorX": 464.05,
+      "anchorY": 577.09454,
+      "baseDrawX": 458.73000389099116,
+      "baseDrawY": 582.962049841919,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalLeft_3|464.61|589.875",
+      "name": "CentralCastle_verticalLeft_3",
+      "anchorX": 464.61,
+      "anchorY": 589.8745,
+      "baseDrawX": 459.71375440597535,
+      "baseDrawY": 595.8694868106843,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalLeft_2|463.7|631.205",
+      "name": "CentralCastle_verticalLeft_2",
+      "anchorX": 463.69998,
+      "anchorY": 631.2045,
+      "baseDrawX": 458.46999244544986,
+      "baseDrawY": 637.0719926757813,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_CentralCastle_L|469.85|610.575",
+      "name": "Bridge_CentralCastle_L",
+      "anchorX": 469.84998,
+      "anchorY": 610.5745,
+      "baseDrawX": 464.9537298462201,
+      "baseDrawY": 615.5569996995926,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftTop_1|464.13|668.87",
+      "name": "CentralCastle_leftTop_1",
+      "anchorX": 464.13,
+      "anchorY": 668.87,
+      "baseDrawX": 458.93001098632817,
+      "baseDrawY": 672.8699999999999,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalLeft_1|464.12|647.265",
+      "name": "CentralCastle_verticalLeft_1",
+      "anchorX": 464.12,
+      "anchorY": 647.2645,
+      "baseDrawX": 458.8000038909912,
+      "baseDrawY": 653.132009841919,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftDown_1|486.19|510.37",
+      "name": "CentralCastle_leftDown_1",
+      "anchorX": 486.19,
+      "anchorY": 510.37,
+      "baseDrawX": 480.87001345753674,
+      "baseDrawY": 515.8699890136719,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftDown_2|486.5|555",
+      "name": "CentralCastle_leftDown_2",
+      "anchorX": 486.5,
+      "anchorY": 555,
+      "baseDrawX": 785.1800134575367,
+      "baseDrawY": 882.9999890136719,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalLeft_2|485.89|532.64",
+      "name": "CentralCastle_verticalLeft_2",
+      "anchorX": 485.89,
+      "anchorY": 532.64,
+      "baseDrawX": 480.66001244544987,
+      "baseDrawY": 538.5074926757812,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftDown_1|535.5|486.6",
+      "name": "CentralCastle_leftDown_1",
+      "anchorX": 535.5,
+      "anchorY": 486.59998,
+      "baseDrawX": 530.1800134575367,
+      "baseDrawY": 492.09996901367185,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontal_1|557.9|486.6",
+      "name": "CentralCastle_horizontal_1",
+      "anchorX": 557.9,
+      "anchorY": 486.59998,
+      "baseDrawX": 550.1424864530563,
+      "baseDrawY": 491.6199880680847,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftDown_2|530.5|508.97",
+      "name": "CentralCastle_leftDown_2",
+      "anchorX": 530.5,
+      "anchorY": 508.97,
+      "baseDrawX": 829.1800134575367,
+      "baseDrawY": 836.9699890136719,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontal_2|580.1|486.6",
+      "name": "CentralCastle_horizontal_2",
+      "anchorX": 580.1,
+      "anchorY": 486.59998,
+      "baseDrawX": 572.3424868106842,
+      "baseDrawY": 493.11996901367183,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftTop_2|486.64|669.04",
+      "name": "CentralCastle_leftTop_2",
+      "anchorX": 486.64,
+      "anchorY": 669.04,
+      "baseDrawX": 785.4400109863282,
+      "baseDrawY": 1109.54,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftTop_1|486.54|713.94",
+      "name": "CentralCastle_leftTop_1",
+      "anchorX": 486.53998,
+      "anchorY": 713.94,
+      "baseDrawX": 481.3399909863281,
+      "baseDrawY": 717.94,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_CentralCastle_U|508.72|713.94",
+      "name": "Bridge_CentralCastle_U",
+      "anchorX": 508.72,
+      "anchorY": 713.94,
+      "baseDrawX": 500.658750089407,
+      "baseDrawY": 717.9398662471772,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalLeft_2|485.44|691.54",
+      "name": "CentralCastle_verticalLeft_2",
+      "anchorX": 485.44,
+      "anchorY": 691.54,
+      "baseDrawX": 480.2100124454498,
+      "baseDrawY": 697.4074926757812,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftTop_2|531.46|713.94",
+      "name": "CentralCastle_leftTop_2",
+      "anchorX": 531.45996,
+      "anchorY": 713.94,
+      "baseDrawX": 830.2599709863282,
+      "baseDrawY": 1154.44,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_leftTop_1|532.25|736.53",
+      "name": "CentralCastle_leftTop_1",
+      "anchorX": 532.25,
+      "anchorY": 736.52997,
+      "baseDrawX": 527.0500109863281,
+      "baseDrawY": 740.52997,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontalTop_1|554.53|735.44",
+      "name": "CentralCastle_horizontalTop_1",
+      "anchorX": 554.53,
+      "anchorY": 735.44,
+      "baseDrawX": 546.0975036621094,
+      "baseDrawY": 741.3712375545501,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontalTop_2|576.89|734.8",
+      "name": "CentralCastle_horizontalTop_2",
+      "anchorX": 576.89,
+      "anchorY": 734.8,
+      "baseDrawX": 568.4575036621094,
+      "baseDrawY": 741.0537477970124,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Snow_LeftDown_1|488|1095",
+      "name": "Snow_LeftDown_1",
+      "anchorX": 488,
+      "anchorY": 1095,
+      "baseDrawX": 480.6879999735355,
+      "baseDrawY": 1088.3759999780655,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Volcano_H|590|307.5",
+      "name": "Bridge_Grey_Volcano_H",
+      "anchorX": 590,
+      "anchorY": 307.5,
+      "baseDrawX": 583.7462499988824,
+      "baseDrawY": 302.3524999946356,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontal_3|602.1|486.6",
+      "name": "CentralCastle_horizontal_3",
+      "anchorX": 602.1,
+      "anchorY": 486.59998,
+      "baseDrawX": 594.3424868106842,
+      "baseDrawY": 491.4924763378906,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontal_1|621.4|486.6",
+      "name": "CentralCastle_horizontal_1",
+      "anchorX": 621.4,
+      "anchorY": 486.59998,
+      "baseDrawX": 613.6424864530563,
+      "baseDrawY": 491.6199880680847,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightDown_1|641.7|486.6",
+      "name": "CentralCastle_rightDown_1",
+      "anchorX": 641.7,
+      "anchorY": 486.59998,
+      "baseDrawX": 633.9424868106844,
+      "baseDrawY": 493.8399909863281,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightDown_2|644.1|508.96",
+      "name": "CentralCastle_rightDown_2",
+      "anchorX": 644.1,
+      "anchorY": 508.96,
+      "baseDrawX": 1060.3424868106842,
+      "baseDrawY": 838.7000109863282,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontalTop_3|599.03|735.38",
+      "name": "CentralCastle_horizontalTop_3",
+      "anchorX": 599.03,
+      "anchorY": 735.38,
+      "baseDrawX": 591.2199970817566,
+      "baseDrawY": 742.2562448787689,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_horizontalTop_1|621.51|734.8",
+      "name": "CentralCastle_horizontalTop_1",
+      "anchorX": 621.51,
+      "anchorY": 734.8,
+      "baseDrawX": 613.0775036621094,
+      "baseDrawY": 740.7312375545503,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightTop_2|645|714.66",
+      "name": "CentralCastle_rightTop_2",
+      "anchorX": 645,
+      "anchorY": 714.66003,
+      "baseDrawX": 1061.190012817383,
+      "baseDrawY": 1155.5425318310547,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_CentralCastle_U|666.24|712.45",
+      "name": "Bridge_CentralCastle_U",
+      "anchorX": 666.24,
+      "anchorY": 712.45,
+      "baseDrawX": 658.178750089407,
+      "baseDrawY": 716.4498662471772,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightTop_1|643.59|737.1",
+      "name": "CentralCastle_rightTop_1",
+      "anchorX": 643.59,
+      "anchorY": 737.1,
+      "baseDrawX": 635.7800128173828,
+      "baseDrawY": 741.4825018310548,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_3|733.1|61.4",
+      "name": "GreyNew_Vertical_3",
+      "anchorX": 733.1,
+      "anchorY": 61.4,
+      "baseDrawX": 727.5150000524521,
+      "baseDrawY": 55.024999989271166,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_2|734.6|105",
+      "name": "GreyNew_Vertical_2",
+      "anchorX": 734.6,
+      "anchorY": 105,
+      "baseDrawX": 729.0150000524521,
+      "baseDrawY": 98.62499998927116,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_1|734.6|82.5",
+      "name": "GreyNew_Vertical_1",
+      "anchorX": 734.6,
+      "anchorY": 82.5,
+      "baseDrawX": 729.0150000524521,
+      "baseDrawY": 76.12499998927116,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|757.4|127.5",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 757.4,
+      "anchorY": 127.5,
+      "baseDrawX": 752.6150000023841,
+      "baseDrawY": 122.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|779.6|127.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 779.6,
+      "anchorY": 127.5,
+      "baseDrawX": 774.8150000023842,
+      "baseDrawY": 122.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|734.86|261.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 734.86,
+      "anchorY": 261.5,
+      "baseDrawX": 730.0750000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|757.27|261.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 757.27,
+      "anchorY": 261.5,
+      "baseDrawX": 752.4850000023841,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|779.64|261.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 779.64,
+      "anchorY": 261.5,
+      "baseDrawX": 774.8550000023841,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_1|712.5|285",
+      "name": "GreyNew_Vertical_1",
+      "anchorX": 712.5,
+      "anchorY": 285,
+      "baseDrawX": 706.9150000524521,
+      "baseDrawY": 278.62499998927115,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightDown_1|689.19|510",
+      "name": "CentralCastle_rightDown_1",
+      "anchorX": 689.19,
+      "anchorY": 510,
+      "baseDrawX": 681.4324868106842,
+      "baseDrawY": 517.2400109863281,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightDown_2|689.33|553.95",
+      "name": "CentralCastle_rightDown_2",
+      "anchorX": 689.33,
+      "anchorY": 553.95,
+      "baseDrawX": 1105.5724868106843,
+      "baseDrawY": 883.6900109863282,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightDown_1|710.5|556.8",
+      "name": "CentralCastle_rightDown_1",
+      "anchorX": 710.5,
+      "anchorY": 556.8,
+      "baseDrawX": 702.7424868106841,
+      "baseDrawY": 564.0400109863281,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalRight_2|689.4|531.5",
+      "name": "CentralCastle_verticalRight_2",
+      "anchorX": 689.4,
+      "anchorY": 531.5,
+      "baseDrawX": 681.5899970817566,
+      "baseDrawY": 538.7400109863281,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalRight_1|711.5|577.5",
+      "name": "CentralCastle_verticalRight_1",
+      "anchorX": 711.5,
+      "anchorY": 577.5,
+      "baseDrawX": 703.6899970817567,
+      "baseDrawY": 584.7400109863281,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalRight_3|711.5|591.86",
+      "name": "CentralCastle_verticalRight_3",
+      "anchorX": 711.5,
+      "anchorY": 591.86,
+      "baseDrawX": 706.8212353515626,
+      "baseDrawY": 597.495,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalRight_2|711.5|635.9",
+      "name": "CentralCastle_verticalRight_2",
+      "anchorX": 711.5,
+      "anchorY": 635.9,
+      "baseDrawX": 703.6899970817567,
+      "baseDrawY": 643.140010986328,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_CentralCastle_R|710.48|613.41",
+      "name": "Bridge_CentralCastle_R",
+      "anchorX": 710.48,
+      "anchorY": 613.41,
+      "baseDrawX": 704.5000000143052,
+      "baseDrawY": 620.6499998998642,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalRight_1|711.5|646.53",
+      "name": "CentralCastle_verticalRight_1",
+      "anchorX": 711.5,
+      "anchorY": 646.53,
+      "baseDrawX": 703.6899970817567,
+      "baseDrawY": 653.7700109863281,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightTop_2|689.45|669.26",
+      "name": "CentralCastle_rightTop_2",
+      "anchorX": 689.45,
+      "anchorY": 669.26,
+      "baseDrawX": 1105.6400128173827,
+      "baseDrawY": 1110.1425018310547,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightTop_1|711.73|668.38",
+      "name": "CentralCastle_rightTop_1",
+      "anchorX": 711.73004,
+      "anchorY": 668.38,
+      "baseDrawX": 703.9200528173828,
+      "baseDrawY": 672.7625018310546,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_rightTop_1|689.01|713.18",
+      "name": "CentralCastle_rightTop_1",
+      "anchorX": 689.01,
+      "anchorY": 713.18005,
+      "baseDrawX": 681.2000128173827,
+      "baseDrawY": 717.5625518310549,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "CentralCastle_verticalRight_2|689.6|691.67",
+      "name": "CentralCastle_verticalRight_2",
+      "anchorX": 689.6,
+      "anchorY": 691.67,
+      "baseDrawX": 681.7899970817566,
+      "baseDrawY": 698.910010986328,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Snow_RightDown_1|690|1095",
+      "name": "Snow_RightDown_1",
+      "anchorX": 690,
+      "anchorY": 1095,
+      "baseDrawX": 683.3359999645949,
+      "baseDrawY": 1088.7039999581575,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_1|801.3|173.7",
+      "name": "GreyNew_Vertical_1",
+      "anchorX": 801.3,
+      "anchorY": 173.7,
+      "baseDrawX": 795.7150000524521,
+      "baseDrawY": 167.32499998927116,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_3|801.3|196.2",
+      "name": "GreyNew_Vertical_3",
+      "anchorX": 801.3,
+      "anchorY": 196.2,
+      "baseDrawX": 795.7150000524521,
+      "baseDrawY": 189.82499998927116,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_2|801.3|218.7",
+      "name": "GreyNew_Vertical_2",
+      "anchorX": 801.3,
+      "anchorY": 218.7,
+      "baseDrawX": 795.7150000524521,
+      "baseDrawY": 212.32499998927116,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|824.23|261.5",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 824.23,
+      "anchorY": 261.5,
+      "baseDrawX": 819.4450000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_1|801.3|241.2",
+      "name": "GreyNew_Vertical_1",
+      "anchorX": 801.3,
+      "anchorY": 241.2,
+      "baseDrawX": 795.7150000524521,
+      "baseDrawY": 234.82499998927116,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|846.64|261.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 846.64,
+      "anchorY": 261.5,
+      "baseDrawX": 841.8550000023841,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|869.01|261.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 869.01,
+      "anchorY": 261.5,
+      "baseDrawX": 864.2250000023841,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Volcano_Vertical|801.5|463",
+      "name": "Bridge_Grey_Volcano_Vertical",
+      "anchorX": 801.5,
+      "anchorY": 463,
+      "baseDrawX": 796.311250039339,
+      "baseDrawY": 457.21874999195336,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Grey_Volcano_H|825|488",
+      "name": "Bridge_Grey_Volcano_H",
+      "anchorX": 825,
+      "anchorY": 488,
+      "baseDrawX": 818.7462499988824,
+      "baseDrawY": 482.8524999946356,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|891.37|261.5",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 891.37,
+      "anchorY": 261.5,
+      "baseDrawX": 886.5850000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|913.74|261.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 913.74,
+      "anchorY": 261.5,
+      "baseDrawX": 908.9550000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|936.15|261.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 936.15,
+      "anchorY": 261.5,
+      "baseDrawX": 931.3650000023841,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|958.47|261.5",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 958.47,
+      "anchorY": 261.5,
+      "baseDrawX": 953.6850000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|980.8|261.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 980.8,
+      "anchorY": 261.5,
+      "baseDrawX": 976.0150000023841,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|913.2|486.4",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 913.19995,
+      "anchorY": 486.4,
+      "baseDrawX": 908.4149500023841,
+      "baseDrawY": 481.16499999999996,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|935.29|486.4",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 935.29,
+      "anchorY": 486.4,
+      "baseDrawX": 930.5050000023841,
+      "baseDrawY": 481.16499999999996,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|954.14|486.4",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 954.13995,
+      "anchorY": 486.4,
+      "baseDrawX": 949.3549500023842,
+      "baseDrawY": 481.16499999999996,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Snow_Gray_Horizontal|976.6|736",
+      "name": "Bridge_Snow_Gray_Horizontal",
+      "anchorX": 976.6,
+      "anchorY": 736,
+      "baseDrawX": 970.2712500006705,
+      "baseDrawY": 730.7700000053644,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|985.69|261.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 985.69,
+      "anchorY": 261.5,
+      "baseDrawX": 980.9050000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|1023.89|261.5",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 1023.89,
+      "anchorY": 261.5,
+      "baseDrawX": 1019.1050000023841,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|1046.08|261.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 1046.08,
+      "anchorY": 261.5,
+      "baseDrawX": 1041.295000002384,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|1068.1|261.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 1068.1,
+      "anchorY": 261.5,
+      "baseDrawX": 1063.315000002384,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|1027.24|397.5",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 1027.24,
+      "anchorY": 397.5,
+      "baseDrawX": 1022.4550000023842,
+      "baseDrawY": 392.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_3|1005|420",
+      "name": "GreyNew_Vertical_3",
+      "anchorX": 1005,
+      "anchorY": 420,
+      "baseDrawX": 999.4150000524521,
+      "baseDrawY": 413.62499998927115,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_1|1005|465",
+      "name": "GreyNew_Vertical_1",
+      "anchorX": 1005,
+      "anchorY": 465,
+      "baseDrawX": 999.4150000524521,
+      "baseDrawY": 458.62499998927115,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Vertical_2|1005|442.5",
+      "name": "GreyNew_Vertical_2",
+      "anchorX": 1005,
+      "anchorY": 442.5,
+      "baseDrawX": 999.4150000524521,
+      "baseDrawY": 436.12499998927115,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|1049.7|397.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 1049.7,
+      "anchorY": 397.5,
+      "baseDrawX": 1044.9150000023842,
+      "baseDrawY": 392.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|1072.1|397.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 1072.1,
+      "anchorY": 397.5,
+      "baseDrawX": 1067.315000002384,
+      "baseDrawY": 392.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|992.1|486.4",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 992.1,
+      "anchorY": 486.4,
+      "baseDrawX": 987.3150000023842,
+      "baseDrawY": 481.16499999999996,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Bridge_Snow_Horizontal|1002.4|961.5",
+      "name": "Bridge_Snow_Horizontal",
+      "anchorX": 1002.4,
+      "anchorY": 961.5,
+      "baseDrawX": 996.2699999785423,
+      "baseDrawY": 968.825,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|1090.5|261.5",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 1090.5,
+      "anchorY": 261.5,
+      "baseDrawX": 1085.7150000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|1112.7|261.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 1112.7,
+      "anchorY": 261.5,
+      "baseDrawX": 1107.9150000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|1134.9|261.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 1134.9,
+      "anchorY": 261.5,
+      "baseDrawX": 1130.1150000023842,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|1141.8|261.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 1141.8,
+      "anchorY": 261.5,
+      "baseDrawX": 1137.015000002384,
+      "baseDrawY": 256.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Grey_rightTop_1|1161.4|261.6",
+      "name": "Grey_rightTop_1",
+      "anchorX": 1161.4,
+      "anchorY": 261.59998,
+      "baseDrawX": 1156.0200000047685,
+      "baseDrawY": 255.06998000178817,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_2|1094.5|397.5",
+      "name": "GreyNew_Horizontal_2",
+      "anchorX": 1094.5,
+      "anchorY": 397.5,
+      "baseDrawX": 1089.7150000023842,
+      "baseDrawY": 392.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_1|1116.8|397.5",
+      "name": "GreyNew_Horizontal_1",
+      "anchorX": 1116.8,
+      "anchorY": 397.5,
+      "baseDrawX": 1112.015000002384,
+      "baseDrawY": 392.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "GreyNew_Horizontal_3|1139.2|397.5",
+      "name": "GreyNew_Horizontal_3",
+      "anchorX": 1139.2,
+      "anchorY": 397.5,
+      "baseDrawX": 1134.4150000023842,
+      "baseDrawY": 392.265,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Grey_rightTop_1|1161.4|396.9",
+      "name": "Grey_rightTop_1",
+      "anchorX": 1161.4,
+      "anchorY": 396.9,
+      "baseDrawX": 1156.0200000047685,
+      "baseDrawY": 390.3700000017881,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    },
+    {
+      "key": "Snow_Right_1|1162|959",
+      "name": "Snow_Right_1",
+      "anchorX": 1162,
+      "anchorY": 959,
+      "baseDrawX": 1155.6479999697208,
+      "baseDrawY": 952.2959999597073,
+      "deltaX": 0,
+      "deltaY": 0,
+      "rotation": "default",
+      "zOrder": 0,
+      "hidden": true,
+      "source": "map"
+    }
+  ],
+  "layerAlignment": {
+    "chunkGroundCells": 4,
+    "chunkGroundCellsX": 0,
+    "prefabCells": 0,
+    "prefabCellsX": 0,
+    "prefabScaleY": 1
+  },
+  "prefabOverrideDoc": {
+    "version": 1,
+    "overrides": {
+      "First_Volcano_Vertical_2|465|375": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|465|330": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|465|352.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_2|465|307.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|465|397.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftDown_1|535.5|486.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftDown_1|486.19|510.37": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalLeft_2|485.89|532.64": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftDown_1|464.1|555": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalLeft_1|464.05|577.095": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Bridge_CentralCastle_L|469.85|610.575": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalLeft_2|463.7|631.205": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalLeft_1|464.12|647.265": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftTop_1|464.13|668.87": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalLeft_2|485.44|691.54": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Bridge_CentralCastle_U|508.72|713.94": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftTop_1|486.54|713.94": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftTop_1|532.25|736.53": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontalTop_1|554.53|735.44": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontalTop_2|576.89|734.8": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontalTop_3|599.03|735.38": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontalTop_1|621.51|734.8": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightTop_1|643.59|737.1": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalRight_2|689.6|691.67": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightTop_1|689.01|713.18": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Bridge_CentralCastle_U|666.24|712.45": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightTop_1|711.73|668.38": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalRight_1|711.5|646.53": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Bridge_CentralCastle_R|710.48|613.41": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalLeft_3|464.61|589.875": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontal_1|557.9|486.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalRight_2|711.5|635.9": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalRight_1|711.5|577.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightDown_1|710.5|556.8": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalRight_2|689.4|531.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightDown_1|689.19|510": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_verticalRight_3|711.5|591.86": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontal_1|621.4|486.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightDown_1|641.7|486.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontal_3|602.1|486.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontal_2|580.1|486.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Snow_Right_1|1162|959": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightDown_2|689.33|553.95": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightDown_2|644.1|508.96": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Bridge_Snow_Horizontal|1002.4|961.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Bridge_Snow_Gray_Horizontal|976.6|736": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftDown_2|530.5|508.97": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftDown_2|486.5|555": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Snow_LeftDown_1|488|1095": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Snow_RightDown_1|690|1095": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftTop_2|486.64|669.04": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_leftTop_2|531.46|713.94": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightTop_2|645|714.66": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_rightTop_2|689.45|669.26": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|351|780.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|351|803": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|351|848": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|351|758": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|172.2|780": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_2|172.2|757.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_2|172.2|825": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|172.2|802.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|172.2|847.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|285|622": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_2|351|825.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|1049.7|397.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_3|1005|420": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_2|1005|442.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|954.14|486.4": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|913.2|486.4": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_1|1005|465": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|992.1|486.4": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|1027.24|397.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|1094.5|397.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|1116.8|397.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|1139.2|397.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|1072.1|397.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|1023.89|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|1068.1|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|1090.5|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|1112.7|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|1141.8|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|1046.08|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|985.69|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|980.8|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|913.74|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|891.37|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|869.01|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|824.23|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|846.64|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|936.15|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|958.47|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|1134.9|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Grey_rightTop_1|1161.4|396.9": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Grey_rightTop_1|1161.4|261.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|935.29|486.4": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Bridge_Grey_Volcano_H|825|488": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Bridge_Grey_Volcano_Vertical|801.5|463": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_3|801.3|196.2": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_1|801.3|173.7": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_1|801.3|241.2": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|779.64|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_3|757.27|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|779.6|127.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_2|734.6|105": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_3|733.1|61.4": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_1|757.4|127.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_2|801.3|218.7": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Horizontal_2|734.86|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_1|712.5|285": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "GreyNew_Vertical_1|734.6|82.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_VolcanoGrey_Special_2|375.2|261.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_2|172.3|420": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|172.3|465": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|285|532": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_2|285|509.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|285|554.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|285|599.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_2|285|577": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|172.3|442.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_2|285|689.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_3|285|667": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_Volcano_Vertical_1|285|712": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Grey_Volcano_LeftTop_2|497.12|572": {
+        "deltaX": 0,
+        "deltaY": -26,
+        "rotation": "flipY"
+      },
+      "Snow_Up_2|110.48|596.68": {
+        "deltaX": 6,
+        "deltaY": 45,
+        "rotation": "default"
+      },
+      "Snow_LeftDown_1|7.85|487.3": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Left_1|3.08|504.29": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Left_2|4.39|525.67": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Down_2|55.01|478.18": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Down_1|30.41|477": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_LeftUp_1|3.51|591.48": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Left_1|3.39|568.98": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Left_3|3.85|547.67": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Up_1|45.31|599.1": {
+        "deltaX": 4,
+        "deltaY": 21,
+        "rotation": "default"
+      },
+      "Snow_Up_3|22.9|594.3": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Up_3|87.82|592.6": {
+        "deltaX": 4,
+        "deltaY": 29,
+        "rotation": "default"
+      },
+      "Snow_Up_2|67.98|599.3": {
+        "deltaX": 0,
+        "deltaY": 41,
+        "rotation": "default"
+      },
+      "Snow_Grey_Big_U_L|137|528": {
+        "deltaX": -2,
+        "deltaY": -42,
+        "rotation": "default"
+      },
+      "Bridge_Snow_Gray_Horizontal|113.5|476.5": {
+        "deltaX": 4,
+        "deltaY": 26,
+        "rotation": "default"
+      },
+      "Grey_Up_1|90.83|472.39": {
+        "deltaX": 6,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Down_1|92.3|476.9": {
+        "deltaX": 0,
+        "deltaY": 32,
+        "rotation": "default"
+      },
+      "Grey_LeftUp_2|69.1|472.5": {
+        "deltaX": 2,
+        "deltaY": 16,
+        "rotation": "flipY"
+      },
+      "Snow_Down_3|76.65|478.35": {
+        "deltaX": 0,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Grey_Left_3|69.1|453.7": {
+        "deltaX": 6,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Grey_Left_2|69.1|429.1": {
+        "deltaX": 6,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Grey_Left_3|69.1|382.6": {
+        "deltaX": 6,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Grey_Left_1|69.1|404.1": {
+        "deltaX": 6,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Grey_Left_2|68.47|358": {
+        "deltaX": 6,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Grey_Left_1|67.75|333": {
+        "deltaX": 6,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Grey_Left_2|69.1|311.7": {
+        "deltaX": 6,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Grey_Left_1|68.23|291.56": {
+        "deltaX": 6,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Snow_horizontal|113.68|266.5": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Snow_Grey_Big_D_L|137|266": {
+        "deltaX": 0,
+        "deltaY": -20,
+        "rotation": "default"
+      },
+      "Snow_Down_1|30.9|152": {
+        "deltaX": 2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Down_3|75.9|152": {
+        "deltaX": 2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Down_2|53.3|152": {
+        "deltaX": 2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Down_1|98.4|152": {
+        "deltaX": 2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_RightDown_2|129.3|154.2": {
+        "deltaX": 2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Right_1|132.4|174.7": {
+        "deltaX": 2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Bridge_Snow_Grey_Vertical|139|217.9": {
+        "deltaX": 2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Right_2|133.8|195.4": {
+        "deltaX": 2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Down_2|118.5|152": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "flipY"
+      },
+      "Grey_Down_1|90.16|269.2": {
+        "deltaX": 10,
+        "deltaY": 34,
+        "rotation": "default"
+      },
+      "Snow_Up_3|69.4|259.9": {
+        "deltaX": -4,
+        "deltaY": 30,
+        "rotation": "default"
+      },
+      "Grey_LeftDown_2|68.44|270.84": {
+        "deltaX": 6,
+        "deltaY": 31,
+        "rotation": "flipY"
+      },
+      "Snow_Up_2|90.7|262.6": {
+        "deltaX": 2,
+        "deltaY": 44,
+        "rotation": "default"
+      },
+      "Snow_Up_2|47.6|262.4": {
+        "deltaX": 0,
+        "deltaY": 48,
+        "rotation": "default"
+      },
+      "Snow_LeftDown_1|8.08|170.65": {
+        "deltaX": 2,
+        "deltaY": 12,
+        "rotation": "flipY"
+      },
+      "Snow_Left_2|3.9|195.41": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Snow_Left_3|4.8|219.2": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Snow_Left_1|3|238.9": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Snow_Up_1|26.6|261.4": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Snow_LeftUp_1|5.8|259.6": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Grey_LeftDown_2|142.3|123.4": {
+        "deltaX": -2,
+        "deltaY": 14,
+        "rotation": "default"
+      },
+      "Grey_Left_1|140.9|195.5": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Left_2|141.8|172.4": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Left_3|142.3|148.1": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Down_1|159|122.95": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Down_3|200.73|122.95": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Down_2|179.36|122.95": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Down_1|222.36|122.95": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Down_2|243.63|122.95": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Down_3|265.35|122.95": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_3|179|244": {
+        "deltaX": -6,
+        "deltaY": -12,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_2|196.5|244": {
+        "deltaX": 0,
+        "deltaY": -14,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_1|219|244": {
+        "deltaX": 0,
+        "deltaY": -16,
+        "rotation": "default"
+      },
+      "Grey_Volcano_RightDown_3|161.5|266.5": {
+        "deltaX": 2,
+        "deltaY": 10,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_VerticalLeft_1|161.5|288": {
+        "deltaX": 4,
+        "deltaY": 6,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalLeft_2|161.5|310": {
+        "deltaX": 4,
+        "deltaY": 4,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalLeft_3|161.5|332": {
+        "deltaX": 4,
+        "deltaY": 6,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Volcano_Vertical|161.5|371.5": {
+        "deltaX": 8,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalLeft_1|161.5|354": {
+        "deltaX": 8,
+        "deltaY": 4,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalLeft_2|161.5|393.5": {
+        "deltaX": 6,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalLeft_3|161.5|415.5": {
+        "deltaX": 6,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalLeft_1|161.5|437.5": {
+        "deltaX": 8,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalLeft_2|161.5|453.8": {
+        "deltaX": 6,
+        "deltaY": 12,
+        "rotation": "default"
+      },
+      "Grey_Volcano_RightDown_4|161|475": {
+        "deltaX": 0,
+        "deltaY": 14,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_LeftDown_2|161.53|244": {
+        "deltaX": 0,
+        "deltaY": 14,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_LeftDown_1|241.5|211.5": {
+        "deltaX": -10,
+        "deltaY": -30,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_RightDown_2|241.5|244": {
+        "deltaX": -8,
+        "deltaY": -18,
+        "rotation": "flipY"
+      },
+      "Bridge_Grey_Volcano_H|264|211.5": {
+        "deltaX": -2,
+        "deltaY": -14,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_1|286.52|211.5": {
+        "deltaX": -2,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_2|309|211.5": {
+        "deltaX": -2,
+        "deltaY": -24,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_3|331.5|211.5": {
+        "deltaX": -2,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Snow_Up_2|348.4|117.7": {
+        "deltaX": -2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Up_2|379.8|117.5": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Snow_horizontal|326.25|121.5": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Snow_horizontal|401.2|121.5": {
+        "deltaX": 2,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "Grey_Down_1|425.23|122.38": {
+        "deltaX": 0,
+        "deltaY": 10,
+        "rotation": "default"
+      },
+      "Snow_RightUp_1|442.3|117.2": {
+        "deltaX": 10,
+        "deltaY": -12,
+        "rotation": "flipY"
+      },
+      "Grey_Down_2|445.59|122.38": {
+        "deltaX": 0,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Down_3|466.96|122.38": {
+        "deltaX": 0,
+        "deltaY": 6,
+        "rotation": "default"
+      },
+      "Grey_Down_1|488.91|122.95": {
+        "deltaX": -8,
+        "deltaY": 6,
+        "rotation": "default"
+      },
+      "Grey_LeftDown_2|367.63|126.26": {
+        "deltaX": 6,
+        "deltaY": 4,
+        "rotation": "flipY"
+      },
+      "Grey_Down_1|383.76|121.99": {
+        "deltaX": 6,
+        "deltaY": 12,
+        "rotation": "default"
+      },
+      "Snow_Up_1|304.8|116.4": {
+        "deltaX": 2,
+        "deltaY": -4,
+        "rotation": "default"
+      },
+      "Grey_Down_1|305|125.1": {
+        "deltaX": 0,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Snow_LeftUp_1|283.6|112.7": {
+        "deltaX": 4,
+        "deltaY": -6,
+        "rotation": "default"
+      },
+      "Grey_Down_1|287.13|122.95": {
+        "deltaX": 0,
+        "deltaY": 12,
+        "rotation": "default"
+      },
+      "Snow_Left_3|284.1|91.9": {
+        "deltaX": 6,
+        "deltaY": -4,
+        "rotation": "default"
+      },
+      "Snow_Left_1|281.9|49.6": {
+        "deltaX": 2,
+        "deltaY": -6,
+        "rotation": "default"
+      },
+      "Snow_Left_3|283.6|70.6": {
+        "deltaX": 4,
+        "deltaY": -4,
+        "rotation": "default"
+      },
+      "Snow_LeftDown_2|287.6|28.2": {
+        "deltaX": 0,
+        "deltaY": -16,
+        "rotation": "flipY"
+      },
+      "Snow_Down_1|310.4|28.3": {
+        "deltaX": 0,
+        "deltaY": -20,
+        "rotation": "default"
+      },
+      "Snow_Down_2|333.1|28.6": {
+        "deltaX": 0,
+        "deltaY": -22,
+        "rotation": "default"
+      },
+      "Snow_Down_3|356.9|28.9": {
+        "deltaX": -2,
+        "deltaY": -20,
+        "rotation": "default"
+      },
+      "Snow_Down_2|381.5|28.8": {
+        "deltaX": -4,
+        "deltaY": -20,
+        "rotation": "default"
+      },
+      "Snow_Down_3|400.6|28.9": {
+        "deltaX": 0,
+        "deltaY": -20,
+        "rotation": "default"
+      },
+      "Snow_Down_2|417.6|28.6": {
+        "deltaX": 2,
+        "deltaY": -18,
+        "rotation": "default"
+      },
+      "Snow_RightDown_2|442.1|28.2": {
+        "deltaX": -2,
+        "deltaY": -24,
+        "rotation": "flipY"
+      },
+      "Snow_Right_2|443.3|51.51": {
+        "deltaX": 10,
+        "deltaY": -8,
+        "rotation": "default"
+      },
+      "Snow_Right_3|444.2|75.78": {
+        "deltaX": 12,
+        "deltaY": -12,
+        "rotation": "default"
+      },
+      "Snow_Right_1|445.3|99.79": {
+        "deltaX": 10,
+        "deltaY": -14,
+        "rotation": "flipY"
+      },
+      "Snow_Up_2|422.9|117.7": {
+        "deltaX": 2,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Volcano_Vertical|374.5|152.2": {
+        "deltaX": 0,
+        "deltaY": 8,
+        "rotation": "default",
+        "hidden": true
+      },
+      "First_VolcanoGrey_Special_4|374.2|128.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Grey_Vertical_3|364|145.5": {
+        "deltaX": 0,
+        "deltaY": -16,
+        "rotation": "default"
+      },
+      "Grey_Vertical_2|364|167.5": {
+        "deltaX": 0,
+        "deltaY": -18,
+        "rotation": "default"
+      },
+      "Grey_Vertical_1|364|189.5": {
+        "deltaX": 0,
+        "deltaY": -18,
+        "rotation": "default"
+      },
+      "Grey_Volcano__T_1|364|211.5": {
+        "deltaX": -18,
+        "deltaY": -28,
+        "rotation": "default"
+      },
+      "Grey_Volcano_RightDown_1|486.5|211.5": {
+        "deltaX": 14,
+        "deltaY": -24,
+        "rotation": "flipY"
+      },
+      "Bridge_Grey_Volcano_H|464|211.5": {
+        "deltaX": 20,
+        "deltaY": -14,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_1|441.5|211.5": {
+        "deltaX": 14,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_2|419|211.5": {
+        "deltaX": 16,
+        "deltaY": -24,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_3|396.5|211.5": {
+        "deltaX": 16,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Volcano_RightDown_2|487|244": {
+        "deltaX": 14,
+        "deltaY": -36,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_Volcano_H_3|508|244": {
+        "deltaX": 16,
+        "deltaY": -22,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_H_1|542.5|244": {
+        "deltaX": 18,
+        "deltaY": -22,
+        "rotation": "default"
+      },
+      "Grey_Horizontal_1|565|243": {
+        "deltaX": 14,
+        "deltaY": -6,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_Volcano_H_2|520|244": {
+        "deltaX": 24,
+        "deltaY": -20,
+        "rotation": "default"
+      },
+      "Volcano_RightDown_1|565|245": {
+        "deltaX": 8,
+        "deltaY": -14,
+        "rotation": "flipY"
+      },
+      "First_VolcanoGrey_Special_1|441.7|128.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Grey_Down_2|510.18|122.95": {
+        "deltaX": -8,
+        "deltaY": 6,
+        "rotation": "default"
+      },
+      "Grey_Down_3|531.9|122.95": {
+        "deltaX": -10,
+        "deltaY": 4,
+        "rotation": "default"
+      },
+      "Grey_Down_1|553.23|122.95": {
+        "deltaX": -8,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_RightDown_2|576.4|125.8": {
+        "deltaX": 0,
+        "deltaY": -6,
+        "rotation": "flipY"
+      },
+      "Snow_Left_3|594.77|199.2": {
+        "deltaX": 4,
+        "deltaY": 58,
+        "rotation": "default"
+      },
+      "Snow_Left_1|596.48|164.07": {
+        "deltaX": 0,
+        "deltaY": 26,
+        "rotation": "default"
+      },
+      "Snow_LeftDown_2|598.8|143.25": {
+        "deltaX": 6,
+        "deltaY": 26,
+        "rotation": "flipY"
+      },
+      "Snow_Left_3|596|184.1": {
+        "deltaX": 2,
+        "deltaY": 52,
+        "rotation": "default"
+      },
+      "Snow_Down_1|624.1|143.7": {
+        "deltaX": 2,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_Down_2|648.7|145": {
+        "deltaX": 0,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_Down_3|674|144.8": {
+        "deltaX": 0,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_Down_2|698.3|145": {
+        "deltaX": -2,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_RightDown_2|724.2|141.56": {
+        "deltaX": 2,
+        "deltaY": 28,
+        "rotation": "flipY"
+      },
+      "Snow_Right_1|723.14|164": {
+        "deltaX": 18,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_Right_2|722.27|188.61": {
+        "deltaX": 18,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_Right_3|722.6|212.88": {
+        "deltaX": 18,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_Right_1|722.66|236.89": {
+        "deltaX": 18,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_RightUp_1|724|261.3": {
+        "deltaX": 18,
+        "deltaY": 22,
+        "rotation": "flipY"
+      },
+      "Snow_Up_3|683.15|259.9": {
+        "deltaX": 18,
+        "deltaY": 28,
+        "rotation": "default"
+      },
+      "Snow_Up_2|703.7|263.98": {
+        "deltaX": 14,
+        "deltaY": 44,
+        "rotation": "default"
+      },
+      "Snow_Up_2|659.83|263.8": {
+        "deltaX": 20,
+        "deltaY": 46,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Snow_Vertical|589|218.32": {
+        "deltaX": 4,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Volcano_H|590|307.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Snow_Grey_Big_D_R|584|233": {
+        "deltaX": -4,
+        "deltaY": -22,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Snow_horizontal|613.71|266.5": {
+        "deltaX": 0,
+        "deltaY": 26,
+        "rotation": "default"
+      },
+      "Snow_Up_1|636.28|263.04": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Grey_Down_1|634.8|268.75": {
+        "deltaX": 0,
+        "deltaY": 36,
+        "rotation": "default"
+      },
+      "Grey_RightDown_2|658.3|271.6": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "flipY"
+      },
+      "Grey_Right_1|656.9|294.9": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Right_2|657.1|318.5": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Right_3|658.1|342.6": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Right_1|656.9|365": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Right_2|657.1|388.6": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Right_3|658.1|412.7": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Right_2|657.1|454.9": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Right_1|656.9|434.5": {
+        "deltaX": 6,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_3|270|571.5": {
+        "deltaX": 0,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_1|292|571.5": {
+        "deltaX": 4,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_2|314|571.5": {
+        "deltaX": 4,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_3|336|571.5": {
+        "deltaX": 4,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano__T_2|358.5|571.5": {
+        "deltaX": 0,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Vertical_1|364|593.5": {
+        "deltaX": 6,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Vertical_2|364|615.5": {
+        "deltaX": 6,
+        "deltaY": -28,
+        "rotation": "default"
+      },
+      "Grey_UpRight_2|362.2|645.5": {
+        "deltaX": 2,
+        "deltaY": -8,
+        "rotation": "flipY"
+      },
+      "Grey_LeftUp_2|369.3|644.22": {
+        "deltaX": 2,
+        "deltaY": -12,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_Volcano_U_1|390.7|571.5": {
+        "deltaX": 4,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_2|412.7|571.5": {
+        "deltaX": 2,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_3|434.7|571.5": {
+        "deltaX": 0,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_1|456.7|571.5": {
+        "deltaX": 0,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Bridge_Volcano_Grey_H|479|571.5": {
+        "deltaX": 0,
+        "deltaY": -16,
+        "rotation": "default"
+      },
+      "Grey_Volcano_LeftTop_3|497.5|527.5": {
+        "deltaX": -8,
+        "deltaY": -24,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_VerticalLeft_4|497.5|550": {
+        "deltaX": -8,
+        "deltaY": -26,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_2|542.5|527.5": {
+        "deltaX": -6,
+        "deltaY": -14,
+        "rotation": "default"
+      },
+      "Grey_Volcano_Volcano_U_1|520|527.5": {
+        "deltaX": -4,
+        "deltaY": -14,
+        "rotation": "default"
+      },
+      "Grey_Volcano_LeftTop_4|565|526.59": {
+        "deltaX": -6,
+        "deltaY": -12,
+        "rotation": "flipY"
+      },
+      "Snow_Grey_Big_U_R_2|588.9|512.3": {
+        "deltaX": 2,
+        "deltaY": -14,
+        "rotation": "default"
+      },
+      "Bridge_Grey_Snow_Vertical|589|550.9": {
+        "deltaX": 8,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Snow_Grey_Big_U_R_1|585.49|481.82": {
+        "deltaX": 8,
+        "deltaY": 18,
+        "rotation": "default"
+      },
+      "Snow_Left_3|595.95|575.77": {
+        "deltaX": 4,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Grey_Right_1|585.1|571": {
+        "deltaX": 6,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Grey_Right_2|585.3|590": {
+        "deltaX": 4,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Snow_Up_1|616.5|596.3": {
+        "deltaX": 6,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_LeftUp_1|593.9|591": {
+        "deltaX": 6,
+        "deltaY": 26,
+        "rotation": "flipY"
+      },
+      "Snow_Up_2|633.6|596.68": {
+        "deltaX": 12,
+        "deltaY": 44,
+        "rotation": "default"
+      },
+      "Snow_Up_3|655.5|592.6": {
+        "deltaX": 16,
+        "deltaY": 30,
+        "rotation": "default"
+      },
+      "Snow_Up_2|678.1|596.5": {
+        "deltaX": 18,
+        "deltaY": 46,
+        "rotation": "default"
+      },
+      "Snow_Up_1|701|592.1": {
+        "deltaX": 24,
+        "deltaY": 30,
+        "rotation": "default"
+      },
+      "Snow_RightUp_1|719.77|593.7": {
+        "deltaX": 28,
+        "deltaY": 30,
+        "rotation": "flipY"
+      },
+      "Snow_RightDown_2|712.7|477.48": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "flipY"
+      },
+      "Bridge_Snow_Gray_Horizontal|613.5|476.5": {
+        "deltaX": 4,
+        "deltaY": 24,
+        "rotation": "default"
+      },
+      "Grey_Up_1|636.2|471.9": {
+        "deltaX": 4,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Snow_Down_1|636.35|478.53": {
+        "deltaX": 4,
+        "deltaY": 30,
+        "rotation": "default"
+      },
+      "Grey_UpRight_2|657.1|473.9": {
+        "deltaX": 0,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Down_2|660.93|478.4": {
+        "deltaX": 38,
+        "deltaY": 26,
+        "rotation": "default"
+      },
+      "Snow_Down_3|686.46|479.04": {
+        "deltaX": 34,
+        "deltaY": 26,
+        "rotation": "default"
+      },
+      "First_Volcano_Vertical_3|375|442.6": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "CentralCastle_horizontalTop_2|409|436.5": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "CentralCastle_horizontalTop_3|386.5|436.5": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "CentralCastle_horizontalTop_1|341.5|436.5": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "CentralCastle_horizontalTop_2|319|436.5": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "CentralCastle_verticalLeft_1|304|428.5": {
+        "deltaX": 4,
+        "deltaY": 0,
+        "rotation": "flipY"
+      },
+      "CentralCastle_horizontal_2|409|322.5": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "CentralCastle_horizontal_1|319|322.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "CentralCastle_horizontal_2|341.5|322.5": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "CentralCastle_rightDown_1|424|322.5": {
+        "deltaX": 0,
+        "deltaY": -4,
+        "rotation": "flipY"
+      },
+      "CentralCastle_leftDown_1|304|322.5": {
+        "deltaX": 2,
+        "deltaY": -2,
+        "rotation": "flipY"
+      },
+      "CentralCastle_verticalRight_1|424|427": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_VerticalRight_4|565|327.5": {
+        "deltaX": 6,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalRight_2|565|305": {
+        "deltaX": 6,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalRight_3|565|289.2": {
+        "deltaX": 6,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalRight_5|565|267": {
+        "deltaX": 2,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Bridge_Volcano_Grey_Vertical|565|371.5": {
+        "deltaX": 6,
+        "deltaY": 6,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalRight_3|565|350": {
+        "deltaX": 6,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Grey_Volcano_VerticalRight_2|565|390.5": {
+        "deltaX": 4,
+        "deltaY": 0,
+        "rotation": "default"
+      },
+      "Snow_Up_2|308.2|743": {
+        "deltaX": -2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Up_1|355.2|743": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "Snow_Up_2|378.2|743": {
+        "deltaX": -2,
+        "deltaY": 20,
+        "rotation": "default"
+      },
+      "Snow_Up_2|422.9|741.6": {
+        "deltaX": 0,
+        "deltaY": 22,
+        "rotation": "default"
+      },
+      "Snow_Right_3|445.07|717.41": {
+        "deltaX": 6,
+        "deltaY": 4,
+        "rotation": "default"
+      },
+      "Snow_Right_2|443.55|693.43": {
+        "deltaX": 6,
+        "deltaY": 6,
+        "rotation": "default"
+      },
+      "Snow_Right_1|441|669.9": {
+        "deltaX": 10,
+        "deltaY": 8,
+        "rotation": "flipY"
+      },
+      "Snow_RightDown_2|442.05|649.15": {
+        "deltaX": 8,
+        "deltaY": 8,
+        "rotation": "flipY"
+      },
+      "Grey_Up_2|422.4|643.71": {
+        "deltaX": -2,
+        "deltaY": -4,
+        "rotation": "default"
+      },
+      "Snow_Down_1|423.5|649.56": {
+        "deltaX": 2,
+        "deltaY": 6,
+        "rotation": "default"
+      },
+      "Grey_Up_1|347.25|643.48": {
+        "deltaX": 0,
+        "deltaY": -4,
+        "rotation": "default"
+      },
+      "Bridge_Snow_Gray_Horizontal|326.04|649": {
+        "deltaX": 0,
+        "deltaY": -4,
+        "rotation": "default"
+      },
+      "First_Volcano_Vertical_2|285|644.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "default",
+        "hidden": true
+      },
+      "Snow_LeftDown_1|290.35|665.3": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "Snow_Left_1|281|684.6": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "Snow_Left_1|280.7|721.9": {
+        "deltaX": 0,
+        "deltaY": -2,
+        "rotation": "default"
+      },
+      "Snow_LeftUp_1|284.5|741.48": {
+        "deltaX": 0,
+        "deltaY": -4,
+        "rotation": "flipY"
+      },
+      "Snow_Down_2|349.39|650.42": {
+        "deltaX": 0,
+        "deltaY": 4,
+        "rotation": "default"
+      },
+      "Snow_Down_3|374.83|649.3": {
+        "deltaX": 2,
+        "deltaY": 8,
+        "rotation": "default"
+      },
+      "Grey_Vertical_4|364|637.25": {
+        "deltaX": 0,
+        "deltaY": -28,
+        "rotation": "flipY"
+      },
+      "Bridge_Volcano_Grey_H|249|571.5": {
+        "deltaX": 4,
+        "deltaY": -16,
+        "rotation": "default"
+      },
+      "Grey_Volcano_LeftDown_3|227.81|527.5": {
+        "deltaX": 0,
+        "deltaY": 0,
+        "rotation": "flipY"
+      },
+      "Grey_Volcano_LeftTop_1|230|571.5": {
+        "deltaX": -6,
+        "deltaY": 0,
+        "rotation": "flipY"
+      }
+    },
+    "manual": [],
+    "manualGroundTiles": [],
+    "groups": [
+      {
+        "id": "group-1780201471384-8nmr6r",
+        "name": "Group 1",
+        "prefabKeys": [
+          "Snow_Right_1|717.89|569.5",
+          "Snow_RightDown_2|712.7|477.48",
+          "Snow_Right_1|714.92|501.67",
+          "Snow_Right_2|716.47|524.47",
+          "Snow_Right_3|716.55|546"
+        ],
+        "groundTileIds": [],
+        "deltaX": 30,
+        "deltaY": 34
+      }
+    ],
+    "globalMoveDeltaX": -6,
+    "globalMoveDeltaY": 248
+  },
+  "manualGroundTiles": [],
+  "groups": [
+    {
+      "id": "group-1780201471384-8nmr6r",
+      "name": "Group 1",
+      "prefabKeys": [
+        "Snow_Right_1|717.89|569.5",
+        "Snow_RightDown_2|712.7|477.48",
+        "Snow_Right_1|714.92|501.67",
+        "Snow_Right_2|716.47|524.47",
+        "Snow_Right_3|716.55|546"
+      ],
+      "groundTileIds": [],
+      "deltaX": 30,
+      "deltaY": 34
+    }
+  ]
+}

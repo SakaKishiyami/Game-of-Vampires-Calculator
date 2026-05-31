@@ -56,4 +56,15 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  html {
+    scrollbar-gutter: stable;
+  }
+}
+
+/* Sinistra map: block page scroll only while actively dragging the map */
+html.sinistra-map-scroll-lock,
+body.sinistra-map-scroll-lock {
+  overflow: hidden;
+  overscroll-behavior: none;
 } 

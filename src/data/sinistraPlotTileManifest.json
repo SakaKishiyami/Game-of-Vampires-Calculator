@@ -1,0 +1,57 @@
+{
+  "cellWorldSize": 2.5,
+  "pixelsPerUnit": 50.0,
+  "bakedCount": 5,
+  "tiles": {
+    "wild": {
+      "tileKey": "wild",
+      "label": "Wild / wasteland",
+      "sourceSprite": "\u8352\u5730\u5730\u5757",
+      "imagePath": "DataMineRaw/extracted/slg/plot_tiles/wild.png",
+      "cellWorldSize": 2.5,
+      "pixelWidth": 125,
+      "pixelHeight": 125,
+      "pixelsPerUnit": 50.0
+    },
+    "snow": {
+      "tileKey": "snow",
+      "label": "Snow",
+      "sourceSprite": "\u96ea\u5c71\u5730\u5757",
+      "imagePath": "DataMineRaw/extracted/slg/plot_tiles/snow.png",
+      "cellWorldSize": 2.5,
+      "pixelWidth": 125,
+      "pixelHeight": 125,
+      "pixelsPerUnit": 50.0
+    },
+    "volcano": {
+      "tileKey": "volcano",
+      "label": "Volcano",
+      "sourceSprite": "\u706b\u5c71\u5730\u5757",
+      "imagePath": "DataMineRaw/extracted/slg/plot_tiles/volcano.png",
+      "cellWorldSize": 2.5,
+      "pixelWidth": 125,
+      "pixelHeight": 125,
+      "pixelsPerUnit": 50.0
+    },
+    "ocean": {
+      "tileKey": "ocean",
+      "label": "Ocean / water",
+      "sourceSprite": "\u6d77\u6d0b\u5730\u57571",
+      "imagePath": "DataMineRaw/extracted/slg/plot_tiles/ocean.png",
+      "cellWorldSize": 2.5,
+      "pixelWidth": 125,
+      "pixelHeight": 125,
+      "pixelsPerUnit": 50.0
+    },
+    "castle": {
+      "tileKey": "castle",
+      "label": "Castle / city",
+      "sourceSprite": "\u738b\u57ce\u5730\u5757",
+      "imagePath": "DataMineRaw/extracted/slg/plot_tiles/castle.png",
+      "cellWorldSize": 2.5,
+      "pixelWidth": 125,
+      "pixelHeight": 125,
+      "pixelsPerUnit": 50.0
+    }
+  }
+}

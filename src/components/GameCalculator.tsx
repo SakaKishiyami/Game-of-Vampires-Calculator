@@ -29,13 +29,33 @@ import { getAttributeColor, nonNegativeIntInputProps } from "@/utils/helpers"
 import { migrateEddieToDahliaInPartialState } from "@/utils/migrateEddieToDahlia"
 import { resolveLordTierRewardWardensFromSave } from "@/utils/wardenOwnership"
 
-export default function GameCalculator() {
-  const [activeTab, setActiveTab] = useState(() => {
-    if (typeof window === 'undefined') return "aura-bonuses"
-    return localStorage.getItem('activeTab') ?? "aura-bonuses"
-  })
+const CALCULATOR_TAB_IDS = new Set([
+  "aura-bonuses",
+  "conclave",
+  "courtyard",
+  "books",
+  "talents",
+  "wardens",
+  "scarlet-bond",
+  "inventory",
+  "children",
+  "skins",
+  "data",
+])
 
-  useEffect(() => { localStorage.setItem('activeTab', activeTab) }, [activeTab])
+export default function GameCalculator() {
+  const [activeTab, setActiveTab] = useState("aura-bonuses")
+
+  useEffect(() => {
+    const saved = localStorage.getItem("activeTab")
+    if (saved && CALCULATOR_TAB_IDS.has(saved)) {
+      setActiveTab(saved)
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('activeTab', activeTab)
+  }, [activeTab])
   const {
     baseAttributes, setBaseAttributes, vipLevel, setVipLevel, lordLevel, setLordLevel,
     lordTierRewardWardens, setLordTierRewardWardens,

@@ -1,0 +1,7 @@
+{
+  "spriteCount": 0,
+  "pixelsPerUnit": 100,
+  "profile": "full",
+  "description": "Globally sorted terrain sprites. Run: npm run bake:sinistra-composite -- --modes manifest",
+  "sprites": []
+}

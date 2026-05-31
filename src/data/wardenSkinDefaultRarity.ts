@@ -4,6 +4,7 @@ import { SKIN_RARITY_WARDEN } from '@/data/skinLedger'
 /**
  * Default rarity for every warden skin.
  * Edit this table directly when the game's skin rarity assignments change.
+ * Lover skin defaults (Epic/Legendary) are derived from the bonded warden and this table when possible; see loverSkinDefaultRarity.ts.
  */
 export const WARDEN_SKIN_RARITY_DEFAULTS: Record<string, Partial<Record<string, WardenSkinRarity>>> = {
   Ivan: { IvanSkin1: SKIN_RARITY_WARDEN.ORANGE },

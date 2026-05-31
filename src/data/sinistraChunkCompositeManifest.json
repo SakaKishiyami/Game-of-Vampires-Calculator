@@ -1,0 +1,7 @@
+{
+  "bakedCount": 0,
+  "pixelsPerUnit": 100,
+  "profile": "full",
+  "description": "Per-chunk terrain composites (100×100). Run: npm run bake:sinistra-composite -- --modes chunk",
+  "chunks": {}
+}
