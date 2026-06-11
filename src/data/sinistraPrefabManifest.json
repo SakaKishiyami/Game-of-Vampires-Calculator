@@ -1,4 +1,6 @@
 {
+  "profile": "full",
+  "description": "All prefab sprites including tiled ground and water plot fills.",
   "chunkSource": "SLGMapChuck1.json",
   "chunkSources": [
     "SLGMapChuck1.json",
@@ -18,7 +20,9 @@
       "pixelWidth": 3245,
       "pixelHeight": 3290,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 145
+      "spriteCount": 145,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 145
     },
     "Bridge_CentralCastle_R": {
       "prefabName": "Bridge_CentralCastle_R",
@@ -30,7 +34,9 @@
       "pixelWidth": 3247,
       "pixelHeight": 3399,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 130
+      "spriteCount": 130,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 130
     },
     "Bridge_CentralCastle_U": {
       "prefabName": "Bridge_CentralCastle_U",
@@ -42,7 +48,9 @@
       "pixelWidth": 3553,
       "pixelHeight": 3049,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 140
+      "spriteCount": 140,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 140
     },
     "Bridge_Grey_Snow_Vertical": {
       "prefabName": "Bridge_Grey_Snow_Vertical",
@@ -54,7 +62,9 @@
       "pixelWidth": 3233,
       "pixelHeight": 3468,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 132
+      "spriteCount": 132,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 132
     },
     "Bridge_Grey_Snow_horizontal": {
       "prefabName": "Bridge_Grey_Snow_horizontal",
@@ -66,7 +76,9 @@
       "pixelWidth": 3433,
       "pixelHeight": 3142,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 136
+      "spriteCount": 136,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 136
     },
     "Bridge_Grey_Volcano_H": {
       "prefabName": "Bridge_Grey_Volcano_H",
@@ -78,7 +90,9 @@
       "pixelWidth": 3425,
       "pixelHeight": 3219,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 134
+      "spriteCount": 134,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 134
     },
     "Bridge_Grey_Volcano_Vertical": {
       "prefabName": "Bridge_Grey_Volcano_Vertical",
@@ -90,7 +104,9 @@
       "pixelWidth": 3246,
       "pixelHeight": 3440,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 118
+      "spriteCount": 118,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 118
     },
     "Bridge_Snow_Gray_Horizontal": {
       "prefabName": "Bridge_Snow_Gray_Horizontal",
@@ -102,7 +118,9 @@
       "pixelWidth": 3428,
       "pixelHeight": 3291,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 140
+      "spriteCount": 140,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 140
     },
     "Bridge_Snow_Grey_Vertical": {
       "prefabName": "Bridge_Snow_Grey_Vertical",
@@ -114,7 +132,9 @@
       "pixelWidth": 3249,
       "pixelHeight": 3509,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 136
+      "spriteCount": 136,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 136
     },
     "Bridge_Snow_Horizontal": {
       "prefabName": "Bridge_Snow_Horizontal",
@@ -126,7 +146,9 @@
       "pixelWidth": 4311,
       "pixelHeight": 2519,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 73
+      "spriteCount": 73,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 73
     },
     "Bridge_Volcano_Grey_H": {
       "prefabName": "Bridge_Volcano_Grey_H",
@@ -138,7 +160,9 @@
       "pixelWidth": 3324,
       "pixelHeight": 3221,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 112
+      "spriteCount": 112,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 112
     },
     "Bridge_Volcano_Grey_Vertical": {
       "prefabName": "Bridge_Volcano_Grey_Vertical",
@@ -150,7 +174,9 @@
       "pixelWidth": 3376,
       "pixelHeight": 3424,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 137
+      "spriteCount": 137,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 137
     },
     "CentralCastle_horizontalTop_1": {
       "prefabName": "CentralCastle_horizontalTop_1",
@@ -162,7 +188,9 @@
       "pixelWidth": 3496,
       "pixelHeight": 3243,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 122
+      "spriteCount": 122,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 122
     },
     "CentralCastle_horizontalTop_2": {
       "prefabName": "CentralCastle_horizontalTop_2",
@@ -174,7 +202,9 @@
       "pixelWidth": 3637,
       "pixelHeight": 3275,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 123
+      "spriteCount": 123,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 123
     },
     "CentralCastle_horizontalTop_3": {
       "prefabName": "CentralCastle_horizontalTop_3",
@@ -186,7 +216,9 @@
       "pixelWidth": 3434,
       "pixelHeight": 3337,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 125
+      "spriteCount": 125,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 125
     },
     "CentralCastle_horizontal_1": {
       "prefabName": "CentralCastle_horizontal_1",
@@ -198,7 +230,9 @@
       "pixelWidth": 3878,
       "pixelHeight": 3152,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 102
+      "spriteCount": 102,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 102
     },
     "CentralCastle_horizontal_2": {
       "prefabName": "CentralCastle_horizontal_2",
@@ -210,7 +244,9 @@
       "pixelWidth": 3617,
       "pixelHeight": 3301,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 118
+      "spriteCount": 118,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 118
     },
     "CentralCastle_horizontal_3": {
       "prefabName": "CentralCastle_horizontal_3",
@@ -222,7 +258,9 @@
       "pixelWidth": 3617,
       "pixelHeight": 3139,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 128
+      "spriteCount": 128,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 128
     },
     "CentralCastle_leftDown_1": {
       "prefabName": "CentralCastle_leftDown_1",
@@ -234,7 +272,9 @@
       "pixelWidth": 3373,
       "pixelHeight": 3199,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 125
+      "spriteCount": 125,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 125
     },
     "CentralCastle_leftDown_2": {
       "prefabName": "CentralCastle_leftDown_2",
@@ -247,6 +287,8 @@
       "pixelHeight": 3199,
       "pixelsPerUnit": 100.0,
       "spriteCount": 125,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 125,
       "fallbackFrom": "CentralCastle_leftDown_1"
     },
     "CentralCastle_leftTop_1": {
@@ -259,7 +301,9 @@
       "pixelWidth": 3172,
       "pixelHeight": 3164,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 112
+      "spriteCount": 112,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 112
     },
     "CentralCastle_leftTop_2": {
       "prefabName": "CentralCastle_leftTop_2",
@@ -272,6 +316,8 @@
       "pixelHeight": 3164,
       "pixelsPerUnit": 100.0,
       "spriteCount": 112,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 112,
       "fallbackFrom": "CentralCastle_leftTop_1"
     },
     "CentralCastle_rightDown_1": {
@@ -284,7 +330,9 @@
       "pixelWidth": 3425,
       "pixelHeight": 3374,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 128
+      "spriteCount": 128,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 128
     },
     "CentralCastle_rightDown_2": {
       "prefabName": "CentralCastle_rightDown_2",
@@ -297,6 +345,8 @@
       "pixelHeight": 3374,
       "pixelsPerUnit": 100.0,
       "spriteCount": 128,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 128,
       "fallbackFrom": "CentralCastle_rightDown_1"
     },
     "CentralCastle_rightTop_1": {
@@ -309,7 +359,9 @@
       "pixelWidth": 3430,
       "pixelHeight": 3088,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 130
+      "spriteCount": 130,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 130
     },
     "CentralCastle_rightTop_2": {
       "prefabName": "CentralCastle_rightTop_2",
@@ -322,6 +374,8 @@
       "pixelHeight": 3088,
       "pixelsPerUnit": 100.0,
       "spriteCount": 130,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 130,
       "fallbackFrom": "CentralCastle_rightTop_1"
     },
     "CentralCastle_verticalLeft_1": {
@@ -334,7 +388,9 @@
       "pixelWidth": 3181,
       "pixelHeight": 3350,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 119
+      "spriteCount": 119,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 119
     },
     "CentralCastle_verticalLeft_2": {
       "prefabName": "CentralCastle_verticalLeft_2",
@@ -346,7 +402,9 @@
       "pixelWidth": 3175,
       "pixelHeight": 3410,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 128
+      "spriteCount": 128,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 128
     },
     "CentralCastle_verticalLeft_3": {
       "prefabName": "CentralCastle_verticalLeft_3",
@@ -358,7 +416,9 @@
       "pixelWidth": 3142,
       "pixelHeight": 3363,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 124
+      "spriteCount": 124,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 124
     },
     "CentralCastle_verticalRight_1": {
       "prefabName": "CentralCastle_verticalRight_1",
@@ -370,7 +430,9 @@
       "pixelWidth": 3431,
       "pixelHeight": 3374,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 130
+      "spriteCount": 130,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 130
     },
     "CentralCastle_verticalRight_2": {
       "prefabName": "CentralCastle_verticalRight_2",
@@ -382,7 +444,9 @@
       "pixelWidth": 3431,
       "pixelHeight": 3374,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 120
+      "spriteCount": 120,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 120
     },
     "CentralCastle_verticalRight_3": {
       "prefabName": "CentralCastle_verticalRight_3",
@@ -394,7 +458,9 @@
       "pixelWidth": 3117,
       "pixelHeight": 3213,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 133
+      "spriteCount": 133,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 133
     },
     "First_VolcanoGrey_Special_1": {
       "prefabName": "First_VolcanoGrey_Special_1",
@@ -407,6 +473,8 @@
       "pixelHeight": 2258,
       "pixelsPerUnit": 100.0,
       "spriteCount": 26,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 26,
       "fallbackFrom": "First_VolcanoGrey_Special_2"
     },
     "First_VolcanoGrey_Special_2": {
@@ -419,7 +487,9 @@
       "pixelWidth": 2591,
       "pixelHeight": 2258,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 26
+      "spriteCount": 26,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 26
     },
     "First_VolcanoGrey_Special_4": {
       "prefabName": "First_VolcanoGrey_Special_4",
@@ -432,6 +502,8 @@
       "pixelHeight": 2258,
       "pixelsPerUnit": 100.0,
       "spriteCount": 26,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 26,
       "fallbackFrom": "First_VolcanoGrey_Special_2"
     },
     "First_Volcano_Vertical_1": {
@@ -444,7 +516,9 @@
       "pixelWidth": 2519,
       "pixelHeight": 4227,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 38
+      "spriteCount": 38,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 38
     },
     "First_Volcano_Vertical_2": {
       "prefabName": "First_Volcano_Vertical_2",
@@ -457,6 +531,8 @@
       "pixelHeight": 4227,
       "pixelsPerUnit": 100.0,
       "spriteCount": 38,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 38,
       "fallbackFrom": "First_Volcano_Vertical_1"
     },
     "First_Volcano_Vertical_3": {
@@ -470,6 +546,8 @@
       "pixelHeight": 4227,
       "pixelsPerUnit": 100.0,
       "spriteCount": 38,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 38,
       "fallbackFrom": "First_Volcano_Vertical_1"
     },
     "GreyNew_Horizontal_1": {
@@ -483,6 +561,8 @@
       "pixelHeight": 2700,
       "pixelsPerUnit": 100.0,
       "spriteCount": 51,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 51,
       "fallbackFrom": "GreyNew_Horizontal_2"
     },
     "GreyNew_Horizontal_2": {
@@ -495,7 +575,9 @@
       "pixelWidth": 4039,
       "pixelHeight": 2700,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 51
+      "spriteCount": 51,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 51
     },
     "GreyNew_Horizontal_3": {
       "prefabName": "GreyNew_Horizontal_3",
@@ -508,6 +590,8 @@
       "pixelHeight": 2700,
       "pixelsPerUnit": 100.0,
       "spriteCount": 51,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 51,
       "fallbackFrom": "GreyNew_Horizontal_2"
     },
     "GreyNew_Vertical_1": {
@@ -520,7 +604,9 @@
       "pixelWidth": 3267,
       "pixelHeight": 4281,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 68
+      "spriteCount": 68,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 68
     },
     "GreyNew_Vertical_2": {
       "prefabName": "GreyNew_Vertical_2",
@@ -533,6 +619,8 @@
       "pixelHeight": 4281,
       "pixelsPerUnit": 100.0,
       "spriteCount": 68,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 68,
       "fallbackFrom": "GreyNew_Vertical_1"
     },
     "GreyNew_Vertical_3": {
@@ -546,6 +634,8 @@
       "pixelHeight": 4281,
       "pixelsPerUnit": 100.0,
       "spriteCount": 68,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 68,
       "fallbackFrom": "GreyNew_Vertical_1"
     },
     "Grey_Down_1": {
@@ -558,7 +648,9 @@
       "pixelWidth": 3308,
       "pixelHeight": 2064,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 46
+      "spriteCount": 46,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 46
     },
     "Grey_Down_2": {
       "prefabName": "Grey_Down_2",
@@ -570,7 +662,9 @@
       "pixelWidth": 3308,
       "pixelHeight": 2291,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 50
+      "spriteCount": 50,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 50
     },
     "Grey_Down_3": {
       "prefabName": "Grey_Down_3",
@@ -582,7 +676,9 @@
       "pixelWidth": 3308,
       "pixelHeight": 2503,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 62
+      "spriteCount": 62,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 62
     },
     "Grey_Horizontal_1": {
       "prefabName": "Grey_Horizontal_1",
@@ -594,7 +690,9 @@
       "pixelWidth": 3297,
       "pixelHeight": 2111,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 46
+      "spriteCount": 46,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 46
     },
     "Grey_LeftDown_2": {
       "prefabName": "Grey_LeftDown_2",
@@ -606,7 +704,9 @@
       "pixelWidth": 2434,
       "pixelHeight": 2556,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 44
+      "spriteCount": 44,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 44
     },
     "Grey_LeftUp_2": {
       "prefabName": "Grey_LeftUp_2",
@@ -618,7 +718,9 @@
       "pixelWidth": 3437,
       "pixelHeight": 3198,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 46
+      "spriteCount": 46,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 46
     },
     "Grey_LeftUp_3": {
       "prefabName": "Grey_LeftUp_3",
@@ -630,7 +732,9 @@
       "pixelWidth": 2145,
       "pixelHeight": 2338,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 35
+      "spriteCount": 35,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 35
     },
     "Grey_Left_1": {
       "prefabName": "Grey_Left_1",
@@ -642,7 +746,9 @@
       "pixelWidth": 2192,
       "pixelHeight": 3505,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 60
+      "spriteCount": 60,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 60
     },
     "Grey_Left_2": {
       "prefabName": "Grey_Left_2",
@@ -654,7 +760,9 @@
       "pixelWidth": 2305,
       "pixelHeight": 3517,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 57
+      "spriteCount": 57,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 57
     },
     "Grey_Left_3": {
       "prefabName": "Grey_Left_3",
@@ -666,7 +774,9 @@
       "pixelWidth": 2637,
       "pixelHeight": 3519,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 67
+      "spriteCount": 67,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 67
     },
     "Grey_RightDown_2": {
       "prefabName": "Grey_RightDown_2",
@@ -678,7 +788,9 @@
       "pixelWidth": 3086,
       "pixelHeight": 3281,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 55
+      "spriteCount": 55,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 55
     },
     "Grey_Right_1": {
       "prefabName": "Grey_Right_1",
@@ -690,7 +802,9 @@
       "pixelWidth": 2749,
       "pixelHeight": 3340,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 67
+      "spriteCount": 67,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 67
     },
     "Grey_Right_2": {
       "prefabName": "Grey_Right_2",
@@ -702,7 +816,9 @@
       "pixelWidth": 2749,
       "pixelHeight": 3376,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 67
+      "spriteCount": 67,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 67
     },
     "Grey_Right_3": {
       "prefabName": "Grey_Right_3",
@@ -714,7 +830,9 @@
       "pixelWidth": 3006,
       "pixelHeight": 3420,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 71
+      "spriteCount": 71,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 71
     },
     "Grey_UpRight_2": {
       "prefabName": "Grey_UpRight_2",
@@ -726,7 +844,9 @@
       "pixelWidth": 3483,
       "pixelHeight": 3189,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 53
+      "spriteCount": 53,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 53
     },
     "Grey_Up_1": {
       "prefabName": "Grey_Up_1",
@@ -738,7 +858,9 @@
       "pixelWidth": 3559,
       "pixelHeight": 3093,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 51
+      "spriteCount": 51,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 51
     },
     "Grey_Up_2": {
       "prefabName": "Grey_Up_2",
@@ -750,7 +872,9 @@
       "pixelWidth": 3559,
       "pixelHeight": 3093,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 54
+      "spriteCount": 54,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 54
     },
     "Grey_Up_3": {
       "prefabName": "Grey_Up_3",
@@ -762,7 +886,9 @@
       "pixelWidth": 3559,
       "pixelHeight": 3093,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 62
+      "spriteCount": 62,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 62
     },
     "Grey_Vertical_1": {
       "prefabName": "Grey_Vertical_1",
@@ -774,7 +900,9 @@
       "pixelWidth": 3236,
       "pixelHeight": 3240,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 104
+      "spriteCount": 104,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 104
     },
     "Grey_Vertical_2": {
       "prefabName": "Grey_Vertical_2",
@@ -786,7 +914,9 @@
       "pixelWidth": 3234,
       "pixelHeight": 3283,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 116
+      "spriteCount": 116,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 116
     },
     "Grey_Vertical_3": {
       "prefabName": "Grey_Vertical_3",
@@ -798,7 +928,9 @@
       "pixelWidth": 3194,
       "pixelHeight": 3196,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 125
+      "spriteCount": 125,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 125
     },
     "Grey_Vertical_4": {
       "prefabName": "Grey_Vertical_4",
@@ -810,7 +942,9 @@
       "pixelWidth": 3177,
       "pixelHeight": 3139,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 68
+      "spriteCount": 68,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 68
     },
     "Grey_Volcano_LeftDown_1": {
       "prefabName": "Grey_Volcano_LeftDown_1",
@@ -822,7 +956,9 @@
       "pixelWidth": 3472,
       "pixelHeight": 4213,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 175
+      "spriteCount": 175,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 175
     },
     "Grey_Volcano_LeftDown_2": {
       "prefabName": "Grey_Volcano_LeftDown_2",
@@ -834,7 +970,9 @@
       "pixelWidth": 3254,
       "pixelHeight": 3100,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 60
+      "spriteCount": 60,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 60
     },
     "Grey_Volcano_LeftDown_3": {
       "prefabName": "Grey_Volcano_LeftDown_3",
@@ -846,7 +984,9 @@
       "pixelWidth": 3245,
       "pixelHeight": 3273,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 86
+      "spriteCount": 86,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 86
     },
     "Grey_Volcano_LeftTop_1": {
       "prefabName": "Grey_Volcano_LeftTop_1",
@@ -858,7 +998,9 @@
       "pixelWidth": 3217,
       "pixelHeight": 3314,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 128
+      "spriteCount": 128,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 128
     },
     "Grey_Volcano_LeftTop_2": {
       "prefabName": "Grey_Volcano_LeftTop_2",
@@ -870,7 +1012,9 @@
       "pixelWidth": 3136,
       "pixelHeight": 3223,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 94
+      "spriteCount": 94,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 94
     },
     "Grey_Volcano_LeftTop_3": {
       "prefabName": "Grey_Volcano_LeftTop_3",
@@ -882,7 +1026,9 @@
       "pixelWidth": 3231,
       "pixelHeight": 3239,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 143
+      "spriteCount": 143,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 143
     },
     "Grey_Volcano_LeftTop_4": {
       "prefabName": "Grey_Volcano_LeftTop_4",
@@ -894,7 +1040,9 @@
       "pixelWidth": 3312,
       "pixelHeight": 3223,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 61
+      "spriteCount": 61,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 61
     },
     "Grey_Volcano_RightDown_1": {
       "prefabName": "Grey_Volcano_RightDown_1",
@@ -906,7 +1054,9 @@
       "pixelWidth": 3341,
       "pixelHeight": 3157,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 132
+      "spriteCount": 132,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 132
     },
     "Grey_Volcano_RightDown_2": {
       "prefabName": "Grey_Volcano_RightDown_2",
@@ -918,7 +1068,9 @@
       "pixelWidth": 3306,
       "pixelHeight": 3172,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 149
+      "spriteCount": 149,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 149
     },
     "Grey_Volcano_RightDown_3": {
       "prefabName": "Grey_Volcano_RightDown_3",
@@ -930,7 +1082,9 @@
       "pixelWidth": 3153,
       "pixelHeight": 3299,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 62
+      "spriteCount": 62,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 62
     },
     "Grey_Volcano_RightDown_4": {
       "prefabName": "Grey_Volcano_RightDown_4",
@@ -942,7 +1096,9 @@
       "pixelWidth": 3456,
       "pixelHeight": 3283,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 147
+      "spriteCount": 147,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 147
     },
     "Grey_Volcano_VerticalLeft_1": {
       "prefabName": "Grey_Volcano_VerticalLeft_1",
@@ -954,7 +1110,9 @@
       "pixelWidth": 3205,
       "pixelHeight": 3244,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 89
+      "spriteCount": 89,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 89
     },
     "Grey_Volcano_VerticalLeft_2": {
       "prefabName": "Grey_Volcano_VerticalLeft_2",
@@ -966,7 +1124,9 @@
       "pixelWidth": 3203,
       "pixelHeight": 3349,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 112
+      "spriteCount": 112,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 112
     },
     "Grey_Volcano_VerticalLeft_3": {
       "prefabName": "Grey_Volcano_VerticalLeft_3",
@@ -978,7 +1138,9 @@
       "pixelWidth": 3201,
       "pixelHeight": 3241,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 127
+      "spriteCount": 127,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 127
     },
     "Grey_Volcano_VerticalLeft_4": {
       "prefabName": "Grey_Volcano_VerticalLeft_4",
@@ -990,7 +1152,9 @@
       "pixelWidth": 3277,
       "pixelHeight": 3249,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 107
+      "spriteCount": 107,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 107
     },
     "Grey_Volcano_VerticalRight_1": {
       "prefabName": "Grey_Volcano_VerticalRight_1",
@@ -1002,7 +1166,9 @@
       "pixelWidth": 3267,
       "pixelHeight": 3134,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 59
+      "spriteCount": 59,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 59
     },
     "Grey_Volcano_VerticalRight_2": {
       "prefabName": "Grey_Volcano_VerticalRight_2",
@@ -1014,7 +1180,9 @@
       "pixelWidth": 3243,
       "pixelHeight": 3280,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 120
+      "spriteCount": 120,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 120
     },
     "Grey_Volcano_VerticalRight_3": {
       "prefabName": "Grey_Volcano_VerticalRight_3",
@@ -1026,7 +1194,9 @@
       "pixelWidth": 3193,
       "pixelHeight": 3276,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 108
+      "spriteCount": 108,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 108
     },
     "Grey_Volcano_VerticalRight_4": {
       "prefabName": "Grey_Volcano_VerticalRight_4",
@@ -1038,7 +1208,9 @@
       "pixelWidth": 3333,
       "pixelHeight": 3339,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 137
+      "spriteCount": 137,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 137
     },
     "Grey_Volcano_VerticalRight_5": {
       "prefabName": "Grey_Volcano_VerticalRight_5",
@@ -1050,7 +1222,9 @@
       "pixelWidth": 3236,
       "pixelHeight": 3303,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 115
+      "spriteCount": 115,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 115
     },
     "Grey_Volcano_Volcano_H_1": {
       "prefabName": "Grey_Volcano_Volcano_H_1",
@@ -1062,7 +1236,9 @@
       "pixelWidth": 3408,
       "pixelHeight": 3416,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 109
+      "spriteCount": 109,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 109
     },
     "Grey_Volcano_Volcano_H_2": {
       "prefabName": "Grey_Volcano_Volcano_H_2",
@@ -1074,7 +1250,9 @@
       "pixelWidth": 3456,
       "pixelHeight": 3204,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 126
+      "spriteCount": 126,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 126
     },
     "Grey_Volcano_Volcano_H_3": {
       "prefabName": "Grey_Volcano_Volcano_H_3",
@@ -1086,7 +1264,9 @@
       "pixelWidth": 3413,
       "pixelHeight": 3169,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 131
+      "spriteCount": 131,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 131
     },
     "Grey_Volcano_Volcano_U_1": {
       "prefabName": "Grey_Volcano_Volcano_U_1",
@@ -1098,7 +1278,9 @@
       "pixelWidth": 3160,
       "pixelHeight": 3249,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 111
+      "spriteCount": 111,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 111
     },
     "Grey_Volcano_Volcano_U_2": {
       "prefabName": "Grey_Volcano_Volcano_U_2",
@@ -1110,7 +1292,9 @@
       "pixelWidth": 3164,
       "pixelHeight": 3271,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 127
+      "spriteCount": 127,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 127
     },
     "Grey_Volcano_Volcano_U_3": {
       "prefabName": "Grey_Volcano_Volcano_U_3",
@@ -1122,7 +1306,9 @@
       "pixelWidth": 3164,
       "pixelHeight": 3282,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 118
+      "spriteCount": 118,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 118
     },
     "Grey_Volcano__T_1": {
       "prefabName": "Grey_Volcano__T_1",
@@ -1134,7 +1320,9 @@
       "pixelWidth": 6367,
       "pixelHeight": 3389,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 265
+      "spriteCount": 265,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 265
     },
     "Grey_Volcano__T_2": {
       "prefabName": "Grey_Volcano__T_2",
@@ -1146,7 +1334,9 @@
       "pixelWidth": 4334,
       "pixelHeight": 3251,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 137
+      "spriteCount": 137,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 137
     },
     "Grey_rightTop_1": {
       "prefabName": "Grey_rightTop_1",
@@ -1158,7 +1348,9 @@
       "pixelWidth": 2713,
       "pixelHeight": 2168,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 20
+      "spriteCount": 20,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 20
     },
     "Snow_Down_1": {
       "prefabName": "Snow_Down_1",
@@ -1170,7 +1362,9 @@
       "pixelWidth": 3470,
       "pixelHeight": 2914,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 72
+      "spriteCount": 72,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 72
     },
     "Snow_Down_2": {
       "prefabName": "Snow_Down_2",
@@ -1182,7 +1376,9 @@
       "pixelWidth": 3470,
       "pixelHeight": 2880,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 81
+      "spriteCount": 81,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 81
     },
     "Snow_Down_3": {
       "prefabName": "Snow_Down_3",
@@ -1194,7 +1390,9 @@
       "pixelWidth": 3470,
       "pixelHeight": 2880,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 86
+      "spriteCount": 86,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 86
     },
     "Snow_Grey_Big_D_L": {
       "prefabName": "Snow_Grey_Big_D_L",
@@ -1206,7 +1404,9 @@
       "pixelWidth": 3688,
       "pixelHeight": 6183,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 261
+      "spriteCount": 261,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 261
     },
     "Snow_Grey_Big_D_R": {
       "prefabName": "Snow_Grey_Big_D_R",
@@ -1218,7 +1418,9 @@
       "pixelWidth": 4335,
       "pixelHeight": 6115,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 182
+      "spriteCount": 182,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 182
     },
     "Snow_Grey_Big_U_L": {
       "prefabName": "Snow_Grey_Big_U_L",
@@ -1230,7 +1432,9 @@
       "pixelWidth": 5807,
       "pixelHeight": 8535,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 379
+      "spriteCount": 379,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 379
     },
     "Snow_Grey_Big_U_R_1": {
       "prefabName": "Snow_Grey_Big_U_R_1",
@@ -1242,7 +1446,9 @@
       "pixelWidth": 3914,
       "pixelHeight": 5328,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 96
+      "spriteCount": 96,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 96
     },
     "Snow_Grey_Big_U_R_2": {
       "prefabName": "Snow_Grey_Big_U_R_2",
@@ -1254,7 +1460,9 @@
       "pixelWidth": 4030,
       "pixelHeight": 5650,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 125
+      "spriteCount": 125,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 125
     },
     "Snow_LeftDown_1": {
       "prefabName": "Snow_LeftDown_1",
@@ -1266,7 +1474,9 @@
       "pixelWidth": 3691,
       "pixelHeight": 3566,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 133
+      "spriteCount": 133,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 133
     },
     "Snow_LeftDown_2": {
       "prefabName": "Snow_LeftDown_2",
@@ -1278,7 +1488,9 @@
       "pixelWidth": 3399,
       "pixelHeight": 3456,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 87
+      "spriteCount": 87,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 87
     },
     "Snow_LeftUp_1": {
       "prefabName": "Snow_LeftUp_1",
@@ -1290,7 +1502,9 @@
       "pixelWidth": 3381,
       "pixelHeight": 3228,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 73
+      "spriteCount": 73,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 73
     },
     "Snow_Left_1": {
       "prefabName": "Snow_Left_1",
@@ -1302,7 +1516,9 @@
       "pixelWidth": 3540,
       "pixelHeight": 3382,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 93
+      "spriteCount": 93,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 93
     },
     "Snow_Left_2": {
       "prefabName": "Snow_Left_2",
@@ -1314,7 +1530,9 @@
       "pixelWidth": 3540,
       "pixelHeight": 3382,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 100
+      "spriteCount": 100,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 100
     },
     "Snow_Left_3": {
       "prefabName": "Snow_Left_3",
@@ -1326,7 +1544,9 @@
       "pixelWidth": 3540,
       "pixelHeight": 3383,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 95
+      "spriteCount": 95,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 95
     },
     "Snow_RightDown_1": {
       "prefabName": "Snow_RightDown_1",
@@ -1338,7 +1558,9 @@
       "pixelWidth": 3704,
       "pixelHeight": 3311,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 128
+      "spriteCount": 128,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 128
     },
     "Snow_RightDown_2": {
       "prefabName": "Snow_RightDown_2",
@@ -1350,7 +1572,9 @@
       "pixelWidth": 3490,
       "pixelHeight": 3277,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 74
+      "spriteCount": 74,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 74
     },
     "Snow_RightUp_1": {
       "prefabName": "Snow_RightUp_1",
@@ -1362,7 +1586,9 @@
       "pixelWidth": 3489,
       "pixelHeight": 3023,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 69
+      "spriteCount": 69,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 69
     },
     "Snow_Right_1": {
       "prefabName": "Snow_Right_1",
@@ -1374,7 +1600,9 @@
       "pixelWidth": 3545,
       "pixelHeight": 3526,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 97
+      "spriteCount": 97,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 97
     },
     "Snow_Right_2": {
       "prefabName": "Snow_Right_2",
@@ -1386,7 +1614,9 @@
       "pixelWidth": 3545,
       "pixelHeight": 3337,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 83
+      "spriteCount": 83,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 83
     },
     "Snow_Right_3": {
       "prefabName": "Snow_Right_3",
@@ -1398,7 +1628,9 @@
       "pixelWidth": 3545,
       "pixelHeight": 3337,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 79
+      "spriteCount": 79,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 79
     },
     "Snow_Up_1": {
       "prefabName": "Snow_Up_1",
@@ -1410,7 +1642,9 @@
       "pixelWidth": 3832,
       "pixelHeight": 3006,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 86
+      "spriteCount": 86,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 86
     },
     "Snow_Up_2": {
       "prefabName": "Snow_Up_2",
@@ -1422,7 +1656,9 @@
       "pixelWidth": 3647,
       "pixelHeight": 3023,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 79
+      "spriteCount": 79,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 79
     },
     "Snow_Up_3": {
       "prefabName": "Snow_Up_3",
@@ -1434,7 +1670,9 @@
       "pixelWidth": 3532,
       "pixelHeight": 3006,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 85
+      "spriteCount": 85,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 85
     },
     "Volcano_RightDown_1": {
       "prefabName": "Volcano_RightDown_1",
@@ -1446,7 +1684,9 @@
       "pixelWidth": 3105,
       "pixelHeight": 3120,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 81
+      "spriteCount": 81,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 81
     },
     "Volcano_RightDown_2": {
       "prefabName": "Volcano_RightDown_2",
@@ -1458,7 +1698,9 @@
       "pixelWidth": 3293,
       "pixelHeight": 4391,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 226
+      "spriteCount": 226,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 226
     },
     "Volcano_Right_Up_1": {
       "prefabName": "Volcano_Right_Up_1",
@@ -1470,7 +1712,9 @@
       "pixelWidth": 3180,
       "pixelHeight": 4892,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 67
+      "spriteCount": 67,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 67
     },
     "Volcano_Vertical_1": {
       "prefabName": "Volcano_Vertical_1",
@@ -1482,7 +1726,9 @@
       "pixelWidth": 3112,
       "pixelHeight": 3205,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 68
+      "spriteCount": 68,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 68
     },
     "Volcano_Vertical_2": {
       "prefabName": "Volcano_Vertical_2",
@@ -1494,7 +1740,9 @@
       "pixelWidth": 3150,
       "pixelHeight": 3227,
       "pixelsPerUnit": 100.0,
-      "spriteCount": 85
+      "spriteCount": 85,
+      "bakeProfile": "full",
+      "sourceSpriteCount": 85
     }
   }
 }

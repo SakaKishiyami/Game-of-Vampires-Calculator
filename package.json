@@ -10,6 +10,8 @@
     "bake:sinistra-terrain": "python scripts/bake-sinistra-terrain-prefabs.py",
     "bake:sinistra-chunk-ground": "python scripts/bake-sinistra-chunk-ground.py",
     "bake:sinistra-composite": "python scripts/bake-sinistra-terrain-composite.py",
+    "check:sinistra-composite": "python scripts/check-composite-progress.py",
+    "bake:sinistra-composite-preview": "python scripts/bake-sinistra-terrain-composite.py --profile edges --limit-chunks 40",
     "bake:sinistra": "npm run bake:sinistra-terrain && npm run bake:sinistra-chunk-ground",
     "list:sinistra-missing-prefabs": "python scripts/list-missing-sinistra-prefabs.py"
   },

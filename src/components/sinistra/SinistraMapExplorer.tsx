@@ -94,10 +94,13 @@ import {
   saveTerrainRenderMode,
   TERRAIN_RENDER_MODE_INFO,
   TERRAIN_RENDER_MODES,
+  isTerrainRenderModeReady,
+  terrainRenderModeStatusLabel,
   type TerrainRenderMode,
 } from '@/lib/sinistra/terrainRenderMode'
 import {
   getFullCompositeEntry,
+  getCompositeManifestInfo,
   hasChunkCompositeBakes,
   hasFullCompositeBake,
   hasSpriteManifest,
@@ -1206,6 +1209,11 @@ export function SinistraMapExplorer({ data }: { data: SinistraMapData }) {
     }
     return defaultTerrainRenderMode()
   })
+  const selectTerrainRenderMode = useCallback((mode: TerrainRenderMode) => {
+    setTerrainRenderMode(mode)
+    saveTerrainRenderMode(mode)
+  }, [])
+  const compositeManifestInfo = getCompositeManifestInfo()
   const showTerrainAlignDebugRef = useRef(showTerrainAlignDebug)
   showTerrainAlignDebugRef.current = showTerrainAlignDebug
   const editorHydratedRef = useRef(false)
@@ -1217,6 +1225,28 @@ export function SinistraMapExplorer({ data }: { data: SinistraMapData }) {
   useEffect(() => {
     savePlannerState({ markers: plannerMarkers })
   }, [plannerMarkers])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return
+      }
+      if (event.target instanceof HTMLSelectElement) {
+        return
+      }
+      const index = Number(event.key) - 1
+      if (index < 0 || index >= TERRAIN_RENDER_MODES.length) {
+        return
+      }
+      if (event.altKey || event.ctrlKey || event.metaKey) {
+        return
+      }
+      event.preventDefault()
+      selectTerrainRenderMode(TERRAIN_RENDER_MODES[index])
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [selectTerrainRenderMode])
 
   const applyScrollLock = useCallback(() => {
     if (scrollLockActiveRef.current) {
@@ -1550,9 +1580,6 @@ export function SinistraMapExplorer({ data }: { data: SinistraMapData }) {
   const prefabNudgeWorldY = cellsToWorld(terrainAlignment.prefabCells)
 
   const showOverviewLayer = showGameArt && shouldShowOverviewLayer(viewSize)
-  const showChunkLayer = showGameArt && showChunkTerrain && shouldShowChunkGroundLayer(viewSize)
-  const showPrefabLayer = showGameArt && showChunkTerrain && shouldShowBakedPrefabs(viewSize)
-  const showTerrainLayer = showChunkLayer || showPrefabLayer
   const compositeModeReady =
     (terrainRenderMode === 'chunkComposite' && hasChunkCompositeBakes()) ||
     (terrainRenderMode === 'fullComposite' && hasFullCompositeBake()) ||
@@ -1561,6 +1588,14 @@ export function SinistraMapExplorer({ data }: { data: SinistraMapData }) {
   const effectivePrefabRenderMode: TerrainRenderMode =
     terrainRenderMode !== 'individual' && compositeModeReady ? terrainRenderMode : 'individual'
   const useIndividualPrefabs = effectivePrefabRenderMode === 'individual'
+  const hideChunkGroundForCompositePreview = !useIndividualPrefabs
+  const showChunkLayer =
+    showGameArt &&
+    showChunkTerrain &&
+    shouldShowChunkGroundLayer(viewSize) &&
+    !hideChunkGroundForCompositePreview
+  const showPrefabLayer = showGameArt && showChunkTerrain && shouldShowBakedPrefabs(viewSize)
+  const showTerrainLayer = showChunkLayer || showPrefabLayer
   const prefabPickEnabled =
     useIndividualPrefabs && showTerrainAlignDebug && prefabEditTool === 'select' && showPrefabLayer
 
@@ -2297,25 +2332,33 @@ export function SinistraMapExplorer({ data }: { data: SinistraMapData }) {
           >
             Chunk Tiles (beta)
           </button>
-          <label className="flex items-center gap-1.5 rounded-full border border-gray-700 bg-gray-800/90 px-3 py-1 text-xs text-gray-300">
-            <span className="text-gray-500">Prefabs</span>
-            <select
-              value={terrainRenderMode}
-              onChange={(event) => {
-                const mode = event.target.value as TerrainRenderMode
-                setTerrainRenderMode(mode)
-                saveTerrainRenderMode(mode)
-              }}
-              className="max-w-[9.5rem] cursor-pointer bg-transparent text-gray-200 outline-none"
-              title={TERRAIN_RENDER_MODE_INFO[terrainRenderMode].description}
-            >
-              {TERRAIN_RENDER_MODES.map((mode) => (
-                <option key={mode} value={mode} className="bg-gray-900">
+          <div className="flex flex-wrap items-center gap-1 rounded-full border border-gray-700 bg-gray-800/90 px-2 py-1">
+            <span className="px-1 text-[10px] uppercase tracking-wide text-gray-500">Prefabs</span>
+            {TERRAIN_RENDER_MODES.map((mode, index) => {
+              const active = terrainRenderMode === mode
+              const ready = isTerrainRenderModeReady(mode)
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => selectTerrainRenderMode(mode)}
+                  className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] transition ${
+                    active
+                      ? 'border-teal-600 bg-teal-950/50 text-teal-100'
+                      : 'border-transparent text-gray-400 hover:border-gray-600 hover:text-gray-200'
+                  }`}
+                  title={`${index + 1}. ${TERRAIN_RENDER_MODE_INFO[mode].description} (${terrainRenderModeStatusLabel(mode)})`}
+                >
+                  <span
+                    className={`inline-block h-1.5 w-1.5 rounded-full ${
+                      ready ? 'bg-emerald-400' : 'bg-amber-500'
+                    }`}
+                  />
                   {TERRAIN_RENDER_MODE_INFO[mode].shortLabel}
-                </option>
-              ))}
-            </select>
-          </label>
+                </button>
+              )
+            })}
+          </div>
           <button
             type="button"
             onClick={() => setShowTerrainGrid((current) => !current)}
@@ -2544,7 +2587,7 @@ export function SinistraMapExplorer({ data }: { data: SinistraMapData }) {
                       ? prefabBakeDefault === 'edges'
                         ? 'Terrain detail — chunk ground + edge art only (no prefab tiles). Editable per-prefab mode.'
                         : 'Terrain detail — chunk ground + full prefabs. Editable per-prefab mode.'
-                      : `Terrain detail — ${TERRAIN_RENDER_MODE_INFO[effectivePrefabRenderMode].shortLabel} (read-only preview). Switch Prefabs to Per-prefab to edit.`
+                      : `Terrain detail — ${TERRAIN_RENDER_MODE_INFO[effectivePrefabRenderMode].shortLabel} preview (read-only). Chunk ground hidden. Press 1–4 to switch modes.`
                     : 'Zoom in for chunk ground and prefabs.'
                     : showGameArt
                       ? 'Map art hidden at this zoom — zoom in or turn on Game Map Art.'
@@ -2552,6 +2595,55 @@ export function SinistraMapExplorer({ data }: { data: SinistraMapData }) {
               </span>
               <span>Zoom {zoomPercent}%</span>
             </div>
+
+            {showGameArt && showChunkTerrain ? (
+              <div className="grid gap-2 rounded-lg border border-gray-800 bg-gray-900/60 p-2 sm:grid-cols-2 xl:grid-cols-4">
+                {TERRAIN_RENDER_MODES.map((mode, index) => {
+                  const info = TERRAIN_RENDER_MODE_INFO[mode]
+                  const ready = isTerrainRenderModeReady(mode)
+                  const active = terrainRenderMode === mode
+                  const countLabel =
+                    mode === 'individual'
+                      ? `${hasBakedPrefabs('full') ? 'full' : 'edges'} bakes`
+                      : mode === 'chunkComposite'
+                        ? `${compositeManifestInfo.chunkCompositeCount} chunks`
+                        : mode === 'fullComposite'
+                          ? compositeManifestInfo.fullCompositeBaked
+                            ? '1 map PNG'
+                            : 'not baked'
+                          : `${compositeManifestInfo.spriteManifestCount} sprites`
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => selectTerrainRenderMode(mode)}
+                      className={`rounded-md border px-2 py-1.5 text-left text-[11px] transition ${
+                        active
+                          ? 'border-teal-700/70 bg-teal-950/30 text-teal-50'
+                          : 'border-gray-800 bg-gray-950/40 text-gray-400 hover:border-gray-700 hover:text-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium text-gray-200">
+                          {index + 1}. {info.shortLabel}
+                        </span>
+                        <span
+                          className={`rounded px-1 py-0.5 text-[9px] uppercase ${
+                            ready ? 'bg-emerald-950/60 text-emerald-300' : 'bg-amber-950/60 text-amber-300'
+                          }`}
+                        >
+                          {ready ? 'ready' : 'needs bake'}
+                        </span>
+                      </div>
+                      <p className="mt-1 leading-snug">{info.description}</p>
+                      <p className="mt-1 text-[10px] text-gray-500">
+                        {countLabel} · {info.efficiency} · {info.fidelity}
+                      </p>
+                    </button>
+                  )
+                })}
+              </div>
+            ) : null}
 
             <div className="relative z-0">
             <div

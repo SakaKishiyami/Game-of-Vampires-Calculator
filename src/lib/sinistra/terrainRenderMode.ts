@@ -1,5 +1,12 @@
 /** How terrain prefabs are drawn. Default `individual` preserves the original per-prefab pipeline. */
 
+import { hasBakedPrefabs } from '@/lib/sinistra/prefabManifest'
+import {
+  hasChunkCompositeBakes,
+  hasFullCompositeBake,
+  hasSpriteManifest,
+} from '@/lib/sinistra/terrainCompositeManifest'
+
 export type TerrainRenderMode =
   | 'individual'
   | 'chunkComposite'
@@ -89,4 +96,29 @@ export function saveTerrainRenderMode(mode: TerrainRenderMode): void {
     return
   }
   window.localStorage.setItem(STORAGE_KEY, mode)
+}
+
+export function isTerrainRenderModeReady(mode: TerrainRenderMode): boolean {
+  switch (mode) {
+    case 'individual':
+      return hasBakedPrefabs('full') || hasBakedPrefabs('edges')
+    case 'chunkComposite':
+      return hasChunkCompositeBakes()
+    case 'fullComposite':
+      return hasFullCompositeBake()
+    case 'spriteManifest':
+      return hasSpriteManifest()
+    default:
+      return false
+  }
+}
+
+export function terrainRenderModeStatusLabel(mode: TerrainRenderMode): string {
+  if (isTerrainRenderModeReady(mode)) {
+    return 'Ready'
+  }
+  if (mode === 'individual') {
+    return 'Needs prefab bake'
+  }
+  return 'Needs composite bake'
 }

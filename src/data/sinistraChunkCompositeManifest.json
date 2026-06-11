@@ -1,7 +1,217 @@
 {
-  "bakedCount": 0,
-  "pixelsPerUnit": 100,
-  "profile": "full",
-  "description": "Per-chunk terrain composites (100×100). Run: npm run bake:sinistra-composite -- --modes chunk",
-  "chunks": {}
+  "bakedCount": 19,
+  "pixelsPerUnit": 100.0,
+  "profile": "edges",
+  "description": "Per-chunk terrain composites (100\u00d7100) with Unity sprite sort order.",
+  "chunks": {
+    "-15_90_100_100": {
+      "chunkKey": "-15_90_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/-15_90_100_100.png",
+      "worldX": 0.7679999735355381,
+      "worldY": 131.87599975973367,
+      "worldWidth": 104.44000009840727,
+      "worldHeight": 45.39800026220084,
+      "pixelWidth": 10444,
+      "pixelHeight": 4539,
+      "spriteCount": 355
+    },
+    "-15_190_100_100": {
+      "chunkKey": "-15_190_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/-15_190_100_100.png",
+      "worldX": 1.9560001508593574,
+      "worldY": 166.68199969255923,
+      "worldWidth": 97.58800036078692,
+      "worldHeight": 110.74200034603476,
+      "pixelWidth": 9758,
+      "pixelHeight": 11074,
+      "spriteCount": 618
+    },
+    "-15_290_100_100": {
+      "chunkKey": "-15_290_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/-15_290_100_100.png",
+      "worldX": 72.57200047755241,
+      "worldY": 262.8960001817942,
+      "worldWidth": 24.287999937534337,
+      "worldHeight": 126.24003985790245,
+      "pixelWidth": 2428,
+      "pixelHeight": 12624,
+      "spriteCount": 285
+    },
+    "-15_390_100_100": {
+      "chunkKey": "-15_390_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/-15_390_100_100.png",
+      "worldX": 0.5379999735355376,
+      "worldY": 375.4359801817942,
+      "worldWidth": 105.42000009840727,
+      "worldHeight": 118.48801984014028,
+      "pixelWidth": 10542,
+      "pixelHeight": 11848,
+      "spriteCount": 573
+    },
+    "-15_490_100_100": {
+      "chunkKey": "-15_490_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/-15_490_100_100.png",
+      "worldX": 2.0360001508593575,
+      "worldY": 475.337999139905,
+      "worldWidth": 33.07399982005357,
+      "worldHeight": 98.37800091683874,
+      "pixelWidth": 3307,
+      "pixelHeight": 9837,
+      "spriteCount": 359
+    },
+    "-15_590_100_100": {
+      "chunkKey": "-15_590_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/-15_590_100_100.png",
+      "worldX": 1.7699998505711525,
+      "worldY": 562.7519996925593,
+      "worldWidth": 97.38599988299607,
+      "worldHeight": 51.373999467372755,
+      "pixelWidth": 9738,
+      "pixelHeight": 5137,
+      "spriteCount": 305
+    },
+    "85_90_100_100": {
+      "chunkKey": "85_90_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/85_90_100_100.png",
+      "worldX": 93.0079999639988,
+      "worldY": 105.34199994981289,
+      "worldWidth": 114.32799984395504,
+      "worldHeight": 76.06200009047983,
+      "pixelWidth": 11432,
+      "pixelHeight": 7606,
+      "spriteCount": 554
+    },
+    "85_190_100_100": {
+      "chunkKey": "85_190_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/85_190_100_100.png",
+      "worldX": 85.047999994874,
+      "worldY": 166.83600018179416,
+      "worldWidth": 153.952000005126,
+      "worldHeight": 177.16399981820584,
+      "pixelWidth": 15395,
+      "pixelHeight": 17716,
+      "spriteCount": 1078
+    },
+    "85_290_100_100": {
+      "chunkKey": "85_290_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/85_290_100_100.png",
+      "worldX": 156.31125003933906,
+      "worldY": 342.8774997138977,
+      "worldWidth": 82.68874996066094,
+      "worldHeight": 101.12250028610231,
+      "pixelWidth": 8268,
+      "pixelHeight": 10112,
+      "spriteCount": 412
+    },
+    "85_390_100_100": {
+      "chunkKey": "85_390_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/85_390_100_100.png",
+      "worldX": 85.04599998104572,
+      "worldY": 447.2779996243715,
+      "worldWidth": 153.95400001895428,
+      "worldHeight": 96.72200037562851,
+      "pixelWidth": 15395,
+      "pixelHeight": 9672,
+      "spriteCount": 792
+    },
+    "85_490_100_100": {
+      "chunkKey": "85_490_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/85_490_100_100.png",
+      "worldX": 126.05799996972084,
+      "worldY": 522.6224996566773,
+      "worldWidth": 112.94200003027916,
+      "worldHeight": 121.37750034332271,
+      "pixelWidth": 11294,
+      "pixelHeight": 12137,
+      "spriteCount": 808
+    },
+    "85_590_100_100": {
+      "chunkKey": "85_590_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/85_590_100_100.png",
+      "worldX": 82.63599998426436,
+      "worldY": 566.8400002053976,
+      "worldWidth": 110.37999979007243,
+      "worldHeight": 72.54399983370297,
+      "pixelWidth": 11037,
+      "pixelHeight": 7254,
+      "spriteCount": 426
+    },
+    "185_-10_100_100": {
+      "chunkKey": "185_-10_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/185_-10_100_100.png",
+      "worldX": 280.85600015085936,
+      "worldY": 20.647989139904965,
+      "worldWidth": 33.46399982005357,
+      "worldHeight": 54.68800091683866,
+      "pixelWidth": 3346,
+      "pixelHeight": 5468,
+      "spriteCount": 177
+    },
+    "185_90_100_100": {
+      "chunkKey": "185_90_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/185_90_100_100.png",
+      "worldX": 195.617999994874,
+      "worldY": 62.803992893618585,
+      "worldWidth": 119.20199997603893,
+      "worldHeight": 65.45000711055374,
+      "pixelWidth": 11920,
+      "pixelHeight": 6545,
+      "spriteCount": 364
+    },
+    "185_190_100_100": {
+      "chunkKey": "185_190_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/185_190_100_100.png",
+      "worldX": 257.74624999888243,
+      "worldY": 184.45624994277955,
+      "worldWidth": 81.25375000111757,
+      "worldHeight": 159.54375005722045,
+      "pixelWidth": 8125,
+      "pixelHeight": 15954,
+      "spriteCount": 659
+    },
+    "185_490_100_100": {
+      "chunkKey": "185_490_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/185_490_100_100.png",
+      "worldX": 243.53750000357627,
+      "worldY": 544.2124994277954,
+      "worldWidth": 95.46249999642373,
+      "worldHeight": 99.78750057220464,
+      "pixelWidth": 9546,
+      "pixelHeight": 9978,
+      "spriteCount": 649
+    },
+    "185_590_100_100": {
+      "chunkKey": "185_590_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/185_590_100_100.png",
+      "worldX": 179.31599998104574,
+      "worldY": 617.3879996243716,
+      "worldWidth": 132.40399998986717,
+      "worldHeight": 71.94800043237217,
+      "pixelWidth": 13240,
+      "pixelHeight": 7194,
+      "spriteCount": 345
+    },
+    "185_690_100_100": {
+      "chunkKey": "185_690_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/185_690_100_100.png",
+      "worldX": 279.6560001508593,
+      "worldY": 672.9719996925593,
+      "worldWidth": 34.96399982005357,
+      "worldHeight": 67.33600010830162,
+      "pixelWidth": 3496,
+      "pixelHeight": 6733,
+      "spriteCount": 252
+    },
+    "285_-10_100_100": {
+      "chunkKey": "285_-10_100_100",
+      "imagePath": "DataMineRaw/extracted/slg/chunk_composites/285_-10_100_100.png",
+      "worldX": 282.9119999287129,
+      "worldY": 8.475989759733675,
+      "worldWidth": 127.89597014322993,
+      "worldHeight": 26.447998262200834,
+      "pixelWidth": 12789,
+      "pixelHeight": 2644,
+      "spriteCount": 387
+    }
+  }
 }
